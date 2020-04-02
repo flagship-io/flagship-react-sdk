@@ -1,0 +1,36 @@
+{
+  "name": "@flagship.io/react-sdk",
+  "version": "0.0.1",
+  "description": "Flagship REACT SDK",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abtasty/flagship-react-sdk.git"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/abtasty/flagship-react-sdk/issues",
+    "email": "emilien.domenge-heritier@abtasty.com"
+  },
+  "contributors": [
+    {
+      "name": "Emilien Domenge-Heritier",
+      "email": "emilien.domenge-heritier@abtasty.com",
+      "url": "https://domenge.fr"
+    },
+    {
+      "name": "Guillaume Jacquart",
+      "email": "guillaume.jacquart@abtasty.com"
+    }
+  ],
+  "keywords": [
+    "flagship",
+    "abtasty",
+    "react",
+    "sdk"
+  ],
+  "homepage": "https://github.com/abtasty/flagship-react-sdk#readme"
+}
