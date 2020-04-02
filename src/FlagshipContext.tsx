@@ -4,7 +4,9 @@ import flagship from '@flagship.io/js-sdk';
 
 const FlagshipContext = React.createContext({ visitor: null });
 
-export const FlagshipProvider = ({ children, envId, config, visitorData, loadingComponent, modifications, onInitStart, onInitDone }) => {
+export const FlagshipProvider = ({
+  children, envId, config, visitorData, loadingComponent, modifications, onInitStart, onInitDone,
+}) => {
   // Get visitor context
   //   const visitorContext = useMappedState(
   //     useCallback(
@@ -20,7 +22,7 @@ export const FlagshipProvider = ({ children, envId, config, visitorData, loading
   const [state, setState] = useState({
     fsVisitor: null,
     fsModifications: null,
-    loading: true
+    loading: true,
   });
   const { loading, ...otherState } = state;
 
@@ -37,7 +39,7 @@ export const FlagshipProvider = ({ children, envId, config, visitorData, loading
         ...state,
         loading: false,
         fsVisitor: visitorInstance,
-        fsModifications: (visitorInstance.fetchedModifications && visitorInstance.fetchedModifications.campaigns) || null
+        fsModifications: (visitorInstance.fetchedModifications && visitorInstance.fetchedModifications.campaigns) || null,
       });
     });
   }, [id, ...Object.values(context)]);
@@ -58,24 +60,24 @@ FlagshipProvider.propTypes = {
     activateNow: PropTypes.bool,
     logPathName: PropTypes.string,
     enableConsoleLogs: PropTypes.bool,
-    nodeEnv: PropTypes.string
+    nodeEnv: PropTypes.string,
   }),
   loadingComponent: PropTypes.node,
   envId: PropTypes.string.isRequired,
   visitorData: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    context: PropTypes.object
+    context: PropTypes.object,
   }).isRequired,
   onInitStart: PropTypes.func,
   onInitDone: PropTypes.func,
-  modifications: PropTypes.shape(PropTypes.object).isRequired
+  modifications: PropTypes.shape(PropTypes.object).isRequired,
 };
 
 FlagshipProvider.defaultProps = {
   config: {},
   loadingComponent: null,
   onInitStart: () => {},
-  onInitDone: () => {}
+  onInitDone: () => {},
 };
 
 export const FlagshipConsumer = FlagshipContext.Consumer;
