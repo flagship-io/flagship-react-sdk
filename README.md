@@ -12,7 +12,7 @@
 
 ## Good to know
 
-TODO...
+TODO....
 
 ## Getting Started
 
