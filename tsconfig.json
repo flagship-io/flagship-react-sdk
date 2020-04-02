@@ -4,8 +4,13 @@
         "strict": true,
         "noUnusedLocals": true,
         "module": "commonjs",
+        "noImplicitAny": false,
         "declaration": false,
-        "target": "es5"
+        "target": "es5",
+        "jsx": "react",
+        "lib": [
+            "esnext", "dom"
+          ]
     },
     "include": [
         "./src/**/*",

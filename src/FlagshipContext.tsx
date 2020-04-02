@@ -1,12 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import flagship from '@flagship.io/js-sdk';
+// / <reference path="@flagship.io/js-sdk/flagship.d.ts" />
+import flagship, { FlagshipSdkConfig, FlagshipVisitorContext, DecisionApiResponseData } from '@flagship.io/js-sdk';
 
 const FlagshipContext = React.createContext({ visitor: null });
 
-export const FlagshipProvider = ({
+interface FlagshipProviderProps {
+  children: React.ReactNode;
+  loadingComponent: React.ReactNode;
+  envId: string;
+  config: FlagshipSdkConfig;
+  visitorData: {
+    id: string;
+    context?: FlagshipVisitorContext;
+  };
+  modifications: DecisionApiResponseData;
+  onInitStart(): void;
+  onInitDone(): void;
+}
+
+export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
   children, envId, config, visitorData, loadingComponent, modifications, onInitStart, onInitDone,
-}) => {
+}: FlagshipProviderProps) => {
   // Get visitor context
   //   const visitorContext = useMappedState(
   //     useCallback(
@@ -29,7 +44,7 @@ export const FlagshipProvider = ({
   // Call FlagShip any time context get changed.
   useEffect(() => {
     const fsSdk = flagship.initSdk(envId, config);
-    const visitorInstance = fsSdk.newVisitor(id, context);
+    const visitorInstance = fsSdk.newVisitor(id, context as FlagshipVisitorContext);
     onInitStart();
     visitorInstance.on('ready', () => {
       if (modifications) {
@@ -42,7 +57,7 @@ export const FlagshipProvider = ({
         fsModifications: (visitorInstance.fetchedModifications && visitorInstance.fetchedModifications.campaigns) || null,
       });
     });
-  }, [id, ...Object.values(context)]);
+  }, [id, ...Object.values(context as FlagshipVisitorContext)]);
 
   useEffect(() => {
     if (!state.loading) {
@@ -76,8 +91,12 @@ FlagshipProvider.propTypes = {
 FlagshipProvider.defaultProps = {
   config: {},
   loadingComponent: null,
-  onInitStart: () => {},
-  onInitDone: () => {},
+  onInitStart: (): void => {
+    // do nothing
+  },
+  onInitDone: (): void => {
+    // do nothing
+  },
 };
 
 export const FlagshipConsumer = FlagshipContext.Consumer;
