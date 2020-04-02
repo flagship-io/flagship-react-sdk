@@ -32,5 +32,15 @@
     "react",
     "sdk"
   ],
-  "homepage": "https://github.com/abtasty/flagship-react-sdk#readme"
+  "homepage": "https://github.com/abtasty/flagship-react-sdk#readme",
+  "dependencies": {
+    "react": "^16.13.1",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-typescript": "^7.9.0"
+  }
 }
