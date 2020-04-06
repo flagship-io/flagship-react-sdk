@@ -10,7 +10,7 @@ module.exports = {
     filename: 'index.js',
     path: path.resolve(__dirname, '../dist'),
     library: 'flagship',
-    libraryTarget: 'umd',
+    libraryTarget: 'commonjs',
     libraryExport: 'default',
   },
   // target: 'node', // TODO:
@@ -18,12 +18,16 @@ module.exports = {
     exprContextCritical: false,
     rules: [
       {
-        test: /\.tsx?$/,
+        // test: /\.tsx?$/,
+        test: /\.(ts|js)x?$/,
         exclude: /(node_modules|bower_components)/,
         use: [
           {
-            loader: 'awesome-typescript-loader',
+            loader: 'babel-loader',
           },
+          // {
+          //   loader: 'awesome-typescript-loader',
+          // },
           {
             loader: 'eslint-loader',
             options: {
@@ -53,9 +57,17 @@ module.exports = {
     ],
   },
   externals: [
+    {
+      react: 'react',
+      reactDOM: 'react-dom',
+    },
   ],
   plugins: [new webpack.DefinePlugin({ 'global.GENTLY': false })],
   resolve: {
+    alias: {
+      // modules: [path.resolve('./node_modules')],
+      react: path.resolve('./node_modules/react'),
+    },
     extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js'],
   },
 };
