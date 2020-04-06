@@ -4,14 +4,17 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    app: './src/index.ts',
+    FsContext: './src/FlagshipContext.tsx',
+    FsHooks: './src/FlagshipHooks.tsx',
+
   },
   output: {
-    filename: 'index.js',
+    // filename: 'index.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, '../dist'),
-    library: 'flagship',
-    libraryTarget: 'commonjs',
-    libraryExport: 'default',
+    // library: 'flagship',
+    libraryTarget: 'commonjs2',
+    // libraryExport: 'default',
   },
   // target: 'node', // TODO:
   module: {
@@ -65,8 +68,9 @@ module.exports = {
   plugins: [new webpack.DefinePlugin({ 'global.GENTLY': false })],
   resolve: {
     alias: {
-      // modules: [path.resolve('./node_modules')],
       react: path.resolve('./node_modules/react'),
+
+      // react: require.resolve('react'),
     },
     extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js'],
   },

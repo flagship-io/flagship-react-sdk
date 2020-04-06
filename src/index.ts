@@ -1,5 +1,5 @@
 import withFlagship from './withFlagship';
-import * as fsHooks from './hooks';
+import * as fsHooks from './FlagshipHooks';
 import FlagshipContext from './FlagshipContext';
 
 // if (process.env.NODE_ENV === "production") {
