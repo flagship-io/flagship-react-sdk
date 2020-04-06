@@ -1,0 +1,72 @@
+{
+  "name": "@flagship.io/react-sdk",
+  "version": "0.0.1",
+  "description": "Flagship REACT SDK",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "np",
+    "build:dev": "rm -rf dist && webpack --env=dev",
+    "build:prod": "rm -rf dist && webpack --env=prod"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abtasty/flagship-react-sdk.git"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/abtasty/flagship-react-sdk/issues",
+    "email": "emilien.domenge-heritier@abtasty.com"
+  },
+  "contributors": [
+    {
+      "name": "Emilien Domenge-Heritier",
+      "email": "emilien.domenge-heritier@abtasty.com",
+      "url": "https://domenge.fr"
+    },
+    {
+      "name": "Guillaume Jacquart",
+      "email": "guillaume.jacquart@abtasty.com"
+    }
+  ],
+  "keywords": [
+    "flagship",
+    "abtasty",
+    "react",
+    "sdk"
+  ],
+  "homepage": "https://github.com/abtasty/flagship-react-sdk#readme",
+  "dependencies": {
+    "react": "^16.13.1",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  },
+  "peerDependencies": {
+    "react": "^16.9.0",
+    "@flagship.io/js-sdk": "<=0.1.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-react": "^7.9.4",
+    "@babel/preset-typescript": "^7.9.0",
+    "@flagship.io/js-sdk": "^0.1.1",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@typescript-eslint/parser": "^2.26.0",
+    "awesome-typescript-loader": "^5.2.1",
+    "babel-loader": "^8.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-loader": "^3.0.3",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^2.5.0",
+    "np": "^6.2.0",
+    "typescript": "^3.8.3",
+    "webpack-bundle-analyzer": "^3.6.1",
+    "webpack-merge": "^4.2.2"
+  }
+}
