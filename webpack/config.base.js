@@ -4,10 +4,14 @@ const path = require('path');
 
 module.exports = {
   entry: {
+    main: './src/index.tsx',
     FsContext: './src/FlagshipContext.tsx',
+    'FsContext.min': './src/FlagshipContext.tsx',
     FsHooks: './src/FlagshipHooks.tsx',
+    'FsHooks.min': './src/FlagshipHooks.tsx',
 
   },
+  devtool: 'source-map',
   output: {
     // filename: 'index.js',
     filename: '[name].js',
@@ -23,20 +27,23 @@ module.exports = {
       {
         // test: /\.tsx?$/,
         test: /\.(ts|js)x?$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /(node_modules|bower_components|dist)/,
         use: [
           {
             loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'],
+            },
           },
           // {
           //   loader: 'awesome-typescript-loader',
           // },
-          {
-            loader: 'eslint-loader',
-            options: {
-              // eslint options (if necessary)
-            },
-          },
+          // {
+          //   loader: 'eslint-loader',
+          //   options: {
+          //     // eslint options (if necessary)
+          //   },
+          // },
         ],
       },
       {
@@ -61,8 +68,8 @@ module.exports = {
   },
   externals: [
     {
-      react: 'react',
-      reactDOM: 'react-dom',
+      react: 'commonjs react',
+      // reactDOM: 'react-dom',
     },
   ],
   plugins: [new webpack.DefinePlugin({ 'global.GENTLY': false })],
