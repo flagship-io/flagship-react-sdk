@@ -3,10 +3,22 @@ import React, { useState, useEffect } from "react";
 import flagship, {
   FlagshipSdkConfig,
   FlagshipVisitorContext,
+  IFlagshipVisitor,
   DecisionApiResponseData,
+  GetModificationsOutput,
 } from "@flagship.io/js-sdk";
 
-const FlagshipContext = React.createContext({ visitor: null });
+declare type initStateType = {
+  fsVisitor: IFlagshipVisitor | null;
+  fsModifications: GetModificationsOutput | null;
+};
+
+const initState: initStateType = {
+  fsVisitor: null,
+  fsModifications: null,
+};
+
+const FlagshipContext = React.createContext({ ...initState });
 
 interface FlagshipProviderProps {
   children: React.ReactNode;
@@ -44,11 +56,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
   //     )
   //   );
   const { id, context } = visitorData;
-  const [state, setState] = useState({
-    fsVisitor: null,
-    fsModifications: null,
-    loading: true,
-  });
+  const [state, setState] = useState({ ...initState, loading: true });
   const { loading, ...otherState } = state;
 
   // Call FlagShip any time context get changed.
@@ -87,6 +95,26 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     </FlagshipContext.Provider>
   );
 };
+
+// FlagshipProvider.propTypes = {
+//   children: PropTypes.oneOfType([PropTypes.node, PropTypes.string]).isRequired,
+//   config: PropTypes.shape({
+//     fetchNow: PropTypes.bool,
+//     activateNow: PropTypes.bool,
+//     logPathName: PropTypes.string,
+//     enableConsoleLogs: PropTypes.bool,
+//     nodeEnv: PropTypes.string,
+//   }),
+//   loadingComponent: PropTypes.node,
+//   envId: PropTypes.string.isRequired,
+//   visitorData: PropTypes.shape({
+//     id: PropTypes.string.isRequired,
+//     context: PropTypes.object,
+//   }).isRequired,
+//   onInitStart: PropTypes.func,
+//   onInitDone: PropTypes.func,
+//   modifications: PropTypes.shape(PropTypes.object).isRequired,
+// };
 
 FlagshipProvider.defaultProps = {
   config: {},
