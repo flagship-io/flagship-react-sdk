@@ -13,9 +13,7 @@
     "test": "echo \"Error: no test specified\" && exit 0",
     "release": "np",
     "link": "npm link && rm -rf node_modules/react && rm -rf node_modules/react-dom",
-    "build:tsc": "rm -rf dist && tsc",
-    "build:webpack:dev": "rm -rf dist && webpack --env=dev",
-    "build:webpack:prod": "rm -rf dist && webpack --env=prod"
+    "build": "rm -rf dist && tsc"
   },
   "repository": {
     "type": "git",
@@ -44,30 +42,19 @@
     "sdk"
   ],
   "homepage": "https://github.com/abtasty/flagship-react-sdk#readme",
-  "dependencies": {
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11"
-  },
+  "dependencies": {},
   "peerDependencies": {
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
     "@flagship.io/js-sdk": "<=0.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/plugin-proposal-object-rest-spread": "^7.9.0",
-    "@babel/plugin-transform-react-jsx": "^7.9.4",
-    "@babel/preset-env": "^7.9.0",
-    "@babel/preset-react": "^7.9.4",
-    "@babel/preset-typescript": "^7.9.0",
     "@flagship.io/js-sdk": "^0.1.1",
     "@types/react": "^16.9.32",
     "@types/react-dom": "^16.9.6",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
     "awesome-typescript-loader": "^5.2.1",
-    "babel-loader": "^8.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-config-prettier": "^6.10.1",
@@ -81,9 +68,6 @@
     "prettier": "^2.0.4",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
-    "typescript": "^3.8.3",
-    "uglifyjs-webpack-plugin": "^2.2.0",
-    "webpack-bundle-analyzer": "^3.6.1",
-    "webpack-merge": "^4.2.2"
+    "typescript": "^3.8.3"
   }
 }
