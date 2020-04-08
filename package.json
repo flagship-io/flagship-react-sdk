@@ -12,6 +12,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
     "release": "np",
+    "link": "npm link && rm -rf node_modules/react && rm -rf node_modules/react-dom",
     "build:tsc": "rm -rf dist && tsc",
     "build:webpack:dev": "rm -rf dist && webpack --env=dev",
     "build:webpack:prod": "rm -rf dist && webpack --env=prod"
@@ -48,8 +49,8 @@
     "webpack-cli": "^3.3.11"
   },
   "peerDependencies": {
-    "react": "<=16.8.0",
-    "react-dom": "<=16.8.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
     "@flagship.io/js-sdk": "<=0.1.1"
   },
   "devDependencies": {
