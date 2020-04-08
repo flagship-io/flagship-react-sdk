@@ -1,8 +1,8 @@
 {
   "name": "@flagship.io/react-sdk",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Flagship REACT SDK",
-  "main": "dist/main.js",
+  "main": "dist/index.js",
   "files": [
     "dist",
     "CONTRIBUTING.md",
@@ -48,7 +48,8 @@
     "webpack-cli": "^3.3.11"
   },
   "peerDependencies": {
-    "react": "^16.9.0",
+    "react": "<=16.8.0",
+    "react-dom": "<=16.8.0",
     "@flagship.io/js-sdk": "<=0.1.1"
   },
   "devDependencies": {
@@ -77,8 +78,8 @@
     "eslint-plugin-react-hooks": "^2.5.0",
     "np": "^6.2.0",
     "prettier": "^2.0.4",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
     "typescript": "^3.8.3",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack-bundle-analyzer": "^3.6.1",
