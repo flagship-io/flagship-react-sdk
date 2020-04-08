@@ -1,5 +1,5 @@
-import React from 'react';
-import { Navbar, Nav, Form } from 'react-bootstrap';
+import React from './node_modules/react';
+import { Navbar, Nav, Form } from './node_modules/react-bootstrap';
 import Logo from '../../assets/Flagship-horizontal-product-white.png';
 
 const Header: React.FC = () => (
