@@ -1,6 +1,6 @@
 {
   "name": "@flagship.io/react-sdk",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "Flagship REACT SDK",
   "main": "dist/index.js",
   "files": [
@@ -12,7 +12,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
     "release": "np",
-    "link": "npm link && rm -rf node_modules/react && rm -rf node_modules/react-dom",
+    "clean": "rm -rf ./node_modules/react && rm -rf ./node_modules/react-dom",
     "build": "rm -rf dist && tsc"
   },
   "repository": {
@@ -42,14 +42,13 @@
     "sdk"
   ],
   "homepage": "https://github.com/abtasty/flagship-react-sdk#readme",
-  "dependencies": {},
+  "dependencies": {
+    "@flagship.io/js-sdk": "^0.1.4"
+  },
   "peerDependencies": {
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0",
-    "@flagship.io/js-sdk": "<=0.1.1"
+    "react": "^16.8.0"
   },
   "devDependencies": {
-    "@flagship.io/js-sdk": "^0.1.1",
     "@types/react": "^16.9.32",
     "@types/react-dom": "^16.9.6",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
