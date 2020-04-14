@@ -8,7 +8,19 @@ export const DemoInitialization = ({ onSubmitNewSettings }) => {
   const name = 'initialization';
   const contextTemp = { ...config.visitorData.context };
   const currSettings = useContext(SettingContext);
-  const [newSettings, setNewSettings] = React.useState({ ...currSettings });
+  const [newSettings, setNewSettings] = React.useState<{
+    envId: string;
+    sdkConfig: {
+      fetchNow: boolean;
+      enableConsoleLogs: boolean;
+    };
+    visitorData: {
+      id: string;
+      context: {
+        [key: string]: any;
+      };
+    };
+  }>({ ...currSettings });
   const handleEnvId = (e) =>
     setNewSettings({ ...newSettings, envId: e.target.value });
   const handleVisitorContext = (e) => {
@@ -23,9 +35,21 @@ export const DemoInitialization = ({ onSubmitNewSettings }) => {
         },
       });
     } else {
-      delete temp.visitorData.context[Object.keys(node)[0]];
+      const keyToRemove = Object.keys(node)[0];
       setNewSettings({
-        ...temp,
+        ...newSettings,
+        visitorData: {
+          ...newSettings.visitorData,
+          context: Object.entries(temp.visitorData.context).reduce(
+            (reducer, [key, value]) => {
+              if (key === keyToRemove) {
+                return reducer;
+              }
+              return { ...reducer, [key]: value };
+            },
+            {}
+          ),
+        },
       });
     }
   };
