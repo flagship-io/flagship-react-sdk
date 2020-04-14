@@ -188,9 +188,46 @@ Here the list of current available hooks:
 
 #### `useFsModifications`
 
+> get the data from the Flagship API and returns Flagship modifications.
+
+**Demo:**
+
+- coming soon
+
 #### `useFsModificationsCache`
 
+> returns Flagship modifications in cache. If the cache is empty, you can expect that it will return nothing.
+
+**Demo:**
+
+- coming soon
+
 #### `useFsActivate`
+
+> return `nothing` (for the moment...)
+
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th style="width: 100px;">argument</th>
+        <th style="width: 50px;">type</th>
+        <th style="width: 50px;">default</th>
+        <th>description</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>modificationKeys</td>
+          <td>array(string)</td>
+          <td>*required*</td>
+          <td>An array of modification key.<br>For each key, a http will be done to trigger the activate of corresponding modification.</td>
+        </tr>
+    </tbody>
+</table>
+
+**Demo:**
+
+- coming soon
 
 ## Contributing
 
