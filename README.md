@@ -20,7 +20,7 @@ Flagship features are accessible using Flagship hooks, have a look to the docume
 </ul>
 
 <ul style="line-height:1.4;">
-- Small demo app in the <b>example</b> folder but more to come soon! 👨‍💻
+- Small [demo app](examples/react-dev-demo/README.md) but more to come soon! 👨‍💻
 </ul>
 
 ## Getting Started
@@ -39,8 +39,7 @@ import { FlagshipProvider } from "@flagship.io/react-sdk";
 
 const App = () => (
   <>
-    <FlagshipProvider
-    >
+    <FlagshipProvider>
       {/* [...] */}
     </FlagshipProvider>
   </>
