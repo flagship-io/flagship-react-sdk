@@ -44,17 +44,6 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
   onInitStart,
   onInitDone,
 }: FlagshipProviderProps) => {
-  // Get visitor context
-  //   const visitorContext = useMappedState(
-  //     useCallback(
-  //       (state: Store) => ({
-  //         accountId: getCurrentAccountId(state),
-  //         userId: selectProfile(state).id,
-  //         isABTasty: selectProfile(state).is_abtasty
-  //       }),
-  //       []
-  //     )
-  //   );
   const { id, context } = visitorData;
   const [state, setState] = useState({ ...initState, loading: true });
   const { loading, ...otherState } = state;
@@ -95,26 +84,6 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     </FlagshipContext.Provider>
   );
 };
-
-// FlagshipProvider.propTypes = {
-//   children: PropTypes.oneOfType([PropTypes.node, PropTypes.string]).isRequired,
-//   config: PropTypes.shape({
-//     fetchNow: PropTypes.bool,
-//     activateNow: PropTypes.bool,
-//     logPathName: PropTypes.string,
-//     enableConsoleLogs: PropTypes.bool,
-//     nodeEnv: PropTypes.string,
-//   }),
-//   loadingComponent: PropTypes.node,
-//   envId: PropTypes.string.isRequired,
-//   visitorData: PropTypes.shape({
-//     id: PropTypes.string.isRequired,
-//     context: PropTypes.object,
-//   }).isRequired,
-//   onInitStart: PropTypes.func,
-//   onInitDone: PropTypes.func,
-//   modifications: PropTypes.shape(PropTypes.object).isRequired,
-// };
 
 FlagshipProvider.defaultProps = {
   config: {},
