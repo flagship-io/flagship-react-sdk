@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Nav, Form } from "react-bootstrap";
+import { Navbar, Nav, Form, NavDropdown } from "react-bootstrap";
 import Logo from "../../assets/Flagship-horizontal-product-white.png";
 
 const Header: React.FC = () => (
@@ -14,18 +14,25 @@ const Header: React.FC = () => (
           src={Logo}
           className="d-inline-block align-top logoAdjust"
         />
-        JS SDK with React
+        REACT SDK (Dev demo)
       </Navbar.Brand>
-      <Nav className="mr-auto">
+      <Nav className="mr-auto fsNav">
         <Nav.Link href="#initialization">Initialization</Nav.Link>
-        <Nav.Link href="#modifications">Modifications</Nav.Link>
-        <Nav.Link href="#hits">Hits</Nav.Link>
-        <Nav.Link href="#unit-tests">Unit tests</Nav.Link>
-        <Nav.Link href="#other">Other</Nav.Link>
+        <NavDropdown title="Fs Hooks" id="nav-dropdown">
+          <NavDropdown.Item eventKey="4.1" href="#useFsModifications">
+            useFsModifications
+          </NavDropdown.Item>
+          <NavDropdown.Item eventKey="4.2" href="#useFsModificationsCache">
+            useFsModificationsCache
+          </NavDropdown.Item>
+          <NavDropdown.Item eventKey="4.3" href="#useFsActivate">
+            useFsActivate
+          </NavDropdown.Item>
+        </NavDropdown>
       </Nav>
 
       <Form inline>
-        <Nav.Link href="https://github.com/abtasty/flagship-js-sdk">
+        <Nav.Link href="https://github.com/abtasty/flagship-react-sdk">
           Github
         </Nav.Link>
         <Nav.Link href="https://www.abtasty.com/solutions-product-teams/">

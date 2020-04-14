@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css?family=Work+Sans&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Work+Sans&display=swap");
 body {
-  font-family: 'Work Sans';
+  font-family: "Work Sans";
 }
 
 html {
@@ -25,8 +25,22 @@ html {
 }
 
 .fsNavbar,
-.alert-dark.fs-alert {
+.alert-dark.fs-alert,
+.fsNav .dropdown-menu {
   background-color: #343434;
+}
+
+.fsNav .dropdown-menu .dropdown-item {
+  color: white !important;
+}
+
+.fsNav .dropdown-menu .dropdown-item:hover {
+  background-color: #de436f !important;
+}
+
+.dropdown-item.active {
+  background-color: inherit !important;
+  font-weight: 600;
 }
 
 .modal-content {
