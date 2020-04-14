@@ -100,6 +100,98 @@ export const MyReactComponent = () => {
 }
 ```
 
+## FlagshipProvider Props
+
+This is all available props which you can use inside the `FlagshipProvider` react component:
+
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th style="width: 100px;">Props</th>
+        <th style="width: 50px;">Type</th>
+        <th style="width: 50px;">Default</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>envId</td>
+          <td>string</td>
+          <td>*required*</td>
+          <td>Your Flagship environment id.</td>
+        </tr>
+         <tr>
+          <td>visitorData</td>
+          <td>object</td>
+          <td>*required*</td>
+          <td>This is the data to identify the current visitor using your app.<br>The visitorData object takes the following attributes:
+           <table> 
+              <tbody><tr>
+                  <th style="width:25%">Argument</th>
+                  <th style="width:10%">Type</th>
+                  <th>Description</th>
+                </tr>  
+                <tr>
+                  <td><em>id</em></td>
+                  <td><em>string</em></td>
+                  <td>Required. The id of the visitor</td>
+                </tr>
+                <tr>
+                  <td><em>context</em></td>
+                  <td><em>object</em></td>
+                  <td>Optional. Your Flagship visitor context.<br>You'll set inside attributes which should match those defined in your campaigns.
+                  </td>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td>config</td>
+          <td>object</td>
+          <td>{}</td>
+          <td>This is the settings of the SDK. It takes an object which has the same shape as the <a href='https://github.com/abtasty/flagship-js-sdk#sdk-settings'>JS SDK settings</a>. Go have a look.</td>
+        </tr>
+        <tr>
+          <td>onInitStart</td>
+          <td>function</td>
+          <td>null</td>
+          <td>Callback function called when the SDK starts initialization.</td>
+        </tr>
+        <tr>
+          <td>onInitDone</td>
+          <td>function</td>
+          <td>null</td>
+          <td>Callback function called when the SDK ends initialization.</td>
+        </tr>
+        <tr>
+          <td>modifications</td>
+          <td>object</td>
+          <td>null</td>
+          <td>This is an object which has the shape of Flagship modifications as it is return from the Flagship API.<br>Can be useful when you already manually fetched the data before.<br>From there, the SDK will save this data provided in cache and won't fetch anything.</td>
+        </tr>
+        <tr>
+          <td>loadingComponent</td>
+          <td>React.ReactNode</td>
+          <td>null</td>
+          <td>This is component which will be render when Flagship is loading.<br>By default, the value is <i>null</i> which means nothing will appear until Flagship is ready.</td>
+        </tr>
+    </tbody>
+</table>
+
+## Flagship Hooks
+
+Here the list of current available hooks:
+
+- [useFsModifications](#useFsModifications)
+- [useFsModificationsCache](#useFsModificationsCache)
+- [useFsActivate](#useFsActivate)
+
+#### `useFsModifications`
+
+#### `useFsModificationsCache`
+
+#### `useFsActivate`
+
 ## Contributing
 
 Take a look to the [Contributors Guide](CONTRIBUTING.md).
