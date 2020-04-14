@@ -1,21 +1,109 @@
-import CodeBlock from "@tenon-io/tenon-codeblock";
-import React, { useEffect, useState } from "react";
-import { Alert, Col, Row } from "react-bootstrap";
+import CodeBlock from '@tenon-io/tenon-codeblock';
+import React, { useEffect, useState, useContext } from 'react';
+import { Alert, Col, Row, Form } from 'react-bootstrap';
+import config from '../../../../config';
+import { SettingContext } from '../../../../App';
 
-export const DemoInitialization = () => {
-  const demoHookName = "initialization";
+export const DemoInitialization = ({ onSubmitNewSettings }) => {
+  const name = 'initialization';
+  const contextTemp = { ...config.visitorData.context };
+  const currSettings = useContext(SettingContext);
+  const [newSettings, setNewSettings] = React.useState({ ...currSettings });
+  const handleEnvId = (e) =>
+    setNewSettings({ ...newSettings, envId: e.target.value });
+  const handleVisitorContext = (e) => {
+    const node = JSON.parse(e.currentTarget.parentElement.innerText);
+    const temp = { ...newSettings };
+    if (e.currentTarget.checked) {
+      setNewSettings({
+        ...newSettings,
+        visitorData: {
+          ...newSettings.visitorData,
+          context: { ...newSettings.visitorData.context, ...node },
+        },
+      });
+    } else {
+      delete temp.visitorData.context[Object.keys(node)[0]];
+      setNewSettings({
+        ...temp,
+      });
+    }
+  };
   return (
     <Row>
       <Col>
-        <a className="fsAnchor" id={demoHookName} />
+        <a className="fsAnchor" id={name} />
         <Alert variant="dark" className="fs-alert demoHook">
-          <Alert.Heading>{demoHookName}</Alert.Heading>
+          <Alert.Heading>{name}</Alert.Heading>
           <p>
-            Use <b>{demoHookName}</b> hook to get the modifications:
+            The <b>{name}</b> is proceed with <b>FlagshipProvider</b>. In this
+            demo app, is plugged like so:
           </p>
-          <CodeBlock className="mv3" codeString={`const todo = 'todo';`} />
-          <p>Output: </p>
-          <CodeBlock className="mv3" codeString={JSON.stringify({})} />
+          <CodeBlock
+            className="mv3"
+            codeString={`
+
+import React from 'react';
+import { FlagshipProvider } from "@flagship.io/react-sdk";
+
+const App: React.FC = () => (
+  <>
+      <FlagshipProvider
+      envId={${config.envId}}
+      config={
+        ${JSON.stringify(config.sdkConfig, null, 2)}
+      }
+      visitorData={
+        ${JSON.stringify(config.visitorData, null, 2)}
+    }
+      onInitStart={() => {
+        console.log("init start");
+      }}
+      onInitDone={() => {
+        console.log("init done");
+      }}
+      loadingComponent={
+        <Container className="mt3">
+          <Row>
+            <Col xs={12}>Loading Flagship React SDK...</Col>
+          </Row>
+        </Container>
+      }
+    >
+      <Header />
+      <AppContainer />
+    </FlagshipProvider>
+  </>
+);
+          `}
+          />
+          <p>
+            To understand impact of each props, you can change some value
+            dynamically here:{' '}
+          </p>
+          <Form>
+            <Form.Group controlId="initForm.ControlSelect1">
+              <Form.Label>envId</Form.Label>
+              <Form.Control as="select" onChange={handleEnvId}>
+                {config.sandbox.envId.map((id) => (
+                  <option>{id}</option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+            <Form.Group controlId="initForm.ControlSelect2">
+              <Form.Label>visitor context</Form.Label>
+              {Object.entries(contextTemp).map(([key, value]) => (
+                <Form.Check
+                  key={key}
+                  type="checkbox"
+                  id={`default-${key}`}
+                  checked={newSettings.visitorData.context.hasOwnProperty(key)}
+                  onClick={handleVisitorContext}
+                  label={JSON.stringify({ [key]: value })}
+                />
+              ))}
+            </Form.Group>
+          </Form>
         </Alert>
       </Col>
     </Row>

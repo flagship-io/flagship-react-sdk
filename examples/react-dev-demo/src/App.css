@@ -7,6 +7,19 @@ html {
   scroll-behavior: smooth;
 }
 
+form .form-label {
+  font-weight: 600;
+  padding: 16px 0px;
+  border-top: 1px solid grey;
+  width: 100%;
+}
+
+form select,
+form .form-check {
+  margin-left: 16px;
+  width: auto !important;
+}
+
 .logoAdjust {
   height: 30px;
   padding-right: 15px;

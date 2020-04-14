@@ -1,38 +1,59 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable max-len */
-/* eslint-disable jsx-a11y/accessible-emoji */
-import CodeBlock from "@tenon-io/tenon-codeblock";
-import React, { useEffect, useState } from "react";
-import { Alert, Button, Col, Container, Row } from "react-bootstrap";
-import "./App.css";
-import Header from "./components/Header";
-import { FlagshipProvider } from "@flagship.io/react-sdk";
-import { AppContainer } from "./components/AppContainer";
+import './App.css';
 
-const App: React.FC = () => (
-  <>
-    <FlagshipProvider
-      envId="bn1ab7m56qolupi5sa0g"
-      config={{
-        fetchNow: true,
-        enableConsoleLogs: true,
-      }}
-      onInitStart={() => {
-        console.log("init start");
-      }}
-      onInitDone={() => {
-        console.log("init done");
-      }}
-      visitorData={{
-        id: "test-vid",
-        context: {},
-      }}
-      loadingComponent={<div>Loading...</div>}
-    >
-      <Header />
-      <AppContainer />
-    </FlagshipProvider>
-  </>
-);
+import { FlagshipProvider } from '@flagship.io/react-sdk';
+import React, { useEffect, useState, createContext } from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
+
+import { AppContainer } from './components/AppContainer';
+import config from './config';
+import Header from './components/Header';
+export const SettingContext = createContext({
+  envId: config.envId,
+  sdkConfig: { ...config.sdkConfig },
+  visitorData: { ...config.visitorData },
+});
+const App: React.FC = () => {
+  const [currentSettings, setSettings] = React.useState({
+    envId: config.envId,
+    sdkConfig: { ...config.sdkConfig },
+    visitorData: { ...config.visitorData },
+  });
+  return (
+    <>
+      <SettingContext.Provider value={currentSettings}>
+        <FlagshipProvider
+          envId={currentSettings.envId}
+          config={currentSettings.sdkConfig}
+          visitorData={currentSettings.visitorData}
+          onInitStart={() => {
+            console.log('init start');
+          }}
+          onInitDone={() => {
+            console.log('init done');
+          }}
+          loadingComponent={
+            <Container className="mt3">
+              <Row>
+                <Col
+                  xs={12}
+                  style={{ color: 'white', height: '100vh', fontSize: '5vw' }}
+                >
+                  Loading Flagship React SDK...
+                </Col>
+              </Row>
+            </Container>
+          }
+        >
+          <Header />
+          <AppContainer
+            onSubmitNewSettings={(newSettings) =>
+              setSettings({ ...currentSettings, ...newSettings })
+            }
+          />
+        </FlagshipProvider>
+      </SettingContext.Provider>
+    </>
+  );
+};
 
 export default App;
