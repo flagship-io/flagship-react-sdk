@@ -13,7 +13,8 @@
         "test": "echo \"Error: no test specified\" && exit 0",
         "release": "np",
         "clean": "rm -rf ./node_modules/react && rm -rf ./node_modules/react-dom",
-        "build": "npm run @flagship.io/js-sdk && rm -rf dist && tsc"
+        "build": "rm -rf dist && tsc",
+        "build:prod": "npm run @flagship.io/js-sdk && rm -rf dist && tsc"
     },
     "repository": {
         "type": "git",
