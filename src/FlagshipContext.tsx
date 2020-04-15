@@ -70,7 +70,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                     null
             });
         });
-    }, [id, ...Object.values(context as FlagshipVisitorContext)]);
+    }, [envId, id, ...Object.values(context as FlagshipVisitorContext)]);
 
     useEffect(() => {
         if (!state.loading) {
