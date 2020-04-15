@@ -10,6 +10,7 @@ declare type UseFsModificationsCacheOutput = any; // TODO
 
 export const useFlagship = (): UseFlagshipOutput => {
   const { ...everything } = useContext(FlagshipContext);
+  // TODO: debug
   return everything;
 };
 
