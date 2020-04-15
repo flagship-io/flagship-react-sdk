@@ -1,26 +1,18 @@
 import CodeBlock from '@tenon-io/tenon-codeblock';
 import React, { useEffect, useState, useContext } from 'react';
-import { Alert, Col, Row, Form } from 'react-bootstrap';
+import { Alert, Col, Row, Form, Button } from 'react-bootstrap';
 import config from '../../../../config';
-import { SettingContext } from '../../../../App';
+import { SettingContext, AppSettings, SdkSettings } from '../../../../App';
 
 export const DemoInitialization = ({ onSubmitNewSettings }) => {
   const name = 'initialization';
   const contextTemp = { ...config.visitorData.context };
-  const currSettings = useContext(SettingContext);
-  const [newSettings, setNewSettings] = React.useState<{
-    envId: string;
-    sdkConfig: {
-      fetchNow: boolean;
-      enableConsoleLogs: boolean;
-    };
-    visitorData: {
-      id: string;
-      context: {
-        [key: string]: any;
-      };
-    };
-  }>({ ...currSettings });
+  const { currentSettings: currSettings, setSettings } = useContext(
+    SettingContext
+  ) as AppSettings;
+  const [newSettings, setNewSettings] = React.useState<SdkSettings>({
+    ...currSettings,
+  });
   const handleEnvId = (e) =>
     setNewSettings({ ...newSettings, envId: e.target.value });
   const handleVisitorContext = (e) => {
@@ -61,7 +53,7 @@ export const DemoInitialization = ({ onSubmitNewSettings }) => {
           <Alert.Heading>{name}</Alert.Heading>
           <p>
             The <b>{name}</b> is proceed with <b>FlagshipProvider</b>. In this
-            demo app, is plugged like so:
+            demo app, it is plugged like so:
           </p>
           <CodeBlock
             className="mv3"
@@ -75,10 +67,10 @@ const App: React.FC = () => (
       <FlagshipProvider
       envId={${config.envId}}
       config={
-        ${JSON.stringify(config.sdkConfig, null, 2)}
+        ${JSON.stringify(currSettings.sdkConfig, null, 2)}
       }
       visitorData={
-        ${JSON.stringify(config.visitorData, null, 2)}
+        ${JSON.stringify(currSettings.visitorData, null, 2)}
     }
       onInitStart={() => {
         console.log("init start");
@@ -128,6 +120,19 @@ const App: React.FC = () => (
               ))}
             </Form.Group>
           </Form>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <Button
+              variant="secondary"
+              onClick={() => setSettings({ ...newSettings })}
+            >
+              Apply change
+            </Button>
+          </div>
         </Alert>
       </Col>
     </Row>

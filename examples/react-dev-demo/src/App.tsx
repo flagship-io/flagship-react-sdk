@@ -1,26 +1,51 @@
 import './App.css';
 
 import { FlagshipProvider } from '@flagship.io/react-sdk';
-import React, { useEffect, useState, createContext } from 'react';
+import React, {
+  useEffect,
+  useState,
+  createContext,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 
 import { AppContainer } from './components/AppContainer';
 import config from './config';
 import Header from './components/Header';
-export const SettingContext = createContext({
-  envId: config.envId,
-  sdkConfig: { ...config.sdkConfig },
-  visitorData: { ...config.visitorData },
-});
+interface VisitorContext {
+  [key: string]: any;
+}
+export interface SdkSettings {
+  envId: string;
+  sdkConfig: {
+    fetchNow: boolean;
+    enableConsoleLogs: boolean;
+  };
+  visitorData: {
+    id: string;
+    context: VisitorContext;
+  };
+}
+export interface AppSettings {
+  currentSettings: SdkSettings;
+  setSettings: Dispatch<SetStateAction<SdkSettings>>;
+}
+
+export const SettingContext = createContext<{
+  currentSettings: SdkSettings;
+  setSettings: Dispatch<SetStateAction<SdkSettings>>;
+} | null>(null);
+
 const App: React.FC = () => {
-  const [currentSettings, setSettings] = React.useState({
+  const [currentSettings, setSettings] = React.useState<SdkSettings>({
     envId: config.envId,
     sdkConfig: { ...config.sdkConfig },
     visitorData: { ...config.visitorData },
   });
   return (
     <>
-      <SettingContext.Provider value={currentSettings}>
+      <SettingContext.Provider value={{ currentSettings, setSettings }}>
         <FlagshipProvider
           envId={currentSettings.envId}
           config={currentSettings.sdkConfig}
