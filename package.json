@@ -12,9 +12,11 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 0",
         "release": "np",
+        "publish": "npm run update:react-dev-demo && git add . && git commit -m\"Post publish update\" && git push && npm run publish:reactDemoDev",
+        "publish:reactDemoDev": "cd ./examples/react-dev-demo && npm run deploy:github",
+        "update:react-dev-demo": "cd ./examples/react-dev-demo && npm install @flagship.io/react-sdk@latest @flagship.io/js-sdk@latest --save && cd ../../",
         "clean": "rm -rf ./node_modules/react && rm -rf ./node_modules/react-dom",
-        "build": "rm -rf dist && tsc",
-        "build:prod": "npm run @flagship.io/js-sdk && rm -rf dist && tsc"
+        "build": "npm install @flagship.io/js-sdk@latest --save && rm -rf dist && tsc"
     },
     "repository": {
         "type": "git",
@@ -44,7 +46,7 @@
     ],
     "homepage": "https://github.com/abtasty/flagship-react-sdk#readme",
     "dependencies": {
-        "@flagship.io/js-sdk": "^0.1.4"
+        "@flagship.io/js-sdk": "^0.1.5"
     },
     "peerDependencies": {
         "react": "^16.8.0"

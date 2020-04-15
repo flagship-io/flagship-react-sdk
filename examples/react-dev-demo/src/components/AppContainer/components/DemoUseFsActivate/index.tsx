@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Col, Row } from 'react-bootstrap';
 
 export const DemoUseFsActivate = () => {
-    debugger;
     useFsActivate(['btnColor', 'otherKey1', 'otherKey2']);
     const demoHookName = 'useFsActivate';
     return (
