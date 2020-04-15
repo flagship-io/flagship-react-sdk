@@ -29,7 +29,7 @@ interface FlagshipProviderProps {
         id: string;
         context?: FlagshipVisitorContext;
     };
-    modifications: DecisionApiResponseData;
+    modifications?: DecisionApiResponseData;
     onInitStart(): void;
     onInitDone(sdkData: initStateType): void;
 }
@@ -57,6 +57,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         );
         onInitStart();
         visitorInstance.on('ready', () => {
+            // TODO: if modifications set, make sure not http request are trigger
             if (modifications) {
                 visitorInstance.fetchedModifications = { ...modifications }; // override everything
             }
@@ -70,7 +71,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                     null
             });
         });
-    }, [id, ...Object.values(context as FlagshipVisitorContext)]);
+    }, [envId, id, ...Object.values(context as FlagshipVisitorContext)]);
 
     useEffect(() => {
         if (!state.loading) {
@@ -91,6 +92,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 FlagshipProvider.defaultProps = {
     config: {},
     loadingComponent: null,
+    modifications: undefined,
     onInitStart: (): void => {
         // do nothing
     },

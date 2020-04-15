@@ -5,13 +5,15 @@ import CodeBlock from '@tenon-io/tenon-codeblock';
 import { DemoInitialization } from './components/DemoInitialization';
 import { DemoUseFsModifications } from './components/DemoUseFsModifications';
 import { DemoUseFsModificationsCache } from './components/DemoUseFsModificationsCache';
+import { DemoUseFsActivate } from './components/DemoUseFsActivate';
 
 export const AppContainer = ({ onSubmitNewSettings }) => {
-  return (
-    <Container className="mt3">
-      <DemoInitialization onSubmitNewSettings={onSubmitNewSettings} />
-      <DemoUseFsModifications />
-      <DemoUseFsModificationsCache />
-    </Container>
-  );
+    return (
+        <Container className="mt3">
+            <DemoInitialization onSubmitNewSettings={onSubmitNewSettings} />
+            <DemoUseFsModifications />
+            <DemoUseFsModificationsCache />
+            <DemoUseFsActivate />
+        </Container>
+    );
 };
