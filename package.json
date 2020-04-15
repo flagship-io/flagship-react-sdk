@@ -12,6 +12,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 0",
         "release": "np",
+        "version": "npm run build",
         "publish": "npm run update:react-dev-demo && git add . && git commit -m\"Post publish update\" && git push && npm run publish:reactDemoDev",
         "publish:reactDemoDev": "cd ./examples/react-dev-demo && npm run deploy:github",
         "update:react-dev-demo": "cd ./examples/react-dev-demo && npm install @flagship.io/react-sdk@latest @flagship.io/js-sdk@latest --save && cd ../../",
