@@ -1,10 +1,11 @@
 import CodeBlock from '@tenon-io/tenon-codeblock';
-import React, { useEffect, useState, useContext } from 'react';
-import { Alert, Col, Row, Form, Button } from 'react-bootstrap';
-import config from '../../../../config';
-import { SettingContext, AppSettings, SdkSettings } from '../../../../App';
+import React, { useContext } from 'react';
+import { Alert, Button, Col, Form, Row } from 'react-bootstrap';
 
-export const DemoInitialization = ({ onSubmitNewSettings }) => {
+import { AppSettings, SdkSettings, SettingContext } from '../../../../App';
+import config from '../../../../config';
+
+export const DemoInitialization = () => {
     const name = 'initialization';
     const contextTemp = { ...config.visitorData.context };
     const { currentSettings: currSettings, setSettings } = useContext(
@@ -57,7 +58,7 @@ export const DemoInitialization = ({ onSubmitNewSettings }) => {
     return (
         <Row>
             <Col>
-                <a className="fsAnchor" id={name} />
+                <div className="fsAnchor" id={name} />
                 <Alert variant="dark" className="fs-alert demoHook">
                     <Alert.Heading>{name}</Alert.Heading>
                     <p>

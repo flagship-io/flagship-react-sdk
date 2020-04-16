@@ -1,13 +1,7 @@
 import './App.css';
 
 import { FlagshipProvider } from '@flagship.io/react-sdk';
-import React, {
-    useEffect,
-    useState,
-    createContext,
-    Dispatch,
-    SetStateAction
-} from 'react';
+import React, { createContext, Dispatch, SetStateAction } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 
 import { AppContainer } from './components/AppContainer';
@@ -74,11 +68,7 @@ const App: React.FC = () => {
                     }
                 >
                     <AppHeader />
-                    <AppContainer
-                        onSubmitNewSettings={(newSettings) =>
-                            setSettings({ ...currentSettings, ...newSettings })
-                        }
-                    />
+                    <AppContainer />
                 </FlagshipProvider>
             </SettingContext.Provider>
         </>

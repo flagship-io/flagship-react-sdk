@@ -1,6 +1,6 @@
 import { useFsActivate } from '@flagship.io/react-sdk';
 import CodeBlock from '@tenon-io/tenon-codeblock';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Alert, Col, Row } from 'react-bootstrap';
 
 export const DemoUseFsActivate = () => {
@@ -9,7 +9,7 @@ export const DemoUseFsActivate = () => {
     return (
         <Row>
             <Col>
-                <a className="fsAnchor" id={demoHookName} />
+                <div className="fsAnchor" id={demoHookName} />
                 <Alert variant="dark" className="fs-alert demoHook">
                     <Alert.Heading>{demoHookName}</Alert.Heading>
                     <p>
