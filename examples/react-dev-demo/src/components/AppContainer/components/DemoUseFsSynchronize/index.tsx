@@ -1,10 +1,7 @@
 import { useFsSynchronize } from '@flagship.io/react-sdk';
-import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import jsx from 'react-syntax-highlighter/dist/esm/languages/prism/jsx';
-import { darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';
-
 import React from 'react';
-import { Alert, Col, Row, Form } from 'react-bootstrap';
+import { Alert, Col, Form, Row } from 'react-bootstrap';
+
 import CodeBlock from '../../../common/CodeBlock';
 
 export const DemoUseFsSynchronize: React.FC = () => {
@@ -32,7 +29,7 @@ export const DemoUseFsSynchronize: React.FC = () => {
                             <Form.Check
                                 type="checkbox"
                                 checked={listenedValue}
-                                onClick={(e) =>
+                                onChange={(e) =>
                                     setValue(e.currentTarget.checked)
                                 }
                                 label={`listenedValue=${listenedValue}`}
@@ -43,7 +40,7 @@ export const DemoUseFsSynchronize: React.FC = () => {
                             <Form.Check
                                 type="checkbox"
                                 checked={activateAllModifications}
-                                onClick={(e) =>
+                                onChange={(e) =>
                                     setActivate(e.currentTarget.checked)
                                 }
                                 label={`activateAllModifications=${activateAllModifications}`}

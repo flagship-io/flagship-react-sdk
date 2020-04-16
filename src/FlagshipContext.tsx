@@ -96,7 +96,12 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                     null
             });
         });
-    }, [envId, id, ...Object.values(context as FlagshipVisitorContext)]);
+    }, [
+        envId,
+        id,
+        ...Object.values(config),
+        ...Object.values(context as FlagshipVisitorContext)
+    ]);
 
     useEffect(() => {
         if (!isLoading) {
