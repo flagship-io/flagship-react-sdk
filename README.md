@@ -7,11 +7,11 @@ Flagship features are accessible using Flagship hooks, have a look to the docume
 
 ### Prerequisites
 
-- **Node.js**: version 6.0.0 or later...
+-   **Node.js**: version 6.0.0 or later...
 
-- **Npm**: version 5.2.0 or later...
+-   **Npm**: version 5.2.0 or later...
 
-- **React**: version 16.8.0 or later... (This SDK supports only hooks for now)
+-   **React**: version 16.8.0 or later... (This SDK supports only hooks for now)
 
 ## Good to know
 
@@ -20,7 +20,7 @@ Flagship features are accessible using Flagship hooks, have a look to the docume
 </ul>
 
 <ul style="line-height:1.4;">
-- Small [demo app](examples/react-dev-demo/README.md) but more to come soon! 👨‍💻
+- Small [dev demo app](https://abtasty.github.io/flagship-react-sdk/) but more to come soon! 👨‍💻
 </ul>
 
 ## Getting Started
@@ -181,9 +181,9 @@ This is all available props which you can use inside the `FlagshipProvider` reac
 
 Here the list of current available hooks:
 
-- [useFsModifications](#useFsModifications)
-- [useFsModificationsCache](#useFsModificationsCache)
-- [useFsActivate](#useFsActivate)
+-   [useFsModifications](#useFsModifications)
+-   [useFsModificationsCache](#useFsModificationsCache)
+-   [useFsActivate](#useFsActivate)
 
 #### `useFsModifications`
 
@@ -191,7 +191,7 @@ Here the list of current available hooks:
 
 **Demo:**
 
-- coming soon
+-   coming soon
 
 #### `useFsModificationsCache`
 
@@ -199,7 +199,7 @@ Here the list of current available hooks:
 
 **Demo:**
 
-- coming soon
+-   coming soon
 
 #### `useFsActivate`
 
@@ -226,7 +226,7 @@ Here the list of current available hooks:
 
 **Demo:**
 
-- coming soon
+-   coming soon
 
 ## Contributing
 

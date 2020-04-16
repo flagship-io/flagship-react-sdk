@@ -1,8 +1,8 @@
 {
-    "name": "react-app",
+    "name": "react-dev-demo",
     "version": "0.1.0",
     "private": false,
-    "homepage": "https://abtasty.github.io/flagship-react-sdk-dev-demo/",
+    "homepage": "https://abtasty.github.io/flagship-react-sdk/",
     "dependencies": {
         "@flagship.io/js-sdk": "^0.1.5",
         "@flagship.io/react-sdk": "0.0.13",
