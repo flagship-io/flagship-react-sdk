@@ -46,19 +46,6 @@ export const useFsSynchronize = (
         reportNoVisitor();
     } else {
         useEffect(() => {
-            if (setState) {
-                setState({
-                    ...state,
-                    status: {
-                        ...state.status,
-                        isLoading: true
-                    }
-                });
-            } else {
-                throw new Error(
-                    'Error: useFsSynchronize > useEffect, setState is undefined'
-                );
-            }
             fsVisitor
                 .synchronizeModifications(activateAllModifications)
                 .then((/* statusCode */) => {

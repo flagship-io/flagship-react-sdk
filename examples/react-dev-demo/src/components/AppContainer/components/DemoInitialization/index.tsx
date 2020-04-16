@@ -165,13 +165,12 @@ const App: React.FC = () => (
                                             runInBackground: (e.target as HTMLTextAreaElement)
                                                 .value as
                                                 | 'never'
-                                                | 'always'
                                                 | 'exceptInit'
                                         }
                                     });
                                 }}
                             >
-                                {['always', 'nerver', 'exceptInit'].map(
+                                {[ 'nerver', 'exceptInit'].map(
                                     (id) => (
                                         <option key={id}>{id}</option>
                                     )

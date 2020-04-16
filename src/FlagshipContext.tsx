@@ -17,7 +17,7 @@ declare type FsStateType = {
     };
 };
 export interface FlagshipReactSdkConfig extends FlagshipSdkConfig {
-    runInBackground?: 'always' | 'exceptInit' | 'never';
+    runInBackground?: 'exceptInit' | 'never';
 }
 
 const initState: FsStateType = {
@@ -138,8 +138,6 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                     ) : (
                         <>{children}</>
                     );
-                case 'always':
-                    return <>{loadingComponent}</>;
                 default:
                     // TODO: log that not supposed to be here
                     return <>{children}</>;
