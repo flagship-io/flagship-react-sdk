@@ -11,11 +11,19 @@ import flagship, {
 declare type initStateType = {
     fsVisitor: IFlagshipVisitor | null;
     fsModifications: GetModificationsOutput | null;
+    status: {
+        isLoading: boolean;
+        lastRefresh: string | null;
+    };
 };
 
 const initState: initStateType = {
     fsVisitor: null,
-    fsModifications: null
+    fsModifications: null,
+    status: {
+        isLoading: true,
+        lastRefresh: null
+    }
 };
 
 const FlagshipContext = React.createContext({ ...initState });
@@ -31,7 +39,10 @@ interface FlagshipProviderProps {
     };
     modifications?: DecisionApiResponseData;
     onInitStart(): void;
-    onInitDone(sdkData: initStateType): void;
+    onInitDone(sdkData: {
+        fsVisitor: IFlagshipVisitor | null;
+        fsModifications: GetModificationsOutput | null;
+    }): void;
 }
 
 export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
@@ -45,8 +56,10 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     onInitDone
 }: FlagshipProviderProps) => {
     const { id, context } = visitorData;
-    const [state, setState] = useState({ ...initState, loading: true });
-    const { loading, ...otherState } = state;
+    const [state, setState] = useState({ ...initState });
+    const {
+        status: { isLoading }
+    } = state;
 
     // Call FlagShip any time context get changed.
     useEffect(() => {
@@ -63,7 +76,10 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             }
             setState({
                 ...state,
-                loading: false,
+                status: {
+                    isLoading: false,
+                    lastRefresh: new Date().toISOString()
+                },
                 fsVisitor: visitorInstance,
                 fsModifications:
                     (visitorInstance.fetchedModifications &&
@@ -74,7 +90,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     }, [envId, id, ...Object.values(context as FlagshipVisitorContext)]);
 
     useEffect(() => {
-        if (!state.loading) {
+        if (!isLoading) {
             onInitDone({
                 fsVisitor: state.fsVisitor,
                 fsModifications: state.fsModifications
@@ -83,8 +99,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     }, [state]);
 
     return (
-        <FlagshipContext.Provider value={{ ...otherState }}>
-            {loading ? loadingComponent : children}
+        <FlagshipContext.Provider value={{ ...state }}>
+            {isLoading ? loadingComponent : children}
         </FlagshipContext.Provider>
     );
 };

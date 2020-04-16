@@ -28,8 +28,7 @@ export const useFsActivate = (
     );
 };
 
-export const useFsModifications = (
-    modificationsRequested: FsModifsRequestedList,
+export const useFsSynchronize = (
     activateAllModifications = false
 ): UseFsModificationsOutput => {
     const { fsVisitor } = useContext(FlagshipContext);
@@ -39,10 +38,13 @@ export const useFsModifications = (
         );
     }
     useEffect(() => {
-        fsVisitor.getModifications(
-            modificationsRequested,
-            activateAllModifications
-        );
+        fsVisitor
+            .synchronizeModifications(activateAllModifications)
+            .then((statusCode) =>
+                console.log(
+                    `synchronizeModifications responded with status code:${statusCode}`
+                )
+            );
     }, []);
 };
 
@@ -52,7 +54,7 @@ two possible solutions to avoid massive 'activate api' calls:
 1) wrap the 'useFsModificationsCache' in a useEffect and plug correctly the useEffect the way you need
 2) in the JS SDK, make a cache to understand if the activate call already be done before.
 */
-export const useFsModificationsCache = (
+export const useFsModifications = (
     modificationsRequested: FsModifsRequestedList,
     activateAllModifications = false
 ): UseFsModificationsCacheOutput => {
