@@ -1,46 +1,50 @@
 import { useContext, useEffect } from 'react';
-import { FsModifsRequestedList } from '@flagship.io/js-sdk';
+import {
+    FsModifsRequestedList,
+    GetModificationsOutput
+} from '@flagship.io/js-sdk';
 import FlagshipContext from './FlagshipContext';
 
 declare type ModificationKeys = Array<string>;
-declare type UseFlagshipOutput = any; // TODO
-declare type UseFsActivateOutput = any; // TODO
-declare type UseFsModificationsOutput = any; // TODO
-declare type UseFsModificationsCacheOutput = any; // TODO
+declare type UseFsActivateOutput = void;
+declare type UseFsSynchronize = void;
+declare type UseFsModificationsOutput = GetModificationsOutput | void;
 
-export const useFlagship = (): UseFlagshipOutput => {
-    const { ...everything } = useContext(FlagshipContext);
-    // TODO: debug
-    return everything;
+const reportNoVisitor = (): void => {
+    throw new Error(
+        'Error: flagship-react-sdk not correctly initialized... Make sure fsVisitor is ready.'
+    );
 };
 
 export const useFsActivate = (
-    modificationKeys: ModificationKeys
+    modificationKeys: ModificationKeys,
+    applyEffectScope = []
 ): UseFsActivateOutput => {
     const {
         state: { fsVisitor }
     } = useContext(FlagshipContext);
     if (!fsVisitor) {
-        throw new Error(
-            'Error: flagship-react-sdk not correctly initialized... Make sure fsVisitor is ready.'
-        );
+        return reportNoVisitor();
     }
-    return fsVisitor.activateModifications(
-        modificationKeys.map((key) => ({ key }))
-    );
+
+    useEffect(() => {
+        fsVisitor.activateModifications(
+            modificationKeys.map((key) => ({ key }))
+        );
+    }, applyEffectScope);
+
+    return undefined;
 };
 
 export const useFsSynchronize = (
     applyEffectScope = [],
     activateAllModifications = false
-): UseFsModificationsOutput => {
+): UseFsSynchronize => {
     const { state, setState } = useContext(FlagshipContext);
     const { fsVisitor } = state;
 
     if (!fsVisitor) {
-        throw new Error(
-            'Error: flagship-react-sdk not correctly initialized... Make sure fsVisitor is ready.'
-        );
+        return reportNoVisitor();
     }
 
     useEffect(() => {
@@ -63,6 +67,7 @@ export const useFsSynchronize = (
                 }
             });
     }, applyEffectScope);
+    return undefined;
 };
 
 // NOTES:
@@ -74,14 +79,12 @@ two possible solutions to avoid massive 'activate api' calls:
 export const useFsModifications = (
     modificationsRequested: FsModifsRequestedList,
     activateAllModifications = false
-): UseFsModificationsCacheOutput => {
+): UseFsModificationsOutput => {
     const {
         state: { fsVisitor }
     } = useContext(FlagshipContext);
     if (!fsVisitor) {
-        throw new Error(
-            'Error: flagship-react-sdk not correctly initialized... Make sure fsVisitor is ready.'
-        );
+        return reportNoVisitor();
     }
     return fsVisitor.getModificationsCache(
         modificationsRequested,

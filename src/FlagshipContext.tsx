@@ -46,6 +46,9 @@ interface FlagshipProviderProps {
         fsVisitor: IFlagshipVisitor | null;
         fsModifications: GetModificationsOutput | null;
     }): void;
+    onSavingModificationsInCache(
+        modifications: flagship.DecisionApiResponseData | null
+    ): void;
 }
 
 export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
@@ -55,6 +58,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     visitorData,
     loadingComponent,
     modifications,
+    onSavingModificationsInCache,
     onInitStart,
     onInitDone
 }: FlagshipProviderProps) => {
@@ -77,6 +81,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             if (modifications) {
                 visitorInstance.fetchedModifications = { ...modifications }; // override everything
             }
+            // TODO: plug onSaveCache call back with JS SDK
+            onSavingModificationsInCache(visitorInstance.fetchedModifications);
             setState({
                 ...state,
                 status: {
