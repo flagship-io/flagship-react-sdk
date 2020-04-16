@@ -2,7 +2,8 @@ export default {
     envId: 'bn1ab7m56qolupi5sa0g',
     sdkConfig: {
         fetchNow: true,
-        enableConsoleLogs: true
+        enableConsoleLogs: true,
+        runInBackground: 'exceptInit' as 'exceptInit'
     },
     visitorData: {
         id: 'test-vid',

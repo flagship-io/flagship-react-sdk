@@ -16,6 +16,9 @@ declare type FsStateType = {
         lastRefresh: string | null;
     };
 };
+export interface FlagshipReactSdkConfig extends FlagshipSdkConfig {
+    runInBackground?: 'always' | 'exceptInit' | 'never';
+}
 
 const initState: FsStateType = {
     fsVisitor: null,
@@ -35,7 +38,7 @@ interface FlagshipProviderProps {
     children: React.ReactNode;
     loadingComponent: React.ReactNode;
     envId: string;
-    config: FlagshipSdkConfig;
+    config: FlagshipReactSdkConfig;
     visitorData: {
         id: string;
         context?: FlagshipVisitorContext;
@@ -65,8 +68,10 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     const { id, context } = visitorData;
     const [state, setState] = useState({ ...initState });
     const {
-        status: { isLoading }
+        status: { isLoading },
+        fsVisitor
     } = state;
+    const { runInBackground } = config;
 
     // Call FlagShip any time context get changed.
     useEffect(() => {
@@ -75,6 +80,15 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             id,
             context as FlagshipVisitorContext
         );
+        setState({
+            ...state,
+            status: {
+                ...state.status,
+                isLoading: true
+            },
+            fsVisitor: visitorInstance
+            // fsModifications: ???
+        });
         onInitStart();
         visitorInstance.on('ready', () => {
             // TODO: if modifications set, make sure not http request are trigger
@@ -112,15 +126,39 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         }
     }, [state]);
 
+    const handlingDisplay = (): React.ReactNode => {
+        const isFirstInit = !fsVisitor;
+        if (isLoading) {
+            switch (runInBackground) {
+                case 'never':
+                    return <>{children}</>;
+                case 'exceptInit':
+                    return isFirstInit ? (
+                        <>{loadingComponent}</>
+                    ) : (
+                        <>{children}</>
+                    );
+                case 'always':
+                    return <>{loadingComponent}</>;
+                default:
+                    // TODO: log that not supposed to be here
+                    return <>{children}</>;
+            }
+        }
+
+        return <>{children}</>;
+    };
     return (
         <FlagshipContext.Provider value={{ state, setState }}>
-            {isLoading ? loadingComponent : children}
+            {handlingDisplay()}
         </FlagshipContext.Provider>
     );
 };
 
 FlagshipProvider.defaultProps = {
-    config: {},
+    config: {
+        runInBackground: 'exceptInit'
+    },
     loadingComponent: null,
     modifications: undefined,
     onInitStart: (): void => {

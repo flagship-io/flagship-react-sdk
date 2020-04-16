@@ -109,7 +109,7 @@ const App: React.FC = () => (
                         1 - Playing with <i>config</i>
                     </h3>
                     <Form>
-                        <Form.Group controlId="initForm.ControlSelect1.1">
+                        <Form.Group controlId="initForm.Control1.1">
                             <Form.Label>envId</Form.Label>
                             <Form.Control as="select" onChange={handleEnvId}>
                                 {config.sandbox.envId.map((id) => (
@@ -117,7 +117,7 @@ const App: React.FC = () => (
                                 ))}
                             </Form.Control>
                         </Form.Group>
-                        <Form.Group controlId="initForm.ControlSelect1.2">
+                        <Form.Group controlId="initForm.Control1.2">
                             <Form.Check
                                 type="checkbox"
                                 checked={newSettings.sdkConfig.fetchNow}
@@ -133,7 +133,7 @@ const App: React.FC = () => (
                                 label={`fetchNow=${newSettings.sdkConfig.fetchNow}`}
                             />
                         </Form.Group>
-                        <Form.Group controlId="initForm.ControlSelect1.3">
+                        <Form.Group controlId="initForm.Control1.3">
                             <Form.Check
                                 type="checkbox"
                                 checked={
@@ -151,6 +151,32 @@ const App: React.FC = () => (
                                 }
                                 label={`enableConsoleLogs=${newSettings.sdkConfig.enableConsoleLogs}`}
                             />
+                        </Form.Group>
+                        <Form.Group controlId="initForm.Control1.4">
+                            <Form.Label>runInBackground</Form.Label>
+                            <Form.Control
+                                as="select"
+                                value={newSettings.sdkConfig.runInBackground}
+                                onChange={(e) => {
+                                    setNewSettings({
+                                        ...newSettings,
+                                        sdkConfig: {
+                                            ...newSettings.sdkConfig,
+                                            runInBackground: (e.target as HTMLTextAreaElement)
+                                                .value as
+                                                | 'never'
+                                                | 'always'
+                                                | 'exceptInit'
+                                        }
+                                    });
+                                }}
+                            >
+                                {['always', 'nerver', 'exceptInit'].map(
+                                    (id) => (
+                                        <option key={id}>{id}</option>
+                                    )
+                                )}
+                            </Form.Control>
                         </Form.Group>
                     </Form>
                     <div

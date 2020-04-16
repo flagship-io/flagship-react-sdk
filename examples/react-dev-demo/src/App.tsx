@@ -1,6 +1,9 @@
 import './App.css';
 
-import { FlagshipProvider } from '@flagship.io/react-sdk';
+import {
+    FlagshipProvider,
+    FlagshipReactSdkConfig
+} from '@flagship.io/react-sdk';
 import React, { createContext, Dispatch, SetStateAction } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 
@@ -12,10 +15,7 @@ interface VisitorContext {
 }
 export interface SdkSettings {
     envId: string;
-    sdkConfig: {
-        fetchNow: boolean;
-        enableConsoleLogs: boolean;
-    };
+    sdkConfig: FlagshipReactSdkConfig;
     visitorData: {
         id: string;
         context: VisitorContext;
