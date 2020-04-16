@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, SetStateAction, Dispatch } from 'react';
 // / <reference path="@flagship.io/js-sdk/flagship.d.ts" />
 import flagship, {
     FlagshipSdkConfig,
@@ -8,7 +8,7 @@ import flagship, {
     GetModificationsOutput
 } from '@flagship.io/js-sdk';
 
-declare type initStateType = {
+declare type FsStateType = {
     fsVisitor: IFlagshipVisitor | null;
     fsModifications: GetModificationsOutput | null;
     status: {
@@ -17,7 +17,7 @@ declare type initStateType = {
     };
 };
 
-const initState: initStateType = {
+const initState: FsStateType = {
     fsVisitor: null,
     fsModifications: null,
     status: {
@@ -26,7 +26,10 @@ const initState: initStateType = {
     }
 };
 
-const FlagshipContext = React.createContext({ ...initState });
+const FlagshipContext = React.createContext<{
+    state: FsStateType;
+    setState: Dispatch<SetStateAction<FsStateType>> | null;
+}>({ state: { ...initState }, setState: null });
 
 interface FlagshipProviderProps {
     children: React.ReactNode;
@@ -99,7 +102,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     }, [state]);
 
     return (
-        <FlagshipContext.Provider value={{ ...state }}>
+        <FlagshipContext.Provider value={{ state, setState }}>
             {isLoading ? loadingComponent : children}
         </FlagshipContext.Provider>
     );

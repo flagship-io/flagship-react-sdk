@@ -17,7 +17,9 @@ export const useFlagship = (): UseFlagshipOutput => {
 export const useFsActivate = (
     modificationKeys: ModificationKeys
 ): UseFsActivateOutput => {
-    const { fsVisitor } = useContext(FlagshipContext);
+    const {
+        state: { fsVisitor }
+    } = useContext(FlagshipContext);
     if (!fsVisitor) {
         throw new Error(
             'Error: flagship-react-sdk not correctly initialized... Make sure fsVisitor is ready.'
@@ -29,23 +31,38 @@ export const useFsActivate = (
 };
 
 export const useFsSynchronize = (
+    applyEffectScope = [],
     activateAllModifications = false
 ): UseFsModificationsOutput => {
-    const { fsVisitor } = useContext(FlagshipContext);
+    const { state, setState } = useContext(FlagshipContext);
+    const { fsVisitor } = state;
+
     if (!fsVisitor) {
         throw new Error(
             'Error: flagship-react-sdk not correctly initialized... Make sure fsVisitor is ready.'
         );
     }
+
     useEffect(() => {
         fsVisitor
             .synchronizeModifications(activateAllModifications)
-            .then((statusCode) =>
-                console.log(
-                    `synchronizeModifications responded with status code:${statusCode}`
-                )
-            );
-    }, []);
+            .then((/* statusCode */) => {
+                if (setState) {
+                    setState({
+                        ...state,
+                        fsVisitor,
+                        status: {
+                            ...state.status,
+                            lastRefresh: new Date().toISOString()
+                        }
+                    });
+                } else {
+                    throw new Error(
+                        'Error: useFsSynchronize > useEffect, setState is undefined'
+                    );
+                }
+            });
+    }, applyEffectScope);
 };
 
 // NOTES:
@@ -58,7 +75,9 @@ export const useFsModifications = (
     modificationsRequested: FsModifsRequestedList,
     activateAllModifications = false
 ): UseFsModificationsCacheOutput => {
-    const { fsVisitor } = useContext(FlagshipContext);
+    const {
+        state: { fsVisitor }
+    } = useContext(FlagshipContext);
     if (!fsVisitor) {
         throw new Error(
             'Error: flagship-react-sdk not correctly initialized... Make sure fsVisitor is ready.'
