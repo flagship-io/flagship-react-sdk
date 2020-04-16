@@ -8,7 +8,7 @@ import FlagshipContext from './FlagshipContext';
 declare type ModificationKeys = Array<string>;
 declare type UseFsActivateOutput = void;
 declare type UseFsSynchronize = void;
-declare type UseFsModificationsOutput = GetModificationsOutput | void;
+declare type UseFsModificationsOutput = GetModificationsOutput;
 
 const reportNoVisitor = (): void => {
     throw new Error(
@@ -24,50 +24,48 @@ export const useFsActivate = (
         state: { fsVisitor }
     } = useContext(FlagshipContext);
     if (!fsVisitor) {
-        return reportNoVisitor();
+        reportNoVisitor();
+    } else {
+        useEffect(() => {
+            fsVisitor.activateModifications(
+                modificationKeys.map((key) => ({ key }))
+            );
+        }, applyEffectScope);
     }
-
-    useEffect(() => {
-        fsVisitor.activateModifications(
-            modificationKeys.map((key) => ({ key }))
-        );
-    }, applyEffectScope);
-
-    return undefined;
 };
 
 export const useFsSynchronize = (
-    applyEffectScope = [],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    applyEffectScope: any[] = [],
     activateAllModifications = false
 ): UseFsSynchronize => {
     const { state, setState } = useContext(FlagshipContext);
     const { fsVisitor } = state;
 
     if (!fsVisitor) {
-        return reportNoVisitor();
+        reportNoVisitor();
+    } else {
+        useEffect(() => {
+            fsVisitor
+                .synchronizeModifications(activateAllModifications)
+                .then((/* statusCode */) => {
+                    if (setState) {
+                        setState({
+                            ...state,
+                            fsVisitor,
+                            status: {
+                                ...state.status,
+                                lastRefresh: new Date().toISOString()
+                            }
+                        });
+                    } else {
+                        throw new Error(
+                            'Error: useFsSynchronize > useEffect, setState is undefined'
+                        );
+                    }
+                });
+        }, applyEffectScope);
     }
-
-    useEffect(() => {
-        fsVisitor
-            .synchronizeModifications(activateAllModifications)
-            .then((/* statusCode */) => {
-                if (setState) {
-                    setState({
-                        ...state,
-                        fsVisitor,
-                        status: {
-                            ...state.status,
-                            lastRefresh: new Date().toISOString()
-                        }
-                    });
-                } else {
-                    throw new Error(
-                        'Error: useFsSynchronize > useEffect, setState is undefined'
-                    );
-                }
-            });
-    }, applyEffectScope);
-    return undefined;
 };
 
 // NOTES:
@@ -84,7 +82,8 @@ export const useFsModifications = (
         state: { fsVisitor }
     } = useContext(FlagshipContext);
     if (!fsVisitor) {
-        return reportNoVisitor();
+        reportNoVisitor();
+        return {};
     }
     return fsVisitor.getModificationsCache(
         modificationsRequested,

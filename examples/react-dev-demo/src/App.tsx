@@ -45,11 +45,18 @@ const App: React.FC = () => {
                     config={currentSettings.sdkConfig}
                     visitorData={currentSettings.visitorData}
                     onInitStart={() => {
-                        console.log('init start');
+                        console.log('React SDK init start');
                     }}
-                    onInitDone={() => {
-                        console.log('init done');
+                    onInitDone={(fsVisitor) => {
+                        console.log(JSON.stringify(fsVisitor));
+                        console.log('React SDK init done');
                     }}
+                    onSavingModificationsInCache={
+                        (/* modifications */) =>
+                            console.log(
+                                'React SDK saved modifications in cache'
+                            )
+                    }
                     loadingComponent={
                         <Container className="mt3">
                             <Row>

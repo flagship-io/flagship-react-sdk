@@ -6,7 +6,6 @@
     "dependencies": {
         "@flagship.io/js-sdk": "^0.1.5",
         "@flagship.io/react-sdk": "0.0.13",
-        "@tenon-io/tenon-codeblock": "^1.0.0",
         "@types/node": "12.12.14",
         "@types/react": "16.9.13",
         "@types/react-dom": "16.9.4",
@@ -16,6 +15,7 @@
         "react-bootstrap": "^1.0.0-beta.16",
         "react-dom": "^16.12.0",
         "react-scripts": "3.2.0",
+        "react-syntax-highlighter": "^12.2.1",
         "typescript": "3.7.2"
     },
     "scripts": {

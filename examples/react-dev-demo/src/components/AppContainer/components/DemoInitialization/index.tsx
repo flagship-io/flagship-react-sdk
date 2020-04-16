@@ -1,4 +1,4 @@
-import CodeBlock from '@tenon-io/tenon-codeblock';
+import CodeBlock from '../../../common/CodeBlock';
 import React, { useContext } from 'react';
 import { Alert, Button, Col, Form, Row } from 'react-bootstrap';
 
@@ -68,9 +68,7 @@ export const DemoInitialization = () => {
                     </p>
                     <CodeBlock
                         className="mv3"
-                        codeString={`
-
-import React from 'react';
+                        codeString={`import React from 'react';
 import { FlagshipProvider } from "@flagship.io/react-sdk";
 
 const App: React.FC = () => (
@@ -101,8 +99,7 @@ const App: React.FC = () => (
       <AppContainer />
     </FlagshipProvider>
   </>
-);
-          `}
+);          `}
                     />
                     <p>
                         To understand impact of each props, you can change some

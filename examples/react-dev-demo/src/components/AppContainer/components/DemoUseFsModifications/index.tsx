@@ -1,10 +1,9 @@
 import { useFsModifications } from '@flagship.io/react-sdk';
-import CodeBlock from '@tenon-io/tenon-codeblock';
 import React from 'react';
 import { Alert, Col, Row } from 'react-bootstrap';
+import CodeBlock from '../../../common/CodeBlock';
 
 export const DemoUseFsModifications = () => {
-    const demoHookName = 'useFsModifications';
     const fsModifications = useFsModifications([
         {
             key: 'btnColor',
@@ -12,6 +11,7 @@ export const DemoUseFsModifications = () => {
             activate: false
         }
     ]);
+    const demoHookName = 'useFsModifications';
     return (
         <Row>
             <Col>
@@ -23,24 +23,33 @@ export const DemoUseFsModifications = () => {
                     </p>
                     <CodeBlock
                         className="mv3"
-                        codeString={`const todo = 'todo';`}
+                        codeString={`import { useFsModifications } from '@flagship.io/react-sdk';
+const fsModifications = useFsModifications([
+  {
+      key: 'btnColor',
+      defaultValue: 'green',
+      activate: false
+  }
+]);              `}
                     />
-                    {/* <p>Output: </p>
+                    <p>Output: </p>
                     <div>
-                        <button style={{ color: fsModifications.btnColor }}>
+                        <button
+                            style={{
+                                backgroundColor: fsModifications.btnColor
+                            }}
+                        >
                             I'm a button customized with Flagship
                         </button>
                     </div>
                     <CodeBlock
                         className="mv3"
-                        codeString={`
-              <div>
-              <button style={{ color: ${fsModifications.btnColor} }}>
-                  I'm a button customized with Flagship
-              </button>
-          </div>
-              `}
-                    /> */}
+                        codeString={`<div>
+    <button style={{ backgroundColor: ${fsModifications.btnColor} }}>
+        I'm a button customized with Flagship
+    </button>
+</div>              `}
+                    />
                 </Alert>
             </Col>
         </Row>

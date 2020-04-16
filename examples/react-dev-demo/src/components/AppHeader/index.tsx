@@ -22,14 +22,11 @@ const AppHeader: React.FC = () => (
                     <NavDropdown.Item eventKey="4.1" href="#useFsModifications">
                         useFsModifications
                     </NavDropdown.Item>
-                    <NavDropdown.Item
-                        eventKey="4.2"
-                        href="#useFsModificationsCache"
-                    >
-                        useFsModificationsCache
-                    </NavDropdown.Item>
-                    <NavDropdown.Item eventKey="4.3" href="#useFsActivate">
+                    <NavDropdown.Item eventKey="4.2" href="#useFsActivate">
                         useFsActivate
+                    </NavDropdown.Item>
+                    <NavDropdown.Item eventKey="4.3" href="#useFsSynchronize">
+                        useFsSynchronize
                     </NavDropdown.Item>
                 </NavDropdown>
             </Nav>
