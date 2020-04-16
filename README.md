@@ -75,10 +75,10 @@ const App = () => (
 
 ```
 import React from 'react';
-import { useFsModificationsCache } from "@flagship.io/react-sdk";
+import { useFsModifications } from "@flagship.io/react-sdk";
 
 export const MyReactComponent = () => {
-  const fsModifications = useFsModificationsCache([
+  const fsModifications = useFsModifications([
     {
       key: "backgroundColor",
       defaultValue: "green",
@@ -152,15 +152,21 @@ This is all available props which you can use inside the `FlagshipProvider` reac
         </tr>
         <tr>
           <td>onInitStart</td>
-          <td>function</td>
+          <td>function():void</td>
           <td>null</td>
           <td>Callback function called when the SDK starts initialization.</td>
         </tr>
         <tr>
           <td>onInitDone</td>
-          <td>function</td>
+          <td>function():void</td>
           <td>null</td>
           <td>Callback function called when the SDK ends initialization.</td>
+        </tr>
+        <tr>
+          <td>onSavingModificationsInCache</td>
+          <td>function(DecisionApiResponseData):DecisionApiResponseData|void</td>
+          <td>null</td>
+          <td>Callback function called when the SDK is saving modifications in cache. <br>It has one parameter which is the modifications received either from API or <i>modifications</i> props.<br>You must return either the same object shape or nothing. The data returned will be stored in the SDK cache.</td>
         </tr>
         <tr>
           <td>modifications</td>
@@ -182,20 +188,62 @@ This is all available props which you can use inside the `FlagshipProvider` reac
 Here the list of current available hooks:
 
 -   [useFsModifications](#useFsModifications)
--   [useFsModificationsCache](#useFsModificationsCache)
 -   [useFsActivate](#useFsActivate)
+-   [useFsSynchronize](#useFsSynchronize)
 
 #### `useFsModifications`
 
-> get the data from the Flagship API and returns Flagship modifications.
+Most used hook from the Flagship React SDK. This will give you the modification saved in the SDK cache.
 
-**Demo:**
+**NOTE:** If the SDK cache is empty, you can expect that it will return nothing.
 
--   coming soon
+> returns Flagship modifications
 
-#### `useFsModificationsCache`
-
-> returns Flagship modifications in cache. If the cache is empty, you can expect that it will return nothing.
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th style="width: 100px;">Argument</th>
+        <th style="width: 50px;">Type</th>
+        <th style="width: 50px;">Default</th>
+        <th>description</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>modificationsRequested</td>
+          <td>Array(object)</td>
+          <td>*required*</td>
+          <td>List of all modifications you're looking for. Each element of the array follow this object structure:
+            <table> 
+              <tbody><tr>
+                  <th style="width:25%">Argument</th>
+                  <th>Description</th>
+                </tr>  
+                <tr>
+                  <td><em>key</em></td>
+                  <td>Required. The name of the modification.</td>
+                </tr>
+                <tr>
+                  <td><em>defaultValue</em></td>
+                  <td>Required. The default value if no value for this modification is found.</td>
+                </tr>
+                  <tr>
+                  <td><em>activate</em></td>
+                  <td>Optional. </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td>activateAllModifications</td>
+          <td>Boolean</td>
+          <td>false</td>
+          <td>If set to true, all modifications will be activated. If set to false, none will be activated.
+          <br>Be aware that if this argument is set, the attribute <i>activate</i> set in each element of array <b>modificationsRequested</b> will be ignored.</td>
+        </tr>
+    </tbody>
+</table>
 
 **Demo:**
 
@@ -203,23 +251,64 @@ Here the list of current available hooks:
 
 #### `useFsActivate`
 
-> return `nothing` (for the moment...)
+> return `void`
 
 <table class="table table-bordered table-striped">
     <thead>
     <tr>
-        <th style="width: 100px;">argument</th>
-        <th style="width: 50px;">type</th>
-        <th style="width: 50px;">default</th>
+        <th style="width: 100px;">Argument</th>
+        <th style="width: 50px;">Type</th>
+        <th style="width: 50px;">Default</th>
         <th>description</th>
     </tr>
     </thead>
     <tbody>
         <tr>
           <td>modificationKeys</td>
-          <td>array(string)</td>
+          <td>Array(string)</td>
           <td>*required*</td>
           <td>An array of modification key.<br>For each key, a http will be done to trigger the activate of corresponding modification.</td>
+        </tr>
+         <tr>
+          <td>applyEffectScope</td>
+          <td>Array(string)</td>
+          <td>[]</td>
+          <td>This argument has same behavior as React.useEffect (2nd argument) hook. It will listen values inside array and trigger a synchronize if one them has changed. By default it is trigger once, during React component where it's used, did mount.</td>
+        </tr>
+    </tbody>
+</table>
+
+**Demo:**
+
+-   coming soon
+
+#### `useFsSynchronize`
+
+Refresh modifications in cache by making a http request to the Flagship API.
+
+> return `void`
+
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th style="width: 100px;">Argument</th>
+        <th style="width: 50px;">Type</th>
+        <th style="width: 50px;">Default</th>
+        <th>description</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>applyEffectScope</td>
+          <td>Array(string)</td>
+          <td>[]</td>
+          <td>This argument has same behavior as React.useEffect (2nd argument) hook. It will listen values inside array and trigger a synchronize if one them has changed. By default it is trigger once, during React component where it's used, did mount.</td>
+        </tr>
+         <tr>
+          <td>activateAllModifications</td>
+          <td>Boolean</td>
+          <td>false</td>
+          <td>If set to true, all modifications will be activated. If set to false (default behavior), none will be activated.</td>
         </tr>
     </tbody>
 </table>
