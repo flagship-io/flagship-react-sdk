@@ -1,6 +1,6 @@
 {
     "name": "@flagship.io/react-sdk",
-    "version": "0.0.9",
+    "version": "0.0.13",
     "description": "Flagship REACT SDK",
     "main": "dist/index.js",
     "files": [
@@ -12,6 +12,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 0",
         "release": "np",
+        "version": "npm run build",
         "publish": "npm run update:react-dev-demo && git add . && git commit -m\"Post publish update\" && git push && npm run publish:reactDemoDev",
         "publish:reactDemoDev": "cd ./examples/react-dev-demo && npm run deploy:github",
         "update:react-dev-demo": "cd ./examples/react-dev-demo && npm install @flagship.io/react-sdk@latest @flagship.io/js-sdk@latest --save && cd ../../",
@@ -66,7 +67,7 @@
         "eslint-plugin-prettier": "^3.1.2",
         "eslint-plugin-react": "^7.19.0",
         "eslint-plugin-react-hooks": "^2.5.0",
-        "np": "^5.1.2",
+        "np": "^6.2.1",
         "prettier": "^2.0.4",
         "react": "^16.8.0",
         "react-dom": "^16.8.0",
