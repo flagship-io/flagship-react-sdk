@@ -16,6 +16,16 @@ export const DemoInitialization = () => {
     });
     const handleEnvId = (e) =>
         setNewSettings({ ...newSettings, envId: e.target.value });
+
+    const handleNodeEnv = (e) =>
+        setNewSettings({
+            ...newSettings,
+            sdkConfig: {
+                ...newSettings.sdkConfig,
+                nodeEnv: e.target.value
+            }
+        });
+
     const handleVisitorId = (e) =>
         setNewSettings({
             ...newSettings,
@@ -113,6 +123,14 @@ const App: React.FC = () => (
                             <Form.Label>envId</Form.Label>
                             <Form.Control as="select" onChange={handleEnvId}>
                                 {config.sandbox.envId.map((id) => (
+                                    <option key={id}>{id}</option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group controlId="initForm.Control1.11">
+                            <Form.Label>nodeEnv</Form.Label>
+                            <Form.Control as="select" onChange={handleNodeEnv}>
+                                {config.sandbox.nodeEnv.map((id) => (
                                     <option key={id}>{id}</option>
                                 ))}
                             </Form.Control>

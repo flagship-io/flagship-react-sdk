@@ -5,7 +5,8 @@ import flagship, {
     FlagshipVisitorContext,
     IFlagshipVisitor,
     DecisionApiResponseData,
-    GetModificationsOutput
+    GetModificationsOutput,
+    SaveCacheArgs
 } from '@flagship.io/js-sdk';
 
 export declare type FsStatus = {
@@ -51,9 +52,7 @@ interface FlagshipProviderProps {
         fsVisitor: IFlagshipVisitor | null;
         fsModifications: GetModificationsOutput | null;
     }): void;
-    onSavingModificationsInCache(
-        modifications: flagship.DecisionApiResponseData | null
-    ): void;
+    onSavingModificationsInCache(args: SaveCacheArgs): void;
 }
 
 export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
