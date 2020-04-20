@@ -187,13 +187,103 @@ This is all available props which you can use inside the `FlagshipProvider` reac
 
 Here the list of current available hooks:
 
+-   [useFlagship](#useFlagship)
 -   [useFsModifications](#useFsModifications)
 -   [useFsActivate](#useFsActivate)
 -   [useFsSynchronize](#useFsSynchronize)
 
+#### `useFlagship`
+
+Most used hook from the Flagship React SDK. Through this hook, you can access to modifications of your current visitor and have an access to the SDK status.
+
+> returns an object (Typescript: UseFlagshipOutput)
+
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th style="width: 100px;">Argument</th>
+        <th style="width: 50px;">Type</th>
+        <th style="width: 50px;">Default</th>
+        <th>description</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>params</td>
+          <td>object (TS:UseFlagshipOutput)</td>
+          <td>*required*</td>
+          <td>Contains further required nodes. See the shape of this object  <a href='README.md#useFlagship-parameters'>just below</a>.</td>
+        </tr>
+    </tbody>
+</table>
+
+##### `useFlagship parameters`
+
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th style="width: 100px;">Argument</th>
+        <th style="width: 50px;">Type</th>
+        <th style="width: 50px;">Default</th>
+        <th>description</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>modifications</td>
+          <td>object</td>
+          <td>*required*</td>
+          <td>Node param to specify flagship modifications:
+            <table> 
+              <tbody><tr>
+                  <th style="width:25%">Argument</th>
+                  <th>Description</th>
+                </tr>  
+                <tr>
+                  <td><em>requested</em></td>
+                  <td>Required. An array of object for each modifications and follow this shape:
+                   <table> 
+              <tbody><tr>
+                  <th style="width:25%">Argument</th>
+                  <th>Description</th>
+                </tr>  
+                <tr>
+                  <td><em>key</em></td>
+                  <td>Required. The name of the modification.</td>
+                </tr>
+                <tr>
+                  <td><em>defaultValue</em></td>
+                  <td>Required. The default value if no value for this modification is found.</td>
+                </tr>
+                  <tr>
+                  <td><em>activate</em></td>
+                  <td>Optional. </td>
+                </tr>
+              </tbody>
+            </table>
+                  </td>
+                </tr>
+                  <tr>
+                  <td><em>activateAll</em></td>
+                  <td>Optional. The value is <i>false</i> by default</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td>activateAllModifications</td>
+          <td>Boolean</td>
+          <td>false</td>
+          <td>If set to true, all modifications will be activated. If set to false, none will be activated.
+          <br>Be aware that if this argument is set, the attribute <i>activate</i> set in each element of array <b>modificationsRequested</b> will be ignored.</td>
+        </tr>
+    </tbody>
+</table>
+
 #### `useFsModifications`
 
-Most used hook from the Flagship React SDK. This will give you the modification saved in the SDK cache.
+This will give you the modification saved in the SDK cache.
 
 **NOTE:** If the SDK cache is empty, you can expect that it will return nothing.
 
