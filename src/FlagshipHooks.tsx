@@ -1,9 +1,11 @@
 import { useContext, useEffect } from 'react';
 import {
     FsModifsRequestedList,
-    GetModificationsOutput
+    GetModificationsOutput,
+    IFlagshipVisitor
 } from '@flagship.io/js-sdk';
-import FlagshipContext from './FlagshipContext';
+import FlagshipContext, { FsStatus } from './FlagshipContext';
+// import { FlagshipConsumer as FlagshipContext } from './FlagshipContext';
 
 declare type ModificationKeys = Array<string>;
 declare type UseFsActivateOutput = void;
@@ -75,13 +77,11 @@ two possible solutions to avoid massive 'activate api' calls:
 1) wrap the 'useFsModificationsCache' in a useEffect and plug correctly the useEffect the way you need
 2) in the JS SDK, make a cache to understand if the activate call already be done before.
 */
-export const useFsModifications = (
+const getCacheModifications = (
+    fsVisitor: IFlagshipVisitor | null,
     modificationsRequested: FsModifsRequestedList,
     activateAllModifications = false
 ): UseFsModificationsOutput => {
-    const {
-        state: { fsVisitor }
-    } = useContext(FlagshipContext);
     if (!fsVisitor) {
         reportNoVisitor();
         return {};
@@ -90,4 +90,49 @@ export const useFsModifications = (
         modificationsRequested,
         activateAllModifications
     );
+};
+
+export const useFsModifications = (
+    modificationsRequested: FsModifsRequestedList,
+    activateAllModifications = false
+): UseFsModificationsOutput => {
+    const {
+        state: { fsVisitor }
+    } = useContext(FlagshipContext);
+    return getCacheModifications(
+        fsVisitor,
+        modificationsRequested,
+        activateAllModifications
+    );
+};
+
+export declare type UseFlagshipParams = {
+    modifications: {
+        requested: FsModifsRequestedList;
+        activateAll: boolean;
+    };
+};
+export declare type UseFlagshipOutput = {
+    modifications: GetModificationsOutput;
+    status: FsStatus;
+};
+
+// Prototype
+export const useFlagship = ({
+    modifications: {
+        requested: modificationsRequested,
+        activateAll: activateAllModifications = false
+    }
+}: UseFlagshipParams): UseFlagshipOutput => {
+    const {
+        state: { fsVisitor, status }
+    } = useContext(FlagshipContext);
+    return {
+        modifications: getCacheModifications(
+            fsVisitor,
+            modificationsRequested,
+            activateAllModifications
+        ),
+        status
+    };
 };

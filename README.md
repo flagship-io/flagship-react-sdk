@@ -177,8 +177,8 @@ This is all available props which you can use inside the `FlagshipProvider` reac
         <tr>
           <td>loadingComponent</td>
           <td>React.ReactNode</td>
-          <td>null</td>
-          <td>This is component which will be render when Flagship is loading.<br>By default, the value is <i>null</i> which means nothing will appear until Flagship is ready.</td>
+          <td>undefined</td>
+          <td>This is component which will be render when Flagship is loading on <b>first initialization</b> only.<br>By default, the value is <i>undefined</i> which means it will display your app and it might display default modifications value for a very short moment.</td>
         </tr>
     </tbody>
 </table>
