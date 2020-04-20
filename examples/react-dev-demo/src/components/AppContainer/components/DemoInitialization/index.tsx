@@ -152,31 +152,6 @@ const App: React.FC = () => (
                                 label={`enableConsoleLogs=${newSettings.sdkConfig.enableConsoleLogs}`}
                             />
                         </Form.Group>
-                        <Form.Group controlId="initForm.Control1.4">
-                            <Form.Label>runInBackground</Form.Label>
-                            <Form.Control
-                                as="select"
-                                value={newSettings.sdkConfig.runInBackground}
-                                onChange={(e) => {
-                                    setNewSettings({
-                                        ...newSettings,
-                                        sdkConfig: {
-                                            ...newSettings.sdkConfig,
-                                            runInBackground: (e.target as HTMLTextAreaElement)
-                                                .value as
-                                                | 'never'
-                                                | 'exceptInit'
-                                        }
-                                    });
-                                }}
-                            >
-                                {[ 'nerver', 'exceptInit'].map(
-                                    (id) => (
-                                        <option key={id}>{id}</option>
-                                    )
-                                )}
-                            </Form.Control>
-                        </Form.Group>
                     </Form>
                     <div
                         style={{

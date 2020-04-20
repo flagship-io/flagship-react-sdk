@@ -109,7 +109,7 @@ export const useFsModifications = (
 export declare type UseFlagshipParams = {
     modifications: {
         requested: FsModifsRequestedList;
-        activateAll: boolean;
+        activateAll?: boolean;
     };
 };
 export declare type UseFlagshipOutput = {

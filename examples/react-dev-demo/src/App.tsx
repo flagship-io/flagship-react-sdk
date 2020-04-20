@@ -1,21 +1,19 @@
 import './App.css';
 
-import {
-    FlagshipProvider,
-    FlagshipReactSdkConfig
-} from '@flagship.io/react-sdk';
+import { FlagshipProvider } from '@flagship.io/react-sdk';
 import React, { createContext, Dispatch, SetStateAction } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 
 import { AppContainer } from './components/AppContainer';
 import config from './config';
 import AppHeader from './components/AppHeader';
+import { FlagshipSdkConfig } from '@flagship.io/js-sdk';
 interface VisitorContext {
     [key: string]: any;
 }
 export interface SdkSettings {
     envId: string;
-    sdkConfig: FlagshipReactSdkConfig;
+    sdkConfig: FlagshipSdkConfig;
     visitorData: {
         id: string;
         context: VisitorContext;

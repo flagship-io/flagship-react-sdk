@@ -19,6 +19,9 @@ const AppHeader: React.FC = () => (
             <Nav className="mr-auto fsNav">
                 <Nav.Link href="#initialization">Initialization</Nav.Link>
                 <NavDropdown title="Fs Hooks" id="nav-dropdown">
+                    <NavDropdown.Item eventKey="4.0" href="#useFlagship">
+                        useFlagship
+                    </NavDropdown.Item>
                     <NavDropdown.Item eventKey="4.1" href="#useFsModifications">
                         useFsModifications
                     </NavDropdown.Item>
