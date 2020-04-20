@@ -20,7 +20,7 @@ Flagship features are accessible using Flagship hooks, have a look to the docume
 </ul>
 
 <ul style="line-height:1.4;">
-- Small [dev demo app](https://abtasty.github.io/flagship-react-sdk/) but more to come soon! 👨‍💻
+- Small <a href="https://abtasty.github.io/flagship-react-sdk/">dev demo app</a> but more to come soon! 👨‍💻
 </ul>
 
 ## Getting Started
