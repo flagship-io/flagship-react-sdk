@@ -1,5 +1,5 @@
 import { useFsActivate } from '@flagship.io/react-sdk';
-import CodeBlock from '@tenon-io/tenon-codeblock';
+import CodeBlock from '../../../common/CodeBlock';
 import React from 'react';
 import { Alert, Col, Row } from 'react-bootstrap';
 

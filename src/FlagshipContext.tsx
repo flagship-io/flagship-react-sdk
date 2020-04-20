@@ -1,24 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, SetStateAction, Dispatch } from 'react';
 // / <reference path="@flagship.io/js-sdk/flagship.d.ts" />
 import flagship, {
     FlagshipSdkConfig,
     FlagshipVisitorContext,
     IFlagshipVisitor,
     DecisionApiResponseData,
-    GetModificationsOutput
+    GetModificationsOutput,
+    SaveCacheArgs
 } from '@flagship.io/js-sdk';
 
-declare type initStateType = {
+export declare type FsStatus = {
+    isLoading: boolean;
+    lastRefresh: string | null;
+};
+
+declare type FsState = {
     fsVisitor: IFlagshipVisitor | null;
     fsModifications: GetModificationsOutput | null;
+    status: FsStatus;
 };
+// export interface FlagshipReactSdkConfig extends FlagshipSdkConfig {
+//     // Nothing yet
+// }
 
-const initState: initStateType = {
+const initState: FsState = {
     fsVisitor: null,
-    fsModifications: null
+    fsModifications: null,
+    status: {
+        isLoading: true,
+        lastRefresh: null
+    }
 };
 
-const FlagshipContext = React.createContext({ ...initState });
+const FlagshipContext = React.createContext<{
+    state: FsState;
+    setState: Dispatch<SetStateAction<FsState>> | null;
+}>({ state: { ...initState }, setState: null });
 
 interface FlagshipProviderProps {
     children: React.ReactNode;
@@ -31,7 +48,11 @@ interface FlagshipProviderProps {
     };
     modifications?: DecisionApiResponseData;
     onInitStart(): void;
-    onInitDone(sdkData: initStateType): void;
+    onInitDone(sdkData: {
+        fsVisitor: IFlagshipVisitor | null;
+        fsModifications: GetModificationsOutput | null;
+    }): void;
+    onSavingModificationsInCache(args: SaveCacheArgs): void;
 }
 
 export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
@@ -41,12 +62,16 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     visitorData,
     loadingComponent,
     modifications,
+    onSavingModificationsInCache,
     onInitStart,
     onInitDone
 }: FlagshipProviderProps) => {
     const { id, context } = visitorData;
-    const [state, setState] = useState({ ...initState, loading: true });
-    const { loading, ...otherState } = state;
+    const [state, setState] = useState({ ...initState });
+    const {
+        status: { isLoading },
+        fsVisitor
+    } = state;
 
     // Call FlagShip any time context get changed.
     useEffect(() => {
@@ -55,7 +80,19 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             id,
             context as FlagshipVisitorContext
         );
+        setState({
+            ...state,
+            status: {
+                ...state.status,
+                isLoading: true
+            },
+            fsVisitor: visitorInstance
+            // fsModifications: ???
+        });
         onInitStart();
+        visitorInstance.on('saveCache', (args) => {
+            onSavingModificationsInCache(args);
+        });
         visitorInstance.on('ready', () => {
             // TODO: if modifications set, make sure not http request are trigger
             if (modifications) {
@@ -63,7 +100,10 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             }
             setState({
                 ...state,
-                loading: false,
+                status: {
+                    isLoading: false,
+                    lastRefresh: new Date().toISOString()
+                },
                 fsVisitor: visitorInstance,
                 fsModifications:
                     (visitorInstance.fetchedModifications &&
@@ -71,10 +111,15 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                     null
             });
         });
-    }, [envId, id, ...Object.values(context as FlagshipVisitorContext)]);
+    }, [
+        envId,
+        id,
+        ...Object.values(config),
+        ...Object.values(context as FlagshipVisitorContext)
+    ]);
 
     useEffect(() => {
-        if (!state.loading) {
+        if (!isLoading) {
             onInitDone({
                 fsVisitor: state.fsVisitor,
                 fsModifications: state.fsModifications
@@ -82,16 +127,25 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         }
     }, [state]);
 
+    const handlingDisplay = (): React.ReactNode => {
+        const isFirstInit = !fsVisitor;
+        if (loadingComponent && isFirstInit) {
+            return <>{loadingComponent}</>;
+        }
+        return <>{children}</>;
+    };
     return (
-        <FlagshipContext.Provider value={{ ...otherState }}>
-            {loading ? loadingComponent : children}
+        <FlagshipContext.Provider value={{ state, setState }}>
+            {handlingDisplay()}
         </FlagshipContext.Provider>
     );
 };
 
 FlagshipProvider.defaultProps = {
-    config: {},
-    loadingComponent: null,
+    config: {
+        // Nothing yet
+    },
+    loadingComponent: undefined,
     modifications: undefined,
     onInitStart: (): void => {
         // do nothing

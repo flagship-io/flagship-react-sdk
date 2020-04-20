@@ -1,4 +1,4 @@
-import CodeBlock from '@tenon-io/tenon-codeblock';
+import CodeBlock from '../../../common/CodeBlock';
 import React, { useContext } from 'react';
 import { Alert, Button, Col, Form, Row } from 'react-bootstrap';
 
@@ -16,6 +16,16 @@ export const DemoInitialization = () => {
     });
     const handleEnvId = (e) =>
         setNewSettings({ ...newSettings, envId: e.target.value });
+
+    const handleNodeEnv = (e) =>
+        setNewSettings({
+            ...newSettings,
+            sdkConfig: {
+                ...newSettings.sdkConfig,
+                nodeEnv: e.target.value
+            }
+        });
+
     const handleVisitorId = (e) =>
         setNewSettings({
             ...newSettings,
@@ -68,9 +78,7 @@ export const DemoInitialization = () => {
                     </p>
                     <CodeBlock
                         className="mv3"
-                        codeString={`
-
-import React from 'react';
+                        codeString={`import React from 'react';
 import { FlagshipProvider } from "@flagship.io/react-sdk";
 
 const App: React.FC = () => (
@@ -101,22 +109,85 @@ const App: React.FC = () => (
       <AppContainer />
     </FlagshipProvider>
   </>
-);
-          `}
+);          `}
                     />
                     <p>
                         To understand impact of each props, you can change some
                         value dynamically here:{' '}
                     </p>
+                    <h3>
+                        1 - Playing with <i>config</i>
+                    </h3>
                     <Form>
-                        <Form.Group controlId="initForm.ControlSelect1">
+                        <Form.Group controlId="initForm.Control1.1">
                             <Form.Label>envId</Form.Label>
                             <Form.Control as="select" onChange={handleEnvId}>
                                 {config.sandbox.envId.map((id) => (
-                                    <option>{id}</option>
+                                    <option key={id}>{id}</option>
                                 ))}
                             </Form.Control>
                         </Form.Group>
+                        <Form.Group controlId="initForm.Control1.11">
+                            <Form.Label>nodeEnv</Form.Label>
+                            <Form.Control as="select" onChange={handleNodeEnv}>
+                                {config.sandbox.nodeEnv.map((id) => (
+                                    <option key={id}>{id}</option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group controlId="initForm.Control1.2">
+                            <Form.Check
+                                type="checkbox"
+                                checked={newSettings.sdkConfig.fetchNow}
+                                onChange={(e) =>
+                                    setNewSettings({
+                                        ...newSettings,
+                                        sdkConfig: {
+                                            ...newSettings.sdkConfig,
+                                            fetchNow: e.currentTarget.checked
+                                        }
+                                    })
+                                }
+                                label={`fetchNow=${newSettings.sdkConfig.fetchNow}`}
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="initForm.Control1.3">
+                            <Form.Check
+                                type="checkbox"
+                                checked={
+                                    newSettings.sdkConfig.enableConsoleLogs
+                                }
+                                onChange={(e) =>
+                                    setNewSettings({
+                                        ...newSettings,
+                                        sdkConfig: {
+                                            ...newSettings.sdkConfig,
+                                            enableConsoleLogs:
+                                                e.currentTarget.checked
+                                        }
+                                    })
+                                }
+                                label={`enableConsoleLogs=${newSettings.sdkConfig.enableConsoleLogs}`}
+                            />
+                        </Form.Group>
+                    </Form>
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'flex-end'
+                        }}
+                    >
+                        <Button
+                            variant="secondary"
+                            onClick={() => setSettings({ ...newSettings })}
+                        >
+                            Apply change
+                        </Button>
+                    </div>
+                    <h3>
+                        2 - Playing with <i>visitorData</i>
+                    </h3>
+                    <Form>
                         <Form.Group controlId="initForm.ControlSelect2">
                             <Form.Label>visitorId</Form.Label>
                             <Form.Control
@@ -124,7 +195,7 @@ const App: React.FC = () => (
                                 onChange={handleVisitorId}
                             >
                                 {config.sandbox.visitorId.map((id) => (
-                                    <option>{id}</option>
+                                    <option key={id}>{id}</option>
                                 ))}
                             </Form.Control>
                         </Form.Group>
@@ -138,7 +209,7 @@ const App: React.FC = () => (
                                     checked={newSettings.visitorData.context.hasOwnProperty(
                                         key
                                     )}
-                                    onClick={handleVisitorContext}
+                                    onChange={handleVisitorContext}
                                     label={JSON.stringify({ [key]: value })}
                                 />
                             ))}
