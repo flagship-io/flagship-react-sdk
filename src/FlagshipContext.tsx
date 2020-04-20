@@ -91,13 +91,14 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             // fsModifications: ???
         });
         onInitStart();
+        visitorInstance.on('saveCache', (args) => {
+            onSavingModificationsInCache(args);
+        });
         visitorInstance.on('ready', () => {
             // TODO: if modifications set, make sure not http request are trigger
             if (modifications) {
                 visitorInstance.fetchedModifications = { ...modifications }; // override everything
             }
-            // TODO: plug onSaveCache call back with JS SDK
-            onSavingModificationsInCache(visitorInstance.fetchedModifications);
             setState({
                 ...state,
                 status: {

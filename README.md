@@ -166,7 +166,8 @@ This is all available props which you can use inside the `FlagshipProvider` reac
           <td>onSavingModificationsInCache</td>
           <td>function(DecisionApiResponseData):DecisionApiResponseData|void</td>
           <td>null</td>
-          <td>Callback function called when the SDK is saving modifications in cache. <br>It has one parameter which is the modifications received either from API or <i>modifications</i> props.<br>You must return either the same object shape or nothing. The data returned will be stored in the SDK cache.</td>
+          <td>Callback function called when the SDK is saving modifications in cache. <br> It has one argument and all <a href='https://github.com/abtasty/flagship-js-sdk#events-listener'>the behavior is same as the JS SDK</a>.
+          </td>
         </tr>
         <tr>
           <td>modifications</td>
