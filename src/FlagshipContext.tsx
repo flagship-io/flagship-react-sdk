@@ -46,7 +46,7 @@ interface FlagshipProviderProps {
         id: string;
         context?: FlagshipVisitorContext;
     };
-    modifications?: DecisionApiResponseData;
+    defaultModifications?: DecisionApiResponseData;
     onInitStart(): void;
     onInitDone(sdkData: {
         fsVisitor: IFlagshipVisitor | null;
@@ -61,7 +61,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     config,
     visitorData,
     loadingComponent,
-    modifications,
+    defaultModifications,
     onSavingModificationsInCache,
     onInitStart,
     onInitDone
@@ -89,15 +89,14 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             fsVisitor: visitorInstance
             // fsModifications: ???
         });
+        if (defaultModifications) {
+            visitorInstance.fetchedModifications = { ...defaultModifications }; // initialize immediately with something
+        }
         onInitStart();
         visitorInstance.on('saveCache', (args) => {
             onSavingModificationsInCache(args);
         });
         visitorInstance.on('ready', () => {
-            // TODO: if modifications set, make sure not http request are trigger
-            if (modifications) {
-                visitorInstance.fetchedModifications = { ...modifications }; // override everything
-            }
             setState({
                 ...state,
                 status: {
@@ -146,7 +145,7 @@ FlagshipProvider.defaultProps = {
         // Nothing yet
     },
     loadingComponent: undefined,
-    modifications: undefined,
+    defaultModifications: undefined,
     onInitStart: (): void => {
         // do nothing
     },

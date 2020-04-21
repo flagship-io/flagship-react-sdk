@@ -148,7 +148,7 @@ This is all available props which you can use inside the `FlagshipProvider` reac
           <td>config</td>
           <td>object</td>
           <td>{}</td>
-          <td>This is the settings of the SDK. It takes an object which has the same shape as the <a href='https://github.com/abtasty/flagship-js-sdk#sdk-settings'>JS SDK settings</a>. Go have a look.</td>
+          <td>This is the settings of the SDK. It takes an object which is the same shape as the <a href='https://github.com/abtasty/flagship-js-sdk#sdk-settings'>JS SDK settings</a>. Go have a look, there are many options. 🙂</td>
         </tr>
         <tr>
           <td>onInitStart</td>
@@ -164,16 +164,50 @@ This is all available props which you can use inside the `FlagshipProvider` reac
         </tr>
         <tr>
           <td>onSavingModificationsInCache</td>
-          <td>function(DecisionApiResponseData):DecisionApiResponseData|void</td>
+          <td>function(obj):void</td>
           <td>null</td>
-          <td>Callback function called when the SDK is saving modifications in cache. <br> It has one argument and all <a href='https://github.com/abtasty/flagship-js-sdk#events-listener'>the behavior is same as the JS SDK</a>.
+          <td>Callback function called when the SDK is saving modifications in cache.  
+          <br>It has an argument which has the following shape:
+          <table> 
+              <tbody><tr>
+                  <th style="width:25%">Key/Property</th>
+                  <th>Description</th>
+                </tr>  
+                <tr>
+                  <td><em>modifications</em></td>
+                  <td>It is an object which contains modifications <i>past</i> and <i>future</i> computed modifications. 
+                  <br>
+                   <table> 
+              <tbody><tr>
+                  <th style="width:25%">Key/Property</th>
+                  <th>Description</th>
+                </tr>  
+                <tr>
+                  <td><em>before</em></td>
+                  <td>Modificaitons previously in cache.</td>
+                </tr>
+                  <td><em>after</em></td>
+                  <td>New modificaitons which are about to be saved in cache.</td>
+              </tbody>
+            </table>
+            </td>
+                </tr>
+                <tr>
+                  <td><em>saveInCacheModifications</em></td>
+                  <td>This is a function which you'll have to call if you want to override the modifications which will be saved in the SDK cache.<br>
+                  It has one argument which the modifications that you want to override.<br>If you leave it undefined, it will keep default behavior.</td>
+                </tr>
+                  <tr>
+                </tr>
+              </tbody>
+            </table>
           </td>
         </tr>
         <tr>
-          <td>modifications</td>
+          <td>defaultModifications</td>
           <td>object</td>
           <td>null</td>
-          <td>This is an object which has the shape of Flagship modifications as it is return from the Flagship API.<br>Can be useful when you already manually fetched the data before.<br>From there, the SDK will save this data provided in cache and won't fetch anything.</td>
+          <td>This is an object which has the shape of Flagship modifications as it is return from the Flagship API.<br>Can be useful when you already manually fetched the data before or you have your own cache.<br>Providing this props avoid the SDK to have an empty cache during first initialization.<br>The default modifications provided will be override once the SDK finish to fetch Flagship API with an initialization or a synchronization.</td>
         </tr>
         <tr>
           <td>loadingComponent</td>

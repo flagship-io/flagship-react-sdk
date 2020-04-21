@@ -115,6 +115,10 @@ export declare type UseFlagshipParams = {
 export declare type UseFlagshipOutput = {
     modifications: GetModificationsOutput;
     status: FsStatus;
+    hit: {
+        send: IFlagshipVisitor['sendHit'] | null;
+        sendMultiple: IFlagshipVisitor['sendHits'] | null;
+    };
 };
 
 // Prototype
@@ -133,6 +137,10 @@ export const useFlagship = ({
             modificationsRequested,
             activateAllModifications
         ),
-        status
+        status,
+        hit: {
+            send: fsVisitor && fsVisitor.sendHit,
+            sendMultiple: fsVisitor && fsVisitor.sendHits
+        }
     };
 };

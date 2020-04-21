@@ -4,7 +4,7 @@ import { Alert, Col, Row } from 'react-bootstrap';
 import CodeBlock from '../../../common/CodeBlock';
 
 export const DemoUseFlagship = () => {
-    const { modifications: fsModifications, status: fsStatus } = useFlagship({
+    const fsParams = {
         modifications: {
             requested: [
                 {
@@ -14,7 +14,13 @@ export const DemoUseFlagship = () => {
                 }
             ]
         }
-    });
+    };
+    const output = useFlagship(fsParams);
+    const {
+        modifications: fsModifications,
+        status: fsStatus,
+        hit: fsHit
+    } = output;
     const demoHookName = 'useFlagship';
     return (
         <Row>
@@ -29,7 +35,7 @@ export const DemoUseFlagship = () => {
                     <CodeBlock
                         className="mv3"
                         codeString={`import { useFlagship } from '@flagship.io/react-sdk';
-const { modifications: fsModifications, status: fsStatus } = useFlagship({
+const fsParams = {
     modifications: {
         requested: [
             {
@@ -39,7 +45,13 @@ const { modifications: fsModifications, status: fsStatus } = useFlagship({
             }
         ]
     }
-});            `}
+}
+const output = useFlagship(fsParams);
+const {
+    modifications: fsModifications,
+    status: fsStatus,
+    hit: fsHit,
+} = output;`}
                     />
                     <p>fsModifications output: </p>
                     <div>
