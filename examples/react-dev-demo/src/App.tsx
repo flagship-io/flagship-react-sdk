@@ -45,9 +45,11 @@ const App: React.FC = () => {
                     onInitStart={() => {
                         console.log('React SDK init start');
                     }}
-                    onInitDone={(fsVisitor) => {
-                        console.log(JSON.stringify(fsVisitor));
+                    onInitDone={() => {
                         console.log('React SDK init done');
+                    }}
+                    onUpdate={() => {
+                        console.log('React SDK updated');
                     }}
                     onSavingModificationsInCache={
                         (/* modifications */) =>

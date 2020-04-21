@@ -163,6 +163,12 @@ This is all available props which you can use inside the `FlagshipProvider` reac
           <td>Callback function called when the SDK ends initialization.</td>
         </tr>
         <tr>
+          <td>onUpdate</td>
+          <td>function():void</td>
+          <td>null</td>
+          <td>Callback function called when the SDK is updated. For example, after a synchronize is triggered or visitor context has changed.</td>
+        </tr>
+        <tr>
           <td>onSavingModificationsInCache</td>
           <td>function(obj):void</td>
           <td>null</td>
@@ -259,15 +265,13 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
     <tr>
         <th style="width: 100px;">Argument</th>
         <th style="width: 50px;">Type</th>
-        <th style="width: 50px;">Default</th>
         <th>description</th>
     </tr>
     </thead>
     <tbody>
         <tr>
           <td>modifications</td>
-          <td>object</td>
-          <td>*required*</td>
+          <td>Object</td>
           <td>Node param to specify flagship modifications:
             <table> 
               <tbody><tr>
@@ -307,11 +311,28 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
           </td>
         </tr>
         <tr>
-          <td>activateAllModifications</td>
-          <td>Boolean</td>
-          <td>false</td>
-          <td>If set to true, all modifications will be activated. If set to false, none will be activated.
-          <br>Be aware that if this argument is set, the attribute <i>activate</i> set in each element of array <b>modificationsRequested</b> will be ignored.</td>
+          <td>status</td>
+          <td>Object</td>
+            <td>Gives you some informations about SDK current sate:
+          <table> 
+              <tbody><tr>
+                  <th style="width:25%">Key/Property</th>
+                  <th>Description</th>
+                </tr>  
+                <tr>
+                  <td><em>isLoading</em></td>
+                  <td>If true, the SDK it not ready, false otherwise.
+            </td>
+                </tr>
+                <tr>
+                  <td><em>lastRefresh</em></td>
+                  <td>Date cast string with ISO format.<br>This is the date corresponding to the most recent moment where modifications were saved in cache.</td>
+                </tr>
+                  <tr>
+                </tr>
+              </tbody>
+            </table>
+          </td>
         </tr>
     </tbody>
 </table>

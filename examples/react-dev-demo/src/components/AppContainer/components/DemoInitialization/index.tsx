@@ -97,6 +97,12 @@ const App: React.FC = () => (
       onInitDone={() => {
         console.log("init done");
       }}
+      onUpdate={() => {
+          console.log('React SDK updated');
+      }}
+      onSavingModificationsInCache={() => {
+          console.log('React SDK saving modifications in cache');
+      }}
       loadingComponent={
         <Container className="mt3">
           <Row>
