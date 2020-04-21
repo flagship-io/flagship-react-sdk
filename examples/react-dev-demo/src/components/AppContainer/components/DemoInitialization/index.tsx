@@ -97,6 +97,12 @@ const App: React.FC = () => (
       onInitDone={() => {
         console.log("init done");
       }}
+      onUpdate={() => {
+          console.log('React SDK updated');
+      }}
+      onSavingModificationsInCache={() => {
+          console.log('React SDK saving modifications in cache');
+      }}
       loadingComponent={
         <Container className="mt3">
           <Row>
@@ -115,20 +121,40 @@ const App: React.FC = () => (
                         To understand impact of each props, you can change some
                         value dynamically here:{' '}
                     </p>
-                    <h3>
+                    <h3
+                        style={{
+                            borderBottom: '1px solid grey',
+                            marginBottom: '16px',
+                            paddingBottom: '8px'
+                        }}
+                    >
                         1 - Playing with <i>config</i>
                     </h3>
                     <Form>
-                        <Form.Group controlId="initForm.Control1.1">
-                            <Form.Label>envId</Form.Label>
+                        <Form.Group
+                            controlId="initForm.Control1.1"
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                marginLeft: '16px'
+                            }}
+                        >
+                            <div>envId: </div>
                             <Form.Control as="select" onChange={handleEnvId}>
                                 {config.sandbox.envId.map((id) => (
                                     <option key={id}>{id}</option>
                                 ))}
                             </Form.Control>
                         </Form.Group>
-                        <Form.Group controlId="initForm.Control1.11">
-                            <Form.Label>nodeEnv</Form.Label>
+                        <Form.Group
+                            controlId="initForm.Control1.11"
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                marginLeft: '16px'
+                            }}
+                        >
+                            <div>nodeEnv: </div>
                             <Form.Control as="select" onChange={handleNodeEnv}>
                                 {config.sandbox.nodeEnv.map((id) => (
                                     <option key={id}>{id}</option>

@@ -39,20 +39,21 @@ const FlagshipContext = React.createContext<{
 
 interface FlagshipProviderProps {
     children: React.ReactNode;
-    loadingComponent: React.ReactNode;
+    loadingComponent?: React.ReactNode;
     envId: string;
-    config: FlagshipSdkConfig;
+    config?: FlagshipSdkConfig;
     visitorData: {
         id: string;
         context?: FlagshipVisitorContext;
     };
-    modifications?: DecisionApiResponseData;
-    onInitStart(): void;
-    onInitDone(sdkData: {
+    defaultModifications?: DecisionApiResponseData;
+    onInitStart?(): void;
+    onInitDone?(): void;
+    onSavingModificationsInCache?(args: SaveCacheArgs): void;
+    onUpdate?(sdkData: {
         fsVisitor: IFlagshipVisitor | null;
         fsModifications: GetModificationsOutput | null;
     }): void;
-    onSavingModificationsInCache(args: SaveCacheArgs): void;
 }
 
 export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
@@ -61,10 +62,11 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     config,
     visitorData,
     loadingComponent,
-    modifications,
+    defaultModifications,
     onSavingModificationsInCache,
     onInitStart,
-    onInitDone
+    onInitDone,
+    onUpdate
 }: FlagshipProviderProps) => {
     const { id, context } = visitorData;
     const [state, setState] = useState({ ...initState });
@@ -75,8 +77,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 
     // Call FlagShip any time context get changed.
     useEffect(() => {
-        const fsSdk = flagship.initSdk(envId, config);
-        const visitorInstance = fsSdk.newVisitor(
+        const fsSdk = flagship.start(envId, config);
+        const visitorInstance = fsSdk.createVisitor(
             id,
             context as FlagshipVisitorContext
         );
@@ -89,15 +91,18 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             fsVisitor: visitorInstance
             // fsModifications: ???
         });
-        onInitStart();
+        if (defaultModifications) {
+            visitorInstance.fetchedModifications = { ...defaultModifications }; // initialize immediately with something
+        }
+        if (onInitStart) {
+            onInitStart();
+        }
         visitorInstance.on('saveCache', (args) => {
-            onSavingModificationsInCache(args);
+            if (onSavingModificationsInCache) {
+                onSavingModificationsInCache(args);
+            }
         });
         visitorInstance.on('ready', () => {
-            // TODO: if modifications set, make sure not http request are trigger
-            if (modifications) {
-                visitorInstance.fetchedModifications = { ...modifications }; // override everything
-            }
             setState({
                 ...state,
                 status: {
@@ -110,20 +115,25 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                         visitorInstance.fetchedModifications.campaigns) ||
                     null
             });
+            if (onInitDone) {
+                onInitDone();
+            }
         });
     }, [
         envId,
         id,
-        ...Object.values(config),
+        ...Object.values(config as FlagshipSdkConfig),
         ...Object.values(context as FlagshipVisitorContext)
     ]);
 
     useEffect(() => {
         if (!isLoading) {
-            onInitDone({
-                fsVisitor: state.fsVisitor,
-                fsModifications: state.fsModifications
-            });
+            if (onUpdate) {
+                onUpdate({
+                    fsVisitor: state.fsVisitor,
+                    fsModifications: state.fsModifications
+                });
+            }
         }
     }, [state]);
 
@@ -146,11 +156,17 @@ FlagshipProvider.defaultProps = {
         // Nothing yet
     },
     loadingComponent: undefined,
-    modifications: undefined,
+    defaultModifications: undefined,
     onInitStart: (): void => {
         // do nothing
     },
     onInitDone: (): void => {
+        // do nothing
+    },
+    onSavingModificationsInCache: (): void => {
+        // do nothing
+    },
+    onUpdate: (): void => {
         // do nothing
     }
 };

@@ -2,7 +2,8 @@ import { useContext, useEffect } from 'react';
 import {
     FsModifsRequestedList,
     GetModificationsOutput,
-    IFlagshipVisitor
+    IFlagshipVisitor,
+    HitShape
 } from '@flagship.io/js-sdk';
 import FlagshipContext, { FsStatus } from './FlagshipContext';
 // import { FlagshipConsumer as FlagshipContext } from './FlagshipContext';
@@ -86,7 +87,7 @@ const getCacheModifications = (
         reportNoVisitor();
         return {};
     }
-    return fsVisitor.getModificationsCache(
+    return fsVisitor.getModifications(
         modificationsRequested,
         activateAllModifications
     );
@@ -115,6 +116,10 @@ export declare type UseFlagshipParams = {
 export declare type UseFlagshipOutput = {
     modifications: GetModificationsOutput;
     status: FsStatus;
+    hit: {
+        send(hit: HitShape): void;
+        sendMultiple(hits: HitShape[]): void;
+    };
 };
 
 // Prototype
@@ -127,12 +132,35 @@ export const useFlagship = ({
     const {
         state: { fsVisitor, status }
     } = useContext(FlagshipContext);
+    const logSdkNotReady = () => {
+        console.error('SDK React not ready yet.');
+    };
+    const send = (hit: HitShape): void => {
+        if (fsVisitor && fsVisitor.sendHit) {
+            fsVisitor.sendHit(hit);
+        } else {
+            logSdkNotReady();
+        }
+    };
+    const sendMultiple = (hits: HitShape[]): void => {
+        if (fsVisitor && fsVisitor.sendHits) {
+            fsVisitor.sendHits(hits);
+        } else {
+            logSdkNotReady();
+        }
+    };
+    send.bind(fsVisitor);
+    sendMultiple.bind(fsVisitor);
     return {
         modifications: getCacheModifications(
             fsVisitor,
             modificationsRequested,
             activateAllModifications
         ),
-        status
+        status,
+        hit: {
+            send,
+            sendMultiple
+        }
     };
 };

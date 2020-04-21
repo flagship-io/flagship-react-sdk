@@ -32,6 +32,17 @@ const AppHeader: React.FC = () => (
                         useFsSynchronize
                     </NavDropdown.Item>
                 </NavDropdown>
+                <NavDropdown title="Features" id="nav-dropdown">
+                    <NavDropdown.Item eventKey="4.0" href="#useFlagship">
+                        Get modification(s)
+                    </NavDropdown.Item>
+                    <NavDropdown.Item eventKey="4.1" href="#useFsActivate">
+                        Activate modification(s)
+                    </NavDropdown.Item>
+                    <NavDropdown.Item eventKey="4.2" href="#sendHits">
+                        Send Hit(s)
+                    </NavDropdown.Item>
+                </NavDropdown>
             </Nav>
 
             <Form inline>
