@@ -75,8 +75,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 
     // Call FlagShip any time context get changed.
     useEffect(() => {
-        const fsSdk = flagship.initSdk(envId, config);
-        const visitorInstance = fsSdk.newVisitor(
+        const fsSdk = flagship.start(envId, config);
+        const visitorInstance = fsSdk.createVisitor(
             id,
             context as FlagshipVisitorContext
         );

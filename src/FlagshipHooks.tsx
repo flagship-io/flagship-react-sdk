@@ -86,7 +86,7 @@ const getCacheModifications = (
         reportNoVisitor();
         return {};
     }
-    return fsVisitor.getModificationsCache(
+    return fsVisitor.getModifications(
         modificationsRequested,
         activateAllModifications
     );
