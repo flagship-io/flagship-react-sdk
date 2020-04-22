@@ -1,6 +1,6 @@
 {
     "name": "@flagship.io/react-sdk",
-    "version": "0.0.15",
+    "version": "0.0.16",
     "description": "Flagship REACT SDK",
     "main": "dist/index.js",
     "files": [
