@@ -23,18 +23,17 @@ export const useFsActivate = (
     modificationKeys: ModificationKeys,
     applyEffectScope = []
 ): UseFsActivateOutput => {
-    const {
-        state: { fsVisitor }
-    } = useContext(FlagshipContext);
-    if (!fsVisitor) {
-        reportNoVisitor();
-    } else {
-        useEffect(() => {
+    const { state } = useContext(FlagshipContext);
+    useEffect(() => {
+        const { fsVisitor } = state;
+        if (!fsVisitor) {
+            reportNoVisitor();
+        } else {
             fsVisitor.activateModifications(
                 modificationKeys.map((key) => ({ key }))
             );
-        }, applyEffectScope);
-    }
+        }
+    }, applyEffectScope);
 };
 
 export const useFsSynchronize = (
@@ -77,19 +76,27 @@ two possible solutions to avoid massive 'activate api' calls:
 1) wrap the 'useFsModificationsCache' in a useEffect and plug correctly the useEffect the way you need
 2) in the JS SDK, make a cache to understand if the activate call already be done before.
 */
+const safeMode_getCacheModifications = (
+    modificationsRequested: FsModifsRequestedList,
+    activateAllModifications = false
+): UseFsModificationsOutput => {
+    return modificationsRequested.reduce((reducer, modifRequested) => {
+        const newReducer: UseFsModificationsOutput = { ...reducer };
+        newReducer[modifRequested.key] = modifRequested.defaultValue;
+        return newReducer;
+    }, {});
+};
 const getCacheModifications = (
     fsVisitor: IFlagshipVisitor | null,
     modificationsRequested: FsModifsRequestedList,
     activateAllModifications = false
 ): UseFsModificationsOutput => {
     if (!fsVisitor) {
-        // reportNoVisitor();
         console.log('fsVisitor not initialized, returns default value');
-        return modificationsRequested.reduce((reducer, modifRequested) => {
-            const newReducer: UseFsModificationsOutput = { ...reducer };
-            newReducer[modifRequested.key] = modifRequested.defaultValue;
-            return newReducer;
-        }, {});
+        return safeMode_getCacheModifications(
+            modificationsRequested,
+            activateAllModifications
+        );
     }
     return fsVisitor.getModifications(
         modificationsRequested,
@@ -136,6 +143,27 @@ export const useFlagship = ({
     const {
         state: { fsVisitor, status }
     } = useContext(FlagshipContext);
+    if (status.hasError) {
+        return {
+            modifications: safeMode_getCacheModifications(
+                modificationsRequested,
+                activateAllModifications
+            ),
+            status,
+            hit: {
+                send: (): void => {
+                    console.log(
+                        'SDK React - send hit skipped because is out of order.'
+                    );
+                },
+                sendMultiple: (): void => {
+                    console.log(
+                        'SDK React - send multiple hits skipped because is out of order.'
+                    );
+                }
+            }
+        };
+    }
     const logSdkNotReady = () => {
         console.error('SDK React not ready yet.');
     };
@@ -153,6 +181,7 @@ export const useFlagship = ({
             logSdkNotReady();
         }
     };
+    throw new Error('test test');
     send.bind(fsVisitor);
     sendMultiple.bind(fsVisitor);
     return {

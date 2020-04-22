@@ -8,9 +8,11 @@ import flagship, {
     GetModificationsOutput,
     SaveCacheArgs
 } from '@flagship.io/js-sdk';
+import FlagshipErrorBoundary from './FlagshipErrorBoundary';
 
 export declare type FsStatus = {
     isLoading: boolean;
+    hasError: boolean;
     lastRefresh: string | null;
 };
 
@@ -28,7 +30,8 @@ const initState: FsState = {
     fsModifications: null,
     status: {
         isLoading: true,
-        lastRefresh: null
+        lastRefresh: null,
+        hasError: false
     }
 };
 
@@ -106,6 +109,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             setState({
                 ...state,
                 status: {
+                    ...state.status,
                     isLoading: false,
                     lastRefresh: new Date().toISOString()
                 },
@@ -144,10 +148,25 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         }
         return <>{children}</>;
     };
+
+    const handleError = (error: Error): void => {
+        setState({
+            ...state,
+            status: {
+                ...state.status,
+                hasError: !!error
+            }
+        });
+    };
     return (
-        <FlagshipContext.Provider value={{ state, setState }}>
-            {handlingDisplay()}
-        </FlagshipContext.Provider>
+        <FlagshipErrorBoundary
+            customerChildren={children}
+            onError={handleError}
+        >
+            <FlagshipContext.Provider value={{ state, setState }}>
+                {handlingDisplay()}
+            </FlagshipContext.Provider>
+        </FlagshipErrorBoundary>
     );
 };
 
