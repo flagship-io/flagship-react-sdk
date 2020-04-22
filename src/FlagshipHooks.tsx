@@ -43,12 +43,11 @@ export const useFsSynchronize = (
     activateAllModifications = false
 ): UseFsSynchronize => {
     const { state, setState } = useContext(FlagshipContext);
-    const { fsVisitor } = state;
-
-    if (!fsVisitor) {
-        reportNoVisitor();
-    } else {
-        useEffect(() => {
+    useEffect(() => {
+        const { fsVisitor } = state;
+        if (!fsVisitor) {
+            reportNoVisitor();
+        } else {
             fsVisitor
                 .synchronizeModifications(activateAllModifications)
                 .then((/* statusCode */) => {
@@ -68,8 +67,8 @@ export const useFsSynchronize = (
                         );
                     }
                 });
-        }, applyEffectScope);
-    }
+        }
+    }, applyEffectScope);
 };
 
 // NOTES:

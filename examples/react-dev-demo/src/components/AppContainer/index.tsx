@@ -14,7 +14,7 @@ export const AppContainer: React.FC = () => {
             <DemoUseFlagship />
             <DemoUseFsModifications />
             <DemoUseFsActivate />
-            {/* <DemoUseFsSynchronize /> */}
+            <DemoUseFsSynchronize />
         </Container>
     );
 };
