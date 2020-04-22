@@ -57,22 +57,22 @@ const App: React.FC = () => {
                                 'React SDK saved modifications in cache'
                             )
                     }
-                    loadingComponent={
-                        <Container className="mt3">
-                            <Row>
-                                <Col
-                                    xs={12}
-                                    style={{
-                                        color: 'white',
-                                        height: '100vh',
-                                        fontSize: '5vw'
-                                    }}
-                                >
-                                    Loading Flagship React SDK...
-                                </Col>
-                            </Row>
-                        </Container>
-                    }
+                    // loadingComponent={
+                    //     <Container className="mt3">
+                    //         <Row>
+                    //             <Col
+                    //                 xs={12}
+                    //                 style={{
+                    //                     color: 'white',
+                    //                     height: '100vh',
+                    //                     fontSize: '5vw'
+                    //                 }}
+                    //             >
+                    //                 Loading Flagship React SDK...
+                    //             </Col>
+                    //         </Row>
+                    //     </Container>
+                    // }
                 >
                     <AppHeader />
                     <AppContainer />

@@ -14,7 +14,7 @@ declare type UseFsSynchronize = void;
 declare type UseFsModificationsOutput = GetModificationsOutput;
 
 const reportNoVisitor = (): void => {
-    throw new Error(
+    console.error(
         'Error: flagship-react-sdk not correctly initialized... Make sure fsVisitor is ready.'
     );
 };
@@ -43,12 +43,11 @@ export const useFsSynchronize = (
     activateAllModifications = false
 ): UseFsSynchronize => {
     const { state, setState } = useContext(FlagshipContext);
-    const { fsVisitor } = state;
-
-    if (!fsVisitor) {
-        reportNoVisitor();
-    } else {
-        useEffect(() => {
+    useEffect(() => {
+        const { fsVisitor } = state;
+        if (!fsVisitor) {
+            reportNoVisitor();
+        } else {
             fsVisitor
                 .synchronizeModifications(activateAllModifications)
                 .then((/* statusCode */) => {
@@ -68,8 +67,8 @@ export const useFsSynchronize = (
                         );
                     }
                 });
-        }, applyEffectScope);
-    }
+        }
+    }, applyEffectScope);
 };
 
 // NOTES:
@@ -84,8 +83,13 @@ const getCacheModifications = (
     activateAllModifications = false
 ): UseFsModificationsOutput => {
     if (!fsVisitor) {
-        reportNoVisitor();
-        return {};
+        // reportNoVisitor();
+        console.log('fsVisitor not initialized, returns default value');
+        return modificationsRequested.reduce((reducer, modifRequested) => {
+            const newReducer: UseFsModificationsOutput = { ...reducer };
+            newReducer[modifRequested.key] = modifRequested.defaultValue;
+            return newReducer;
+        }, {});
     }
     return fsVisitor.getModifications(
         modificationsRequested,
