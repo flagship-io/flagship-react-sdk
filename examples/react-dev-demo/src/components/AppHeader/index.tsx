@@ -42,6 +42,9 @@ const AppHeader: React.FC = () => (
                     <NavDropdown.Item eventKey="4.2" href="#sendHits">
                         Send Hit(s)
                     </NavDropdown.Item>
+                    <NavDropdown.Item eventKey="4.4" href="#safeMode">
+                        Safe Mode
+                    </NavDropdown.Item>
                 </NavDropdown>
             </Nav>
 

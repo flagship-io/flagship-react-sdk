@@ -182,7 +182,6 @@ export const useFlagship = ({
             logSdkNotReady();
         }
     };
-    throw new Error('test test');
     send.bind(fsVisitor);
     sendMultiple.bind(fsVisitor);
     return {

@@ -1,10 +1,15 @@
-export default {
+import { FlagshipReactSdkConfig } from '../../../../dist';
+
+const sdkSettings: FlagshipReactSdkConfig = {
+    fetchNow: true,
+    enableConsoleLogs: true,
+    enableErrorLayout: true,
+    nodeEnv: 'development'
+};
+
+const config = {
     envId: 'bn1ab7m56qolupi5sa0g',
-    sdkConfig: {
-        fetchNow: true,
-        enableConsoleLogs: true,
-        nodeEnv: 'development'
-    },
+    sdkConfig: sdkSettings,
     visitorData: {
         id: 'test-vid',
         context: { isAuth: true, numberTransaction: 12, isVip: false }
@@ -19,3 +24,4 @@ export default {
         visitorId: ['test-vid', 'test-vid_2', 'test-vid_3']
     }
 };
+export default config;

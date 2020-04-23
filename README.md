@@ -148,7 +148,7 @@ This is all available props which you can use inside the `FlagshipProvider` reac
           <td>config</td>
           <td>object</td>
           <td>{}</td>
-          <td>This is the settings of the SDK. It takes an object which is the same shape as the <a href='https://github.com/abtasty/flagship-js-sdk#sdk-settings'>JS SDK settings</a>. Go have a look, there are many options. 🙂</td>
+          <td>This is the settings of the SDK. It takes an object, the shape is describe <a href='README.md#sdk-prop-settings'>here</a>.</td>
         </tr>
         <tr>
           <td>onInitStart</td>
@@ -222,6 +222,72 @@ This is all available props which you can use inside the `FlagshipProvider` reac
           <td>This is component which will be render when Flagship is loading on <b>first initialization</b> only.<br>By default, the value is <i>undefined</i> which means it will display your app and it might display default modifications value for a very short moment.</td>
         </tr>
     </tbody>
+</table>
+
+## SDK Prop Settings
+
+This is all available settings which you can set on the SDK.
+
+Here are the attributes which you can set inside the SDK settings object:
+
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th style="width: 100px;">Argument</th>
+        <th style="width: 50px;">Type</th>
+        <th style="width: 50px;">Default</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>fetchNow</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>Decide to fetch automatically modifications data when creating a new <a href='README.md#flagshipvisitor-class'>FlagshipVisitor</a>.</td>
+        </tr>
+        <tr>
+          <td>activateNow</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>Decide to trigger automatically the data when creating a new <a href='README.md#flagshipvisitor-class'>FlagshipVisitor</a>.<br>NOTE: when set to <i>true</i>, it will implicitly set <i>fetchNow=true</i> as well.</td>
+        </tr>
+        <tr>
+          <td>enableConsoleLogs</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>Enable it to display logs on the console when SDK is running.<br>This will only display logs such as <i>Warnings</i>, <i>Errors</i>, <i>Fatal errors</i> and <i>Info</i>.</td>
+        </tr>
+        <tr>
+          <td>logPathName</td>
+          <td>string</td>
+          <td>'flagshipNodeSdkLogs'</td>
+          <td>This is the path where logs will be written when SDK is running.<br>By default it will create a folder named <i>flagshipNodeSdkLogs</i> at the root of your project</a>.</td>
+        </tr>
+        <tr>
+          <td>enableErrorLayout</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>This is a small layout visible at the bottom of the screen. It is displayed only when an unexpected error occurred in the SDK. By default, it's set to <i>false</i> and if set to <i>true</i>, it will be only visible in a node environment other than <i>production</i>. Here a <a href='./src/assets/img/errorLayout.png'>screenshot</a> to have a look.</td>
+        </tr>
+        <tr>
+          <td>nodeEnv</td>
+          <td>string</td>
+          <td>'production'</td>
+          <td>If value is other than <i>production</i>, it will also display <i>Debug</i> logs.</td>
+        </tr>
+        <tr>
+          <td>flagshipApi</td>
+          <td>string</td>
+          <td>'https://decision-api.flagship.io/v1/'</td>
+          <td>
+          This setting can be useful in further scenario:<br>
+          - If you need to mock the API for tests such as end to end.<br>
+          - If you want to move to an earlier version the Flagship API (v2, v3,...).
+          </td>
+        </tr>
+</tbody>
+
 </table>
 
 ## Flagship Hooks

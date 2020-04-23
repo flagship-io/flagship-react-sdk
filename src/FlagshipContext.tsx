@@ -21,9 +21,10 @@ declare type FsState = {
     fsModifications: GetModificationsOutput | null;
     status: FsStatus;
 };
-// export interface FlagshipReactSdkConfig extends FlagshipSdkConfig {
-//     // Nothing yet
-// }
+
+export interface FlagshipReactSdkConfig extends FlagshipSdkConfig {
+    enableErrorLayout: boolean;
+}
 
 const initState: FsState = {
     fsVisitor: null,
@@ -45,7 +46,7 @@ interface FlagshipProviderProps {
     children: React.ReactNode;
     loadingComponent?: React.ReactNode;
     envId: string;
-    config?: FlagshipSdkConfig;
+    config?: FlagshipReactSdkConfig;
     visitorData: {
         id: string;
         context?: FlagshipVisitorContext;
@@ -159,7 +160,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             <FlagshipErrorBoundary
                 customerChildren={children}
                 onError={handleError}
-                sdkSettings={config as flagship.FlagshipSdkConfig}
+                sdkSettings={config as FlagshipReactSdkConfig}
             >
                 {handlingDisplay()}
             </FlagshipErrorBoundary>
@@ -169,7 +170,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 
 FlagshipProvider.defaultProps = {
     config: {
-        // Nothing yet
+        enableErrorLayout: false
     },
     loadingComponent: undefined,
     defaultModifications: undefined,

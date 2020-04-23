@@ -196,6 +196,25 @@ const App: React.FC = () => (
                                 label={`enableConsoleLogs=${newSettings.sdkConfig.enableConsoleLogs}`}
                             />
                         </Form.Group>
+                        <Form.Group controlId="initForm.Control1.4">
+                            <Form.Check
+                                type="checkbox"
+                                checked={
+                                    newSettings.sdkConfig.enableErrorLayout
+                                }
+                                onChange={(e) =>
+                                    setNewSettings({
+                                        ...newSettings,
+                                        sdkConfig: {
+                                            ...newSettings.sdkConfig,
+                                            enableErrorLayout:
+                                                e.currentTarget.checked
+                                        }
+                                    })
+                                }
+                                label={`enableErrorLayout=${newSettings.sdkConfig.enableErrorLayout}`}
+                            />
+                        </Form.Group>
                     </Form>
                     <div
                         style={{

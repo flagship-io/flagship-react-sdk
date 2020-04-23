@@ -1,5 +1,7 @@
 import React, { ErrorInfo } from 'react';
 import flagship from '@flagship.io/js-sdk';
+// eslint-disable-next-line import/no-cycle
+import { FlagshipReactSdkConfig } from './FlagshipContext';
 
 const btnStyle = {
     display: 'inline-block',
@@ -24,7 +26,7 @@ type Props = {
     children: React.ReactNode;
     customerChildren: React.ReactNode;
     onError(error: Error): void;
-    sdkSettings: flagship.FlagshipSdkConfig;
+    sdkSettings: FlagshipReactSdkConfig;
 };
 
 class FlagshipErrorBoundary extends React.Component<Props, State> {
@@ -46,12 +48,12 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
         const {
             children,
             customerChildren,
-            sdkSettings: { nodeEnv }
+            sdkSettings: { nodeEnv, enableErrorLayout }
         } = this.props;
         if (errorInfo) {
             return (
                 <>
-                    {nodeEnv !== 'production' && (
+                    {nodeEnv !== 'production' && enableErrorLayout && (
                         <div
                             className="fsErrorDebugContainer"
                             style={{
@@ -78,7 +80,7 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
                                 }}
                             >
                                 <h3 style={{ color: 'white' }}>
-                                    Flagship SDK has crashed.
+                                    Flagship React SDK has crashed.
                                 </h3>
                                 <button
                                     style={{ ...btnStyle }}
