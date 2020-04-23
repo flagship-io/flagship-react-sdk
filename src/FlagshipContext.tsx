@@ -36,9 +36,10 @@ const initState: FsState = {
 };
 
 const FlagshipContext = React.createContext<{
+    hasError: boolean;
     state: FsState;
     setState: Dispatch<SetStateAction<FsState>> | null;
-}>({ state: { ...initState }, setState: null });
+}>({ state: { ...initState }, setState: null, hasError: false });
 
 interface FlagshipProviderProps {
     children: React.ReactNode;
@@ -73,6 +74,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 }: FlagshipProviderProps) => {
     const { id, context } = visitorData;
     const [state, setState] = useState({ ...initState });
+    const [hasError, setError] = useState(false);
     const {
         status: { isLoading },
         fsVisitor
@@ -150,23 +152,17 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     };
 
     const handleError = (error: Error): void => {
-        setState({
-            ...state,
-            status: {
-                ...state.status,
-                hasError: !!error
-            }
-        });
+        setError(!!error);
     };
     return (
-        <FlagshipErrorBoundary
-            customerChildren={children}
-            onError={handleError}
-        >
-            <FlagshipContext.Provider value={{ state, setState }}>
+        <FlagshipContext.Provider value={{ state, setState, hasError }}>
+            <FlagshipErrorBoundary
+                customerChildren={children}
+                onError={handleError}
+            >
                 {handlingDisplay()}
-            </FlagshipContext.Provider>
-        </FlagshipErrorBoundary>
+            </FlagshipErrorBoundary>
+        </FlagshipContext.Provider>
     );
 };
 

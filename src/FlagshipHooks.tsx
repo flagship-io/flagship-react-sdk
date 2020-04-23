@@ -141,9 +141,10 @@ export const useFlagship = ({
     }
 }: UseFlagshipParams): UseFlagshipOutput => {
     const {
+        hasError,
         state: { fsVisitor, status }
     } = useContext(FlagshipContext);
-    if (status.hasError) {
+    if (hasError) {
         return {
             modifications: safeMode_getCacheModifications(
                 modificationsRequested,
