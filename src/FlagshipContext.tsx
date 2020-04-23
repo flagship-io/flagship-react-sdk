@@ -87,11 +87,21 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             config as { enableConsoleLogs: boolean; nodeEnv: string }
         )
     });
-    const [hasError, setError] = useState(false);
+    const [errorData, setError] = useState<{
+        hasError: boolean;
+        error: Error | null;
+    }>({ hasError: false, error: null });
     const {
         status: { isLoading },
         fsVisitor
     } = state;
+    const tryCatchCallback = (callback: any): void => {
+        try {
+            callback();
+        } catch (error) {
+            setError({ error, hasError: true });
+        }
+    };
 
     // Call FlagShip any time context get changed.
     useEffect(() => {
@@ -113,11 +123,11 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             visitorInstance.fetchedModifications = { ...initialModifications }; // initialize immediately with something
         }
         if (onInitStart) {
-            onInitStart();
+            tryCatchCallback(onInitStart);
         }
         visitorInstance.on('saveCache', (args) => {
             if (onSavingModificationsInCache) {
-                onSavingModificationsInCache(args);
+                tryCatchCallback(() => onSavingModificationsInCache(args));
             }
         });
         visitorInstance.on('ready', () => {
@@ -135,7 +145,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                     null
             });
             if (onInitDone) {
-                onInitDone();
+                tryCatchCallback(onInitDone);
             }
         });
     }, [
@@ -148,12 +158,14 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     useEffect(() => {
         if (!isLoading) {
             if (onUpdate) {
-                onUpdate(
-                    {
-                        fsModifications: state.fsModifications
-                    },
-                    state.fsVisitor
-                );
+                tryCatchCallback(() => {
+                    onUpdate(
+                        {
+                            fsModifications: state.fsModifications
+                        },
+                        state.fsVisitor
+                    );
+                });
             }
         }
     }, [state]);
@@ -167,13 +179,16 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     };
 
     const handleError = (error: Error): void => {
-        setError(!!error);
+        setError({ error, hasError: !!error });
     };
     return (
-        <FlagshipContext.Provider value={{ state, setState, hasError }}>
+        <FlagshipContext.Provider
+            value={{ state, setState, hasError: errorData.hasError }}
+        >
             <FlagshipErrorBoundary
                 customerChildren={children}
                 onError={handleError}
+                error={errorData.error}
                 sdkSettings={config as FlagshipReactSdkConfig}
                 log={state.log}
             >

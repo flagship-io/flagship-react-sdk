@@ -1,5 +1,5 @@
 import React, { ErrorInfo } from 'react';
-import flagship, { FsLogger } from '@flagship.io/js-sdk';
+import { FsLogger } from '@flagship.io/js-sdk';
 // eslint-disable-next-line import/no-cycle
 import { FlagshipReactSdkConfig } from './FlagshipContext';
 
@@ -26,6 +26,7 @@ type Props = {
     children: React.ReactNode;
     customerChildren: React.ReactNode;
     onError(error: Error): void;
+    error: Error | null;
     sdkSettings: FlagshipReactSdkConfig;
     log: FsLogger;
 };
@@ -33,7 +34,11 @@ type Props = {
 class FlagshipErrorBoundary extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
-        this.state = { error: null, errorInfo: null, isCollapse: false };
+        this.state = {
+            error: this.props.error,
+            errorInfo: null,
+            isCollapse: false
+        };
     }
 
     componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
@@ -47,14 +52,26 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
         });
     }
 
+    componentDidUpdate(prevProps: Props): void {
+        if (this.props.error !== prevProps.error) {
+            this.props.log.fatal(
+                `An error occurred. The SDK is switching into safe mode:\n${
+                    (this.props.error as Error).stack
+                }`
+            );
+        }
+    }
+
     render(): React.ReactNode {
-        const { error, errorInfo, isCollapse } = this.state;
+        const { error, isCollapse } = this.state;
         const {
             children,
             customerChildren,
+            error: errorProp,
             sdkSettings: { nodeEnv, enableErrorLayout }
         } = this.props;
-        if (errorInfo) {
+        if (errorProp || error) {
+            const errorCopy = errorProp || error;
             return (
                 <>
                     {nodeEnv !== 'production' && enableErrorLayout && (
@@ -101,7 +118,7 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
                                 </button>
                             </div>
 
-                            {error && (
+                            {errorCopy && (
                                 <div
                                     style={{
                                         maxHeight: isCollapse ? 200 : 0,
@@ -112,7 +129,7 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
                                             'max-height 0.5s ease-in-out'
                                     }}
                                 >
-                                    {`${error.stack}`}
+                                    {`${(errorCopy as Error).stack}`}
                                 </div>
                             )}
                         </div>
