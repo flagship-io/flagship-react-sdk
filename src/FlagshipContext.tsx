@@ -56,14 +56,16 @@ interface FlagshipProviderProps {
         id: string;
         context?: FlagshipVisitorContext;
     };
-    defaultModifications?: DecisionApiResponseData;
+    initialModifications?: DecisionApiResponseData;
     onInitStart?(): void;
     onInitDone?(): void;
     onSavingModificationsInCache?(args: SaveCacheArgs): void;
-    onUpdate?(sdkData: {
-        fsVisitor: IFlagshipVisitor | null;
-        fsModifications: GetModificationsOutput | null;
-    }): void;
+    onUpdate?(
+        sdkData: {
+            fsModifications: GetModificationsOutput | null;
+        },
+        fsVisitor: IFlagshipVisitor | null
+    ): void;
 }
 
 export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
@@ -72,7 +74,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     config,
     visitorData,
     loadingComponent,
-    defaultModifications,
+    initialModifications,
     onSavingModificationsInCache,
     onInitStart,
     onInitDone,
@@ -107,8 +109,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             fsVisitor: visitorInstance
             // fsModifications: ???
         });
-        if (defaultModifications) {
-            visitorInstance.fetchedModifications = { ...defaultModifications }; // initialize immediately with something
+        if (initialModifications) {
+            visitorInstance.fetchedModifications = { ...initialModifications }; // initialize immediately with something
         }
         if (onInitStart) {
             onInitStart();
@@ -146,10 +148,12 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     useEffect(() => {
         if (!isLoading) {
             if (onUpdate) {
-                onUpdate({
-                    fsVisitor: state.fsVisitor,
-                    fsModifications: state.fsModifications
-                });
+                onUpdate(
+                    {
+                        fsModifications: state.fsModifications
+                    },
+                    state.fsVisitor
+                );
             }
         }
     }, [state]);
@@ -184,7 +188,7 @@ FlagshipProvider.defaultProps = {
         enableErrorLayout: false
     },
     loadingComponent: undefined,
-    defaultModifications: undefined,
+    initialModifications: undefined,
     onInitStart: (): void => {
         // do nothing
     },

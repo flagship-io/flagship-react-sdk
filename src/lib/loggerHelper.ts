@@ -1,7 +1,5 @@
 /* eslint-disable no-console */
 
-import { FlagshipSdkConfig } from '@flagship.io/js-sdk';
-
 export type FsLogger = {
     warn(str: string): void | null;
     error(str: string): void | null;

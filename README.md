@@ -164,56 +164,26 @@ This is all available props which you can use inside the `FlagshipProvider` reac
         </tr>
         <tr>
           <td>onUpdate</td>
-          <td>function():void</td>
+          <td>function(object):void</td>
           <td>null</td>
-          <td>Callback function called when the SDK is updated. For example, after a synchronize is triggered or visitor context has changed.</td>
-        </tr>
-        <tr>
-          <td>onSavingModificationsInCache</td>
-          <td>function(obj):void</td>
-          <td>null</td>
-          <td>Callback function called when the SDK is saving modifications in cache.  
-          <br>It has an argument which has the following shape:
-          <table> 
+          <td>Callback function called when the SDK is updated. For example, after a synchronize is triggered or visitor context has changed.<br>It has one argument which is an object with has the following shape: <table> 
               <tbody><tr>
                   <th style="width:25%">Key/Property</th>
                   <th>Description</th>
                 </tr>  
                 <tr>
                   <td><em>modifications</em></td>
-                  <td>It is an object which contains modifications <i>past</i> and <i>future</i> computed modifications. 
-                  <br>
-                   <table> 
-              <tbody><tr>
-                  <th style="width:25%">Key/Property</th>
-                  <th>Description</th>
-                </tr>  
-                <tr>
-                  <td><em>before</em></td>
-                  <td>Modificaitons previously in cache.</td>
-                </tr>
-                  <td><em>after</em></td>
-                  <td>New modificaitons which are about to be saved in cache.</td>
-              </tbody>
-            </table>
-            </td>
-                </tr>
-                <tr>
-                  <td><em>saveInCacheModifications</em></td>
-                  <td>This is a function which you'll have to call if you want to override the modifications which will be saved in the SDK cache.<br>
-                  It has one argument which the modifications that you want to override.<br>If you leave it undefined, it will keep default behavior.</td>
-                </tr>
-                  <tr>
+                  <td>It contains the last modifications saved in cache.
+                  </td>
                 </tr>
               </tbody>
-            </table>
-          </td>
+            </table></td>
         </tr>
         <tr>
-          <td>defaultModifications</td>
+          <td>initialModifications</td>
           <td>object</td>
           <td>null</td>
-          <td>This is an object which has the shape of Flagship modifications as it is return from the Flagship API.<br>Can be useful when you already manually fetched the data before or you have your own cache.<br>Providing this props avoid the SDK to have an empty cache during first initialization.<br>The default modifications provided will be override once the SDK finish to fetch Flagship API with an initialization or a synchronization.</td>
+          <td>This is an object which has the shape of Flagship modifications as it is return from the Flagship API.<br>Can be useful when you already manually fetched the data before or you have your own cache.<br>Providing this prop avoid the SDK to have an empty cache during first initialization.<br>The default modifications provided will be overridden whenever the SDK is fetching Flagship API in order to modifications up to date.<br>You can save back the last updated modifications using <i>onUpdate</i> prop callback.</td>
         </tr>
         <tr>
           <td>loadingComponent</td>
