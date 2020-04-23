@@ -307,7 +307,7 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
     <tbody>
         <tr>
           <td>modifications</td>
-          <td>Object</td>
+          <td>object</td>
           <td>Node param to specify flagship modifications:
             <table> 
               <tbody><tr>
@@ -348,7 +348,7 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
         </tr>
         <tr>
           <td>status</td>
-          <td>Object</td>
+          <td>object</td>
             <td>Gives you some informations about SDK current sate:
           <table> 
               <tbody><tr>
@@ -419,7 +419,7 @@ This will give you the modification saved in the SDK cache.
         </tr>
         <tr>
           <td>activateAllModifications</td>
-          <td>Boolean</td>
+          <td>boolean</td>
           <td>false</td>
           <td>If set to true, all modifications will be activated. If set to false, none will be activated.
           <br>Be aware that if this argument is set, the attribute <i>activate</i> set in each element of array <b>modificationsRequested</b> will be ignored.</td>
