@@ -3,7 +3,6 @@ import React from 'react';
 import { Alert, Col, Row, Button } from 'react-bootstrap';
 
 export const DemoErrorBoundary = () => {
-    // useFsActivate(['btnColor', 'otherKey1', 'otherKey2']);
     const demoHookName = 'Safe Mode';
     const [triggerError, setTriggerError] = React.useState(false);
     React.useEffect(() => {

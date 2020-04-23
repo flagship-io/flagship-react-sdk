@@ -1,5 +1,5 @@
 import React, { ErrorInfo } from 'react';
-import flagship from '@flagship.io/js-sdk';
+import flagship, { FsLogger } from '@flagship.io/js-sdk';
 // eslint-disable-next-line import/no-cycle
 import { FlagshipReactSdkConfig } from './FlagshipContext';
 
@@ -27,6 +27,7 @@ type Props = {
     customerChildren: React.ReactNode;
     onError(error: Error): void;
     sdkSettings: FlagshipReactSdkConfig;
+    log: FsLogger;
 };
 
 class FlagshipErrorBoundary extends React.Component<Props, State> {
@@ -37,6 +38,9 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
 
     componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
         this.props.onError(error);
+        this.props.log.fatal(
+            `An error occurred. The SDK is switching into safe mode:\n${error.stack}`
+        );
         this.setState({
             error,
             errorInfo

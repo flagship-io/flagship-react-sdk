@@ -6,9 +6,12 @@ import flagship, {
     IFlagshipVisitor,
     DecisionApiResponseData,
     GetModificationsOutput,
-    SaveCacheArgs
+    SaveCacheArgs,
+    FsLogger
 } from '@flagship.io/js-sdk';
+// eslint-disable-next-line import/no-cycle
 import FlagshipErrorBoundary from './FlagshipErrorBoundary';
+import loggerHelper from './lib/loggerHelper';
 
 export declare type FsStatus = {
     isLoading: boolean;
@@ -20,6 +23,7 @@ declare type FsState = {
     fsVisitor: IFlagshipVisitor | null;
     fsModifications: GetModificationsOutput | null;
     status: FsStatus;
+    log: FsLogger | null;
 };
 
 export interface FlagshipReactSdkConfig extends FlagshipSdkConfig {
@@ -28,6 +32,7 @@ export interface FlagshipReactSdkConfig extends FlagshipSdkConfig {
 
 const initState: FsState = {
     fsVisitor: null,
+    log: null,
     fsModifications: null,
     status: {
         isLoading: true,
@@ -74,7 +79,12 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     onUpdate
 }: FlagshipProviderProps) => {
     const { id, context } = visitorData;
-    const [state, setState] = useState({ ...initState });
+    const [state, setState] = useState({
+        ...initState,
+        log: loggerHelper.getLogger(
+            config as { enableConsoleLogs: boolean; nodeEnv: string }
+        )
+    });
     const [hasError, setError] = useState(false);
     const {
         status: { isLoading },
@@ -161,6 +171,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 customerChildren={children}
                 onError={handleError}
                 sdkSettings={config as FlagshipReactSdkConfig}
+                log={state.log}
             >
                 {handlingDisplay()}
             </FlagshipErrorBoundary>

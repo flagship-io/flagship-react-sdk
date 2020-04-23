@@ -3,7 +3,8 @@ import {
     FsModifsRequestedList,
     GetModificationsOutput,
     IFlagshipVisitor,
-    HitShape
+    HitShape,
+    FsLogger
 } from '@flagship.io/js-sdk';
 import FlagshipContext, { FsStatus } from './FlagshipContext';
 // import { FlagshipConsumer as FlagshipContext } from './FlagshipContext';
@@ -13,9 +14,9 @@ declare type UseFsActivateOutput = void;
 declare type UseFsSynchronize = void;
 declare type UseFsModificationsOutput = GetModificationsOutput;
 
-const reportNoVisitor = (): void => {
-    console.error(
-        'Error: flagship-react-sdk not correctly initialized... Make sure fsVisitor is ready.'
+const reportNoVisitor = (log: FsLogger): void => {
+    (log as FsLogger).error(
+        'sdk not correctly initialized... Make sure fsVisitor is ready.'
     );
 };
 
@@ -27,7 +28,7 @@ export const useFsActivate = (
     useEffect(() => {
         const { fsVisitor } = state;
         if (!fsVisitor) {
-            reportNoVisitor();
+            reportNoVisitor(state.log as FsLogger);
         } else {
             fsVisitor.activateModifications(
                 modificationKeys.map((key) => ({ key }))
@@ -45,7 +46,7 @@ export const useFsSynchronize = (
     useEffect(() => {
         const { fsVisitor } = state;
         if (!fsVisitor) {
-            reportNoVisitor();
+            reportNoVisitor(state.log as FsLogger);
         } else {
             fsVisitor
                 .synchronizeModifications(activateAllModifications)
@@ -89,10 +90,11 @@ const safeMode_getCacheModifications = (
 const getCacheModifications = (
     fsVisitor: IFlagshipVisitor | null,
     modificationsRequested: FsModifsRequestedList,
-    activateAllModifications = false
+    activateAllModifications = false,
+    log: FsLogger
 ): UseFsModificationsOutput => {
     if (!fsVisitor) {
-        console.log('fsVisitor not initialized, returns default value');
+        log.warn('fsVisitor not initialized, returns default value');
         return safeMode_getCacheModifications(
             modificationsRequested,
             activateAllModifications
@@ -109,12 +111,13 @@ export const useFsModifications = (
     activateAllModifications = false
 ): UseFsModificationsOutput => {
     const {
-        state: { fsVisitor }
+        state: { fsVisitor, log }
     } = useContext(FlagshipContext);
     return getCacheModifications(
         fsVisitor,
         modificationsRequested,
-        activateAllModifications
+        activateAllModifications,
+        log as FsLogger
     );
 };
 
@@ -142,7 +145,7 @@ export const useFlagship = ({
 }: UseFlagshipParams): UseFlagshipOutput => {
     const {
         hasError,
-        state: { fsVisitor, status }
+        state: { fsVisitor, status, log }
     } = useContext(FlagshipContext);
     if (hasError) {
         return {
@@ -153,20 +156,20 @@ export const useFlagship = ({
             status,
             hit: {
                 send: (): void => {
-                    console.log(
-                        'SDK React - send hit skipped because is out of order.'
+                    (log as FsLogger).error(
+                        'send hit skipped because is out of order.'
                     );
                 },
                 sendMultiple: (): void => {
-                    console.log(
-                        'SDK React - send multiple hits skipped because is out of order.'
+                    (log as FsLogger).error(
+                        'send multiple hits skipped because is out of order.'
                     );
                 }
             }
         };
     }
     const logSdkNotReady = () => {
-        console.error('SDK React not ready yet.');
+        (log as FsLogger).error('SDK not ready yet.');
     };
     const send = (hit: HitShape): void => {
         if (fsVisitor && fsVisitor.sendHit) {
@@ -188,7 +191,8 @@ export const useFlagship = ({
         modifications: getCacheModifications(
             fsVisitor,
             modificationsRequested,
-            activateAllModifications
+            activateAllModifications,
+            log as FsLogger
         ),
         status,
         hit: {
