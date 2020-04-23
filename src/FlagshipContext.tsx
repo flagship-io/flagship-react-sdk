@@ -159,6 +159,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             <FlagshipErrorBoundary
                 customerChildren={children}
                 onError={handleError}
+                sdkSettings={config as flagship.FlagshipSdkConfig}
             >
                 {handlingDisplay()}
             </FlagshipErrorBoundary>
