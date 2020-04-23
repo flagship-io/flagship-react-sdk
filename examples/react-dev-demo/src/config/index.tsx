@@ -4,7 +4,7 @@ const sdkSettings: FlagshipReactSdkConfig = {
     fetchNow: true,
     enableConsoleLogs: true,
     enableErrorLayout: true,
-    nodeEnv: 'development'
+    nodeEnv: 'production'
 };
 
 const config = {
@@ -20,7 +20,7 @@ const config = {
             'bn1ab7m56qolupi5sa0g_1',
             'bn1ab7m56qolupi5sa0g_2'
         ],
-        nodeEnv: ['development', 'production'],
+        nodeEnv: ['production', 'development'],
         visitorId: ['test-vid', 'test-vid_2', 'test-vid_3']
     }
 };

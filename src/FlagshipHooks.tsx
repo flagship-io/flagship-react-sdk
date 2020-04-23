@@ -22,7 +22,7 @@ const reportNoVisitor = (log: FsLogger): void => {
 
 export const useFsActivate = (
     modificationKeys: ModificationKeys,
-    applyEffectScope = []
+    applyEffectScope: any[] = []
 ): UseFsActivateOutput => {
     const { state } = useContext(FlagshipContext);
     useEffect(() => {

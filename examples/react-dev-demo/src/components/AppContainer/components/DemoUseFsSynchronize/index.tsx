@@ -25,7 +25,7 @@ export const DemoUseFsSynchronize: React.FC = () => {
                     ></CodeBlock>
                     <Form>
                         <Form.Group controlId="demoFsSynchronize.ControlSelect1">
-                            <Form.Label>listenedValue</Form.Label>
+                            <Form.Label>Playing with 1st argument</Form.Label>
                             <Form.Check
                                 type="checkbox"
                                 checked={listenedValue}
@@ -36,7 +36,7 @@ export const DemoUseFsSynchronize: React.FC = () => {
                             />
                         </Form.Group>
                         <Form.Group controlId="demoFsSynchronize.ControlSelect2">
-                            <Form.Label>listenedValue</Form.Label>
+                            <Form.Label>Playing with 2nd argument</Form.Label>
                             <Form.Check
                                 type="checkbox"
                                 checked={activateAllModifications}
@@ -48,8 +48,8 @@ export const DemoUseFsSynchronize: React.FC = () => {
                         </Form.Group>
                     </Form>
                     <div>
-                        Switch value of <b>listenedValue</b> will trigger a
-                        synchronize as it is set in the first argument of{' '}
+                        When <b>listenedValue</b> value changed, it will trigger
+                        a synchronize as it is set in the first argument of{' '}
                         <b>useFsActivate</b>.
                     </div>
                     <div>

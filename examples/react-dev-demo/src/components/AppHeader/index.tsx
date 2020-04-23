@@ -6,7 +6,7 @@ const AppHeader: React.FC = () => (
     <>
         <Navbar className="fsNavbar" fixed="top">
             <Navbar.Brand
-                href="https://github.com/abtasty/flagship-js-sdk"
+                href="https://github.com/abtasty/flagship-react-sdk"
                 className="flex item-center"
             >
                 <img
@@ -41,6 +41,9 @@ const AppHeader: React.FC = () => (
                     </NavDropdown.Item>
                     <NavDropdown.Item eventKey="4.2" href="#sendHits">
                         Send Hit(s)
+                    </NavDropdown.Item>
+                    <NavDropdown.Item eventKey="4.3" href="#useFsSynchronize">
+                        Refresh modifications
                     </NavDropdown.Item>
                     <NavDropdown.Item eventKey="4.4" href="#safeMode">
                         Safe Mode

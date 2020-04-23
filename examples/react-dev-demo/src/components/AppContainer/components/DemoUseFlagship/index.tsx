@@ -98,6 +98,7 @@ const {
 fsStatus=${JSON.stringify(fsStatus, null, 2)};
                         `}
                     />
+                    <div className="fsAnchor" id="sendHits"></div>
                     <h3>
                         3 - Playing with <i>hits</i>
                     </h3>
