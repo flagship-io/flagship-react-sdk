@@ -59,21 +59,25 @@ const {
                     </h3>
                     <p>demo: </p>
                     <div>
-                        <button
+                        <Button
+                            variant="secondary"
                             style={{
                                 backgroundColor: fsModifications.btnColor
                             }}
                         >
-                            I'm a button customized with Flagship
-                        </button>
+                            {`I'm a button customized with Flagship (backgroundColor=${fsModifications.btnColor})`}
+                        </Button>
                     </div>
                     <CodeBlock
                         className="mv3"
-                        codeString={`<div>
-    <button style={{ backgroundColor: ${fsModifications.btnColor} }}>
-        I'm a button customized with Flagship
-    </button>
-</div>              `}
+                        codeString={`<Button
+    variant="secondary"
+    style={{
+        backgroundColor: fsModifications.btnColor
+    }}
+>
+    {\`I'm a button customized with Flagship (backgroundColor=\${fsModifications.btnColor})\`}
+</Button>`}
                     />
                     <h3>
                         2 - Playing with <i>fsStatus</i>

@@ -14,11 +14,11 @@ const AppHeader: React.FC = () => (
                     src={Logo}
                     className="d-inline-block align-top logoAdjust"
                 />
-                REACT SDK (Dev demo)
+                React SDK (Dev demo)
             </Navbar.Brand>
             <Nav className="mr-auto fsNav">
                 <Nav.Link href="#initialization">Initialization</Nav.Link>
-                <NavDropdown title="Fs Hooks" id="nav-dropdown">
+                <NavDropdown title="Hooks" id="nav-dropdown">
                     <NavDropdown.Item eventKey="4.0" href="#useFlagship">
                         useFlagship
                     </NavDropdown.Item>

@@ -51,15 +51,12 @@ const App: React.FC = () => {
                     onInitDone={() => {
                         console.log('React SDK init done');
                     }}
-                    onUpdate={() => {
-                        console.log('React SDK updated');
+                    onUpdate={({ fsModifications }) => {
+                        console.log(
+                            'React SDK updated with modifications:\n' +
+                                JSON.stringify(fsModifications)
+                        );
                     }}
-                    onSavingModificationsInCache={
-                        (/* modifications */) =>
-                            console.log(
-                                'React SDK saved modifications in cache'
-                            )
-                    }
                     loadingComponent={
                         <Container className="mt3">
                             <Row>

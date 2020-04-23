@@ -172,7 +172,7 @@ This is all available props which you can use inside the `FlagshipProvider` reac
                   <th>Description</th>
                 </tr>  
                 <tr>
-                  <td><em>modifications</em></td>
+                  <td><em>fsModifications</em></td>
                   <td>It contains the last modifications saved in cache.
                   </td>
                 </tr>
