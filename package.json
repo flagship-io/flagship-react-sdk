@@ -10,7 +10,7 @@
         "package.json"
     ],
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 0",
+        "test": "jest",
         "release": "np",
         "version": "npm run build",
         "publish": "npm run update:react-dev-demo && git add . && git commit -m\"Post publish update\" && git push && npm run publish:reactDemoDev",
@@ -47,19 +47,23 @@
     ],
     "homepage": "https://github.com/abtasty/flagship-react-sdk#readme",
     "dependencies": {
-        "@flagship.io/js-sdk": "^0.1.9",
-        "@types/jest": "^25.2.1"
+        "@flagship.io/js-sdk": "^0.1.9"
     },
     "peerDependencies": {
         "react": "^16.8.0"
     },
     "devDependencies": {
         "@testing-library/react-hooks": "^3.2.1",
+        "@types/enzyme": "^3.10.5",
+        "@types/jest": "^25.2.1",
         "@types/react": "^16.9.32",
         "@types/react-dom": "^16.9.6",
         "@typescript-eslint/eslint-plugin": "^2.26.0",
         "@typescript-eslint/parser": "^2.26.0",
         "awesome-typescript-loader": "^5.2.1",
+        "enzyme": "^3.11.0",
+        "enzyme-adapter-react-16": "^1.15.2",
+        "enzyme-to-json": "^3.4.4",
         "eslint": "^6.8.0",
         "eslint-config-airbnb": "^18.1.0",
         "eslint-config-prettier": "^6.10.1",
@@ -69,10 +73,13 @@
         "eslint-plugin-prettier": "^3.1.2",
         "eslint-plugin-react": "^7.19.0",
         "eslint-plugin-react-hooks": "^2.5.0",
+        "jest": "^25.4.0",
         "np": "^6.2.1",
         "prettier": "^2.0.4",
-        "react": "^16.8.0",
-        "react-dom": "^16.8.0",
+        "react": "^16.9.0",
+        "react-dom": "^16.9.0",
+        "react-test-renderer": "^16.9.0",
+        "ts-jest": "^25.4.0",
         "typescript": "^3.8.3"
     }
 }

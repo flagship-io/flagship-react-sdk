@@ -1,4 +1,10 @@
-import React, { useState, useEffect, SetStateAction, Dispatch } from 'react';
+import React, {
+    useState,
+    useEffect,
+    SetStateAction,
+    Dispatch,
+    useContext
+} from 'react';
 // / <reference path="@flagship.io/js-sdk/flagship.d.ts" />
 import flagship, {
     FlagshipSdkConfig,
@@ -19,7 +25,7 @@ export declare type FsStatus = {
     lastRefresh: string | null;
 };
 
-declare type FsState = {
+export declare type FsState = {
     fsVisitor: IFlagshipVisitor | null;
     fsModifications: GetModificationsOutput | null;
     status: FsStatus;
@@ -30,7 +36,7 @@ export interface FlagshipReactSdkConfig extends FlagshipSdkConfig {
     enableErrorLayout: boolean;
 }
 
-const initState: FsState = {
+export const initState: FsState = {
     fsVisitor: null,
     log: null,
     fsModifications: null,
@@ -220,3 +226,4 @@ FlagshipProvider.defaultProps = {
 
 export const FlagshipConsumer = FlagshipContext.Consumer;
 export default FlagshipContext;
+export const useFlagshipContext = (): any => useContext(FlagshipContext);
