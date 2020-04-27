@@ -17,11 +17,8 @@ export const DemoUseFlagship = () => {
         }
     };
     const output = useFlagship(fsParams);
-    const {
-        modifications: fsModifications,
-        status: fsStatus,
-        hit: fsHit
-    } = output;
+    const { modifications: fsModifications } = output;
+    const { status: fsStatus, hit: fsHit } = useFlagship();
     const demoHookName = 'useFlagship';
     return (
         <Row>
@@ -102,6 +99,19 @@ fsStatus=${JSON.stringify(fsStatus, null, 2)};
                     <h3>
                         3 - Playing with <i>hits</i>
                     </h3>
+                    <div>
+                        <b>NOTE:</b>
+                        <p>
+                            It is not necessary to provide parameters to{' '}
+                            <i>useFlagship</i> if your purpose is only to send
+                            hits.
+                        </p>
+                        <CodeBlock
+                            className="mv3"
+                            codeString={`import { useFlagship } from '@flagship.io/react-sdk';
+const { hit: fsHit } = useFlagship();`}
+                        />
+                    </div>
                     <p>demo: </p>
                     <CodeBlock
                         className="mv3"
