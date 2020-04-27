@@ -1,4 +1,4 @@
-import { useFlagship, UseFlagshipOutput } from '@flagship.io/react-sdk';
+import { useFlagship } from '@flagship.io/react-sdk';
 import React from 'react';
 import { Alert, Col, Row, Button } from 'react-bootstrap';
 import CodeBlock from '../../../common/CodeBlock';

@@ -10,7 +10,6 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { AppContainer } from './components/AppContainer';
 import config from './config';
 import AppHeader from './components/AppHeader';
-import { FlagshipSdkConfig } from '@flagship.io/js-sdk';
 interface VisitorContext {
     [key: string]: any;
 }

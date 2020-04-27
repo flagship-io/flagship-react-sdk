@@ -20,13 +20,23 @@ const reportNoVisitor = (log: FsLogger): void => {
     );
 };
 
+const safeModeLog = (log: FsLogger, functionName: string): void => {
+    (log as FsLogger).error(
+        `${functionName} is disabled because the SDK is in safe mode.`
+    );
+};
+
 export const useFsActivate = (
     modificationKeys: ModificationKeys,
     applyEffectScope: any[] = []
 ): UseFsActivateOutput => {
-    const { state } = useContext(FlagshipContext);
-    useEffect(() => {
+    const { state, hasError } = useContext(FlagshipContext);
+    useEffect((): void => {
         const { fsVisitor } = state;
+
+        if (hasError) {
+            return safeModeLog(state.log as FsLogger, 'UseFsActivate');
+        }
         if (!fsVisitor) {
             reportNoVisitor(state.log as FsLogger);
         } else {
@@ -34,6 +44,7 @@ export const useFsActivate = (
                 modificationKeys.map((key) => ({ key }))
             );
         }
+        return undefined;
     }, applyEffectScope);
 };
 
@@ -42,9 +53,13 @@ export const useFsSynchronize = (
     applyEffectScope: any[] = [],
     activateAllModifications = false
 ): UseFsSynchronize => {
-    const { state, setState } = useContext(FlagshipContext);
+    const { state, setState, hasError } = useContext(FlagshipContext);
     useEffect(() => {
         const { fsVisitor } = state;
+
+        if (hasError) {
+            return safeModeLog(state.log as FsLogger, 'UseFsSynchronize');
+        }
         if (!fsVisitor) {
             reportNoVisitor(state.log as FsLogger);
         } else {
@@ -68,6 +83,8 @@ export const useFsSynchronize = (
                     }
                 });
         }
+
+        return undefined;
     }, applyEffectScope);
 };
 
@@ -111,8 +128,17 @@ export const useFsModifications = (
     activateAllModifications = false
 ): UseFsModificationsOutput => {
     const {
-        state: { fsVisitor, log }
+        state: { fsVisitor, log },
+        hasError
     } = useContext(FlagshipContext);
+
+    if (hasError) {
+        return safeMode_getCacheModifications(
+            modificationsRequested,
+            activateAllModifications
+        );
+    }
+
     return getCacheModifications(
         fsVisitor,
         modificationsRequested,
@@ -156,14 +182,10 @@ export const useFlagship = ({
             status,
             hit: {
                 send: (): void => {
-                    (log as FsLogger).error(
-                        'send hit skipped because is out of order.'
-                    );
+                    safeModeLog(log as FsLogger, 'send hit');
                 },
                 sendMultiple: (): void => {
-                    (log as FsLogger).error(
-                        'send multiple hits skipped because is out of order.'
-                    );
+                    safeModeLog(log as FsLogger, 'send multiple hits');
                 }
             }
         };
