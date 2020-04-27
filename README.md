@@ -273,7 +273,7 @@ Here the list of current available hooks:
 -   [useFsActivate](#useFsActivate)
 -   [useFsSynchronize](#useFsSynchronize)
 
-### <i>Shape</i> of possible hits to send
+### Available hits
 
 -   [Transaction Hit](#transaction-hit)
 -   [Screen Hit](#screen-hit)

@@ -162,17 +162,18 @@ export declare type UseFlagshipOutput = {
     };
 };
 
-export const useFlagship = (
-    options: UseFlagshipParams = {
-        modifications: { requested: [], activateAll: false }
-    }
-): UseFlagshipOutput => {
+export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
+    const computedOptions = options
+        ? (options as UseFlagshipParams)
+        : {
+              modifications: { requested: [], activateAll: false }
+          };
     const {
         modifications: {
             requested: modificationsRequested,
             activateAll: activateAllModifications = false
         }
-    } = options;
+    } = computedOptions;
     const {
         hasError,
         state: { fsVisitor, status, log }
