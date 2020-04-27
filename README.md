@@ -273,9 +273,16 @@ Here the list of current available hooks:
 -   [useFsActivate](#useFsActivate)
 -   [useFsSynchronize](#useFsSynchronize)
 
+### <i>Shape</i> of possible hits to send
+
+-   [Transaction Hit](#transaction-hit)
+-   [Screen Hit](#screen-hit)
+-   [Item Hit](#item-hit)
+-   [Event Hit](#event-hit)
+
 #### `useFlagship`
 
-Most used hook from the Flagship React SDK. Through this hook, you can access to modifications of your current visitor and have an access to the SDK status.
+Most used hook from the Flagship React SDK. Through this hook, you can access to modifications of your current visitor and have an access to the SDK status. Output shape is visible [here](#useFlagship-output-shape).
 
 > returns an object (Typescript: UseFlagshipOutput)
 
@@ -284,26 +291,24 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
     <tr>
         <th style="width: 100px;">Argument</th>
         <th style="width: 50px;">Type</th>
-        <th style="width: 50px;">Default</th>
         <th>description</th>
     </tr>
     </thead>
     <tbody>
         <tr>
-          <td>params</td>
-          <td>object (TS:UseFlagshipOutput)</td>
-          <td>*required*</td>
-          <td>Contains further required nodes. See the shape of this object  <a href='README.md#useFlagship-parameters'>just below</a>.</td>
+          <td>options</td>
+          <td>object (TS:UseFlagshipParams)</td>
+          <td>See the shape of options param,  <a href='README.md#useFlagship-options'>just below</a>.</td>
         </tr>
     </tbody>
 </table>
 
-##### `useFlagship parameters`
+##### `useFlagship options`
 
 <table class="table table-bordered table-striped">
     <thead>
     <tr>
-        <th style="width: 100px;">Argument</th>
+        <th style="width: 100px;">Key/Property</th>
         <th style="width: 50px;">Type</th>
         <th>description</th>
     </tr>
@@ -349,6 +354,49 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
               </tbody>
             </table>
           </td>
+        </tr>
+    </tbody>
+</table>
+
+##### `useFlagship output shape`
+
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th style="width: 100px;">Key/Property</th>
+        <th style="width: 50px;">Type</th>
+        <th>description</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>modifications</td>
+          <td>object</td>
+          <td>An <i>object</i> where each key is a modification with corresponding value
+          </td>
+        </tr>
+        <tr>
+          <td>hit</td>
+          <td>object</td>
+             <td>Gives you some functions to send one or further hits:
+          <table> 
+              <tbody><tr>
+                  <th style="width:25%">Key/Property</th>
+                  <th>Description</th>
+                </tr>  
+                <tr>
+                  <td><em>send</em></td>
+                  <td>Takes an object as parameter. The object must follow a <a href='#Shape-of-possible-hits-to-send'>hit shape</a>.
+            </td>
+                </tr>
+                <tr>
+                  <td><em>sendMultiple</em></td>
+                <td>Takes an array of object as parameter. Each object must follow a <a href='#Shape-of-possible-hits-to-send'>hit shape</a>. You can mix different hit shape within the array.
+         </tr>
+                  <tr>
+                </tr>
+              </tbody>
+            </table> </td>
         </tr>
         <tr>
           <td>status</td>
@@ -502,6 +550,211 @@ Refresh modifications in cache by making a http request to the Flagship API.
 **Demo:**
 
 -   coming soon
+
+### <i>Shape</i> of possible hits to send
+
+-   [Transaction Hit](#transaction-hit)
+-   [Screen Hit](#screen-hit)
+-   [Item Hit](#item-hit)
+-   [Event Hit](#event-hit)
+
+#### `Transaction Hit`
+
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th style="width: 100px;">Attribute</th>
+        <th style="width: 50px;">Type</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>transactionId</td>
+          <td>string</td>
+          <td>Required. The id of your transaction.</td>
+        </tr>
+        <tr>
+          <td>affiliation</td>
+          <td>string</td>
+          <td>Required. The name of the KPI that you will have inside your reporting.</td>
+        </tr>
+        <tr>
+          <td>totalRevenue</td>
+          <td>number</td>
+          <td>Optional. Specifies the total revenue associated with the transaction. This value should include any shipping or tax costs.</td>
+        </tr>
+        <tr>
+          <td>shippingCost</td>
+          <td>number</td>
+          <td>Optional. The total shipping cost of your transaction.</td>
+        </tr>
+        <tr>
+          <td>shippingMethod</td>
+          <td>string</td>
+          <td>Optional. The shipping method of your transaction.</td>
+        </tr>
+        <tr>
+          <td>taxes</td>
+          <td>number</td>
+          <td>Optional. Specifies the total tax of your transaction.</td>
+        </tr>
+        <tr>
+          <td>currency</td>
+          <td>string</td>
+          <td>Optional. Specifies the currency of your transaction.<br>NOTE: Value should be a valid ISO 4217 currency code.</td>
+        </tr>
+        <tr>
+          <td>paymentMethod</td>
+          <td>string</td>
+          <td>Optional. Specifies the payment method used for your transaction.</td>
+        </tr>
+        <tr>
+          <td>itemCount</td>
+          <td>number</td>
+          <td>Optional. Specifies the number of item of your transaction.</td>
+        </tr>
+        <tr>
+          <td>couponCode</td>
+          <td>string</td>
+          <td>Optional. The coupon code associated with the transaction.</td>
+        </tr>
+        <tr>
+          <td>documentLocation</td>
+          <td>string</td>
+          <td>Optional. Specifies the current URL of the page, at the moment where the hit has been sent.</td>
+        </tr>
+        <tr>
+          <td>pageTitle</td>
+          <td>string</td>
+          <td>Optional. Specifies the name of the page, at the moment where the hit has been sent.</td>
+        </tr>
+    </tbody>
+</table>
+
+#### `Screen Hit`
+
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th style="width: 100px;">Attribute</th>
+        <th style="width: 50px;">Type</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>documentLocation</td>
+          <td>string</td>
+          <td>Required. Specifies the current URL of the page, at the moment where the hit has been sent.</td>
+        </tr>
+        <tr>
+          <td>pageTitle</td>
+          <td>string</td>
+          <td>Required. Specifies the name of the page, at the moment where the hit has been sent.</td>
+        </tr>
+    </tbody>
+</table>
+
+#### `Item Hit`
+
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th style="width: 100px;">Attribute</th>
+        <th style="width: 50px;">Type</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>transactionId</td>
+          <td>string</td>
+          <td>Required. The id of your transaction.</td>
+        </tr>
+        <tr>
+          <td>name</td>
+          <td>string</td>
+          <td>Required. The name of your item.</td>
+        </tr>
+        <tr>
+          <td>price</td>
+          <td>number</td>
+          <td>Optional. Specifies the price for a single item / unit.</td>
+        </tr>
+        <tr>
+          <td>code</td>
+          <td>string</td>
+          <td>Optional. Specifies the SKU or item code.</td>
+        </tr>
+        <tr>
+          <td>category</td>
+          <td>string</td>
+          <td>Optional. Specifies the category that the item belongs to.
+          </td>
+        </tr>
+        <tr>
+          <td>quantity</td>
+          <td>number</td>
+          <td>Optional. Specifies the number of items purchased.
+          </td>
+        </tr>
+        <tr>
+          <td>documentLocation</td>
+          <td>string</td>
+          <td>Optional. Specifies the current URL of the page, at the moment where the hit has been sent.</td>
+        </tr>
+        <tr>
+          <td>pageTitle</td>
+          <td>string</td>
+          <td>Optional. Specifies the name of the page, at the moment where the hit has been sent.</td>
+        </tr>
+    </tbody>
+</table>
+
+#### `Event Hit`
+
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th style="width: 100px;">Attribute</th>
+        <th style="width: 50px;">Type</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>category</td>
+          <td>string</td>
+          <td>Required. Specifies the category of your event.<br>NOTE: The value must be either <b>Action Tracking</b> or <b>User Engagement</b>.</td>
+        </tr>
+        <tr>
+          <td>action</td>
+          <td>string</td>
+          <td>Required. The name of the KPI you will have inside the reporting.</td>
+        </tr>
+        <tr>
+          <td>label</td>
+          <td>string</td>
+          <td>Optional. Specifies additional description of your event.</td>
+        </tr>
+        <tr>
+          <td>value</td>
+          <td>number</td>
+          <td>Optional. Specifies how much you won with that event.<br>For example, depending on the lead generated, you will earn 10 to 100 euros. Adding that value will enable us to do a sum inside the reporting and give you the average value too.<br>NOTE: Value must be non-negative.</td>
+        </tr>
+        <tr>
+          <td>documentLocation</td>
+          <td>string</td>
+          <td>Optional. Specifies the current URL of the page, at the moment where the hit has been sent.</td>
+        </tr>
+        <tr>
+          <td>pageTitle</td>
+          <td>string</td>
+          <td>Optional. Specifies the name of the page, at the moment where the hit has been sent.</td>
+        </tr>
+    </tbody>
+</table>
 
 ## Contributing
 
