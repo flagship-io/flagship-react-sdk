@@ -162,7 +162,6 @@ export declare type UseFlagshipOutput = {
     };
 };
 
-// Prototype
 export const useFlagship = ({
     modifications: {
         requested: modificationsRequested,

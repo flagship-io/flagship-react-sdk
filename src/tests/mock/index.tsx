@@ -1,6 +1,14 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { FlagshipSdkConfig } from '@flagship.io/js-sdk';
 import { FsState } from '../../FlagshipContext';
+// import manyModifInManyCampaigns from './apiAnswers/manyModifInManyCampaigns';
+import oneModifInMoreThanOneCampaign from './apiAnswers/oneModifInMoreThanOneCampaign';
+import { vId } from './env';
+
+export const apiAnswers = {
+    // manyModifInManyCampaigns,
+    oneModifInMoreThanOneCampaign
+};
 
 export const defaultConfig: FlagshipSdkConfig = {
     // Nothing
@@ -29,7 +37,7 @@ export const defaultContext: {
 
 export const providerProps = {
     visitorData: {
-        id: 'test-vid',
+        id: vId,
         context: { isAuth: true, numberTransaction: 12, isVip: false }
     },
     config: {
