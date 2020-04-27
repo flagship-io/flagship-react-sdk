@@ -1,6 +1,6 @@
 import { useFsModifications } from '@flagship.io/react-sdk';
 import React from 'react';
-import { Alert, Col, Row } from 'react-bootstrap';
+import { Alert, Col, Row, Button } from 'react-bootstrap';
 import CodeBlock from '../../../common/CodeBlock';
 
 export const DemoUseFsModifications = () => {
@@ -34,21 +34,25 @@ const fsModifications = useFsModifications([
                     />
                     <p>Output: </p>
                     <div>
-                        <button
+                        <Button
+                            variant="secondary"
                             style={{
                                 backgroundColor: fsModifications.btnColor
                             }}
                         >
-                            I'm a button customized with Flagship
-                        </button>
+                            {`I'm a button customized with Flagship (backgroundColor=${fsModifications.btnColor})`}
+                        </Button>
                     </div>
                     <CodeBlock
                         className="mv3"
-                        codeString={`<div>
-    <button style={{ backgroundColor: ${fsModifications.btnColor} }}>
-        I'm a button customized with Flagship
-    </button>
-</div>              `}
+                        codeString={`<Button
+    variant="secondary"
+    style={{
+        backgroundColor: fsModifications.btnColor
+    }}
+>
+    {\`I'm a button customized with Flagship (backgroundColor=\${fsModifications.btnColor})\`}
+</Button>`}
                     />
                 </Alert>
             </Col>

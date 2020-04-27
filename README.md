@@ -20,7 +20,11 @@ Flagship features are accessible using Flagship hooks, have a look to the docume
 </ul>
 
 <ul style="line-height:1.4;">
-- Small <a href="https://abtasty.github.io/flagship-react-sdk/">dev demo app</a> but more to come soon! 👨‍💻
+- Safe mode ✅ (= your app won't crash if SDK fails unexpectedly) 
+</ul>
+
+<ul style="line-height:1.4;">
+- <a href="https://abtasty.github.io/flagship-react-sdk/">Demo app</a> specially for developers ! 👨‍💻
 </ul>
 
 ## Getting Started
@@ -148,7 +152,7 @@ This is all available props which you can use inside the `FlagshipProvider` reac
           <td>config</td>
           <td>object</td>
           <td>{}</td>
-          <td>This is the settings of the SDK. It takes an object which is the same shape as the <a href='https://github.com/abtasty/flagship-js-sdk#sdk-settings'>JS SDK settings</a>. Go have a look, there are many options. 🙂</td>
+          <td>This is the settings of the SDK. It takes an object, the shape is describe <a href='README.md#sdk-prop-settings'>here</a>.</td>
         </tr>
         <tr>
           <td>onInitStart</td>
@@ -164,56 +168,26 @@ This is all available props which you can use inside the `FlagshipProvider` reac
         </tr>
         <tr>
           <td>onUpdate</td>
-          <td>function():void</td>
+          <td>function(object):void</td>
           <td>null</td>
-          <td>Callback function called when the SDK is updated. For example, after a synchronize is triggered or visitor context has changed.</td>
-        </tr>
-        <tr>
-          <td>onSavingModificationsInCache</td>
-          <td>function(obj):void</td>
-          <td>null</td>
-          <td>Callback function called when the SDK is saving modifications in cache.  
-          <br>It has an argument which has the following shape:
-          <table> 
+          <td>Callback function called when the SDK is updated. For example, after a synchronize is triggered or visitor context has changed.<br>It has one argument which is an object with has the following shape: <table> 
               <tbody><tr>
                   <th style="width:25%">Key/Property</th>
                   <th>Description</th>
                 </tr>  
                 <tr>
-                  <td><em>modifications</em></td>
-                  <td>It is an object which contains modifications <i>past</i> and <i>future</i> computed modifications. 
-                  <br>
-                   <table> 
-              <tbody><tr>
-                  <th style="width:25%">Key/Property</th>
-                  <th>Description</th>
-                </tr>  
-                <tr>
-                  <td><em>before</em></td>
-                  <td>Modificaitons previously in cache.</td>
-                </tr>
-                  <td><em>after</em></td>
-                  <td>New modificaitons which are about to be saved in cache.</td>
-              </tbody>
-            </table>
-            </td>
-                </tr>
-                <tr>
-                  <td><em>saveInCacheModifications</em></td>
-                  <td>This is a function which you'll have to call if you want to override the modifications which will be saved in the SDK cache.<br>
-                  It has one argument which the modifications that you want to override.<br>If you leave it undefined, it will keep default behavior.</td>
-                </tr>
-                  <tr>
+                  <td><em>fsModifications</em></td>
+                  <td>It contains the last modifications saved in cache.
+                  </td>
                 </tr>
               </tbody>
-            </table>
-          </td>
+            </table></td>
         </tr>
         <tr>
-          <td>defaultModifications</td>
+          <td>initialModifications</td>
           <td>object</td>
           <td>null</td>
-          <td>This is an object which has the shape of Flagship modifications as it is return from the Flagship API.<br>Can be useful when you already manually fetched the data before or you have your own cache.<br>Providing this props avoid the SDK to have an empty cache during first initialization.<br>The default modifications provided will be override once the SDK finish to fetch Flagship API with an initialization or a synchronization.</td>
+          <td>This is an object which has the shape of Flagship modifications as it is return from the Flagship API.<br>Can be useful when you already manually fetched the data before or you have your own cache.<br>Providing this prop avoid the SDK to have an empty cache during first initialization.<br>The default modifications provided will be overridden whenever the SDK is fetching Flagship API in order to modifications up to date.<br>You can save back the last updated modifications using <i>onUpdate</i> prop callback.</td>
         </tr>
         <tr>
           <td>loadingComponent</td>
@@ -222,6 +196,72 @@ This is all available props which you can use inside the `FlagshipProvider` reac
           <td>This is component which will be render when Flagship is loading on <b>first initialization</b> only.<br>By default, the value is <i>undefined</i> which means it will display your app and it might display default modifications value for a very short moment.</td>
         </tr>
     </tbody>
+</table>
+
+## SDK Prop Settings
+
+This is all available settings which you can set on the SDK.
+
+Here are the attributes which you can set inside the SDK settings object:
+
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th style="width: 100px;">Argument</th>
+        <th style="width: 50px;">Type</th>
+        <th style="width: 50px;">Default</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>fetchNow</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>Decide to fetch automatically modifications data when creating a new <a href='README.md#flagshipvisitor-class'>FlagshipVisitor</a>.</td>
+        </tr>
+        <tr>
+          <td>activateNow</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>Decide to trigger automatically the data when creating a new <a href='README.md#flagshipvisitor-class'>FlagshipVisitor</a>.<br>NOTE: when set to <i>true</i>, it will implicitly set <i>fetchNow=true</i> as well.</td>
+        </tr>
+        <tr>
+          <td>enableConsoleLogs</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>Enable it to display logs on the console when SDK is running.<br>This will only display logs such as <i>Warnings</i>, <i>Errors</i>, <i>Fatal errors</i> and <i>Info</i>.</td>
+        </tr>
+        <tr>
+          <td>logPathName</td>
+          <td>string</td>
+          <td>'flagshipNodeSdkLogs'</td>
+          <td>This is the path where logs will be written when SDK is running.<br>By default it will create a folder named <i>flagshipNodeSdkLogs</i> at the root of your project</a>.</td>
+        </tr>
+        <tr>
+          <td>enableErrorLayout</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>This is a small layout visible at the bottom of the screen. It is displayed only when an unexpected error occurred in the SDK. By default, it's set to <i>false</i> and if set to <i>true</i>, it will be only visible in a node environment other than <i>production</i>. Here a <a href='./src/assets/img/errorLayout.png'>screenshot</a> to have a look.</td>
+        </tr>
+        <tr>
+          <td>nodeEnv</td>
+          <td>string</td>
+          <td>'production'</td>
+          <td>If value is other than <i>production</i>, it will also display <i>Debug</i> logs.</td>
+        </tr>
+        <tr>
+          <td>flagshipApi</td>
+          <td>string</td>
+          <td>'https://decision-api.flagship.io/v1/'</td>
+          <td>
+          This setting can be useful in further scenario:<br>
+          - If you need to mock the API for tests such as end to end.<br>
+          - If you want to move to an earlier version the Flagship API (v2, v3,...).
+          </td>
+        </tr>
+</tbody>
+
 </table>
 
 ## Flagship Hooks
@@ -271,7 +311,7 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
     <tbody>
         <tr>
           <td>modifications</td>
-          <td>Object</td>
+          <td>object</td>
           <td>Node param to specify flagship modifications:
             <table> 
               <tbody><tr>
@@ -312,7 +352,7 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
         </tr>
         <tr>
           <td>status</td>
-          <td>Object</td>
+          <td>object</td>
             <td>Gives you some informations about SDK current sate:
           <table> 
               <tbody><tr>
@@ -383,7 +423,7 @@ This will give you the modification saved in the SDK cache.
         </tr>
         <tr>
           <td>activateAllModifications</td>
-          <td>Boolean</td>
+          <td>boolean</td>
           <td>false</td>
           <td>If set to true, all modifications will be activated. If set to false, none will be activated.
           <br>Be aware that if this argument is set, the attribute <i>activate</i> set in each element of array <b>modificationsRequested</b> will be ignored.</td>

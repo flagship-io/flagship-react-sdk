@@ -1,19 +1,21 @@
 import './App.css';
 
-import { FlagshipProvider } from '@flagship.io/react-sdk';
+import {
+    FlagshipProvider,
+    FlagshipReactSdkConfig
+} from '@flagship.io/react-sdk';
 import React, { createContext, Dispatch, SetStateAction } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 
 import { AppContainer } from './components/AppContainer';
 import config from './config';
 import AppHeader from './components/AppHeader';
-import { FlagshipSdkConfig } from '@flagship.io/js-sdk';
 interface VisitorContext {
     [key: string]: any;
 }
 export interface SdkSettings {
     envId: string;
-    sdkConfig: FlagshipSdkConfig;
+    sdkConfig: FlagshipReactSdkConfig;
     visitorData: {
         id: string;
         context: VisitorContext;
@@ -48,31 +50,28 @@ const App: React.FC = () => {
                     onInitDone={() => {
                         console.log('React SDK init done');
                     }}
-                    onUpdate={() => {
-                        console.log('React SDK updated');
+                    onUpdate={({ fsModifications }) => {
+                        console.log(
+                            'React SDK updated with modifications:\n' +
+                                JSON.stringify(fsModifications)
+                        );
                     }}
-                    onSavingModificationsInCache={
-                        (/* modifications */) =>
-                            console.log(
-                                'React SDK saved modifications in cache'
-                            )
+                    loadingComponent={
+                        <Container className="mt3">
+                            <Row>
+                                <Col
+                                    xs={12}
+                                    style={{
+                                        color: 'white',
+                                        height: '100vh',
+                                        fontSize: '5vw'
+                                    }}
+                                >
+                                    Loading Flagship React SDK...
+                                </Col>
+                            </Row>
+                        </Container>
                     }
-                    // loadingComponent={
-                    //     <Container className="mt3">
-                    //         <Row>
-                    //             <Col
-                    //                 xs={12}
-                    //                 style={{
-                    //                     color: 'white',
-                    //                     height: '100vh',
-                    //                     fontSize: '5vw'
-                    //                 }}
-                    //             >
-                    //                 Loading Flagship React SDK...
-                    //             </Col>
-                    //         </Row>
-                    //     </Container>
-                    // }
                 >
                     <AppHeader />
                     <AppContainer />
