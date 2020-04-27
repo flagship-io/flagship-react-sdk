@@ -38,7 +38,7 @@ export const defaultContext: {
 export const providerProps = {
     visitorData: {
         id: vId,
-        context: { isAuth: true, numberTransaction: 12, isVip: false }
+        context: { isAuth: true, isVip: false }
     },
     config: {
         fetchNow: true,
