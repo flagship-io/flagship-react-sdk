@@ -15,7 +15,26 @@ const defaultParams = [
 
 describe('useFsModifications hook', () => {
     let isReady: boolean;
-
+    let resultAfterApiCall;
+    const wrapper = ({ children }: { children: React.ReactNode }): any => (
+        <FlagshipProvider
+            envId={providerProps.envId}
+            config={providerProps.config}
+            visitorData={providerProps.visitorData}
+            onInitDone={() => {
+                isReady = true;
+            }}
+        >
+            {children}
+        </FlagshipProvider>
+    );
+    const { result, waitForValueToChange } = renderHook(
+        () => useFsModifications(defaultParams),
+        {
+            wrapper
+        }
+    );
+    const resultBeforeApiCall = result.current;
     beforeAll(() => {
         //
     });
@@ -25,29 +44,10 @@ describe('useFsModifications hook', () => {
     afterEach(() => {
         //
     });
-    test('it should mock the context', async () => {
-        const wrapper = ({ children }: { children: React.ReactNode }): any => (
-            <FlagshipProvider
-                envId={providerProps.envId}
-                config={providerProps.config}
-                visitorData={providerProps.visitorData}
-                onInitDone={() => {
-                    isReady = true;
-                }}
-            >
-                {children}
-            </FlagshipProvider>
-        );
-        const { result, waitForValueToChange } = renderHook(
-            () => useFsModifications(defaultParams),
-            {
-                wrapper
-            }
-        );
-        const resultBeforeApiCall = result.current;
+    test('it should give default value when SDK not ready and update when it is', async () => {
         // await waitForValueToChange(() => isReady);
         await waitForValueToChange(() => result.current);
-        const resultAfterApiCall = result.current;
+        resultAfterApiCall = result.current;
 
         expect(resultBeforeApiCall).toEqual({
             discount: '0%'
