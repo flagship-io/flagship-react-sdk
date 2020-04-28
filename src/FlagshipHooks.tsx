@@ -14,16 +14,20 @@ declare type UseFsActivateOutput = void;
 declare type UseFsSynchronize = void;
 declare type UseFsModificationsOutput = GetModificationsOutput;
 
-const reportNoVisitor = (log: FsLogger): void => {
-    (log as FsLogger).error(
-        'sdk not correctly initialized... Make sure fsVisitor is ready.'
-    );
+const reportNoVisitor = (log: FsLogger | null): void => {
+    if (log) {
+        log.error(
+            'sdk not correctly initialized... Make sure fsVisitor is ready.'
+        );
+    }
 };
 
-const safeModeLog = (log: FsLogger, functionName: string): void => {
-    (log as FsLogger).error(
-        `${functionName} is disabled because the SDK is in safe mode.`
-    );
+const safeModeLog = (log: FsLogger | null, functionName: string): void => {
+    if (log) {
+        log.error(
+            `${functionName} is disabled because the SDK is in safe mode.`
+        );
+    }
 };
 
 export const useFsActivate = (
@@ -35,10 +39,10 @@ export const useFsActivate = (
         const { fsVisitor } = state;
 
         if (hasError) {
-            return safeModeLog(state.log as FsLogger, 'UseFsActivate');
+            return safeModeLog(state.log, 'UseFsActivate');
         }
         if (!fsVisitor) {
-            reportNoVisitor(state.log as FsLogger);
+            reportNoVisitor(state.log);
         } else {
             fsVisitor.activateModifications(
                 modificationKeys.map((key) => ({ key }))
@@ -58,10 +62,10 @@ export const useFsSynchronize = (
         const { fsVisitor } = state;
 
         if (hasError) {
-            return safeModeLog(state.log as FsLogger, 'UseFsSynchronize');
+            return safeModeLog(state.log, 'UseFsSynchronize');
         }
         if (!fsVisitor) {
-            reportNoVisitor(state.log as FsLogger);
+            reportNoVisitor(state.log);
         } else {
             fsVisitor
                 .synchronizeModifications(activateAllModifications)
@@ -108,10 +112,12 @@ const getCacheModifications = (
     fsVisitor: IFlagshipVisitor | null,
     modificationsRequested: FsModifsRequestedList,
     activateAllModifications = false,
-    log: FsLogger
+    log: FsLogger | null
 ): UseFsModificationsOutput => {
     if (!fsVisitor) {
-        log.warn('fsVisitor not initialized, returns default value');
+        if (log) {
+            log.warn('fsVisitor not initialized, returns default value');
+        }
         return safeMode_getCacheModifications(
             modificationsRequested,
             activateAllModifications
@@ -143,7 +149,7 @@ export const useFsModifications = (
         fsVisitor,
         modificationsRequested,
         activateAllModifications,
-        log as FsLogger
+        log
     );
 };
 
@@ -187,16 +193,18 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
             status,
             hit: {
                 send: (): void => {
-                    safeModeLog(log as FsLogger, 'send hit');
+                    safeModeLog(log, 'send hit');
                 },
                 sendMultiple: (): void => {
-                    safeModeLog(log as FsLogger, 'send multiple hits');
+                    safeModeLog(log, 'send multiple hits');
                 }
             }
         };
     }
     const logSdkNotReady = () => {
-        (log as FsLogger).error('SDK not ready yet.');
+        if (log) {
+            log.error('SDK not ready yet.');
+        }
     };
     const send = (hit: HitShape): void => {
         if (fsVisitor && fsVisitor.sendHit) {
@@ -219,7 +227,7 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
             fsVisitor,
             modificationsRequested,
             activateAllModifications,
-            log as FsLogger
+            log
         ),
         status,
         hit: {

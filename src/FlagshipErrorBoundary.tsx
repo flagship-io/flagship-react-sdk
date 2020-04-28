@@ -42,7 +42,6 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
     }
 
     componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-        this.props.onError(error);
         this.props.log.fatal(
             `An error occurred. The SDK is switching into safe mode:\n${error.stack}`
         );
@@ -52,7 +51,17 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
         });
     }
 
-    componentDidUpdate(prevProps: Props): void {
+    static getDerivedStateFromError(error: Error): { error: Error } {
+        // Update state so the next render will show the fallback UI.
+        return {
+            error
+        };
+    }
+
+    componentDidUpdate(prevProps: Props, prevState: State): void {
+        if (this.state.error !== prevState.error) {
+            this.props.onError(this.state.error as Error);
+        }
         if (this.props.error !== prevProps.error) {
             this.props.log.fatal(
                 `An error occurred. The SDK is switching into safe mode:\n${
