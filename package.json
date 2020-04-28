@@ -11,7 +11,7 @@
     ],
     "scripts": {
         "test:beta": "jest --silent --verbose",
-        "test": "echo \"Error: no test specified\" && exit 0",
+        "test": "jest --silent --verbose",
         "release": "np",
         "version": "npm run build",
         "publish": "npm run update:react-dev-demo && git add . && git commit -m\"Post publish update\" && git push && npm run publish:reactDemoDev",
