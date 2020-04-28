@@ -178,9 +178,10 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         }
     }, [state]);
 
-    const handlingDisplay = (): React.ReactNode => {
-        const isFirstInit = !fsVisitor;
-        if (loadingComponent && isFirstInit) {
+    const handleDisplay = (): React.ReactNode => {
+        const isFirstInit =
+            !fsVisitor || (fsVisitor && !fsVisitor.fetchedModifications);
+        if (isLoading && loadingComponent && isFirstInit) {
             return <>{loadingComponent}</>;
         }
         return <>{children}</>;
@@ -200,7 +201,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 sdkSettings={config as FlagshipReactSdkConfig}
                 log={state.log}
             >
-                {handlingDisplay()}
+                {handleDisplay()}
             </FlagshipErrorBoundary>
         </FlagshipContext.Provider>
     );

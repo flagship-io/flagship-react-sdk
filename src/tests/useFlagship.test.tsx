@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import React from 'react';
 
 import { FlagshipProvider } from '../FlagshipContext';
-import { useFsModifications, useFlagship } from '../FlagshipHooks';
+import { useFlagship } from '../FlagshipHooks';
 import { providerProps } from './mock';
 
 const defaultParams = [
