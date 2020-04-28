@@ -18,6 +18,7 @@ import flagship, {
 // eslint-disable-next-line import/no-cycle
 import FlagshipErrorBoundary from './FlagshipErrorBoundary';
 import loggerHelper from './lib/loggerHelper';
+import { smartJoin } from './lib/utils';
 
 export declare type FsStatus = {
     isLoading: boolean;
@@ -157,8 +158,9 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     }, [
         envId,
         id,
-        ...Object.values(config as FlagshipSdkConfig),
-        ...Object.values(context as FlagshipVisitorContext)
+        smartJoin(Object.values(config as FlagshipSdkConfig)),
+        smartJoin(Object.values(context as FlagshipVisitorContext)),
+        smartJoin(Object.keys(context as FlagshipVisitorContext))
     ]);
 
     useEffect(() => {
@@ -176,9 +178,10 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         }
     }, [state]);
 
-    const handlingDisplay = (): React.ReactNode => {
-        const isFirstInit = !fsVisitor;
-        if (loadingComponent && isFirstInit) {
+    const handleDisplay = (): React.ReactNode => {
+        const isFirstInit =
+            !fsVisitor || (fsVisitor && !fsVisitor.fetchedModifications);
+        if (isLoading && loadingComponent && isFirstInit) {
             return <>{loadingComponent}</>;
         }
         return <>{children}</>;
@@ -198,7 +201,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 sdkSettings={config as FlagshipReactSdkConfig}
                 log={state.log}
             >
-                {handlingDisplay()}
+                {handleDisplay()}
             </FlagshipErrorBoundary>
         </FlagshipContext.Provider>
     );

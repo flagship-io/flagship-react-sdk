@@ -12,7 +12,7 @@ const config = {
     sdkConfig: sdkSettings,
     visitorData: {
         id: 'test-vid',
-        context: { isAuth: true, numberTransaction: 12, isVip: false }
+        context: { isAuth: true, isVip: false }
     },
     sandbox: {
         envId: [
