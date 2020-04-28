@@ -10,10 +10,10 @@ import flagship, {
     FlagshipSdkConfig,
     FlagshipVisitorContext,
     IFlagshipVisitor,
-    DecisionApiResponseData,
     GetModificationsOutput,
     SaveCacheArgs,
-    FsLogger
+    FsLogger,
+    DecisionApiCampaign
 } from '@flagship.io/js-sdk';
 // eslint-disable-next-line import/no-cycle
 import FlagshipErrorBoundary from './FlagshipErrorBoundary';
@@ -28,7 +28,7 @@ export declare type FsStatus = {
 
 export declare type FsState = {
     fsVisitor: IFlagshipVisitor | null;
-    fsModifications: GetModificationsOutput | null;
+    fsModifications: DecisionApiCampaign[] | null;
     status: FsStatus;
     log: FsLogger | null;
 };
@@ -63,13 +63,13 @@ interface FlagshipProviderProps {
         id: string;
         context?: FlagshipVisitorContext;
     };
-    initialModifications?: DecisionApiResponseData;
+    initialModifications?: DecisionApiCampaign[];
     onInitStart?(): void;
     onInitDone?(): void;
     onSavingModificationsInCache?(args: SaveCacheArgs): void;
     onUpdate?(
         sdkData: {
-            fsModifications: GetModificationsOutput | null;
+            fsModifications: DecisionApiCampaign[] | null;
         },
         fsVisitor: IFlagshipVisitor | null
     ): void;
@@ -127,7 +127,20 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             // fsModifications: ???
         });
         if (initialModifications) {
-            visitorInstance.fetchedModifications = { ...initialModifications }; // initialize immediately with something
+            visitorInstance.fetchedModifications = {
+                visitorId: id,
+                campaigns: [...initialModifications]
+            }; // initialize immediately with something
+            if (onUpdate) {
+                tryCatchCallback(() => {
+                    onUpdate(
+                        {
+                            fsModifications: [...initialModifications]
+                        },
+                        visitorInstance
+                    );
+                });
+            }
         }
         if (onInitStart) {
             tryCatchCallback(onInitStart);

@@ -1,31 +1,14 @@
-import React from 'react';
-import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import axiosMock from 'axios';
+
+import { render, waitFor } from '@testing-library/react';
+import React from 'react';
+
+import flagship from '@flagship.io/js-sdk';
 import { FlagshipProvider } from '../FlagshipContext';
-import { providerProps, apiAnswers } from './mock';
-
-// configure({ adapter: new Adapter() });
-const defaultParams = [
-    {
-        key: 'discount',
-        defaultValue: '0%',
-        activate: false
-    }
-];
-
-const responseObj = {
-    data: {
-        ...apiAnswers.oneModifInMoreThanOneCampaign
-    },
-    status: 200,
-    statusText: 'OK'
-};
+import { providerProps, fetchedModifications } from './mock';
 
 describe('fsContext provider', () => {
     let isReady: boolean;
-    let resultAfterApiCall;
-
     beforeAll(() => {
         //
     });
@@ -35,8 +18,8 @@ describe('fsContext provider', () => {
     afterEach(() => {
         //
     });
-    test('it should call Flagship API when mount', async () => {
-        const { getByText, container } = render(
+    test('it should display a loading component if set in props', async () => {
+        const { container } = render(
             <FlagshipProvider
                 envId={providerProps.envId}
                 config={providerProps.config}
@@ -59,6 +42,131 @@ describe('fsContext provider', () => {
             }
         });
         expect(container.querySelector('div')?.innerHTML).toEqual('Hello');
+        expect(isReady).toEqual(true);
+    });
+    test('it should working callbacks props ', async () => {
+        const isCalled: {
+            onSavingModificationsInCache: boolean;
+            onInitStart: boolean;
+            onInitDone: boolean;
+            onUpdate: boolean;
+            onUpdateParams: {
+                sdkData?: flagship.GetModificationsOutput | null;
+                sdkVisitor?: flagship.IFlagshipVisitor | null;
+            };
+        } = {
+            onSavingModificationsInCache: false,
+            onInitStart: false,
+            onInitDone: false,
+            onUpdate: false,
+            onUpdateParams: {}
+        };
+        const { container } = render(
+            <FlagshipProvider
+                envId={providerProps.envId}
+                config={providerProps.config}
+                visitorData={providerProps.visitorData}
+                onInitDone={() => {
+                    isReady = true;
+                    isCalled.onInitDone = true;
+                }}
+                onSavingModificationsInCache={() => {
+                    isCalled.onSavingModificationsInCache = true;
+                }}
+                onInitStart={() => {
+                    isCalled.onInitStart = true;
+                }}
+                onUpdate={(sdkData, sdkVisitor) => {
+                    isCalled.onUpdate = true;
+                    isCalled.onUpdateParams = { sdkData, sdkVisitor };
+                }}
+            >
+                <div>Hello</div>
+            </FlagshipProvider>
+        );
+        await waitFor(() => {
+            if (!isReady) {
+                throw new Error('not ready');
+            }
+        });
+        expect(isCalled.onInitDone).toEqual(true);
+        expect(isCalled.onInitStart).toEqual(true);
+        expect(isCalled.onSavingModificationsInCache).toEqual(true);
+        expect(isCalled.onUpdate).toEqual(true);
+        expect(isCalled.onUpdateParams.sdkData).toHaveProperty(
+            'fsModifications'
+        );
+        expect(
+            (isCalled.onUpdateParams.sdkData as flagship.GetModificationsOutput)
+                .fsModifications.length > 0
+        ).toEqual(true);
+        expect(
+            (isCalled.onUpdateParams.sdkData as flagship.GetModificationsOutput)
+                .fsModifications
+        ).toEqual(fetchedModifications);
+        expect(isCalled.onUpdateParams.sdkVisitor).not.toBe(null);
+        expect(isReady).toEqual(true);
+    });
+    test('it should consider other props ', async () => {
+        let computedFsVisitor: flagship.IFlagshipVisitor | null = null;
+        const customFetchedModifications = fetchedModifications;
+        customFetchedModifications[0].variation.modifications.value = {
+            discount: '99%'
+        };
+        const { container } = render(
+            <FlagshipProvider
+                envId={providerProps.envId}
+                config={providerProps.config}
+                visitorData={providerProps.visitorData}
+                initialModifications={customFetchedModifications}
+                onInitDone={() => {
+                    isReady = true;
+                }}
+                onUpdate={(sdkData, sdkVisitor) => {
+                    if (sdkVisitor) {
+                        computedFsVisitor = sdkVisitor;
+                    }
+                }}
+            >
+                <div>Hello</div>
+            </FlagshipProvider>
+        );
+        const modifications: flagship.DecisionApiResponseData | null =
+            computedFsVisitor &&
+            ((computedFsVisitor as flagship.IFlagshipVisitor)
+                .fetchedModifications as flagship.DecisionApiResponseData);
+        expect(
+            modifications &&
+                (modifications as flagship.DecisionApiResponseData).campaigns
+        ).toEqual(customFetchedModifications);
+        await waitFor(() => {
+            if (!isReady) {
+                throw new Error('not ready');
+            }
+        });
+        expect(
+            computedFsVisitor &&
+                (computedFsVisitor as flagship.IFlagshipVisitor).envId
+        ).toEqual(providerProps.envId);
+        expect(
+            computedFsVisitor &&
+                (computedFsVisitor as flagship.IFlagshipVisitor).context
+        ).toEqual(providerProps.visitorData.context);
+        expect(
+            computedFsVisitor &&
+                (computedFsVisitor as flagship.IFlagshipVisitor).id
+        ).toEqual(providerProps.visitorData.id);
+        expect(
+            computedFsVisitor &&
+                (computedFsVisitor as flagship.IFlagshipVisitor).config
+        ).toEqual({
+            activateNow: false,
+            enableConsoleLogs: true,
+            fetchNow: true,
+            flagshipApi: 'https://decision-api.flagship.io/v1/',
+            logPathName: 'flagshipNodeSdkLogs',
+            nodeEnv: 'production'
+        });
         expect(isReady).toEqual(true);
     });
 });
