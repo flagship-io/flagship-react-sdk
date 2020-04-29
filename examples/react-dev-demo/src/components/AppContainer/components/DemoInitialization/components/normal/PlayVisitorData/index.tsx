@@ -61,8 +61,15 @@ const PlayVisitorData: React.FC = () => {
     return (
         <>
             <Form>
-                <Form.Group controlId="initForm.ControlSelect2">
-                    <Form.Label>visitorId</Form.Label>
+                <Form.Group
+                    controlId="initForm.ControlSelect2"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginLeft: '16px'
+                    }}
+                >
+                    <div>visitorId: </div>
                     <Form.Control as="select" onChange={handleVisitorId}>
                         <option key={currSettings.visitorData.id}>
                             {currSettings.visitorData.id}

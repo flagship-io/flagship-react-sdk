@@ -87,7 +87,13 @@ const App: React.FC = () => (
                     ) : (
                         <PlayConfig></PlayConfig>
                     )}
-                    <h3>
+                    <h3
+                        style={{
+                            borderBottom: '1px solid grey',
+                            marginBottom: '16px',
+                            paddingBottom: '8px'
+                        }}
+                    >
                         2 - Playing with <i>visitorData</i>
                     </h3>
                     {QA.enabled ? (
@@ -95,23 +101,6 @@ const App: React.FC = () => (
                     ) : (
                         <PlayVisitorData></PlayVisitorData>
                     )}
-                    <div>Since we have set those settings:</div>
-                    <CodeBlock
-                        className="mv3"
-                        codeString={`${JSON.stringify(
-                            currSettings.sdkConfig,
-                            null,
-                            2
-                        )}`}
-                    />
-                    <div>
-                        When you change those values, you can notice the
-                        behavior of the SDK, on logs & network.
-                    </div>
-                    <div>
-                        It will impact the output of Flagship SDK Hooks as well,
-                        take a look below.
-                    </div>
                 </Alert>
             </Col>
         </Row>

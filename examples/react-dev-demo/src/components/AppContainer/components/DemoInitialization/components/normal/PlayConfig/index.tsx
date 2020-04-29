@@ -7,6 +7,7 @@ import {
     SdkSettings,
     AppSettings
 } from '../../../../../../../App';
+import CodeBlock from '../../../../../../common/CodeBlock';
 const PlayConfig: React.FC = () => {
     const { currentSettings: currSettings, setSettings, QA } = useContext(
         SettingContext
@@ -114,6 +115,23 @@ const PlayConfig: React.FC = () => {
                 >
                     Apply change
                 </Button>
+            </div>
+            <div>Since we have set those settings:</div>
+            <CodeBlock
+                className="mv3"
+                codeString={`${JSON.stringify(
+                    currSettings.sdkConfig,
+                    null,
+                    2
+                )}`}
+            />
+            <div>
+                When you change those values, you can notice the behavior of the
+                SDK, on logs & network.
+            </div>
+            <div className="mb5">
+                It will impact the output of Flagship SDK Hooks as well, take a
+                look below.
             </div>
         </>
     );
