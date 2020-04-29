@@ -16,7 +16,7 @@ const QaHeader: React.FC = () => {
                     QA Mode: <span className="green">Enabled</span>
                 </Navbar.Brand>
                 <Nav className="mr-auto fsNav">
-                    <Nav.Link
+                    {/* <Nav.Link
                         onClick={() =>
                             setQA({
                                 ...QA,
@@ -25,7 +25,7 @@ const QaHeader: React.FC = () => {
                         }
                     >
                         Edit settings
-                    </Nav.Link>
+                    </Nav.Link> */}
                 </Nav>
 
                 <Form inline>
