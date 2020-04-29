@@ -4,69 +4,20 @@ import { Alert, Button, Col, Form, Row } from 'react-bootstrap';
 
 import { AppSettings, SdkSettings, SettingContext } from '../../../../App';
 import config from '../../../../config';
-import PlayConfig from './components/qa/PlayConfig';
-import PlayVisitorData from './components/qa/PlayVisitorData';
+import PlayConfigQA from './components/qa/PlayConfig';
+import PlayVisitorDataQA from './components/qa/PlayVisitorData';
+import PlayVisitorData from './components/normal/PlayVisitorData';
+import PlayConfig from './components/normal/PlayConfig';
 
 export const DemoInitialization = () => {
     const name = 'initialization';
-    const contextTemp = { ...config.visitorData.context };
-    const { currentSettings: currSettings, setSettings } = useContext(
+    const { currentSettings: currSettings, setSettings, QA } = useContext(
         SettingContext
     ) as AppSettings;
     const [newSettings, setNewSettings] = React.useState<SdkSettings>({
         ...currSettings
     });
-    const handleEnvId = (e) =>
-        setNewSettings({ ...newSettings, envId: e.target.value });
 
-    const handleNodeEnv = (e) =>
-        setNewSettings({
-            ...newSettings,
-            sdkConfig: {
-                ...newSettings.sdkConfig,
-                nodeEnv: e.target.value
-            }
-        });
-
-    const handleVisitorId = (e) =>
-        setNewSettings({
-            ...newSettings,
-            visitorData: {
-                ...newSettings.visitorData,
-                id: e.target.value
-            }
-        });
-
-    const handleVisitorContext = (e) => {
-        const node = JSON.parse(e.currentTarget.parentElement.innerText);
-        const temp = { ...newSettings };
-        if (e.currentTarget.checked) {
-            setNewSettings({
-                ...newSettings,
-                visitorData: {
-                    ...newSettings.visitorData,
-                    context: { ...newSettings.visitorData.context, ...node }
-                }
-            });
-        } else {
-            const keyToRemove = Object.keys(node)[0];
-            setNewSettings({
-                ...newSettings,
-                visitorData: {
-                    ...newSettings.visitorData,
-                    context: Object.entries(temp.visitorData.context).reduce(
-                        (reducer, [key, value]) => {
-                            if (key === keyToRemove) {
-                                return reducer;
-                            }
-                            return { ...reducer, [key]: value };
-                        },
-                        {}
-                    )
-                }
-            });
-        }
-    };
     return (
         <Row>
             <Col>
@@ -131,11 +82,19 @@ const App: React.FC = () => (
                     >
                         1 - Playing with <i>config</i>
                     </h3>
-                    <PlayConfig></PlayConfig>
+                    {QA.enabled ? (
+                        <PlayConfigQA></PlayConfigQA>
+                    ) : (
+                        <PlayConfig></PlayConfig>
+                    )}
                     <h3>
                         2 - Playing with <i>visitorData</i>
                     </h3>
-                   <PlayVisitorData></PlayVisitorData>
+                    {QA.enabled ? (
+                        <PlayVisitorDataQA></PlayVisitorDataQA>
+                    ) : (
+                        <PlayVisitorData></PlayVisitorData>
+                    )}
                     <div>Since we have set those settings:</div>
                     <CodeBlock
                         className="mv3"

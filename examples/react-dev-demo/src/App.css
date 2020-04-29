@@ -103,4 +103,5 @@ form .form-check {
     height: 30px;
     background: blueviolet;
     opacity: 0.8;
+    z-index: 1 !important;
 }

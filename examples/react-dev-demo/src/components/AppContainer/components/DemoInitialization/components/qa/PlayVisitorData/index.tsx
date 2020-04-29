@@ -49,7 +49,7 @@ const PlayVisitorData: React.FC = () => {
                         <Form.Label>Visitor ID</Form.Label>
                         <Form.Control
                             type="text"
-                            name="envId"
+                            name="vId"
                             value={values.vId}
                             onChange={handleChange}
                             isValid={touched.vId && !errors.vId}
@@ -67,7 +67,6 @@ const PlayVisitorData: React.FC = () => {
                             locale={locale}
                             height="550px"
                             width="100%"
-                            // onKeyPressUpdate={false}
                             onChange={({ error, jsObject }) => {
                                 if (!error) {
                                     setFieldValue(
