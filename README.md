@@ -20,6 +20,10 @@ Flagship features are accessible using Flagship hooks, have a look to the docume
 </ul>
 
 <ul style="line-height:1.4;">
+- <a href='https://bundlephobia.com/result?p=@flagship.io/react-sdk'>Light weight SDK 🏋</a>  <span style="color: gray;">(Gzipped size=13.3kB~)</span>
+</ul>
+
+<ul style="line-height:1.4;">
 - Safe mode ✅ (= your app won't crash if SDK fails unexpectedly) 
 </ul>
 

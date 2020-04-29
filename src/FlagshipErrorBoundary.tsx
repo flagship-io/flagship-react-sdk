@@ -143,7 +143,7 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
                             )}
                         </div>
                     )}
-                    <div>{customerChildren}</div>
+                    <div id="flagshipSafeModeContainer">{customerChildren}</div>
                 </>
             );
         }

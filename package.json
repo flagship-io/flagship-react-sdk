@@ -1,6 +1,6 @@
 {
     "name": "@flagship.io/react-sdk",
-    "version": "0.0.17",
+    "version": "0.0.18",
     "description": "Flagship REACT SDK",
     "main": "dist/index.js",
     "files": [
@@ -10,8 +10,8 @@
         "package.json"
     ],
     "scripts": {
-        "test:beta": "jest --silent --verbose",
         "test": "jest --silent --verbose",
+        "test:coverage": "jest --coverage --silent",
         "release": "np",
         "version": "npm run build",
         "publish": "npm run update:react-dev-demo && git add . && git commit -m\"Post publish update\" && git push && npm run publish:reactDemoDev",

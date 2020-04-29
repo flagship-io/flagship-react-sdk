@@ -48,3 +48,14 @@ export const providerProps = {
     },
     envId: 'bn1ab7m56qolupi5sa0g'
 };
+
+export const fetchedModifications = [
+    {
+        id: 'bqjfstuirtfg01mctmn0',
+        variation: {
+            id: 'bqjfstuirtfg01mctmp0',
+            modifications: { type: 'JSON', value: { discount: '10%' } }
+        },
+        variationGroupId: 'bqjfstuirtfg01mctmo0'
+    }
+];
