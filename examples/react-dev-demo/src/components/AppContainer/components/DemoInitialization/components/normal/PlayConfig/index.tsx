@@ -39,9 +39,14 @@ const PlayConfig: React.FC = () => {
                 >
                     <div>envId: </div>
                     <Form.Control as="select" onChange={handleEnvId}>
-                        {config.sandbox.envId.map((id) => (
-                            <option key={id}>{id}</option>
-                        ))}
+                        <option key={newSettings.envId}>
+                            {newSettings.envId}
+                        </option>
+                        {config.sandbox.envId
+                            .filter((i) => i != newSettings.envId)
+                            .map((id) => (
+                                <option key={id}>{id}</option>
+                            ))}
                     </Form.Control>
                 </Form.Group>
                 <Form.Group
@@ -54,59 +59,48 @@ const PlayConfig: React.FC = () => {
                 >
                     <div>nodeEnv: </div>
                     <Form.Control as="select" onChange={handleNodeEnv}>
-                        {config.sandbox.nodeEnv.map((id) => (
-                            <option key={id}>{id}</option>
-                        ))}
+                        <option key={newSettings.sdkConfig.nodeEnv}>
+                            {newSettings.sdkConfig.nodeEnv}
+                        </option>
+                        {config.sandbox.nodeEnv
+                            .filter((i) => i != newSettings.sdkConfig.nodeEnv)
+                            .map((id) => (
+                                <option key={id}>{id}</option>
+                            ))}
                     </Form.Control>
                 </Form.Group>
-                <Form.Group controlId="initForm.Control1.2">
-                    <Form.Check
-                        type="checkbox"
-                        checked={newSettings.sdkConfig.fetchNow}
-                        onChange={(e) =>
-                            setNewSettings({
-                                ...newSettings,
-                                sdkConfig: {
-                                    ...newSettings.sdkConfig,
-                                    fetchNow: e.currentTarget.checked
+                {Object.keys({
+                    ...config.sandbox.config,
+                    ...newSettings.sdkConfig
+                })
+                    .filter((i) => i != 'nodeEnv')
+                    .map((setting) => (
+                        <Form.Group controlId={setting + 'Form'}>
+                            <Form.Check
+                                type="checkbox"
+                                checked={
+                                    !!newSettings.sdkConfig[setting] || false
                                 }
-                            })
-                        }
-                        label={`fetchNow=${newSettings.sdkConfig.fetchNow}`}
-                    />
-                </Form.Group>
-                <Form.Group controlId="initForm.Control1.3">
-                    <Form.Check
-                        type="checkbox"
-                        checked={newSettings.sdkConfig.enableConsoleLogs}
-                        onChange={(e) =>
-                            setNewSettings({
-                                ...newSettings,
-                                sdkConfig: {
-                                    ...newSettings.sdkConfig,
-                                    enableConsoleLogs: e.currentTarget.checked
-                                }
-                            })
-                        }
-                        label={`enableConsoleLogs=${newSettings.sdkConfig.enableConsoleLogs}`}
-                    />
-                </Form.Group>
-                <Form.Group controlId="initForm.Control1.4">
-                    <Form.Check
-                        type="checkbox"
-                        checked={newSettings.sdkConfig.enableErrorLayout}
-                        onChange={(e) =>
-                            setNewSettings({
-                                ...newSettings,
-                                sdkConfig: {
-                                    ...newSettings.sdkConfig,
-                                    enableErrorLayout: e.currentTarget.checked
-                                }
-                            })
-                        }
-                        label={`enableErrorLayout=${newSettings.sdkConfig.enableErrorLayout}`}
-                    />
-                </Form.Group>
+                                onChange={(e) => {
+                                    const toSubmit = {
+                                        ...newSettings,
+                                        sdkConfig: {
+                                            ...newSettings.sdkConfig,
+                                            [setting]: e.currentTarget.checked
+                                        }
+                                    };
+                                    if (
+                                        typeof newSettings.sdkConfig[setting] !=
+                                        'boolean'
+                                    ) {
+                                        delete toSubmit.sdkConfig[setting];
+                                    }
+                                    setNewSettings(toSubmit);
+                                }}
+                                label={`${setting}=${newSettings.sdkConfig[setting]}`}
+                            />
+                        </Form.Group>
+                    ))}
             </Form>
             <div
                 style={{

@@ -74,6 +74,7 @@ const PlayVisitorData: React.FC = () => {
                                         jsObject || {},
                                         true
                                     );
+                                    setError(false);
                                 } else {
                                     setError(true);
                                 }

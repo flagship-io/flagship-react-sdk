@@ -2,13 +2,20 @@ import React, { useContext } from 'react';
 import { Formik } from 'formik';
 import { Form, Button, Col } from 'react-bootstrap';
 import { SettingContext, AppSettings } from '../../../../../../../App';
+import JSONInput from 'react-json-editor-ajrm';
+import locale from 'react-json-editor-ajrm/locale/en';
 const PlayConfig: React.FC = () => {
     const { currentSettings, setSettings } = useContext(
         SettingContext
     ) as AppSettings;
+
+    const [hasError, setError] = React.useState(false);
     return (
         <Formik
-            initialValues={{ envId: currentSettings.envId }}
+            initialValues={{
+                envId: currentSettings.envId,
+                settings: currentSettings.sdkConfig
+            }}
             validate={(values) => {
                 const errors: any = {};
                 if (!values.envId) {
@@ -18,20 +25,25 @@ const PlayConfig: React.FC = () => {
             }}
             onSubmit={(values, { setSubmitting }) => {
                 setSubmitting(false);
-                setSettings({ ...currentSettings, envId: values.envId });
+                setSettings({
+                    ...currentSettings,
+                    envId: values.envId,
+                    sdkConfig: { ...values.settings }
+                });
             }}
         >
             {({
                 handleSubmit,
                 handleChange,
                 handleBlur,
+                setFieldValue,
                 values,
                 touched,
                 isValid,
                 errors
             }) => (
                 <Form noValidate onSubmit={handleSubmit}>
-                    <Form.Group as={Col} md="12" controlId="validationFormik01">
+                    <Form.Group as={Col} md="12" controlId="envIdForm">
                         <Form.Label>Environment ID</Form.Label>
                         <Form.Control
                             type="text"
@@ -45,8 +57,44 @@ const PlayConfig: React.FC = () => {
                             {errors.envId}
                         </Form.Control.Feedback>
                     </Form.Group>
+                    <Form.Group as={Col} md="12" controlId="settingsForm">
+                        <Form.Label>
+                            "<i>config</i>"" prop
+                        </Form.Label>
+                        <JSONInput
+                            id="settings"
+                            placeholder={values.settings}
+                            locale={locale}
+                            height="550px"
+                            width="100%"
+                            onChange={({ error, jsObject }) => {
+                                if (!error) {
+                                    setFieldValue(
+                                        'settings',
+                                        jsObject || {},
+                                        true
+                                    );
+                                    setError(false);
+                                } else {
+                                    setError(true);
+                                }
+                            }}
+                            style={{
+                                body: {
+                                    fontSize: '16px'
+                                }
+                            }}
+                        />
+                    </Form.Group>
                     <div className="flex justify-end ph3">
-                        <Button variant="secondary" type="submit">
+                        <Button
+                            disabled={hasError}
+                            variant="secondary"
+                            type="submit"
+                            style={{
+                                cursor: hasError ? 'not-allowed' : 'pointer'
+                            }}
+                        >
                             Apply change
                         </Button>
                     </div>
