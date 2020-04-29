@@ -18,12 +18,12 @@ import flagship, {
 // eslint-disable-next-line import/no-cycle
 import FlagshipErrorBoundary from './FlagshipErrorBoundary';
 import loggerHelper from './lib/loggerHelper';
-import { smartJoin } from './lib/utils';
 
 export declare type FsStatus = {
     isLoading: boolean;
     hasError: boolean;
     lastRefresh: string | null;
+    firstInitSuccess: string | null;
 };
 
 export declare type FsState = {
@@ -43,6 +43,7 @@ export const initState: FsState = {
     fsModifications: null,
     status: {
         isLoading: true,
+        firstInitSuccess: null,
         lastRefresh: null,
         hasError: false
     }
@@ -99,7 +100,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         error: Error | null;
     }>({ hasError: false, error: null });
     const {
-        status: { isLoading },
+        status: { isLoading, firstInitSuccess },
         fsVisitor
     } = state;
     const tryCatchCallback = (callback: any): void => {
@@ -156,7 +157,10 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 status: {
                     ...state.status,
                     isLoading: false,
-                    lastRefresh: new Date().toISOString()
+                    lastRefresh: new Date().toISOString(),
+                    firstInitSuccess:
+                        state.status.firstInitSuccess ||
+                        new Date().toISOString()
                 },
                 fsVisitor: visitorInstance,
                 fsModifications:
@@ -168,13 +172,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 tryCatchCallback(onInitDone);
             }
         });
-    }, [
-        envId,
-        id,
-        smartJoin(Object.values(config as FlagshipSdkConfig)),
-        smartJoin(Object.values(context as FlagshipVisitorContext)),
-        smartJoin(Object.keys(context as FlagshipVisitorContext))
-    ]);
+    }, [envId, id, JSON.stringify(config) + JSON.stringify(context)]);
 
     useEffect(() => {
         if (!isLoading) {
@@ -192,8 +190,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     }, [state]);
 
     const handleDisplay = (): React.ReactNode => {
-        const isFirstInit =
-            !fsVisitor || (fsVisitor && !fsVisitor.fetchedModifications);
+        const isFirstInit = !fsVisitor || !firstInitSuccess;
         if (isLoading && loadingComponent && isFirstInit) {
             return <>{loadingComponent}</>;
         }

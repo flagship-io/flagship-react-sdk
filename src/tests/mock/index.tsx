@@ -30,6 +30,7 @@ export const defaultContext: {
         status: {
             isLoading: true,
             lastRefresh: null,
+            firstInitSuccess: null,
             hasError: false
         }
     }
