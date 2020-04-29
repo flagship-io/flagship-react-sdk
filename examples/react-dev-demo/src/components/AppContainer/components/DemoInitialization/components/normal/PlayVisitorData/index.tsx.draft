@@ -1,0 +1,56 @@
+import React, { useContext } from 'react';
+import { Formik } from 'formik';
+import { Form, Button, Col } from 'react-bootstrap';
+import { SettingContext, AppSettings } from '../../../../../../../App';
+import JSONInput from 'react-json-editor-ajrm';
+import locale from 'react-json-editor-ajrm/locale/en';
+
+const PlayVisitorData: React.FC = () => {
+    const { currentSettings, setSettings } = useContext(
+        SettingContext
+    ) as AppSettings;
+    return (
+        <>
+            <Form>
+                <Form.Group controlId="initForm.ControlSelect2">
+                    <Form.Label>visitorId</Form.Label>
+                    <Form.Control as="select" onChange={handleVisitorId}>
+                        {config.sandbox.visitorId.map((id) => (
+                            <option key={id}>{id}</option>
+                        ))}
+                    </Form.Control>
+                </Form.Group>
+                <Form.Group controlId="initForm.ControlSelect3">
+                    <Form.Label>visitor context</Form.Label>
+                    {Object.entries(contextTemp).map(([key, value]) => (
+                        <Form.Check
+                            key={key}
+                            type="checkbox"
+                            id={`default-${key}`}
+                            checked={newSettings.visitorData.context.hasOwnProperty(
+                                key
+                            )}
+                            onChange={handleVisitorContext}
+                            label={JSON.stringify({ [key]: value })}
+                        />
+                    ))}
+                </Form.Group>
+            </Form>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'flex-end'
+                }}
+            >
+                <Button
+                    variant="secondary"
+                    onClick={() => setSettings({ ...newSettings })}
+                >
+                    Apply change
+                </Button>
+            </div>
+        </>
+    );
+};
+
+export default PlayVisitorData;

@@ -19,6 +19,7 @@
     "include": [
         "./src/**/*.tsx",
         "./src/**/*.ts",
-        "src/components/AppContainer/components/DemoInitialization/components/normal/PlayConfig/index.tsx.draft"
+        "src/components/AppContainer/components/DemoInitialization/components/normal/PlayConfig/index.tsx.draft",
+        "src/components/AppContainer/components/DemoInitialization/components/normal/PlayVisitorData/index.tsx.draft"
     ]
 }

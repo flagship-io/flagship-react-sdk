@@ -5,6 +5,7 @@ import { Alert, Button, Col, Form, Row } from 'react-bootstrap';
 import { AppSettings, SdkSettings, SettingContext } from '../../../../App';
 import config from '../../../../config';
 import PlayConfig from './components/qa/PlayConfig';
+import PlayVisitorData from './components/qa/PlayVisitorData';
 
 export const DemoInitialization = () => {
     const name = 'initialization';
@@ -134,47 +135,7 @@ const App: React.FC = () => (
                     <h3>
                         2 - Playing with <i>visitorData</i>
                     </h3>
-                    <Form>
-                        <Form.Group controlId="initForm.ControlSelect2">
-                            <Form.Label>visitorId</Form.Label>
-                            <Form.Control
-                                as="select"
-                                onChange={handleVisitorId}
-                            >
-                                {config.sandbox.visitorId.map((id) => (
-                                    <option key={id}>{id}</option>
-                                ))}
-                            </Form.Control>
-                        </Form.Group>
-                        <Form.Group controlId="initForm.ControlSelect3">
-                            <Form.Label>visitor context</Form.Label>
-                            {Object.entries(contextTemp).map(([key, value]) => (
-                                <Form.Check
-                                    key={key}
-                                    type="checkbox"
-                                    id={`default-${key}`}
-                                    checked={newSettings.visitorData.context.hasOwnProperty(
-                                        key
-                                    )}
-                                    onChange={handleVisitorContext}
-                                    label={JSON.stringify({ [key]: value })}
-                                />
-                            ))}
-                        </Form.Group>
-                    </Form>
-                    <div
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'flex-end'
-                        }}
-                    >
-                        <Button
-                            variant="secondary"
-                            onClick={() => setSettings({ ...newSettings })}
-                        >
-                            Apply change
-                        </Button>
-                    </div>
+                   <PlayVisitorData></PlayVisitorData>
                     <div>Since we have set those settings:</div>
                     <CodeBlock
                         className="mv3"

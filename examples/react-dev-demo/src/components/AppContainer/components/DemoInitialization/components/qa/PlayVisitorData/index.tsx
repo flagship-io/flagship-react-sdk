@@ -2,10 +2,14 @@ import React, { useContext } from 'react';
 import { Formik } from 'formik';
 import { Form, Button, Col } from 'react-bootstrap';
 import { SettingContext, AppSettings } from '../../../../../../../App';
+import JSONInput from 'react-json-editor-ajrm';
+import locale from 'react-json-editor-ajrm/locale/en';
+
 const PlayVisitorData: React.FC = () => {
     const { currentSettings, setSettings } = useContext(
         SettingContext
     ) as AppSettings;
+    const [hasError, setError] = React.useState(false);
     return (
         <Formik
             initialValues={{
@@ -34,6 +38,7 @@ const PlayVisitorData: React.FC = () => {
                 handleSubmit,
                 handleChange,
                 handleBlur,
+                setFieldValue,
                 values,
                 touched,
                 isValid,
@@ -41,7 +46,7 @@ const PlayVisitorData: React.FC = () => {
             }) => (
                 <Form noValidate onSubmit={handleSubmit}>
                     <Form.Group as={Col} md="12" controlId="validationFormik01">
-                        <Form.Label>Environment ID</Form.Label>
+                        <Form.Label>Visitor ID</Form.Label>
                         <Form.Control
                             type="text"
                             name="envId"
@@ -54,8 +59,42 @@ const PlayVisitorData: React.FC = () => {
                             {errors.vId}
                         </Form.Control.Feedback>
                     </Form.Group>
+                    <Form.Group as={Col} md="12" controlId="validationFormik02">
+                        <Form.Label>Visitor Context</Form.Label>
+                        <JSONInput
+                            id="a_unique_id"
+                            placeholder={values.vContext}
+                            locale={locale}
+                            height="550px"
+                            width="100%"
+                            // onKeyPressUpdate={false}
+                            onChange={({ error, jsObject }) => {
+                                if (!error) {
+                                    setFieldValue(
+                                        'vContext',
+                                        jsObject || {},
+                                        true
+                                    );
+                                } else {
+                                    setError(true);
+                                }
+                            }}
+                            style={{
+                                body: {
+                                    fontSize: '16px'
+                                }
+                            }}
+                        />
+                    </Form.Group>
                     <div className="flex justify-end ph3">
-                        <Button variant="secondary" type="submit">
+                        <Button
+                            disabled={hasError}
+                            variant="secondary"
+                            type="submit"
+                            style={{
+                                cursor: hasError ? 'not-allowed' : 'pointer'
+                            }}
+                        >
                             Apply change
                         </Button>
                     </div>
