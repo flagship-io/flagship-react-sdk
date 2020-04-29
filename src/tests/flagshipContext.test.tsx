@@ -169,4 +169,64 @@ describe('fsContext provider', () => {
         });
         expect(isReady).toEqual(true);
     });
+    test('it should working safe mode in production env', async () => {
+        const { container } = render(
+            <FlagshipProvider
+                envId={providerProps.envId}
+                config={providerProps.config}
+                visitorData={providerProps.visitorData}
+                onInitDone={() => {
+                    isReady = true;
+                }}
+                onInitStart={() => {
+                    throw new Error('crash test');
+                }}
+            >
+                <div>Hello I'm visible, even with safe mode</div>
+            </FlagshipProvider>
+        );
+        await waitFor(() => {
+            if (!isReady) {
+                throw new Error('not ready');
+            }
+        });
+        expect(
+            container.querySelector('#flagshipSafeModeContainer')?.innerHTML
+        ).toEqual("<div>Hello I'm visible, even with safe mode</div>");
+
+        expect(isReady).toEqual(true);
+    });
+    test('it should working safe mode in development env', async () => {
+        const { container } = render(
+            <FlagshipProvider
+                envId={providerProps.envId}
+                config={{ ...providerProps.config, nodeEnv: 'development' }}
+                visitorData={providerProps.visitorData}
+                onInitDone={() => {
+                    isReady = true;
+                }}
+                onInitStart={() => {
+                    throw new Error('crash test');
+                }}
+            >
+                <div>Hello I'm visible, even with safe mode</div>
+            </FlagshipProvider>
+        );
+        await waitFor(() => {
+            if (!isReady) {
+                throw new Error('not ready');
+            }
+        });
+        // should display a bottom bar on the screen for developer to debug
+        expect(
+            container.querySelectorAll('.fsErrorDebugContainer').length
+        ).toEqual(1);
+        expect(
+            container
+                .querySelectorAll('.fsErrorDebugContainer')[0]
+                .innerHTML.includes('crash test')
+        ).toEqual(true);
+
+        expect(isReady).toEqual(true);
+    });
 });
