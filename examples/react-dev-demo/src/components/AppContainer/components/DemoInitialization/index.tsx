@@ -74,6 +74,7 @@ const App: React.FC = () => (
                         value dynamically here:{' '}
                     </p>
                     <h3
+                        id="playWithConfig"
                         style={{
                             borderBottom: '1px solid grey',
                             marginBottom: '16px',
