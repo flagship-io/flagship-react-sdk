@@ -59,7 +59,7 @@ const PlayConfig: React.FC = () => {
                     </Form.Group>
                     <Form.Group as={Col} md="12" controlId="settingsForm">
                         <Form.Label>
-                            "<i>config</i>"" prop
+                            "<i>config</i>" prop
                         </Form.Label>
                         <JSONInput
                             id="settings"
