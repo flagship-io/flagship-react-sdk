@@ -4,6 +4,7 @@ import { Alert, Col, Row, Button, Nav } from 'react-bootstrap';
 import CodeBlock from '../../../common/CodeBlock';
 import { TransactionHit } from '@flagship.io/js-sdk';
 import PlayWithHits from './components/normal/PlayWithHits';
+import PlayWithHitsQA from './components/qa/PlayWithHits';
 import { SettingContext, AppSettings } from '../../../../App';
 import PlayWithModificationsQA from './components/qa/PlayWithModifications';
 import PlayWithModifications from './components/normal/PlayWithModifications';
@@ -82,7 +83,11 @@ fsStatus=${JSON.stringify(fsStatus, null, 2)};
                     <h3>
                         3 - Playing with <i>hits</i>
                     </h3>
-                    <PlayWithHits></PlayWithHits>
+                    {QA.enabled ? (
+                        <PlayWithHitsQA></PlayWithHitsQA>
+                    ) : (
+                        <PlayWithHits></PlayWithHits>
+                    )}
                 </Alert>
             </Col>
         </Row>
