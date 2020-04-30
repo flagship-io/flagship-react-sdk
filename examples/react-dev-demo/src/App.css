@@ -105,3 +105,10 @@ form .form-check {
     opacity: 0.8;
     z-index: 1 !important;
 }
+
+.nav-link {
+    color: white !important;
+}
+.nav-link.active {
+    color: #495057 !important;
+}

@@ -306,7 +306,7 @@ const { hit: fsHit } = useFlagship();`}
                 />
             </div>
             <p>Send a hit, demo: </p>
-            <Nav variant="tabs" defaultActiveKey="/home">
+            <Nav variant="tabs" defaultActiveKey="hitTransaction">
                 <Nav.Item>
                     <Nav.Link
                         eventKey="hitTransaction"
