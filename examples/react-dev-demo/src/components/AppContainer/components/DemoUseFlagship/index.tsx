@@ -1,8 +1,9 @@
 import { useFlagship } from '@flagship.io/react-sdk';
 import React from 'react';
-import { Alert, Col, Row, Button } from 'react-bootstrap';
+import { Alert, Col, Row, Button, Nav } from 'react-bootstrap';
 import CodeBlock from '../../../common/CodeBlock';
 import { TransactionHit } from '@flagship.io/js-sdk';
+import PlayWithHits from './components/normal/PlayWithHits';
 
 export const DemoUseFlagship = () => {
     const fsParams = {
@@ -99,145 +100,7 @@ fsStatus=${JSON.stringify(fsStatus, null, 2)};
                     <h3>
                         3 - Playing with <i>hits</i>
                     </h3>
-                    <div>
-                        <b>NOTE:</b>
-                        <p>
-                            It is not necessary to provide parameters to{' '}
-                            <i>useFlagship</i> if your purpose is only to send
-                            hits.
-                        </p>
-                        <CodeBlock
-                            className="mv3"
-                            codeString={`import { useFlagship } from '@flagship.io/react-sdk';
-const { hit: fsHit } = useFlagship();`}
-                        />
-                    </div>
-                    <p>demo: </p>
-                    <CodeBlock
-                        className="mv3"
-                        codeString={`<Button
-    onClick={() => {
-        const mockHit = {
-            type: 'Transaction',
-            data: {
-                transactionId: '12451342423',
-                affiliation: 'myAffiliation',
-                totalRevenue: 999,
-                shippingCost: 888,
-                shippingMethod: 'myShippingMethod',
-                currency: 'myCurrency',
-                taxes: 1234444,
-                paymentMethod: 'myPaymentMethod',
-                itemCount: 2,
-                couponCode: 'myCOUPON',
-                documentLocation:
-                    'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-                pageTitle: 'myScreen'
-            }
-        };
-        fsHit.send(mockHit);
-    }}
->
-    Send a transaction hit
-</Button>`}
-                    />
-                    <div>
-                        <Button
-                            variant="secondary"
-                            onClick={() => {
-                                const mockHit = {
-                                    type: 'Transaction',
-                                    data: {
-                                        transactionId: '12451342423',
-                                        affiliation: 'myAffiliation',
-                                        totalRevenue: 999,
-                                        shippingCost: 888,
-                                        shippingMethod: 'myShippingMethod',
-                                        currency: 'myCurrency',
-                                        taxes: 1234444,
-                                        paymentMethod: 'myPaymentMethod',
-                                        itemCount: 2,
-                                        couponCode: 'myCOUPON',
-                                        documentLocation:
-                                            'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-                                        pageTitle: 'myScreen'
-                                    }
-                                } as {
-                                    type: 'Transaction';
-                                    data: TransactionHit;
-                                };
-                                fsHit.send(mockHit);
-                            }}
-                        >
-                            Send a transaction hit
-                        </Button>
-                    </div>
-                    <CodeBlock
-                        className="mv3"
-                        codeString={`<Button
-    onClick={() => {
-        const mockHit1 = {
-            type: 'Transaction',
-            data: {
-                transactionId: '12451342423',
-                affiliation: 'myAffiliation',
-                totalRevenue: 999,
-                shippingCost: 888,
-                shippingMethod: 'myShippingMethod',
-                currency: 'myCurrency',
-                taxes: 1234444,
-                paymentMethod: 'myPaymentMethod',
-                itemCount: 2,
-                couponCode: 'myCOUPON',
-                documentLocation:
-                    'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-                pageTitle: 'myScreen'
-            }
-        };
-        const mockHit2 = { ...mockHit1 };
-        mockHit2.data.transactionId = '999';
-        fsHit.sendMultiple([mockHit1, mockHit2]);
-    }}
->
-    Send multiple transaction hits
-</Button>`}
-                    />
-                    <div>
-                        <Button
-                            variant="secondary"
-                            onClick={() => {
-                                const mockHit1 = {
-                                    type: 'Transaction',
-                                    data: {
-                                        transactionId: '12451342423',
-                                        affiliation: 'myAffiliation',
-                                        totalRevenue: 999,
-                                        shippingCost: 888,
-                                        shippingMethod: 'myShippingMethod',
-                                        currency: 'myCurrency',
-                                        taxes: 1234444,
-                                        paymentMethod: 'myPaymentMethod',
-                                        itemCount: 2,
-                                        couponCode: 'myCOUPON',
-                                        documentLocation:
-                                            'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-                                        pageTitle: 'myScreen'
-                                    }
-                                } as {
-                                    type: 'Transaction';
-                                    data: TransactionHit;
-                                };
-                                const mockHit2 = { ...mockHit1 } as {
-                                    type: 'Transaction';
-                                    data: TransactionHit;
-                                };
-                                mockHit2.data.transactionId = '999';
-                                fsHit.sendMultiple([mockHit1, mockHit2]);
-                            }}
-                        >
-                            Send multiple transaction hits
-                        </Button>
-                    </div>
+                    <PlayWithHits></PlayWithHits>
                 </Alert>
             </Col>
         </Row>
