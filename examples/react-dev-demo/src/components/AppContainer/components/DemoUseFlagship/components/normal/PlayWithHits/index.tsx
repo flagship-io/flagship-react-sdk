@@ -293,6 +293,15 @@ const PlayWithHits: React.FC = () => {
     }>(transactionHitBundle);
     return (
         <>
+            <div className="mb3">
+                If you're not familiar with the payload that you should a
+                provide to the hit you want to send, you'll have all details
+                available in the{' '}
+                <a href="https://github.com/abtasty/flagship-react-sdk#shape-of-possible-hits-to-send">
+                    SDK Hit documentation
+                </a>
+                .
+            </div>
             <div>
                 <b>NOTE:</b>
                 <p>

@@ -1,9 +1,12 @@
 import { useFlagship } from '@flagship.io/react-sdk';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Alert, Col, Row, Button, Nav } from 'react-bootstrap';
 import CodeBlock from '../../../common/CodeBlock';
 import { TransactionHit } from '@flagship.io/js-sdk';
 import PlayWithHits from './components/normal/PlayWithHits';
+import { SettingContext, AppSettings } from '../../../../App';
+import PlayWithModificationsQA from './components/qa/PlayWithModifications';
+import PlayWithModifications from './components/normal/PlayWithModifications';
 
 export const DemoUseFlagship = () => {
     const fsParams = {
@@ -21,6 +24,7 @@ export const DemoUseFlagship = () => {
     const { modifications: fsModifications } = output;
     const { status: fsStatus, hit: fsHit } = useFlagship();
     const demoHookName = 'useFlagship';
+    const { QA } = useContext(SettingContext) as AppSettings;
     return (
         <Row>
             <Col>
@@ -55,41 +59,19 @@ const {
                     <h3>
                         1 - Playing with <i>fsModifications</i>
                     </h3>
-                    <p>demo: </p>
-                    <div>
-                        <Button
-                            variant="secondary"
-                            style={{
-                                backgroundColor: fsModifications.btnColor
-                            }}
-                        >
-                            {`I'm a button customized with Flagship (backgroundColor=${fsModifications.btnColor})`}
-                        </Button>
-                    </div>
-                    <CodeBlock
-                        className="mv3"
-                        codeString={`<Button
-    variant="secondary"
-    style={{
-        backgroundColor: fsModifications.btnColor
-    }}
->
-    {\`I'm a button customized with Flagship (backgroundColor=\${fsModifications.btnColor})\`}
-</Button>`}
-                    />
+                    {QA.enabled ? (
+                        <PlayWithModificationsQA></PlayWithModificationsQA>
+                    ) : (
+                        <PlayWithModifications></PlayWithModifications>
+                    )}
                     <h3>
-                        2 - Playing with <i>fsStatus</i>
+                        2 - Reading <i>fsStatus</i>
                     </h3>
-                    <div style={{ marginBottom: 16 }}>
-                        If you're not familiar with the payload that you should
-                        a provide to the hit you want to send, you'll have all
-                        details available in the{' '}
-                        <a href="https://github.com/abtasty/flagship-js-sdk/blob/master/README.md#shape-of-possible-hits-to-send-1">
-                            SDK JS Hit documentation
-                        </a>
-                        .
-                    </div>
-                    <p>demo with Transaction Hit: </p>
+
+                    <p>
+                        It gives you some information about the current status
+                        of the SDK:
+                    </p>
                     <CodeBlock
                         className="mv3"
                         codeString={`
