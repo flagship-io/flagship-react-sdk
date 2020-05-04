@@ -664,11 +664,11 @@ onClick={() => setToggle(!toggle)}
 </Button>
 ```
 
-# Hit
+# Hits
 
 ## Summary
 
-<i>Shape</i> of possible hits to send:
+<p id='Shape-of-possible-hits-to-send'><i>Shape</i> of possible hits to send:</p>
 
 -   [Transaction Hit](#transaction-hit)
 -   [Screen Hit](#screen-hit)
