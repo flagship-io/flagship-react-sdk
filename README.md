@@ -429,6 +429,66 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
     </tbody>
 </table>
 
+**Demo:**
+
+```
+import { useFlagship } from '@flagship.io/react-sdk';
+
+const fsParams = {
+    modifications: {
+        requested: [
+            {
+                key: 'btnColor',
+                defaultValue: 'green',
+                activate: false
+            }
+        ]
+    }
+}
+
+const {
+    modifications: fsModifications,
+    status: fsStatus,
+    hit: fsHit,
+} = useFlagship(fsParams);
+```
+
+**Demo 2:**
+
+```
+import { useFlagship } from '@flagship.io/react-sdk';
+
+const { hit: fsHit } = useFlagship();
+
+// insider render function:
+
+<Button
+    onClick={() => {
+        const mockHit = {
+            type: 'Transaction',
+            data: {
+                transactionId: '12451342423',
+                affiliation: 'myAffiliation',
+                totalRevenue: 999,
+                shippingCost: 888,
+                shippingMethod: 'myShippingMethod',
+                currency: 'myCurrency',
+                taxes: 1234444,
+                paymentMethod: 'myPaymentMethod',
+                itemCount: 2,
+                couponCode: 'myCOUPON',
+                documentLocation:
+                    'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
+                pageTitle: 'myScreen'
+            }
+        };
+        fsHit.send(mockHit);
+    }}
+>
+    Send a transaction hit
+</Button>
+```
+
 #### `useFsModifications`
 
 This will give you the modification saved in the SDK cache.
@@ -485,7 +545,17 @@ This will give you the modification saved in the SDK cache.
 
 **Demo:**
 
--   coming soon
+```
+import { useFsModifications } from '@flagship.io/react-sdk';
+
+const fsModifications = useFsModifications([
+  {
+      key: 'btnColor',
+      defaultValue: 'green',
+      activate: false
+  }
+]);
+```
 
 #### `useFsActivate`
 
@@ -518,7 +588,22 @@ This will give you the modification saved in the SDK cache.
 
 **Demo:**
 
--   coming soon
+```
+import { useFsActivate } from '@flagship.io/react-sdk';
+
+const [toggle, setToggle] = React.useState(false);
+
+useFsActivate(['btnColor', 'otherKey1', 'otherKey2'], [toggle]); // trigger an activate when "toggle" value change.
+
+// insider render function:
+
+<Button
+variant="secondary"
+onClick={() => setToggle(!toggle)}
+>
+    Trigger activate
+</Button>
+```
 
 #### `useFsSynchronize`
 
@@ -553,7 +638,23 @@ Refresh modifications in cache by making a http request to the Flagship API.
 
 **Demo:**
 
--   coming soon
+```
+import { useFsSynchronize } from '@flagship.io/react-sdk';
+
+const [toggle, setToggle] = React.useState(false);
+const activateAllModifications = false;
+
+useFsSynchronize([toggle], activateAllModifications); // trigger a synchronize when "toggle" value change.
+
+// insider render function:
+
+<Button
+variant="secondary"
+onClick={() => setToggle(!toggle)}
+>
+    Trigger synchronize
+</Button>
+```
 
 ### <i>Shape</i> of possible hits to send
 
