@@ -5,7 +5,7 @@
 React Flagship SDK provides a `<FlagshipProvider />`, which makes Flagship features available to the rest of your app.
 Flagship features are accessible using Flagship hooks, have a look to the documentation for details.
 
-### Prerequisites
+## Prerequisites
 
 -   **Node.js**: version 6.0.0 or later...
 
@@ -45,7 +45,7 @@ In most of case, you want to wrap all your app with this provider, so you might 
 
 ```
 import React from 'react';
-import { FlagshipProvider } from '@flagship.io/react-sdk';
+import FlagshipProvider from '@flagship.io/react-sdk';
 
 const App = () => (
     <>
