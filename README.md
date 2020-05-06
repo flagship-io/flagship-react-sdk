@@ -270,6 +270,12 @@ Here are the attributes which you can set inside the SDK settings object:
           - If you want to move to an earlier version the Flagship API (v2, v3,...).
           </td>
         </tr>
+        <tr>
+          <td>apiKey</td>
+          <td>string</td>
+          <td>null</td>
+          <td>If you want to use the <a href="http://developers.flagship.io/api/v2/">Decision API V2</a>, you must contact the support team so they'll provide you an API Key to authenticate the calls.</td>
+        </tr>
 </tbody>
 
 </table>

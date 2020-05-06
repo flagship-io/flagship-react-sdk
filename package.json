@@ -48,7 +48,8 @@
     ],
     "homepage": "https://github.com/abtasty/flagship-react-sdk#readme",
     "dependencies": {
-        "@flagship.io/js-sdk": "^0.1.11"
+        "@flagship.io/js-sdk": "^0.1.11",
+        "@flagship.io/js-sdk-logs": "0.0.4"
     },
     "peerDependencies": {
         "react": "^16.8.0"
@@ -81,7 +82,7 @@
         "eslint-plugin-react-hooks": "^2.5.0",
         "jest": "^25.4.0",
         "jest-mock-axios": "^3.2.0",
-        "np": "^6.2.1",
+        "np": "^6.2.3",
         "prettier": "^2.0.4",
         "react": "^16.9.0",
         "react-dom": "^16.9.0",
