@@ -16,6 +16,8 @@ import flagship, {
 } from '@flagship.io/js-sdk';
 import { FsLogger } from '@flagship.io/js-sdk-logs';
 import loggerHelper from './lib/loggerHelper';
+// eslint-disable-next-line import/no-cycle
+import FlagshipErrorBoundary from './FlagshipErrorBoundary';
 
 export declare type FsStatus = {
     isLoading: boolean;
