@@ -5,7 +5,7 @@
 React Flagship SDK provides a `<FlagshipProvider />`, which makes Flagship features available to the rest of your app.
 Flagship features are accessible using Flagship hooks, have a look to the documentation for details.
 
-### Prerequisites
+## Prerequisites
 
 -   **Node.js**: version 6.0.0 or later...
 
@@ -31,83 +31,89 @@ Flagship features are accessible using Flagship hooks, have a look to the docume
 - <a href="https://abtasty.github.io/flagship-react-sdk/">Demo app</a> specially for developers ! 👨‍💻
 </ul>
 
-## Getting Started
+# Getting Started
 
-1. **Install** the node module:
+## 1. **Install** the node module:
 
 ```
 npm install @flagship.io/react-sdk
 ```
 
-2. **Import** the Flagship React provider at the root level of your app like `App.js` file :
+## 2. **Import** the Flagship React provider:
 
-```
-import React from "react";
-import { FlagshipProvider } from "@flagship.io/react-sdk";
-
-const App = () => (
-  <>
-    <FlagshipProvider>
-      {/* [...] */}
-    </FlagshipProvider>
-  </>
-);
-```
-
-3. **Initialize** the provider with at least required props such as `envId`, `visitorData` :
-
-```
-import React from "react";
-import { FlagshipProvider } from "@flagship.io/react-sdk";
-
-const App = () => (
-  <>
-    <FlagshipProvider
-      envId="bn1ab7m56qolupi5sa0g"
-      visitorData={{
-        id: "test-visitor-id",
-        context: {},
-      }}
-      config={{
-        fetchNow: true,
-        enableConsoleLogs: true,
-      }}
-    >
-      {/* [...] */}
-    </FlagshipProvider>
-  </>
-);
-```
-
-4. Use a Flagship hook in a component. In most case, you'll want to have modifications in cache :
+In most of case, you want to wrap all your app with this provider, so you might put it in your `App.js` file.
 
 ```
 import React from 'react';
-import { useFsModifications } from "@flagship.io/react-sdk";
+import FlagshipProvider from '@flagship.io/react-sdk';
 
-export const MyReactComponent = () => {
-  const fsModifications = useFsModifications([
-    {
-      key: "backgroundColor",
-      defaultValue: "green",
-      activate: false,
-    },
-  ]);
-  return (
-      <div
-        style={{
-          height: "200px",
-          width: "200px",
-          backgroundColor: fsModifications.backgroundColor,
-        }}
-      >
-        {"I'm a square with color=" + fsModifications.backgroundColor}
-      </div>
-  )
-}
+const App = () => (
+    <>
+        <FlagshipProvider>{/* [...] */}</FlagshipProvider>
+    </>
+);
 ```
 
-## FlagshipProvider Props
+## 3. **Initialize** the provider:
+
+You must put at least required props such as `envId`, `visitorData`.
+
+```
+import React from 'react';
+import { FlagshipProvider } from '@flagship.io/react-sdk';
+
+const App = () => (
+    <>
+        <FlagshipProvider
+            envId="bn1ab7m56qolupi5sa0g"
+            visitorData={{
+                id: 'test-visitor-id',
+                context: {}
+            }}
+            config={{
+                fetchNow: true,
+                enableConsoleLogs: true
+            }}
+        >
+            {/* [...] */}
+        </FlagshipProvider>
+    </>
+);
+```
+
+## 4. Use a Flagship hook in a component:
+
+In most case, you will get the desired modifications.
+
+```
+import React from 'react';
+import { useFsModifications } from '@flagship.io/react-sdk';
+
+export const MyReactComponent = () => {
+    const fsModifications = useFsModifications([
+        {
+            key: 'backgroundColor',
+            defaultValue: 'green',
+            activate: false
+        }
+    ]);
+    return (
+        <div
+            style={{
+                height: '200px',
+                width: '200px',
+                backgroundColor: fsModifications.backgroundColor
+            }}
+        >
+            {"I'm a square with color=" + fsModifications.backgroundColor}
+        </div>
+    );
+};
+```
+
+# FlagshipProvider Props
+
+## All props
 
 This is all available props which you can use inside the `FlagshipProvider` react component:
 
@@ -202,7 +208,7 @@ This is all available props which you can use inside the `FlagshipProvider` reac
     </tbody>
 </table>
 
-## SDK Prop Settings
+## "config" prop
 
 This is all available settings which you can set on the SDK.
 
@@ -264,11 +270,19 @@ Here are the attributes which you can set inside the SDK settings object:
           - If you want to move to an earlier version the Flagship API (v2, v3,...).
           </td>
         </tr>
+        <tr>
+          <td>apiKey</td>
+          <td>string</td>
+          <td>null</td>
+          <td>If you want to use the <a href="http://developers.flagship.io/api/v2/">Decision API V2</a>, you must contact the support team so they'll provide you an API Key to authenticate the calls.</td>
+        </tr>
 </tbody>
 
 </table>
 
-## Flagship Hooks
+# Flagship Hooks
+
+## Summary
 
 Here the list of current available hooks:
 
@@ -277,18 +291,18 @@ Here the list of current available hooks:
 -   [useFsActivate](#useFsActivate)
 -   [useFsSynchronize](#useFsSynchronize)
 
-### Available hits
+## Available hits
 
 -   [Transaction Hit](#transaction-hit)
 -   [Screen Hit](#screen-hit)
 -   [Item Hit](#item-hit)
 -   [Event Hit](#event-hit)
 
-#### `useFlagship`
+## `useFlagship`
 
 Most used hook from the Flagship React SDK. Through this hook, you can access to modifications of your current visitor and have an access to the SDK status. Output shape is visible [here](#useFlagship-output-shape).
 
-> returns an object (Typescript: UseFlagshipOutput)
+-   returns an object (Typescript: UseFlagshipOutput)
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -307,7 +321,7 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
     </tbody>
 </table>
 
-##### `useFlagship options`
+### `useFlagship options`
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -362,7 +376,7 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
     </tbody>
 </table>
 
-##### `useFlagship output shape`
+### `useFlagship output shape`
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -429,13 +443,73 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
     </tbody>
 </table>
 
-#### `useFsModifications`
+> **Demo:**
+
+```
+import { useFlagship } from '@flagship.io/react-sdk';
+
+const fsParams = {
+    modifications: {
+        requested: [
+            {
+                key: 'btnColor',
+                defaultValue: 'green',
+                activate: false
+            }
+        ]
+    }
+}
+
+const {
+    modifications: fsModifications,
+    status: fsStatus,
+    hit: fsHit,
+} = useFlagship(fsParams);
+```
+
+> **Demo 2:**
+
+```
+import { useFlagship } from '@flagship.io/react-sdk';
+
+const { hit: fsHit } = useFlagship();
+
+// insider render function:
+
+<Button
+    onClick={() => {
+        const mockHit = {
+            type: 'Transaction',
+            data: {
+                transactionId: '12451342423',
+                affiliation: 'myAffiliation',
+                totalRevenue: 999,
+                shippingCost: 888,
+                shippingMethod: 'myShippingMethod',
+                currency: 'myCurrency',
+                taxes: 1234444,
+                paymentMethod: 'myPaymentMethod',
+                itemCount: 2,
+                couponCode: 'myCOUPON',
+                documentLocation:
+                    'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
+                pageTitle: 'myScreen'
+            }
+        };
+        fsHit.send(mockHit);
+    }}
+>
+    Send a transaction hit
+</Button>
+```
+
+## `useFsModifications`
 
 This will give you the modification saved in the SDK cache.
 
 **NOTE:** If the SDK cache is empty, you can expect that it will return nothing.
 
-> returns Flagship modifications
+-   returns Flagship modifications
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -483,13 +557,23 @@ This will give you the modification saved in the SDK cache.
     </tbody>
 </table>
 
-**Demo:**
+> **Demo:**
 
--   coming soon
+```
+import { useFsModifications } from '@flagship.io/react-sdk';
 
-#### `useFsActivate`
+const fsModifications = useFsModifications([
+  {
+      key: 'btnColor',
+      defaultValue: 'green',
+      activate: false
+  }
+]);
+```
 
-> return `void`
+## `useFsActivate`
+
+-   return `void`
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -516,15 +600,30 @@ This will give you the modification saved in the SDK cache.
     </tbody>
 </table>
 
-**Demo:**
+> **Demo:**
 
--   coming soon
+```
+import { useFsActivate } from '@flagship.io/react-sdk';
 
-#### `useFsSynchronize`
+const [toggle, setToggle] = React.useState(false);
+
+useFsActivate(['btnColor', 'otherKey1', 'otherKey2'], [toggle]); // trigger an activate when "toggle" value change.
+
+// insider render function:
+
+<Button
+variant="secondary"
+onClick={() => setToggle(!toggle)}
+>
+    Trigger activate
+</Button>
+```
+
+## `useFsSynchronize`
 
 Refresh modifications in cache by making a http request to the Flagship API.
 
-> return `void`
+-   return `void`
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -551,18 +650,38 @@ Refresh modifications in cache by making a http request to the Flagship API.
     </tbody>
 </table>
 
-**Demo:**
+> **Demo:**
 
--   coming soon
+```
+import { useFsSynchronize } from '@flagship.io/react-sdk';
 
-### <i>Shape</i> of possible hits to send
+const [toggle, setToggle] = React.useState(false);
+const activateAllModifications = false;
+
+useFsSynchronize([toggle], activateAllModifications); // trigger a synchronize when "toggle" value change.
+
+// insider render function:
+
+<Button
+variant="secondary"
+onClick={() => setToggle(!toggle)}
+>
+    Trigger synchronize
+</Button>
+```
+
+# Hits
+
+## Summary
+
+<p id='Shape-of-possible-hits-to-send'><i>Shape</i> of possible hits to send:</p>
 
 -   [Transaction Hit](#transaction-hit)
 -   [Screen Hit](#screen-hit)
 -   [Item Hit](#item-hit)
 -   [Event Hit](#event-hit)
 
-#### `Transaction Hit`
+## `Transaction Hit`
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -636,7 +755,7 @@ Refresh modifications in cache by making a http request to the Flagship API.
     </tbody>
 </table>
 
-#### `Screen Hit`
+## `Screen Hit`
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -660,7 +779,7 @@ Refresh modifications in cache by making a http request to the Flagship API.
     </tbody>
 </table>
 
-#### `Item Hit`
+## `Item Hit`
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -716,7 +835,7 @@ Refresh modifications in cache by making a http request to the Flagship API.
     </tbody>
 </table>
 
-#### `Event Hit`
+## `Event Hit`
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -760,14 +879,14 @@ Refresh modifications in cache by making a http request to the Flagship API.
     </tbody>
 </table>
 
-## Contributing
+# Contributing
 
 Take a look to the [Contributors Guide](CONTRIBUTING.md).
 
-## What is Flagship ?
+# What is Flagship ?
 
 Have a look [here](https://www.abtasty.com/solutions-product-teams/).
 
-## License
+# License
 
 Flagship uses license under the [Apache version 2.0](http://www.apache.org/licenses/).

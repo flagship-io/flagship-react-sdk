@@ -26,7 +26,7 @@ const fsModifications = useFsModifications([
       defaultValue: 'green',
       activate: false
   }
-]);              `}
+]);`}
             />
             <p>Output: </p>
             <div>
