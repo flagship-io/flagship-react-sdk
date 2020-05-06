@@ -3,11 +3,10 @@ import {
     FsModifsRequestedList,
     GetModificationsOutput,
     IFlagshipVisitor,
-    HitShape,
-    FsLogger
+    HitShape
 } from '@flagship.io/js-sdk';
+import { FsLogger } from '@flagship.io/js-sdk-logs';
 import FlagshipContext, { FsStatus } from './FlagshipContext';
-// import { FlagshipConsumer as FlagshipContext } from './FlagshipContext';
 
 declare type ModificationKeys = Array<string>;
 declare type UseFsActivateOutput = void;
