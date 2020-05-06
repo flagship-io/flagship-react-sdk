@@ -107,7 +107,7 @@ describe('fsContext provider', () => {
         expect(isCalled.onUpdateParams.sdkVisitor).not.toBe(null);
         expect(isReady).toEqual(true);
     });
-    test('it should consider other props ', async () => {
+    test('it should consider other props', async () => {
         let computedFsVisitor: flagship.IFlagshipVisitor | null = null;
         const customFetchedModifications = fetchedModifications;
         customFetchedModifications[0].variation.modifications.value = {
@@ -163,6 +163,7 @@ describe('fsContext provider', () => {
             activateNow: false,
             enableConsoleLogs: true,
             fetchNow: true,
+            apiKey: null,
             flagshipApi: 'https://decision-api.flagship.io/v1/',
             logPathName: 'flagshipNodeSdkLogs',
             nodeEnv: 'production'
