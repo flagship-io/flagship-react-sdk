@@ -32,6 +32,9 @@ export const defaultContext: {
             lastRefresh: null,
             firstInitSuccess: null,
             hasError: false
+        },
+        private: {
+            previousFetchedModifications: undefined
         }
     }
 };
