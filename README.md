@@ -234,7 +234,7 @@ Here are the attributes which you can set inside the SDK settings object:
           <td>activateNow</td>
           <td>boolean</td>
           <td>false</td>
-          <td>Decide to trigger automatically the data when creating a new <a href='README.md#flagshipvisitor-class'>FlagshipVisitor</a>.<br>NOTE: when set to <i>true</i>, it will implicitly set <i>fetchNow=true</i> as well.</td>
+          <td>Decide to trigger automatically the data when creating a new <a href='README.md#flagshipvisitor-class'>FlagshipVisitor</a>.<br><b>NOTE</b>: when set to <i>true</i>, it will implicitly set <i>fetchNow=true</i> as well.</td>
         </tr>
         <tr>
           <td>enableConsoleLogs</td>
@@ -507,7 +507,7 @@ const { hit: fsHit } = useFlagship();
 
 This will give you the modification saved in the SDK cache.
 
-**NOTE:** If the SDK cache is empty, you can expect that it will return nothing.
+**<b>NOTE</b>:** If the SDK cache is empty, you can expect that it will return nothing.
 
 -   returns Flagship modifications
 
@@ -725,7 +725,7 @@ onClick={() => setToggle(!toggle)}
         <tr>
           <td>currency</td>
           <td>string</td>
-          <td><b>Optional</b>. Specifies the currency of your transaction.<br>NOTE: Value should be a valid ISO 4217 currency code.</td>
+          <td><b>Optional</b>. Specifies the currency of your transaction.<br><b>NOTE</b>: Value should be a valid ISO 4217 currency code.</td>
         </tr>
         <tr>
           <td>paymentMethod</td>
@@ -849,7 +849,7 @@ onClick={() => setToggle(!toggle)}
         <tr>
           <td>category</td>
           <td>string</td>
-          <td><b>Required</b>. Specifies the category of your event.<br>NOTE: The value must be either <b>Action Tracking</b> or <b>User Engagement</b>.</td>
+          <td><b>Required</b>. Specifies the category of your event.<br><b>NOTE</b>: The value must be either <b>Action Tracking</b> or <b>User Engagement</b>.</td>
         </tr>
         <tr>
           <td>action</td>
@@ -864,7 +864,7 @@ onClick={() => setToggle(!toggle)}
         <tr>
           <td>value</td>
           <td>number</td>
-          <td><b>Optional</b>. Specifies how much you won with that event.<br>For example, depending on the lead generated, you will earn 10 to 100 euros. Adding that value will enable us to do a sum inside the reporting and give you the average value too.<br>NOTE: Value must be non-negative.</td>
+          <td><b>Optional</b>. Specifies how much you won with that event.<br>For example, depending on the lead generated, you will earn 10 to 100 euros. Adding that value will enable us to do a sum inside the reporting and give you the average value too.<br><b>NOTE</b>: Value must be non-negative.</td>
         </tr>
         <tr>
           <td>documentLocation</td>
