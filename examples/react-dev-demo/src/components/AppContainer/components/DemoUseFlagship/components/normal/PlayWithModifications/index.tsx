@@ -8,8 +8,8 @@ const PlayWithModifications: React.FC = () => {
         modifications: {
             requested: [
                 {
-                    key: 'btnColor',
-                    defaultValue: 'green',
+                    key: 'color',
+                    defaultValue: '#FF33E3',
                     activate: false
                 }
             ]
@@ -24,21 +24,26 @@ const PlayWithModifications: React.FC = () => {
                 <Button
                     variant="secondary"
                     style={{
-                        backgroundColor: fsModifications.btnColor
+                        backgroundColor: fsModifications.color
                     }}
                 >
-                    {`I'm a button customized with Flagship (backgroundColor=${fsModifications.btnColor})`}
+                    {`I'm a button customized with Flagship (backgroundColor=${fsModifications.color})`}
                 </Button>
+            </div>
+            <div className="mv3">
+                Based on the campaign that we set on Flagship platform, the
+                color of the button will change depending values set in the{' '}
+                <a href="#playWithVisitorContext">visitor context</a>.
             </div>
             <CodeBlock
                 className="mv3"
                 codeString={`<Button
     variant="secondary"
     style={{
-        backgroundColor: fsModifications.btnColor
+        backgroundColor: fsModifications.color
     }}
 >
-    {\`I'm a button customized with Flagship (backgroundColor=\${fsModifications.btnColor})\`}
+    {\`My color tells my visitor mood (backgroundColor=\${fsModifications.color})\`}
 </Button>`}
             />
         </>
