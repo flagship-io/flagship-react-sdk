@@ -12,7 +12,8 @@ import flagship, {
     IFlagshipVisitor,
     GetModificationsOutput,
     SaveCacheArgs,
-    DecisionApiCampaign
+    DecisionApiCampaign,
+    DecisionApiResponseData
 } from '@flagship.io/js-sdk';
 import { FsLogger } from '@flagship.io/js-sdk-logs';
 import loggerHelper from './lib/loggerHelper';
@@ -31,6 +32,9 @@ export declare type FsState = {
     fsModifications: DecisionApiCampaign[] | null;
     status: FsStatus;
     log: FsLogger | null;
+    private: {
+        previousFetchedModifications: undefined | DecisionApiCampaign[];
+    };
 };
 
 export interface FlagshipReactSdkConfig extends FlagshipSdkConfig {
@@ -46,6 +50,9 @@ export const initState: FsState = {
         firstInitSuccess: null,
         lastRefresh: null,
         hasError: false
+    },
+    private: {
+        previousFetchedModifications: undefined
     }
 };
 
@@ -93,7 +100,11 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         ...initState,
         log: loggerHelper.getLogger(
             config as { enableConsoleLogs: boolean; nodeEnv: string }
-        )
+        ),
+        private: {
+            ...initState.private,
+            previousFetchedModifications: initialModifications
+        }
     });
     const [errorData, setError] = useState<{
         hasError: boolean;
@@ -110,10 +121,19 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             setError({ error, hasError: true });
         }
     };
+    const computedConfig: FlagshipSdkConfig = state.private
+        .previousFetchedModifications
+        ? {
+              ...config,
+              initialModifications: [
+                  ...state.private.previousFetchedModifications
+              ]
+          }
+        : (config as FlagshipSdkConfig);
 
     // Call FlagShip any time context get changed.
     useEffect(() => {
-        const fsSdk = flagship.start(envId, config);
+        const fsSdk = flagship.start(envId, computedConfig);
         const visitorInstance = fsSdk.createVisitor(
             id,
             context as FlagshipVisitorContext
@@ -127,22 +147,6 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             fsVisitor: visitorInstance
             // fsModifications: ???
         });
-        if (initialModifications) {
-            visitorInstance.fetchedModifications = {
-                visitorId: id,
-                campaigns: [...initialModifications]
-            }; // initialize immediately with something
-            if (onUpdate) {
-                tryCatchCallback(() => {
-                    onUpdate(
-                        {
-                            fsModifications: [...initialModifications]
-                        },
-                        visitorInstance
-                    );
-                });
-            }
-        }
         if (onInitStart) {
             tryCatchCallback(onInitStart);
         }
@@ -163,10 +167,11 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                         new Date().toISOString()
                 },
                 fsVisitor: visitorInstance,
-                fsModifications:
-                    (visitorInstance.fetchedModifications &&
-                        visitorInstance.fetchedModifications.campaigns) ||
-                    null
+                fsModifications: visitorInstance.fetchedModifications || null,
+                private: {
+                    previousFetchedModifications:
+                        visitorInstance.fetchedModifications || undefined
+                }
             });
             if (onInitDone) {
                 tryCatchCallback(onInitDone);
@@ -175,17 +180,15 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     }, [envId, id, JSON.stringify(config) + JSON.stringify(context)]);
 
     useEffect(() => {
-        if (!isLoading) {
-            if (onUpdate) {
-                tryCatchCallback(() => {
-                    onUpdate(
-                        {
-                            fsModifications: state.fsModifications
-                        },
-                        state.fsVisitor
-                    );
-                });
-            }
+        if (onUpdate) {
+            tryCatchCallback(() => {
+                onUpdate(
+                    {
+                        fsModifications: state.fsModifications
+                    },
+                    state.fsVisitor
+                );
+            });
         }
     }, [state]);
 

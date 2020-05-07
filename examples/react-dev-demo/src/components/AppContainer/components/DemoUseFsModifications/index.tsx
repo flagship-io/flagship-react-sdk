@@ -7,13 +7,6 @@ import PlayWithParamsQA from './components/qa/PlayWithParams';
 import { SettingContext, AppSettings } from '../../../../App';
 
 export const DemoUseFsModifications = () => {
-    const fsModifications = useFsModifications([
-        {
-            key: 'btnColor',
-            defaultValue: 'green',
-            activate: false
-        }
-    ]);
     const demoHookName = 'useFsModifications';
     const { QA } = useContext(SettingContext) as AppSettings;
     return (

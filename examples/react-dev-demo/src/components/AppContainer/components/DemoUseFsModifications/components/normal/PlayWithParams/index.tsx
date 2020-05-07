@@ -6,8 +6,8 @@ import { Button } from 'react-bootstrap';
 const PlayWithParams: React.FC = () => {
     const fsModifications = useFsModifications([
         {
-            key: 'btnColor',
-            defaultValue: 'green',
+            key: 'color',
+            defaultValue: '#FF33E3',
             activate: false
         }
     ]);
@@ -21,11 +21,11 @@ const PlayWithParams: React.FC = () => {
                 className="mv3"
                 codeString={`import { useFsModifications } from '@flagship.io/react-sdk';
 const fsModifications = useFsModifications([
-  {
-      key: 'btnColor',
-      defaultValue: 'green',
-      activate: false
-  }
+    {
+        key: 'color',
+        defaultValue: '#FF33E3',
+        activate: false
+    }
 ]);`}
             />
             <p>Output: </p>
@@ -33,21 +33,26 @@ const fsModifications = useFsModifications([
                 <Button
                     variant="secondary"
                     style={{
-                        backgroundColor: fsModifications.btnColor
+                        backgroundColor: fsModifications.color
                     }}
                 >
-                    {`I'm a button customized with Flagship (backgroundColor=${fsModifications.btnColor})`}
+                    {`My color tells my visitor mood (backgroundColor=${fsModifications.color})`}
                 </Button>
+            </div>
+            <div className="mv3">
+                Based on the campaign that we set on Flagship platform, the
+                color of the button will change depending values set in the{' '}
+                <a href="#playWithVisitorContext">visitor context</a>.
             </div>
             <CodeBlock
                 className="mv3"
                 codeString={`<Button
     variant="secondary"
     style={{
-        backgroundColor: fsModifications.btnColor
+        backgroundColor: fsModifications.color
     }}
 >
-    {\`I'm a button customized with Flagship (backgroundColor=\${fsModifications.btnColor})\`}
+    {\`My color tells my visitor mood (backgroundColor=\${fsModifications.color})\`}
 </Button>`}
             />
         </>

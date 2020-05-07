@@ -36,7 +36,10 @@ const PlayVisitorData: React.FC = () => {
                 ...newSettings,
                 visitorData: {
                     ...newSettings.visitorData,
-                    context: { ...newSettings.visitorData.context, ...node }
+                    context: {
+                        ...newSettings.visitorData.context,
+                        [Object.keys(node)[0]]: true
+                    }
                 }
             });
         } else {
@@ -48,6 +51,13 @@ const PlayVisitorData: React.FC = () => {
                     context: Object.entries(temp.visitorData.context).reduce(
                         (reducer, [key, value]) => {
                             if (key === keyToRemove) {
+                                if (
+                                    Object.keys(
+                                        config.visitorData.context
+                                    ).includes(keyToRemove)
+                                ) {
+                                    return { ...reducer, [key]: false };
+                                }
                                 return reducer;
                             }
                             return { ...reducer, [key]: value };
@@ -81,6 +91,7 @@ const PlayVisitorData: React.FC = () => {
                             ))}
                     </Form.Control>
                 </Form.Group>
+                <div className="fsAnchor" id="playWithVisitorContext" />
                 <Form.Group controlId="initForm.ControlSelect3">
                     <Form.Label>visitor context</Form.Label>
                     {Object.entries({
@@ -91,9 +102,13 @@ const PlayVisitorData: React.FC = () => {
                             key={key}
                             type="checkbox"
                             id={`default-${key}`}
-                            checked={newSettings.visitorData.context.hasOwnProperty(
-                                key
-                            )}
+                            checked={
+                                newSettings.visitorData.context.hasOwnProperty(
+                                    key
+                                )
+                                    ? !!value
+                                    : false
+                            }
                             onChange={handleVisitorContext}
                             label={JSON.stringify({ [key]: value })}
                         />

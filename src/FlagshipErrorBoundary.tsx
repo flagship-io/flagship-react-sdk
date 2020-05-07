@@ -1,6 +1,6 @@
 import React, { ErrorInfo } from 'react';
-// eslint-disable-next-line import/no-cycle
 import { FsLogger } from '@flagship.io/js-sdk-logs';
+// eslint-disable-next-line import/no-cycle
 import { FlagshipReactSdkConfig } from './FlagshipContext';
 
 const btnStyle = {

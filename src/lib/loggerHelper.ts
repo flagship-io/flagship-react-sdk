@@ -8,4 +8,4 @@ const FsLogger = {
     }
 };
 
-export default FlagshipLogger;
+export default FsLogger;
