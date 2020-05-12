@@ -164,7 +164,6 @@ describe('fsContext provider', () => {
             fetchNow: true,
             apiKey: null,
             flagshipApi: 'https://decision-api.flagship.io/v1/',
-            logPathName: 'flagshipNodeSdkLogs',
             initialModifications: customFetchedModifications,
             nodeEnv: 'production'
         });
