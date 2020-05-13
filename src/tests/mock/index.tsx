@@ -55,18 +55,6 @@ export const providerProps = {
 
 export const fetchedModifications = [
     {
-        id: 'bqtvkps9h7j02m34fj2g',
-        variation: {
-            id: 'bqtvkps9h7j02m34fj40',
-            modifications: {
-                type: 'JSON',
-                value: {}
-            },
-            reference: true
-        },
-        variationGroupId: 'bqtvkps9h7j02m34fj3g'
-    },
-    {
         id: 'bqjfstuirtfg01mctmn0',
         variation: {
             id: 'bqjfstuirtfg01mctmp0',

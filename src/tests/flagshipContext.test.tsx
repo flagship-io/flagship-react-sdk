@@ -101,8 +101,10 @@ describe('fsContext provider', () => {
                 .fsModifications.length > 0
         ).toEqual(true);
         expect(
-            (isCalled.onUpdateParams.sdkData as flagship.GetModificationsOutput)
-                .fsModifications
+            (isCalled.onUpdateParams
+                .sdkData as flagship.GetModificationsOutput).fsModifications.filter(
+                (i: any) => !i.variation.reference
+            )
         ).toEqual(fetchedModifications);
         expect(isCalled.onUpdateParams.sdkVisitor).not.toBe(null);
         expect(isReady).toEqual(true);
