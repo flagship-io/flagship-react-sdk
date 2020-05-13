@@ -31,6 +31,10 @@ Flagship features are accessible using Flagship hooks, have a look to the docume
 - <a href="https://abtasty.github.io/flagship-react-sdk/">Demo app</a> specially for developers ! 👨‍💻
 </ul>
 
+<ul style="line-height:1.4;">
+- <a href='./RELEASENOTES.md'>Release notes</a> available to stay in touch 👍
+</ul>
+
 # Getting Started
 
 ## 1. **Install** the node module:

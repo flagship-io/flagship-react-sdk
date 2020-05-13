@@ -12,6 +12,7 @@ type State = {
 
 export type HandleErrorBoundaryDisplay = (props: {
     debugMode: boolean;
+    children: React.ReactNode;
     isCollapse: boolean;
     error: Error | null;
     onClickCollapse(): void;
@@ -80,6 +81,7 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
             const errorCopy = errorProp || error;
             if (handleDisplay) {
                 return handleDisplay({
+                    children,
                     debugMode: nodeEnv !== 'production' && enableErrorLayout,
                     isCollapse,
                     error: errorCopy,
