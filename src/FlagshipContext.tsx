@@ -10,15 +10,15 @@ import flagship, {
     FlagshipSdkConfig,
     FlagshipVisitorContext,
     IFlagshipVisitor,
-    GetModificationsOutput,
     SaveCacheArgs,
-    DecisionApiCampaign,
-    DecisionApiResponseData
+    DecisionApiCampaign
 } from '@flagship.io/js-sdk';
 import { FsLogger } from '@flagship.io/js-sdk-logs';
 import loggerHelper from './lib/loggerHelper';
 // eslint-disable-next-line import/no-cycle
-import FlagshipErrorBoundary from './FlagshipErrorBoundary';
+import FlagshipErrorBoundary, {
+    HandleErrorBoundaryDisplay
+} from './FlagshipErrorBoundary';
 
 export declare type FsStatus = {
     isLoading: boolean;
@@ -71,6 +71,9 @@ interface FlagshipProviderProps {
         id: string;
         context?: FlagshipVisitorContext;
     };
+    reactNative?: {
+        handleErrorDisplay: HandleErrorBoundaryDisplay;
+    };
     initialModifications?: DecisionApiCampaign[];
     onInitStart?(): void;
     onInitDone?(): void;
@@ -85,6 +88,7 @@ interface FlagshipProviderProps {
 
 export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     children,
+    reactNative,
     envId,
     config,
     visitorData,
@@ -130,6 +134,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
               ]
           }
         : (config as FlagshipSdkConfig);
+
+    const handleErrorDisplay = reactNative && reactNative.handleErrorDisplay;
 
     // Call FlagShip any time context get changed.
     useEffect(() => {
@@ -212,6 +218,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 onError={handleError}
                 error={errorData.error}
                 sdkSettings={config as FlagshipReactSdkConfig}
+                handleDisplay={handleErrorDisplay}
                 log={state.log}
             >
                 {handleDisplay()}
