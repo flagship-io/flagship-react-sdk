@@ -5,7 +5,7 @@ import { useFsActivate } from '@flagship.io/react-sdk';
 
 const PlayWithActivate: React.FC = () => {
     const [toggle, setToggle] = React.useState(false);
-    useFsActivate(['btnColor', 'otherKey1', 'otherKey2'], [toggle]);
+    useFsActivate(['color', 'unknownKey'], [toggle]);
     const demoHookName = 'useFsActivate';
     return (
         <>
@@ -16,7 +16,7 @@ const PlayWithActivate: React.FC = () => {
             <CodeBlock
                 className="mv3"
                 codeString={`const [toggle, setToggle] = React.useState(false);
-useFsActivate(['btnColor', 'otherKey1', 'otherKey2'], [toggle]);
+useFsActivate(['color','unknownKey'], [toggle]);
 
 // {...}
 
