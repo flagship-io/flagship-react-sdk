@@ -1,4 +1,6 @@
-FROM node:13-alpine
+# use node
+FROM node:13-alpine  
+
 
 WORKDIR /usr/src/app
 

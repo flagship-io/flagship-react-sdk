@@ -8,3 +8,5 @@ dist/
 IMPROVEMENTS.md
 
 coverage/
+
+examples/react-ecommerce-demo/.next/

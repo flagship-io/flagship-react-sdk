@@ -4,25 +4,25 @@
 
 ## Online demo
 
-<ul style="line-height:1.4;"><li><a href='#'>👉click here ! 😎</a></li></ul>
+<ul style="line-height:1.4;"><li><a href='https://abtasty.github.io/flagship-react-sdk/'>👉click here ! 😎</a></li></ul>
   
 ## Try it locally
 
 ### Prerequisites
 
-- **Node.js**: version 6.0.0 or later...
+-   **Node.js**: version 6.0.0 or later...
 
-- **Npm**: version 5.2.0 or later...
+-   **Npm**: version 5.2.0 or later...
 
 ## Getting Started
 
-- **Install** the node module:
+-   **Install** the node module:
 
 ```
 examples/react-dev-demo$ npm install
 ```
 
-- **Start** the project:
+-   **Start** the project:
 
 ```
 examples/react-dev-demo$ npm start
@@ -30,18 +30,24 @@ examples/react-dev-demo$ npm start
 
 ## Run with local Flagship JS SDK
 
-- You need to link `@flagship.io/react-sdk` :
+-   You need to link `@flagship.io/react-sdk` :
 
-  - 1 - At the root level (=`PATH/TO/flagship-react-sdk`), run:
+    -   1 - At the root level (=`PATH/TO/flagship-react-sdk`), run:
 
-    ```
-    flagship-react-sdk$ npm link
-    ```
+        ```
+        flagship-react-sdk$ npm link
+        ```
 
-  - 2 - Then, move to `examples/react-dev-demo`:
-    ```
-    examples/react-dev-demo$ npm link PATH/TO/flagship-react-sdk
-    ```
+    -   2 - Then, move to `examples/react-dev-demo`:
+
+        ```
+        examples/react-dev-demo$ npm link PATH/TO/flagship-react-sdk
+        ```
+
+    -   3 - Start the project like this:
+        ```
+        rm -fr ./node_modules/react && npm start
+        ```
 
 ## More about Flagship REACT SDK ?
 
