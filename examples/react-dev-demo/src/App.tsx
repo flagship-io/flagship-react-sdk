@@ -10,6 +10,7 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { AppContainer } from './components/AppContainer';
 import config from './config';
 import AppHeader from './components/AppHeader';
+import QaHeader from './components/QaHeader';
 interface VisitorContext {
     [key: string]: any;
 }
@@ -24,12 +25,18 @@ export interface SdkSettings {
 export interface AppSettings {
     currentSettings: SdkSettings;
     setSettings: Dispatch<SetStateAction<SdkSettings>>;
+    QA: QA;
+    setQA: Dispatch<SetStateAction<QA>>;
 }
 
-export const SettingContext = createContext<{
-    currentSettings: SdkSettings;
-    setSettings: Dispatch<SetStateAction<SdkSettings>>;
-} | null>(null);
+export interface QA {
+    enabled: boolean;
+    show: {
+        settingsModal: boolean;
+    };
+}
+
+export const SettingContext = createContext<AppSettings | null>(null);
 
 const App: React.FC = () => {
     const [currentSettings, setSettings] = React.useState<SdkSettings>({
@@ -37,9 +44,17 @@ const App: React.FC = () => {
         sdkConfig: { ...config.sdkConfig },
         visitorData: { ...config.visitorData }
     });
+    const [QA, setQA] = React.useState<QA>({
+        enabled: false,
+        show: {
+            settingsModal: false
+        }
+    });
     return (
         <>
-            <SettingContext.Provider value={{ currentSettings, setSettings }}>
+            <SettingContext.Provider
+                value={{ currentSettings, setSettings, QA, setQA }}
+            >
                 <FlagshipProvider
                     envId={currentSettings.envId}
                     config={currentSettings.sdkConfig}
@@ -57,7 +72,7 @@ const App: React.FC = () => {
                         );
                     }}
                     loadingComponent={
-                        <Container className="mt3">
+                        <Container className="mt5">
                             <Row>
                                 <Col
                                     xs={12}
@@ -74,6 +89,7 @@ const App: React.FC = () => {
                     }
                 >
                     <AppHeader />
+                    <QaHeader />
                     <AppContainer />
                 </FlagshipProvider>
             </SettingContext.Provider>

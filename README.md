@@ -5,7 +5,7 @@
 React Flagship SDK provides a `<FlagshipProvider />`, which makes Flagship features available to the rest of your app.
 Flagship features are accessible using Flagship hooks, have a look to the documentation for details.
 
-### Prerequisites
+## Prerequisites
 
 -   **Node.js**: version 6.0.0 or later...
 
@@ -31,83 +31,93 @@ Flagship features are accessible using Flagship hooks, have a look to the docume
 - <a href="https://abtasty.github.io/flagship-react-sdk/">Demo app</a> specially for developers ! 👨‍💻
 </ul>
 
-## Getting Started
+<ul style="line-height:1.4;">
+- <a href='./RELEASENOTES.md'>Release notes</a> available to stay in touch 👍
+</ul>
 
-1. **Install** the node module:
+# Getting Started
+
+## 1. **Install** the node module:
 
 ```
 npm install @flagship.io/react-sdk
 ```
 
-2. **Import** the Flagship React provider at the root level of your app like `App.js` file :
+## 2. **Import** the Flagship React provider:
 
-```
-import React from "react";
-import { FlagshipProvider } from "@flagship.io/react-sdk";
-
-const App = () => (
-  <>
-    <FlagshipProvider>
-      {/* [...] */}
-    </FlagshipProvider>
-  </>
-);
-```
-
-3. **Initialize** the provider with at least required props such as `envId`, `visitorData` :
-
-```
-import React from "react";
-import { FlagshipProvider } from "@flagship.io/react-sdk";
-
-const App = () => (
-  <>
-    <FlagshipProvider
-      envId="bn1ab7m56qolupi5sa0g"
-      visitorData={{
-        id: "test-visitor-id",
-        context: {},
-      }}
-      config={{
-        fetchNow: true,
-        enableConsoleLogs: true,
-      }}
-    >
-      {/* [...] */}
-    </FlagshipProvider>
-  </>
-);
-```
-
-4. Use a Flagship hook in a component. In most case, you'll want to have modifications in cache :
+In most of case, you want to wrap all your app with this provider, so you might put it in your `App.js` file.
 
 ```
 import React from 'react';
-import { useFsModifications } from "@flagship.io/react-sdk";
+import FlagshipProvider from '@flagship.io/react-sdk';
 
-export const MyReactComponent = () => {
-  const fsModifications = useFsModifications([
-    {
-      key: "backgroundColor",
-      defaultValue: "green",
-      activate: false,
-    },
-  ]);
-  return (
-      <div
-        style={{
-          height: "200px",
-          width: "200px",
-          backgroundColor: fsModifications.backgroundColor,
-        }}
-      >
-        {"I'm a square with color=" + fsModifications.backgroundColor}
-      </div>
-  )
-}
+const App = () => (
+    <>
+        <FlagshipProvider>{/* [...] */}</FlagshipProvider>
+    </>
+);
 ```
 
-## FlagshipProvider Props
+## 3. **Initialize** the provider:
+
+You must put at least required props such as `envId`, `visitorData`.
+
+```
+import React from 'react';
+import { FlagshipProvider } from '@flagship.io/react-sdk';
+
+const App = () => (
+    <>
+        <FlagshipProvider
+            envId="bn1ab7m56qolupi5sa0g"
+            visitorData={{
+                id: 'test-visitor-id',
+                context: {}
+            }}
+            config={{
+                fetchNow: true,
+                enableConsoleLogs: true
+            }}
+        >
+            {/* [...] */}
+        </FlagshipProvider>
+    </>
+);
+```
+
+## 4. Use a Flagship hook in a component:
+
+In most case, you will get the desired modifications.
+
+```
+import React from 'react';
+import { useFsModifications } from '@flagship.io/react-sdk';
+
+export const MyReactComponent = () => {
+    const fsModifications = useFsModifications([
+        {
+            key: 'backgroundColor',
+            defaultValue: 'green',
+            activate: false
+        }
+    ]);
+    return (
+        <div
+            style={{
+                height: '200px',
+                width: '200px',
+                backgroundColor: fsModifications.backgroundColor
+            }}
+        >
+            {"I'm a square with color=" + fsModifications.backgroundColor}
+        </div>
+    );
+};
+```
+
+# FlagshipProvider Props
+
+## All props
 
 This is all available props which you can use inside the `FlagshipProvider` react component:
 
@@ -141,12 +151,12 @@ This is all available props which you can use inside the `FlagshipProvider` reac
                 <tr>
                   <td><em>id</em></td>
                   <td><em>string</em></td>
-                  <td>Required. The id of the visitor</td>
+                  <td><b>Required</b>. The id of the visitor</td>
                 </tr>
                 <tr>
                   <td><em>context</em></td>
                   <td><em>object</em></td>
-                  <td>Optional. Your Flagship visitor context.<br>You'll set inside attributes which should match those defined in your campaigns.
+                  <td><b>Optional</b>. Your Flagship visitor context.<br>You'll set inside attributes which should match those defined in your campaigns.
                   </td>
               </tbody>
             </table>
@@ -202,7 +212,7 @@ This is all available props which you can use inside the `FlagshipProvider` reac
     </tbody>
 </table>
 
-## SDK Prop Settings
+## "config" prop
 
 This is all available settings which you can set on the SDK.
 
@@ -228,19 +238,13 @@ Here are the attributes which you can set inside the SDK settings object:
           <td>activateNow</td>
           <td>boolean</td>
           <td>false</td>
-          <td>Decide to trigger automatically the data when creating a new <a href='README.md#flagshipvisitor-class'>FlagshipVisitor</a>.<br>NOTE: when set to <i>true</i>, it will implicitly set <i>fetchNow=true</i> as well.</td>
+          <td>Decide to trigger automatically the data when creating a new <a href='README.md#flagshipvisitor-class'>FlagshipVisitor</a>.<br><b>NOTE</b>: when set to <i>true</i>, it will implicitly set <i>fetchNow=true</i> as well.</td>
         </tr>
         <tr>
           <td>enableConsoleLogs</td>
           <td>boolean</td>
           <td>false</td>
           <td>Enable it to display logs on the console when SDK is running.<br>This will only display logs such as <i>Warnings</i>, <i>Errors</i>, <i>Fatal errors</i> and <i>Info</i>.</td>
-        </tr>
-        <tr>
-          <td>logPathName</td>
-          <td>string</td>
-          <td>'flagshipNodeSdkLogs'</td>
-          <td>This is the path where logs will be written when SDK is running.<br>By default it will create a folder named <i>flagshipNodeSdkLogs</i> at the root of your project</a>.</td>
         </tr>
         <tr>
           <td>enableErrorLayout</td>
@@ -264,11 +268,19 @@ Here are the attributes which you can set inside the SDK settings object:
           - If you want to move to an earlier version the Flagship API (v2, v3,...).
           </td>
         </tr>
+        <tr>
+          <td>apiKey</td>
+          <td>string</td>
+          <td>null</td>
+          <td>If you want to use the <a href="http://developers.flagship.io/api/v2/">Decision API V2</a>, you must contact the support team so they'll provide you an API Key to authenticate the calls.</td>
+        </tr>
 </tbody>
 
 </table>
 
-## Flagship Hooks
+# Flagship Hooks
+
+## Summary
 
 Here the list of current available hooks:
 
@@ -277,18 +289,18 @@ Here the list of current available hooks:
 -   [useFsActivate](#useFsActivate)
 -   [useFsSynchronize](#useFsSynchronize)
 
-### Available hits
+## Available hits
 
 -   [Transaction Hit](#transaction-hit)
 -   [Screen Hit](#screen-hit)
 -   [Item Hit](#item-hit)
 -   [Event Hit](#event-hit)
 
-#### `useFlagship`
+## `useFlagship`
 
 Most used hook from the Flagship React SDK. Through this hook, you can access to modifications of your current visitor and have an access to the SDK status. Output shape is visible [here](#useFlagship-output-shape).
 
-> returns an object (Typescript: UseFlagshipOutput)
+-   returns an object (Typescript: UseFlagshipOutput)
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -307,7 +319,7 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
     </tbody>
 </table>
 
-##### `useFlagship options`
+### `useFlagship options`
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -329,7 +341,7 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
                 </tr>  
                 <tr>
                   <td><em>requested</em></td>
-                  <td>Required. An array of object for each modifications and follow this shape:
+                  <td><b>Required</b>. An array of object for each modifications and follow this shape:
                    <table> 
               <tbody><tr>
                   <th style="width:25%">Argument</th>
@@ -337,15 +349,15 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
                 </tr>  
                 <tr>
                   <td><em>key</em></td>
-                  <td>Required. The name of the modification.</td>
+                  <td><b>Required</b>. The name of the modification.</td>
                 </tr>
                 <tr>
                   <td><em>defaultValue</em></td>
-                  <td>Required. The default value if no value for this modification is found.</td>
+                  <td><b>Required</b>. The default value if no value for this modification is found.</td>
                 </tr>
                   <tr>
                   <td><em>activate</em></td>
-                  <td>Optional. </td>
+                  <td><b>Optional</b>. </td>
                 </tr>
               </tbody>
             </table>
@@ -353,7 +365,7 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
                 </tr>
                   <tr>
                   <td><em>activateAll</em></td>
-                  <td>Optional. The value is <i>false</i> by default</td>
+                  <td><b>Optional</b>. The value is <i>false</i> by default</td>
                 </tr>
               </tbody>
             </table>
@@ -362,7 +374,7 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
     </tbody>
 </table>
 
-##### `useFlagship output shape`
+### `useFlagship output shape`
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -429,13 +441,73 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
     </tbody>
 </table>
 
-#### `useFsModifications`
+> **Demo:**
+
+```
+import { useFlagship } from '@flagship.io/react-sdk';
+
+const fsParams = {
+    modifications: {
+        requested: [
+            {
+                key: 'btnColor',
+                defaultValue: 'green',
+                activate: false
+            }
+        ]
+    }
+}
+
+const {
+    modifications: fsModifications,
+    status: fsStatus,
+    hit: fsHit,
+} = useFlagship(fsParams);
+```
+
+> **Demo 2:**
+
+```
+import { useFlagship } from '@flagship.io/react-sdk';
+
+const { hit: fsHit } = useFlagship();
+
+// insider render function:
+
+<Button
+    onClick={() => {
+        const mockHit = {
+            type: 'Transaction',
+            data: {
+                transactionId: '12451342423',
+                affiliation: 'myAffiliation',
+                totalRevenue: 999,
+                shippingCost: 888,
+                shippingMethod: 'myShippingMethod',
+                currency: 'myCurrency',
+                taxes: 1234444,
+                paymentMethod: 'myPaymentMethod',
+                itemCount: 2,
+                couponCode: 'myCOUPON',
+                documentLocation:
+                    'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
+                pageTitle: 'myScreen'
+            }
+        };
+        fsHit.send(mockHit);
+    }}
+>
+    Send a transaction hit
+</Button>
+```
+
+## `useFsModifications`
 
 This will give you the modification saved in the SDK cache.
 
-**NOTE:** If the SDK cache is empty, you can expect that it will return nothing.
+**<b>NOTE</b>:** If the SDK cache is empty, you can expect that it will return nothing.
 
-> returns Flagship modifications
+-   returns Flagship modifications
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -459,15 +531,15 @@ This will give you the modification saved in the SDK cache.
                 </tr>  
                 <tr>
                   <td><em>key</em></td>
-                  <td>Required. The name of the modification.</td>
+                  <td><b>Required</b>. The name of the modification.</td>
                 </tr>
                 <tr>
                   <td><em>defaultValue</em></td>
-                  <td>Required. The default value if no value for this modification is found.</td>
+                  <td><b>Required</b>. The default value if no value for this modification is found.</td>
                 </tr>
                   <tr>
                   <td><em>activate</em></td>
-                  <td>Optional. </td>
+                  <td><b>Optional</b>. </td>
                 </tr>
               </tbody>
             </table>
@@ -483,13 +555,23 @@ This will give you the modification saved in the SDK cache.
     </tbody>
 </table>
 
-**Demo:**
+> **Demo:**
 
--   coming soon
+```
+import { useFsModifications } from '@flagship.io/react-sdk';
 
-#### `useFsActivate`
+const fsModifications = useFsModifications([
+  {
+      key: 'btnColor',
+      defaultValue: 'green',
+      activate: false
+  }
+]);
+```
 
-> return `void`
+## `useFsActivate`
+
+-   return `void`
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -516,15 +598,30 @@ This will give you the modification saved in the SDK cache.
     </tbody>
 </table>
 
-**Demo:**
+> **Demo:**
 
--   coming soon
+```
+import { useFsActivate } from '@flagship.io/react-sdk';
 
-#### `useFsSynchronize`
+const [toggle, setToggle] = React.useState(false);
+
+useFsActivate(['btnColor', 'otherKey1', 'otherKey2'], [toggle]); // trigger an activate when "toggle" value change.
+
+// insider render function:
+
+<Button
+variant="secondary"
+onClick={() => setToggle(!toggle)}
+>
+    Trigger activate
+</Button>
+```
+
+## `useFsSynchronize`
 
 Refresh modifications in cache by making a http request to the Flagship API.
 
-> return `void`
+-   return `void`
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -551,18 +648,38 @@ Refresh modifications in cache by making a http request to the Flagship API.
     </tbody>
 </table>
 
-**Demo:**
+> **Demo:**
 
--   coming soon
+```
+import { useFsSynchronize } from '@flagship.io/react-sdk';
 
-### <i>Shape</i> of possible hits to send
+const [toggle, setToggle] = React.useState(false);
+const activateAllModifications = false;
+
+useFsSynchronize([toggle], activateAllModifications); // trigger a synchronize when "toggle" value change.
+
+// insider render function:
+
+<Button
+variant="secondary"
+onClick={() => setToggle(!toggle)}
+>
+    Trigger synchronize
+</Button>
+```
+
+# Hits
+
+## Summary
+
+<p id='Shape-of-possible-hits-to-send'><i>Shape</i> of possible hits to send:</p>
 
 -   [Transaction Hit](#transaction-hit)
 -   [Screen Hit](#screen-hit)
 -   [Item Hit](#item-hit)
 -   [Event Hit](#event-hit)
 
-#### `Transaction Hit`
+## `Transaction Hit`
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -576,67 +693,67 @@ Refresh modifications in cache by making a http request to the Flagship API.
         <tr>
           <td>transactionId</td>
           <td>string</td>
-          <td>Required. The id of your transaction.</td>
+          <td><b>Required</b>. The id of your transaction.</td>
         </tr>
         <tr>
           <td>affiliation</td>
           <td>string</td>
-          <td>Required. The name of the KPI that you will have inside your reporting.</td>
+          <td><b>Required</b>. The name of the KPI that you will have inside your reporting.</td>
         </tr>
         <tr>
           <td>totalRevenue</td>
           <td>number</td>
-          <td>Optional. Specifies the total revenue associated with the transaction. This value should include any shipping or tax costs.</td>
+          <td><b>Optional</b>. Specifies the total revenue associated with the transaction. This value should include any shipping or tax costs.</td>
         </tr>
         <tr>
           <td>shippingCost</td>
           <td>number</td>
-          <td>Optional. The total shipping cost of your transaction.</td>
+          <td><b>Optional</b>. The total shipping cost of your transaction.</td>
         </tr>
         <tr>
           <td>shippingMethod</td>
           <td>string</td>
-          <td>Optional. The shipping method of your transaction.</td>
+          <td><b>Optional</b>. The shipping method of your transaction.</td>
         </tr>
         <tr>
           <td>taxes</td>
           <td>number</td>
-          <td>Optional. Specifies the total tax of your transaction.</td>
+          <td><b>Optional</b>. Specifies the total tax of your transaction.</td>
         </tr>
         <tr>
           <td>currency</td>
           <td>string</td>
-          <td>Optional. Specifies the currency of your transaction.<br>NOTE: Value should be a valid ISO 4217 currency code.</td>
+          <td><b>Optional</b>. Specifies the currency of your transaction.<br><b>NOTE</b>: Value should be a valid ISO 4217 currency code.</td>
         </tr>
         <tr>
           <td>paymentMethod</td>
           <td>string</td>
-          <td>Optional. Specifies the payment method used for your transaction.</td>
+          <td><b>Optional</b>. Specifies the payment method used for your transaction.</td>
         </tr>
         <tr>
           <td>itemCount</td>
           <td>number</td>
-          <td>Optional. Specifies the number of item of your transaction.</td>
+          <td><b>Optional</b>. Specifies the number of item of your transaction.</td>
         </tr>
         <tr>
           <td>couponCode</td>
           <td>string</td>
-          <td>Optional. The coupon code associated with the transaction.</td>
+          <td><b>Optional</b>. The coupon code associated with the transaction.</td>
         </tr>
         <tr>
           <td>documentLocation</td>
           <td>string</td>
-          <td>Optional. Specifies the current URL of the page, at the moment where the hit has been sent.</td>
+          <td><b>Optional</b>. Specifies the current URL of the page, at the moment where the hit has been sent.</td>
         </tr>
         <tr>
           <td>pageTitle</td>
           <td>string</td>
-          <td>Optional. Specifies the name of the page, at the moment where the hit has been sent.</td>
+          <td><b>Optional</b>. Specifies the name of the page, at the moment where the hit has been sent.</td>
         </tr>
     </tbody>
 </table>
 
-#### `Screen Hit`
+## `Screen Hit`
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -650,17 +767,17 @@ Refresh modifications in cache by making a http request to the Flagship API.
         <tr>
           <td>documentLocation</td>
           <td>string</td>
-          <td>Required. Specifies the current URL of the page, at the moment where the hit has been sent.</td>
+          <td><b>Required</b>. Specifies the current URL of the page, at the moment where the hit has been sent.</td>
         </tr>
         <tr>
           <td>pageTitle</td>
           <td>string</td>
-          <td>Required. Specifies the name of the page, at the moment where the hit has been sent.</td>
+          <td><b>Required</b>. Specifies the name of the page, at the moment where the hit has been sent.</td>
         </tr>
     </tbody>
 </table>
 
-#### `Item Hit`
+## `Item Hit`
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -674,49 +791,49 @@ Refresh modifications in cache by making a http request to the Flagship API.
         <tr>
           <td>transactionId</td>
           <td>string</td>
-          <td>Required. The id of your transaction.</td>
+          <td><b>Required</b>. The id of your transaction.</td>
         </tr>
         <tr>
           <td>name</td>
           <td>string</td>
-          <td>Required. The name of your item.</td>
+          <td><b>Required</b>. The name of your item.</td>
         </tr>
         <tr>
           <td>price</td>
           <td>number</td>
-          <td>Optional. Specifies the price for a single item / unit.</td>
+          <td><b>Optional</b>. Specifies the price for a single item / unit.</td>
         </tr>
         <tr>
           <td>code</td>
           <td>string</td>
-          <td>Optional. Specifies the SKU or item code.</td>
+          <td><b>Optional</b>. Specifies the SKU or item code.</td>
         </tr>
         <tr>
           <td>category</td>
           <td>string</td>
-          <td>Optional. Specifies the category that the item belongs to.
+          <td><b>Optional</b>. Specifies the category that the item belongs to.
           </td>
         </tr>
         <tr>
           <td>quantity</td>
           <td>number</td>
-          <td>Optional. Specifies the number of items purchased.
+          <td><b>Optional</b>. Specifies the number of items purchased.
           </td>
         </tr>
         <tr>
           <td>documentLocation</td>
           <td>string</td>
-          <td>Optional. Specifies the current URL of the page, at the moment where the hit has been sent.</td>
+          <td><b>Optional</b>. Specifies the current URL of the page, at the moment where the hit has been sent.</td>
         </tr>
         <tr>
           <td>pageTitle</td>
           <td>string</td>
-          <td>Optional. Specifies the name of the page, at the moment where the hit has been sent.</td>
+          <td><b>Optional</b>. Specifies the name of the page, at the moment where the hit has been sent.</td>
         </tr>
     </tbody>
 </table>
 
-#### `Event Hit`
+## `Event Hit`
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -730,44 +847,44 @@ Refresh modifications in cache by making a http request to the Flagship API.
         <tr>
           <td>category</td>
           <td>string</td>
-          <td>Required. Specifies the category of your event.<br>NOTE: The value must be either <b>Action Tracking</b> or <b>User Engagement</b>.</td>
+          <td><b>Required</b>. Specifies the category of your event.<br><b>NOTE</b>: The value must be either <b>Action Tracking</b> or <b>User Engagement</b>.</td>
         </tr>
         <tr>
           <td>action</td>
           <td>string</td>
-          <td>Required. The name of the KPI you will have inside the reporting.</td>
+          <td><b>Required</b>. The name of the KPI you will have inside the reporting.</td>
         </tr>
         <tr>
           <td>label</td>
           <td>string</td>
-          <td>Optional. Specifies additional description of your event.</td>
+          <td><b>Optional</b>. Specifies additional description of your event.</td>
         </tr>
         <tr>
           <td>value</td>
           <td>number</td>
-          <td>Optional. Specifies how much you won with that event.<br>For example, depending on the lead generated, you will earn 10 to 100 euros. Adding that value will enable us to do a sum inside the reporting and give you the average value too.<br>NOTE: Value must be non-negative.</td>
+          <td><b>Optional</b>. Specifies how much you won with that event.<br>For example, depending on the lead generated, you will earn 10 to 100 euros. Adding that value will enable us to do a sum inside the reporting and give you the average value too.<br><b>NOTE</b>: Value must be non-negative.</td>
         </tr>
         <tr>
           <td>documentLocation</td>
           <td>string</td>
-          <td>Optional. Specifies the current URL of the page, at the moment where the hit has been sent.</td>
+          <td><b>Optional</b>. Specifies the current URL of the page, at the moment where the hit has been sent.</td>
         </tr>
         <tr>
           <td>pageTitle</td>
           <td>string</td>
-          <td>Optional. Specifies the name of the page, at the moment where the hit has been sent.</td>
+          <td><b>Optional</b>. Specifies the name of the page, at the moment where the hit has been sent.</td>
         </tr>
     </tbody>
 </table>
 
-## Contributing
+# Contributing
 
 Take a look to the [Contributors Guide](CONTRIBUTING.md).
 
-## What is Flagship ?
+# What is Flagship ?
 
 Have a look [here](https://www.abtasty.com/solutions-product-teams/).
 
-## License
+# License
 
 Flagship uses license under the [Apache version 2.0](http://www.apache.org/licenses/).

@@ -30,7 +30,11 @@ export const defaultContext: {
         status: {
             isLoading: true,
             lastRefresh: null,
+            firstInitSuccess: null,
             hasError: false
+        },
+        private: {
+            previousFetchedModifications: undefined
         }
     }
 };
@@ -54,7 +58,8 @@ export const fetchedModifications = [
         id: 'bqjfstuirtfg01mctmn0',
         variation: {
             id: 'bqjfstuirtfg01mctmp0',
-            modifications: { type: 'JSON', value: { discount: '10%' } }
+            modifications: { type: 'JSON', value: { discount: '10%' } },
+            reference: false
         },
         variationGroupId: 'bqjfstuirtfg01mctmo0'
     }

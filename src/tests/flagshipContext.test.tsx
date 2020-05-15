@@ -101,13 +101,15 @@ describe('fsContext provider', () => {
                 .fsModifications.length > 0
         ).toEqual(true);
         expect(
-            (isCalled.onUpdateParams.sdkData as flagship.GetModificationsOutput)
-                .fsModifications
+            (isCalled.onUpdateParams
+                .sdkData as flagship.GetModificationsOutput).fsModifications.filter(
+                (i: any) => !i.variation.reference
+            )
         ).toEqual(fetchedModifications);
         expect(isCalled.onUpdateParams.sdkVisitor).not.toBe(null);
         expect(isReady).toEqual(true);
     });
-    test('it should consider other props ', async () => {
+    test('it should consider other props', async () => {
         let computedFsVisitor: flagship.IFlagshipVisitor | null = null;
         const customFetchedModifications = fetchedModifications;
         customFetchedModifications[0].variation.modifications.value = {
@@ -118,8 +120,8 @@ describe('fsContext provider', () => {
                 envId={providerProps.envId}
                 config={providerProps.config}
                 visitorData={providerProps.visitorData}
-                initialModifications={customFetchedModifications}
-                onInitDone={() => {
+                initialModifications={customFetchedModifications} // <------- testing this
+                onInitStart={() => {
                     isReady = true;
                 }}
                 onUpdate={(sdkData, sdkVisitor) => {
@@ -131,19 +133,18 @@ describe('fsContext provider', () => {
                 <div>Hello</div>
             </FlagshipProvider>
         );
-        const modifications: flagship.DecisionApiResponseData | null =
-            computedFsVisitor &&
-            ((computedFsVisitor as flagship.IFlagshipVisitor)
-                .fetchedModifications as flagship.DecisionApiResponseData);
-        expect(
-            modifications &&
-                (modifications as flagship.DecisionApiResponseData).campaigns
-        ).toEqual(customFetchedModifications);
         await waitFor(() => {
             if (!isReady) {
                 throw new Error('not ready');
             }
         });
+
+        const modifications: flagship.DecisionApiResponseData | null =
+            computedFsVisitor &&
+            ((computedFsVisitor as flagship.IFlagshipVisitor)
+                .fetchedModifications as flagship.DecisionApiCampaign[]);
+        expect(modifications).toEqual(customFetchedModifications);
+
         expect(
             computedFsVisitor &&
                 (computedFsVisitor as flagship.IFlagshipVisitor).envId
@@ -162,9 +163,11 @@ describe('fsContext provider', () => {
         ).toEqual({
             activateNow: false,
             enableConsoleLogs: true,
+            enableErrorLayout: true,
             fetchNow: true,
+            apiKey: null,
             flagshipApi: 'https://decision-api.flagship.io/v1/',
-            logPathName: 'flagshipNodeSdkLogs',
+            initialModifications: customFetchedModifications,
             nodeEnv: 'production'
         });
         expect(isReady).toEqual(true);

@@ -4,67 +4,20 @@ import { Alert, Button, Col, Form, Row } from 'react-bootstrap';
 
 import { AppSettings, SdkSettings, SettingContext } from '../../../../App';
 import config from '../../../../config';
+import PlayConfigQA from './components/qa/PlayConfig';
+import PlayVisitorDataQA from './components/qa/PlayVisitorData';
+import PlayVisitorData from './components/normal/PlayVisitorData';
+import PlayConfig from './components/normal/PlayConfig';
 
 export const DemoInitialization = () => {
     const name = 'initialization';
-    const contextTemp = { ...config.visitorData.context };
-    const { currentSettings: currSettings, setSettings } = useContext(
+    const { currentSettings: currSettings, setSettings, QA } = useContext(
         SettingContext
     ) as AppSettings;
     const [newSettings, setNewSettings] = React.useState<SdkSettings>({
         ...currSettings
     });
-    const handleEnvId = (e) =>
-        setNewSettings({ ...newSettings, envId: e.target.value });
 
-    const handleNodeEnv = (e) =>
-        setNewSettings({
-            ...newSettings,
-            sdkConfig: {
-                ...newSettings.sdkConfig,
-                nodeEnv: e.target.value
-            }
-        });
-
-    const handleVisitorId = (e) =>
-        setNewSettings({
-            ...newSettings,
-            visitorData: {
-                ...newSettings.visitorData,
-                id: e.target.value
-            }
-        });
-
-    const handleVisitorContext = (e) => {
-        const node = JSON.parse(e.currentTarget.parentElement.innerText);
-        const temp = { ...newSettings };
-        if (e.currentTarget.checked) {
-            setNewSettings({
-                ...newSettings,
-                visitorData: {
-                    ...newSettings.visitorData,
-                    context: { ...newSettings.visitorData.context, ...node }
-                }
-            });
-        } else {
-            const keyToRemove = Object.keys(node)[0];
-            setNewSettings({
-                ...newSettings,
-                visitorData: {
-                    ...newSettings.visitorData,
-                    context: Object.entries(temp.visitorData.context).reduce(
-                        (reducer, [key, value]) => {
-                            if (key === keyToRemove) {
-                                return reducer;
-                            }
-                            return { ...reducer, [key]: value };
-                        },
-                        {}
-                    )
-                }
-            });
-        }
-    };
     return (
         <Row>
             <Col>
@@ -121,6 +74,7 @@ const App: React.FC = () => (
                         value dynamically here:{' '}
                     </p>
                     <h3
+                        id="playWithConfig"
                         style={{
                             borderBottom: '1px solid grey',
                             marginBottom: '16px',
@@ -129,166 +83,25 @@ const App: React.FC = () => (
                     >
                         1 - Playing with <i>config</i>
                     </h3>
-                    <Form>
-                        <Form.Group
-                            controlId="initForm.Control1.1"
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                marginLeft: '16px'
-                            }}
-                        >
-                            <div>envId: </div>
-                            <Form.Control as="select" onChange={handleEnvId}>
-                                {config.sandbox.envId.map((id) => (
-                                    <option key={id}>{id}</option>
-                                ))}
-                            </Form.Control>
-                        </Form.Group>
-                        <Form.Group
-                            controlId="initForm.Control1.11"
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                marginLeft: '16px'
-                            }}
-                        >
-                            <div>nodeEnv: </div>
-                            <Form.Control as="select" onChange={handleNodeEnv}>
-                                {config.sandbox.nodeEnv.map((id) => (
-                                    <option key={id}>{id}</option>
-                                ))}
-                            </Form.Control>
-                        </Form.Group>
-                        <Form.Group controlId="initForm.Control1.2">
-                            <Form.Check
-                                type="checkbox"
-                                checked={newSettings.sdkConfig.fetchNow}
-                                onChange={(e) =>
-                                    setNewSettings({
-                                        ...newSettings,
-                                        sdkConfig: {
-                                            ...newSettings.sdkConfig,
-                                            fetchNow: e.currentTarget.checked
-                                        }
-                                    })
-                                }
-                                label={`fetchNow=${newSettings.sdkConfig.fetchNow}`}
-                            />
-                        </Form.Group>
-                        <Form.Group controlId="initForm.Control1.3">
-                            <Form.Check
-                                type="checkbox"
-                                checked={
-                                    newSettings.sdkConfig.enableConsoleLogs
-                                }
-                                onChange={(e) =>
-                                    setNewSettings({
-                                        ...newSettings,
-                                        sdkConfig: {
-                                            ...newSettings.sdkConfig,
-                                            enableConsoleLogs:
-                                                e.currentTarget.checked
-                                        }
-                                    })
-                                }
-                                label={`enableConsoleLogs=${newSettings.sdkConfig.enableConsoleLogs}`}
-                            />
-                        </Form.Group>
-                        <Form.Group controlId="initForm.Control1.4">
-                            <Form.Check
-                                type="checkbox"
-                                checked={
-                                    newSettings.sdkConfig.enableErrorLayout
-                                }
-                                onChange={(e) =>
-                                    setNewSettings({
-                                        ...newSettings,
-                                        sdkConfig: {
-                                            ...newSettings.sdkConfig,
-                                            enableErrorLayout:
-                                                e.currentTarget.checked
-                                        }
-                                    })
-                                }
-                                label={`enableErrorLayout=${newSettings.sdkConfig.enableErrorLayout}`}
-                            />
-                        </Form.Group>
-                    </Form>
-                    <div
+                    {QA.enabled ? (
+                        <PlayConfigQA></PlayConfigQA>
+                    ) : (
+                        <PlayConfig></PlayConfig>
+                    )}
+                    <h3
                         style={{
-                            display: 'flex',
-                            justifyContent: 'flex-end'
+                            borderBottom: '1px solid grey',
+                            marginBottom: '16px',
+                            paddingBottom: '8px'
                         }}
                     >
-                        <Button
-                            variant="secondary"
-                            onClick={() => setSettings({ ...newSettings })}
-                        >
-                            Apply change
-                        </Button>
-                    </div>
-                    <h3>
                         2 - Playing with <i>visitorData</i>
                     </h3>
-                    <Form>
-                        <Form.Group controlId="initForm.ControlSelect2">
-                            <Form.Label>visitorId</Form.Label>
-                            <Form.Control
-                                as="select"
-                                onChange={handleVisitorId}
-                            >
-                                {config.sandbox.visitorId.map((id) => (
-                                    <option key={id}>{id}</option>
-                                ))}
-                            </Form.Control>
-                        </Form.Group>
-                        <Form.Group controlId="initForm.ControlSelect3">
-                            <Form.Label>visitor context</Form.Label>
-                            {Object.entries(contextTemp).map(([key, value]) => (
-                                <Form.Check
-                                    key={key}
-                                    type="checkbox"
-                                    id={`default-${key}`}
-                                    checked={newSettings.visitorData.context.hasOwnProperty(
-                                        key
-                                    )}
-                                    onChange={handleVisitorContext}
-                                    label={JSON.stringify({ [key]: value })}
-                                />
-                            ))}
-                        </Form.Group>
-                    </Form>
-                    <div
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'flex-end'
-                        }}
-                    >
-                        <Button
-                            variant="secondary"
-                            onClick={() => setSettings({ ...newSettings })}
-                        >
-                            Apply change
-                        </Button>
-                    </div>
-                    <div>Since we have set those settings:</div>
-                    <CodeBlock
-                        className="mv3"
-                        codeString={`${JSON.stringify(
-                            currSettings.sdkConfig,
-                            null,
-                            2
-                        )}`}
-                    />
-                    <div>
-                        When you change those values, you can notice the
-                        behavior of the SDK, on logs & network.
-                    </div>
-                    <div>
-                        It will impact the output of Flagship SDK Hooks as well,
-                        take a look below.
-                    </div>
+                    {QA.enabled ? (
+                        <PlayVisitorDataQA></PlayVisitorDataQA>
+                    ) : (
+                        <PlayVisitorData></PlayVisitorData>
+                    )}
                 </Alert>
             </Col>
         </Row>
