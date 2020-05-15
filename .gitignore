@@ -10,3 +10,5 @@ IMPROVEMENTS.md
 coverage/
 
 examples/react-ecommerce-demo/.next/
+
+examples/react-ecommerce-demo/TOKEN.txt

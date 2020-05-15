@@ -6,8 +6,10 @@
     "scripts": {
         "dev": "next",
         "build": "next build",
-        "build:docker": "docker build -t fs-react-sdk/demo/react-ecommerce-demo .",
-        "start:docker": "docker run -d -p 8080:3000 fs-react-sdk/demo/react-ecommerce-demo:latest",
+        "build:docker": "docker build -t ecommerce .",
+        "start:docker": "docker run -d -p 8080:3000 ecommerce:latest",
+        "tag:docker": "docker tag $(docker inspect --format=\"{{.Id}}\" ecommerce) docker.pkg.github.com/abtasty/flagship-react-sdk/ecommerce:latest",
+        "release:docker": "npm run build:docker && npm run tag:docker && docker push docker.pkg.github.com/abtasty/flagship-react-sdk/ecommerce:latest",
         "start": "next start"
     },
     "keywords": [],
