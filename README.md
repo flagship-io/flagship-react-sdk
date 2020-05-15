@@ -28,7 +28,11 @@ Flagship features are accessible using Flagship hooks, have a look to the docume
 </ul>
 
 <ul style="line-height:1.4;">
-- <a href="https://abtasty.github.io/flagship-react-sdk/">Demo app</a> specially for developers ! 👨‍💻
+- <a href="https://abtasty.github.io/flagship-react-sdk/">Demo app</a> specially for developers ! 👨‍💻 <a href='examples/react-dev-demo/README.md'>(Details)</a>
+</ul>
+
+<ul style="line-height:1.4;">
+- <a href="https://react-ecommerce-demo.internal.flagship.io/">Ecommerce app</a> (with SSR) to see the SDK in pratice ! <a href='examples/react-ecommerce-demo/README.md'>(Details)</a>
 </ul>
 
 <ul style="line-height:1.4;">
