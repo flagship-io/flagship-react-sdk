@@ -53,7 +53,7 @@ In most of case, you want to wrap all your app with this provider, so you might 
 
 ```
 import React from 'react';
-import FlagshipProvider from '@flagship.io/react-sdk';
+import { FlagshipProvider } from '@flagship.io/react-sdk';
 
 const App = () => (
     <>
