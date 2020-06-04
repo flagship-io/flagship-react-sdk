@@ -203,9 +203,9 @@ This is all available props which you can use inside the `FlagshipProvider` reac
         </tr>
         <tr>
           <td>initialModifications</td>
-          <td>object</td>
-          <td>null</td>
-          <td>This is an object which has the shape of Flagship modifications as it is return from the Flagship API.<br>Can be useful when you already manually fetched the data before or you have your own cache.<br>Providing this prop avoid the SDK to have an empty cache during first initialization.<br>The default modifications provided will be overridden whenever the SDK is fetching Flagship API in order to modifications up to date.<br>You can save back the last updated modifications using <i>onUpdate</i> prop callback.</td>
+          <td>Array(object)</td>
+          <td>undefined</td>
+          <td>This is an array of modifications where each element must be same shape as <a href="http://developers.flagship.io/api/v1/#mode">element inside "campaigns" attribute</a>.<br>Providing this prop avoid the SDK to have an empty cache during first initialization.<br>If the shape of an element is not correct, an error log will give the reason why.</td>
         </tr>
         <tr>
           <td>loadingComponent</td>
