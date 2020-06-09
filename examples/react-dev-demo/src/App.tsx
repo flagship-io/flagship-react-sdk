@@ -16,7 +16,14 @@ interface VisitorContext {
 }
 export interface SdkSettings {
     envId: string;
-    sdkConfig: FlagshipReactSdkConfig;
+    fetchNow?: boolean;
+    activateNow?: boolean;
+    enableConsoleLogs?: boolean;
+    enableErrorLayout?: boolean;
+    enableSafeMode?: boolean;
+    nodeEnv?: string;
+    flagshipApi?: string;
+    apiKey?: string;
     visitorData: {
         id: string;
         context: VisitorContext;
@@ -41,7 +48,6 @@ export const SettingContext = createContext<AppSettings | null>(null);
 const App: React.FC = () => {
     const [currentSettings, setSettings] = React.useState<SdkSettings>({
         envId: config.envId,
-        sdkConfig: { ...config.sdkConfig },
         visitorData: { ...config.visitorData }
     });
     const [QA, setQA] = React.useState<QA>({
@@ -57,7 +63,14 @@ const App: React.FC = () => {
             >
                 <FlagshipProvider
                     envId={currentSettings.envId}
-                    config={currentSettings.sdkConfig}
+                    fetchNow={currentSettings.fetchNow}
+                    activateNow={currentSettings.activateNow}
+                    enableConsoleLogs={currentSettings.enableConsoleLogs}
+                    enableErrorLayout={currentSettings.enableErrorLayout}
+                    enableSafeMode={currentSettings.enableSafeMode}
+                    nodeEnv={currentSettings.nodeEnv}
+                    flagshipApi={currentSettings.flagshipApi}
+                    apiKey={currentSettings.apiKey}
                     visitorData={currentSettings.visitorData}
                     onInitStart={() => {
                         console.log('React SDK init start');

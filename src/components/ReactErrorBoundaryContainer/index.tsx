@@ -8,7 +8,7 @@ interface Props {
     error?: Error | null;
 }
 
-export const ReactErrorBoundaryContainer: React.SFC<Props> = ({
+const ReactErrorBoundaryContainer: React.SFC<Props> = ({
     children,
     debugMode,
     isCollapse,

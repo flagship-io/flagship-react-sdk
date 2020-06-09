@@ -78,10 +78,8 @@ const App = () => (
                 id: 'test-visitor-id',
                 context: {}
             }}
-            config={{
-                fetchNow: true,
-                enableConsoleLogs: true
-            }}
+            fetchNow={true}
+            enableConsoleLogs={true}
         >
             {/* [...] */}
         </FlagshipProvider>

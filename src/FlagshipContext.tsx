@@ -129,7 +129,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             activateNow: activateNow || false,
             enableConsoleLogs: enableConsoleLogs || false,
             enableErrorLayout: enableErrorLayout || false,
-            enableSafeMode: enableConsoleLogs || false,
+            enableSafeMode: enableSafeMode || false,
             nodeEnv: nodeEnv || 'production',
             flagshipApi,
             apiKey

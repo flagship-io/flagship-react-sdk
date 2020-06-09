@@ -29,7 +29,7 @@ describe('useFsModifications hook', () => {
         const wrapper = ({ children }: { children: React.ReactNode }): any => (
             <FlagshipProvider
                 envId={providerProps.envId}
-                config={providerProps.config}
+                {...providerProps.config}
                 visitorData={providerProps.visitorData}
                 onInitDone={() => {
                     isReady = true;
@@ -74,7 +74,7 @@ describe('useFsModifications hook', () => {
         const wrapper = ({ children }: { children: React.ReactNode }): any => (
             <FlagshipProvider
                 envId={providerProps.envId}
-                config={providerProps.config}
+                {...providerProps.config}
                 visitorData={providerProps.visitorData}
                 onInitDone={() => {
                     isReady = true;

@@ -38,9 +38,46 @@ const App: React.FC = () => (
   <>
       <FlagshipProvider
       envId={${currSettings.envId}}
-      config={
-        ${JSON.stringify(currSettings.sdkConfig, null, 2)}
-      }
+      fetchNow={${
+          typeof currSettings.fetchNow === 'undefined'
+              ? 'false'
+              : currSettings.fetchNow.toString()
+      }}
+      activateNow={${
+          typeof currSettings.activateNow === 'undefined'
+              ? 'false'
+              : currSettings.activateNow.toString()
+      }}
+      enableConsoleLogs={${
+          typeof currSettings.enableConsoleLogs === 'undefined'
+              ? 'false'
+              : currSettings.enableConsoleLogs.toString()
+      }}
+      enableErrorLayout={${
+          typeof currSettings.enableErrorLayout === 'undefined'
+              ? 'false'
+              : currSettings.enableErrorLayout.toString()
+      }}
+      enableSafeMode={${
+          typeof currSettings.enableSafeMode === 'undefined'
+              ? 'false'
+              : currSettings.enableSafeMode.toString()
+      }}
+      nodeEnv={${
+          typeof currSettings.nodeEnv === 'undefined'
+              ? 'undefined'
+              : currSettings.nodeEnv.toString()
+      }}
+      flagshipApi={${
+          typeof currSettings.flagshipApi === 'undefined'
+              ? ''
+              : currSettings.flagshipApi.toString()
+      }}
+      apiKey={${
+          typeof currSettings.apiKey === 'undefined'
+              ? 'null'
+              : currSettings.apiKey.toString()
+      }}
       visitorData={
         ${JSON.stringify(currSettings.visitorData, null, 2)}
     }
