@@ -236,13 +236,13 @@ Here are the attributes which you can set inside the SDK settings object:
           <td>fetchNow</td>
           <td>boolean</td>
           <td>false</td>
-          <td>Decide to fetch automatically modifications data when creating a new <a href='README.md#flagshipvisitor-class'>FlagshipVisitor</a>.</td>
+          <td>Decide to fetch automatically modifications when SDK is initialized.</td>
         </tr>
         <tr>
           <td>activateNow</td>
           <td>boolean</td>
           <td>false</td>
-          <td>Decide to trigger automatically the data when creating a new <a href='README.md#flagshipvisitor-class'>FlagshipVisitor</a>.<br><b>NOTE</b>: when set to <i>true</i>, it will implicitly set <i>fetchNow=true</i> as well.</td>
+          <td>Decide to trigger automatically the data when SDK is initialized.<br><b>NOTE</b>: when set to <i>true</i>, it will implicitly set <i>fetchNow=true</i> as well.</td>
         </tr>
         <tr>
           <td>enableConsoleLogs</td>
