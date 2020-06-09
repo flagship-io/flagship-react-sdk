@@ -39,6 +39,7 @@ export declare type FsState = {
 
 export interface FlagshipReactSdkConfig extends FlagshipSdkConfig {
     enableErrorLayout: boolean;
+    enableSafeMode: boolean;
 }
 
 export const initState: FsState = {
@@ -66,7 +67,6 @@ interface FlagshipProviderProps {
     children: React.ReactNode;
     loadingComponent?: React.ReactNode;
     envId: string;
-    config?: FlagshipReactSdkConfig;
     visitorData: {
         id: string;
         context?: FlagshipVisitorContext;
@@ -74,6 +74,18 @@ interface FlagshipProviderProps {
     reactNative?: {
         handleErrorDisplay: HandleErrorBoundaryDisplay;
     };
+    // config V1 - DEPRECATED
+    config?: FlagshipReactSdkConfig;
+    // config V2 - begin
+    fetchNow?: boolean;
+    activateNow?: boolean;
+    enableConsoleLogs?: boolean;
+    enableErrorLayout?: boolean;
+    enableSafeMode?: boolean;
+    nodeEnv?: string;
+    flagshipApi?: string;
+    apiKey?: string;
+    // config V2 - end
     initialModifications?: DecisionApiCampaign[];
     onInitStart?(): void;
     onInitDone?(): void;
@@ -90,20 +102,51 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     children,
     reactNative,
     envId,
-    config,
     visitorData,
     loadingComponent,
     initialModifications,
     onSavingModificationsInCache,
     onInitStart,
     onInitDone,
-    onUpdate
+    onUpdate,
+    // config V1 [deprecated]
+    config,
+    // config V2
+    fetchNow,
+    activateNow,
+    enableConsoleLogs,
+    enableErrorLayout,
+    enableSafeMode,
+    nodeEnv,
+    flagshipApi,
+    apiKey
 }: FlagshipProviderProps) => {
     const { id, context } = visitorData;
+    const extractConfiguration = (): FlagshipReactSdkConfig => {
+        const configDeprecated = config; // V1
+        const configV2: FlagshipReactSdkConfig = {
+            fetchNow: fetchNow || false,
+            activateNow: activateNow || false,
+            enableConsoleLogs: enableConsoleLogs || false,
+            enableErrorLayout: enableErrorLayout || false,
+            enableSafeMode: enableConsoleLogs || false,
+            nodeEnv: nodeEnv || 'production',
+            flagshipApi,
+            apiKey
+        };
+        if (configDeprecated) {
+            return {
+                ...configV2,
+                ...configDeprecated
+            };
+        }
+        return configV2;
+    };
+    const configuration = extractConfiguration();
     const [state, setState] = useState({
         ...initState,
         log: loggerHelper.getLogger(
-            config as { enableConsoleLogs: boolean; nodeEnv: string }
+            configuration as { enableConsoleLogs: boolean; nodeEnv: string }
         ),
         private: {
             ...initState.private,
@@ -128,12 +171,12 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     const computedConfig: FlagshipSdkConfig = state.private
         .previousFetchedModifications
         ? {
-              ...config,
+              ...configuration,
               initialModifications: [
                   ...state.private.previousFetchedModifications
               ]
           }
-        : (config as FlagshipSdkConfig);
+        : (configuration as FlagshipSdkConfig);
 
     const handleErrorDisplay = reactNative && reactNative.handleErrorDisplay;
 
@@ -183,7 +226,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 tryCatchCallback(onInitDone);
             }
         });
-    }, [envId, id, JSON.stringify(config) + JSON.stringify(context)]);
+    }, [envId, id, JSON.stringify(configuration) + JSON.stringify(context)]);
 
     useEffect(() => {
         if (onUpdate) {
@@ -217,7 +260,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 customerChildren={children}
                 onError={handleError}
                 error={errorData.error}
-                sdkSettings={config as FlagshipReactSdkConfig}
+                sdkSettings={configuration as FlagshipReactSdkConfig}
                 handleDisplay={handleErrorDisplay}
                 log={state.log}
             >
@@ -228,10 +271,16 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 };
 
 FlagshipProvider.defaultProps = {
-    config: {
-        enableErrorLayout: false
-    },
+    config: undefined,
     loadingComponent: undefined,
+    fetchNow: false,
+    activateNow: false,
+    enableConsoleLogs: false,
+    enableErrorLayout: false,
+    enableSafeMode: false,
+    nodeEnv: 'production',
+    flagshipApi: undefined,
+    apiKey: undefined,
     initialModifications: undefined,
     onInitStart: (): void => {
         // do nothing

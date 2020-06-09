@@ -195,7 +195,7 @@ This is all available props which you can use inside the `FlagshipProvider` reac
                 </tr>  
                 <tr>
                   <td><em>fsModifications</em></td>
-                  <td>It contains the last modifications saved in cache.
+                  <td>Array. It contains the last modifications saved in cache.
                   </td>
                 </tr>
               </tbody>

@@ -109,7 +109,7 @@ describe('fsContext provider', () => {
         expect(isCalled.onUpdateParams.sdkVisitor).not.toBe(null);
         expect(isReady).toEqual(true);
     });
-    test('it should consider other props', async () => {
+    test('it should consider other props [configV1]', async () => {
         let computedFsVisitor: flagship.IFlagshipVisitor | null = null;
         const customFetchedModifications = fetchedModifications;
         customFetchedModifications[0].variation.modifications.value = {
