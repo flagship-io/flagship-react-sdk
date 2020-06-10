@@ -249,6 +249,12 @@ Here are the attributes which you can set inside the SDK settings object:
           <td>Enable it to display logs on the console when SDK is running.<br>This will only display logs such as <i>Warnings</i>, <i>Errors</i>, <i>Fatal errors</i> and <i>Info</i>.</td>
         </tr>
         <tr>
+          <td>enableSafeMode</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>Enable it to run the SDK into a safe mode when an error might occurs through the SDK.<br>When safe mode is triggered, default modifications will be returned and other function will just be executed without doing anything.<br><b>NOTE</b>: This feature is currently catching errors globally (SDK + your app) which might leads to unexpected SDK safe mode if the error comes from your app. We're working on that issue.</td>
+        </tr>
+        <tr>
           <td>enableErrorLayout</td>
           <td>boolean</td>
           <td>false</td>
