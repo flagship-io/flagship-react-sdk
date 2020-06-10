@@ -1,15 +1,12 @@
 import { FlagshipReactSdkConfig } from '../../../../dist';
 
-const sdkSettings: FlagshipReactSdkConfig = {
+const config = {
+    envId: 'bn1ab7m56qolupi5sa0g',
     fetchNow: true,
     enableConsoleLogs: true,
     enableErrorLayout: true,
-    nodeEnv: 'production'
-};
-
-const config = {
-    envId: 'bn1ab7m56qolupi5sa0g',
-    sdkConfig: sdkSettings,
+    nodeEnv: 'production',
+    enableSafeMode: true,
     visitorData: {
         id: 'test-vid',
         context: { isAwesome: false, isEvil: false }

@@ -5,16 +5,23 @@ import { SettingContext, AppSettings } from '../../../../../../../App';
 import JSONInput from 'react-json-editor-ajrm';
 import locale from 'react-json-editor-ajrm/locale/en';
 const PlayConfig: React.FC = () => {
-    const { currentSettings, setSettings } = useContext(
-        SettingContext
-    ) as AppSettings;
+    const { currentSettings, setSettings } = useContext(SettingContext) as AppSettings;
 
     const [hasError, setError] = React.useState(false);
     return (
         <Formik
             initialValues={{
                 envId: currentSettings.envId,
-                settings: currentSettings.sdkConfig
+                settings: {
+                    fetchNow: currentSettings.fetchNow,
+                    activateNow: currentSettings.activateNow,
+                    enableConsoleLogs: currentSettings.enableConsoleLogs,
+                    enableErrorLayout: currentSettings.enableErrorLayout,
+                    enableSafeMode: currentSettings.enableSafeMode,
+                    nodeEnv: currentSettings.nodeEnv,
+                    flagshipApi: currentSettings.flagshipApi,
+                    apiKey: currentSettings.apiKey
+                }
             }}
             validate={(values) => {
                 const errors: any = {};
@@ -28,20 +35,11 @@ const PlayConfig: React.FC = () => {
                 setSettings({
                     ...currentSettings,
                     envId: values.envId,
-                    sdkConfig: { ...values.settings }
+                    ...values.settings
                 });
             }}
         >
-            {({
-                handleSubmit,
-                handleChange,
-                handleBlur,
-                setFieldValue,
-                values,
-                touched,
-                isValid,
-                errors
-            }) => (
+            {({ handleSubmit, handleChange, handleBlur, setFieldValue, values, touched, isValid, errors }) => (
                 <Form noValidate onSubmit={handleSubmit}>
                     <Form.Group as={Col} md="12" controlId="envIdForm">
                         <Form.Label>Environment ID</Form.Label>
@@ -53,9 +51,7 @@ const PlayConfig: React.FC = () => {
                             isValid={touched.envId && !errors.envId}
                             isInvalid={!!errors.envId}
                         />
-                        <Form.Control.Feedback type="invalid">
-                            {errors.envId}
-                        </Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{errors.envId}</Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group as={Col} md="12" controlId="settingsForm">
                         <Form.Label>
@@ -69,11 +65,7 @@ const PlayConfig: React.FC = () => {
                             width="100%"
                             onChange={({ error, jsObject }) => {
                                 if (!error) {
-                                    setFieldValue(
-                                        'settings',
-                                        jsObject || {},
-                                        true
-                                    );
+                                    setFieldValue('settings', jsObject || {}, true);
                                     setError(false);
                                 } else {
                                     setError(true);

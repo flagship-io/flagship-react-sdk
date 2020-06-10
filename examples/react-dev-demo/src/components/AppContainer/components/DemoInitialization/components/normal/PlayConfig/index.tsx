@@ -2,30 +2,20 @@ import React, { useContext } from 'react';
 import { Formik } from 'formik';
 import { Form, Button, Col } from 'react-bootstrap';
 import config from '../../../../../../../config';
-import {
-    SettingContext,
-    SdkSettings,
-    AppSettings
-} from '../../../../../../../App';
+import { SettingContext, SdkSettings, AppSettings } from '../../../../../../../App';
 import CodeBlock from '../../../../../../common/CodeBlock';
 const PlayConfig: React.FC = () => {
-    const { currentSettings: currSettings, setSettings, QA } = useContext(
-        SettingContext
-    ) as AppSettings;
+    const { currentSettings: currSettings, setSettings, QA } = useContext(SettingContext) as AppSettings;
     const [newSettings, setNewSettings] = React.useState<SdkSettings>({
         ...currSettings
     });
 
-    const handleEnvId = (e) =>
-        setNewSettings({ ...newSettings, envId: e.target.value });
+    const handleEnvId = (e) => setNewSettings({ ...newSettings, envId: e.target.value });
 
     const handleNodeEnv = (e) =>
         setNewSettings({
             ...newSettings,
-            sdkConfig: {
-                ...newSettings.sdkConfig,
-                nodeEnv: e.target.value
-            }
+            nodeEnv: e.target.value
         });
     return (
         <>
@@ -40,9 +30,7 @@ const PlayConfig: React.FC = () => {
                 >
                     <div>envId: </div>
                     <Form.Control as="select" onChange={handleEnvId}>
-                        <option key={newSettings.envId}>
-                            {newSettings.envId}
-                        </option>
+                        <option key={newSettings.envId}>{newSettings.envId}</option>
                         {config.sandbox.envId
                             .filter((i) => i != newSettings.envId)
                             .map((id) => (
@@ -60,45 +48,34 @@ const PlayConfig: React.FC = () => {
                 >
                     <div>nodeEnv: </div>
                     <Form.Control as="select" onChange={handleNodeEnv}>
-                        <option key={newSettings.sdkConfig.nodeEnv}>
-                            {newSettings.sdkConfig.nodeEnv}
-                        </option>
+                        <option key={newSettings.nodeEnv}>{newSettings.nodeEnv}</option>
                         {config.sandbox.nodeEnv
-                            .filter((i) => i != newSettings.sdkConfig.nodeEnv)
+                            .filter((i) => i != newSettings.nodeEnv)
                             .map((id) => (
                                 <option key={id}>{id}</option>
                             ))}
                     </Form.Control>
                 </Form.Group>
                 {Object.keys({
-                    ...config.sandbox.config,
-                    ...newSettings.sdkConfig
+                    ...config.sandbox.config
                 })
-                    .filter((i) => i != 'nodeEnv')
+                    // .filter((i) => i != 'nodeEnv')
                     .map((setting) => (
                         <Form.Group controlId={setting + 'Form'}>
                             <Form.Check
                                 type="checkbox"
-                                checked={
-                                    !!newSettings.sdkConfig[setting] || false
-                                }
+                                checked={!!newSettings[setting] || false}
                                 onChange={(e) => {
                                     const toSubmit = {
                                         ...newSettings,
-                                        sdkConfig: {
-                                            ...newSettings.sdkConfig,
-                                            [setting]: e.currentTarget.checked
-                                        }
+                                        [setting]: e.currentTarget.checked
                                     };
-                                    if (
-                                        typeof newSettings.sdkConfig[setting] !=
-                                        'boolean'
-                                    ) {
-                                        delete toSubmit.sdkConfig[setting];
+                                    if (typeof newSettings[setting] != 'boolean') {
+                                        delete toSubmit[setting];
                                     }
                                     setNewSettings(toSubmit);
                                 }}
-                                label={`${setting}=${newSettings.sdkConfig[setting]}`}
+                                label={`${setting}=${newSettings[setting]}`}
                             />
                         </Form.Group>
                     ))}
@@ -109,30 +86,14 @@ const PlayConfig: React.FC = () => {
                     justifyContent: 'flex-end'
                 }}
             >
-                <Button
-                    variant="secondary"
-                    onClick={() => setSettings({ ...newSettings })}
-                >
+                <Button variant="secondary" onClick={() => setSettings({ ...newSettings })}>
                     Apply change
                 </Button>
             </div>
             <div>Since we have set those settings:</div>
-            <CodeBlock
-                className="mv3"
-                codeString={`${JSON.stringify(
-                    currSettings.sdkConfig,
-                    null,
-                    2
-                )}`}
-            />
-            <div>
-                When you change those values, you can notice the behavior of the
-                SDK, on logs & network.
-            </div>
-            <div className="mb5">
-                It will impact the output of Flagship SDK Hooks as well, take a
-                look below.
-            </div>
+            <CodeBlock className="mv3" codeString={`${JSON.stringify(currSettings, null, 2)}`} />
+            <div>When you change those values, you can notice the behavior of the SDK, on logs & network.</div>
+            <div className="mb5">It will impact the output of Flagship SDK Hooks as well, take a look below.</div>
         </>
     );
 };

@@ -12,9 +12,7 @@ export const DemoErrorBoundary = () => {
         setTriggerError(false);
     }, [triggerError]);
 
-    const { currentSettings, setSettings, QA } = useContext(
-        SettingContext
-    ) as AppSettings;
+    const { currentSettings, setSettings, QA } = useContext(SettingContext) as AppSettings;
     return (
         <Row>
             <Col>
@@ -22,11 +20,9 @@ export const DemoErrorBoundary = () => {
                 <Alert variant="dark" className="fs-alert demoHook">
                     <Alert.Heading>{demoHookName}</Alert.Heading>
                     <p>
-                        When an error occurs unexpectedly, the React SDK switch
-                        automatically into <b>{demoHookName}</b>. Thus, default
-                        value of modifications will always be returned.
-                        Moreover, other features will just log an error without
-                        crash.
+                        When an error occurs unexpectedly, the React SDK switch automatically into <b>{demoHookName}</b>
+                        . Thus, default value of modifications will always be returned. Moreover, other features will
+                        just log an error without crash.
                     </p>
                     <div>
                         <Button
@@ -37,20 +33,17 @@ export const DemoErrorBoundary = () => {
                         >
                             Throw an error
                         </Button>
-                        {currentSettings.sdkConfig.nodeEnv === 'production' && (
+                        {currentSettings.nodeEnv === 'production' && (
                             <div className="mv3">
-                                <b>NOTE:</b> You might not see the banner
-                                because you are in 'production' environment. You
-                                need to change value of <i>nodeEnv</i> in{' '}
-                                <a href="#playWithConfig">SDK settings</a>.
+                                <b>NOTE:</b> You might not see the banner because you are in 'production' environment.
+                                You need to change value of <i>nodeEnv</i> in <a href="#playWithConfig">SDK settings</a>
+                                .
                             </div>
                         )}
-                        {!currentSettings.sdkConfig.enableErrorLayout && (
+                        {!currentSettings.enableErrorLayout && (
                             <div className="mv3">
-                                <b>NOTE:</b> You might not see the banner
-                                because the setting <i>enableErrorLayout</i> is
-                                disabled, you need to change the value in{' '}
-                                <a href="#playWithConfig">SDK settings</a>.
+                                <b>NOTE:</b> You might not see the banner because the setting <i>enableErrorLayout</i>{' '}
+                                is disabled, you need to change the value in <a href="#playWithConfig">SDK settings</a>.
                             </div>
                         )}
                     </div>
