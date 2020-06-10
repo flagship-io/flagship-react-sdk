@@ -9,14 +9,22 @@ import { providerProps, fetchedModifications } from './mock';
 
 describe('fsContext provider', () => {
     let isReady: boolean;
+    let spyWarnLogs: any;
+    let spyErrorLogs: any;
+    let spyInfoLogs: any;
     beforeAll(() => {
         //
     });
     beforeEach(() => {
         isReady = false;
+        spyWarnLogs = jest.spyOn(console, 'warn').mockImplementation();
+        spyErrorLogs = jest.spyOn(console, 'error').mockImplementation();
+        spyInfoLogs = jest.spyOn(console, 'log').mockImplementation();
     });
     afterEach(() => {
-        //
+        spyWarnLogs.mockRestore();
+        spyErrorLogs.mockRestore();
+        spyInfoLogs.mockRestore();
     });
     test('it should display a loading component if set in props', async () => {
         const { container } = render(
@@ -32,9 +40,7 @@ describe('fsContext provider', () => {
                 <div>Hello</div>
             </FlagshipProvider>
         );
-        expect(container.querySelector('div')?.innerHTML).toEqual(
-            'Loading SDK'
-        );
+        expect(container.querySelector('div')?.innerHTML).toEqual('Loading SDK');
 
         await waitFor(() => {
             if (!isReady) {
@@ -93,16 +99,12 @@ describe('fsContext provider', () => {
         expect(isCalled.onInitStart).toEqual(true);
         expect(isCalled.onSavingModificationsInCache).toEqual(true);
         expect(isCalled.onUpdate).toEqual(true);
-        expect(isCalled.onUpdateParams.sdkData).toHaveProperty(
-            'fsModifications'
+        expect(isCalled.onUpdateParams.sdkData).toHaveProperty('fsModifications');
+        expect((isCalled.onUpdateParams.sdkData as flagship.GetModificationsOutput).fsModifications.length > 0).toEqual(
+            true
         );
         expect(
-            (isCalled.onUpdateParams.sdkData as flagship.GetModificationsOutput)
-                .fsModifications.length > 0
-        ).toEqual(true);
-        expect(
-            (isCalled.onUpdateParams
-                .sdkData as flagship.GetModificationsOutput).fsModifications.filter(
+            (isCalled.onUpdateParams.sdkData as flagship.GetModificationsOutput).fsModifications.filter(
                 (i: any) => !i.variation.reference
             )
         ).toEqual(fetchedModifications);
@@ -141,26 +143,19 @@ describe('fsContext provider', () => {
 
         const modifications: flagship.DecisionApiResponseData | null =
             computedFsVisitor &&
-            ((computedFsVisitor as flagship.IFlagshipVisitor)
-                .fetchedModifications as flagship.DecisionApiCampaign[]);
+            ((computedFsVisitor as flagship.IFlagshipVisitor).fetchedModifications as flagship.DecisionApiCampaign[]);
         expect(modifications).toEqual(customFetchedModifications);
 
-        expect(
-            computedFsVisitor &&
-                (computedFsVisitor as flagship.IFlagshipVisitor).envId
-        ).toEqual(providerProps.envId);
-        expect(
-            computedFsVisitor &&
-                (computedFsVisitor as flagship.IFlagshipVisitor).context
-        ).toEqual(providerProps.visitorData.context);
-        expect(
-            computedFsVisitor &&
-                (computedFsVisitor as flagship.IFlagshipVisitor).id
-        ).toEqual(providerProps.visitorData.id);
-        expect(
-            computedFsVisitor &&
-                (computedFsVisitor as flagship.IFlagshipVisitor).config
-        ).toEqual({
+        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).envId).toEqual(
+            providerProps.envId
+        );
+        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).context).toEqual(
+            providerProps.visitorData.context
+        );
+        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).id).toEqual(
+            providerProps.visitorData.id
+        );
+        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).config).toEqual({
             activateNow: false,
             enableConsoleLogs: true,
             enableErrorLayout: true,
@@ -168,6 +163,67 @@ describe('fsContext provider', () => {
             apiKey: null,
             flagshipApi: 'https://decision-api.flagship.io/v1/',
             initialModifications: customFetchedModifications,
+            nodeEnv: 'production'
+        });
+        expect(isReady).toEqual(true);
+    });
+    test('it should log a warning ignore "initialModifications" props if badly set', async () => {
+        let computedFsVisitor: flagship.IFlagshipVisitor | null = null;
+        const customFetchedModifications = { modifications: [...fetchedModifications] };
+
+        const { container } = render(
+            <FlagshipProvider
+                envId={providerProps.envId}
+                {...providerProps.config}
+                visitorData={providerProps.visitorData}
+                initialModifications={customFetchedModifications as any} // <------- testing this
+                onInitStart={() => {
+                    isReady = true;
+                }}
+                onUpdate={(sdkData, sdkVisitor) => {
+                    if (sdkVisitor) {
+                        computedFsVisitor = sdkVisitor;
+                    }
+                }}
+            >
+                <div>Hello</div>
+            </FlagshipProvider>
+        );
+        await waitFor(() => {
+            if (!isReady) {
+                throw new Error('not ready');
+            }
+        });
+
+        const modifications: flagship.DecisionApiResponseData | null =
+            computedFsVisitor &&
+            ((computedFsVisitor as flagship.IFlagshipVisitor).fetchedModifications as flagship.DecisionApiCampaign[]);
+
+        const extractedLog = spyWarnLogs.mock.calls[0][0].split(' - ')[2];
+
+        expect(extractedLog).toEqual(
+            'initialModifications props is not correctly set and has been ignored, please check the documentation.'
+        );
+
+        expect(modifications).toEqual(null);
+
+        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).envId).toEqual(
+            providerProps.envId
+        );
+        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).context).toEqual(
+            providerProps.visitorData.context
+        );
+        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).id).toEqual(
+            providerProps.visitorData.id
+        );
+        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).config).toEqual({
+            activateNow: false,
+            enableConsoleLogs: true,
+            enableErrorLayout: true,
+            fetchNow: true,
+            apiKey: null,
+            flagshipApi: 'https://decision-api.flagship.io/v1/',
+            initialModifications: null,
             nodeEnv: 'production'
         });
         expect(isReady).toEqual(true);
@@ -204,26 +260,19 @@ describe('fsContext provider', () => {
 
         const modifications: flagship.DecisionApiResponseData | null =
             computedFsVisitor &&
-            ((computedFsVisitor as flagship.IFlagshipVisitor)
-                .fetchedModifications as flagship.DecisionApiCampaign[]);
+            ((computedFsVisitor as flagship.IFlagshipVisitor).fetchedModifications as flagship.DecisionApiCampaign[]);
         expect(modifications).toEqual(customFetchedModifications);
 
-        expect(
-            computedFsVisitor &&
-                (computedFsVisitor as flagship.IFlagshipVisitor).envId
-        ).toEqual(providerProps.envId);
-        expect(
-            computedFsVisitor &&
-                (computedFsVisitor as flagship.IFlagshipVisitor).context
-        ).toEqual(providerProps.visitorData.context);
-        expect(
-            computedFsVisitor &&
-                (computedFsVisitor as flagship.IFlagshipVisitor).id
-        ).toEqual(providerProps.visitorData.id);
-        expect(
-            computedFsVisitor &&
-                (computedFsVisitor as flagship.IFlagshipVisitor).config
-        ).toEqual({
+        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).envId).toEqual(
+            providerProps.envId
+        );
+        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).context).toEqual(
+            providerProps.visitorData.context
+        );
+        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).id).toEqual(
+            providerProps.visitorData.id
+        );
+        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).config).toEqual({
             activateNow: false,
             enableConsoleLogs: true,
             enableErrorLayout: true,
@@ -256,9 +305,9 @@ describe('fsContext provider', () => {
                 throw new Error('not ready');
             }
         });
-        expect(
-            container.querySelector('#flagshipSafeModeContainer')?.innerHTML
-        ).toEqual("<div>Hello I'm visible, even with safe mode</div>");
+        expect(container.querySelector('#flagshipSafeModeContainer')?.innerHTML).toEqual(
+            "<div>Hello I'm visible, even with safe mode</div>"
+        );
 
         expect(isReady).toEqual(true);
     });
@@ -284,9 +333,7 @@ describe('fsContext provider', () => {
                 throw new Error('not ready');
             }
         });
-        expect(
-            container.querySelector('#flagshipSafeModeContainer')?.innerHTML
-        ).toEqual(undefined);
+        expect(container.querySelector('#flagshipSafeModeContainer')?.innerHTML).toEqual(undefined);
 
         expect(isReady).toEqual(true);
     });
@@ -313,14 +360,8 @@ describe('fsContext provider', () => {
             }
         });
         // should display a bottom bar on the screen for developer to debug
-        expect(
-            container.querySelectorAll('.fsErrorDebugContainer').length
-        ).toEqual(1);
-        expect(
-            container
-                .querySelectorAll('.fsErrorDebugContainer')[0]
-                .innerHTML.includes('crash test')
-        ).toEqual(true);
+        expect(container.querySelectorAll('.fsErrorDebugContainer').length).toEqual(1);
+        expect(container.querySelectorAll('.fsErrorDebugContainer')[0].innerHTML.includes('crash test')).toEqual(true);
 
         expect(isReady).toEqual(true);
     });
