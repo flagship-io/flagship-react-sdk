@@ -400,6 +400,25 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
           </td>
         </tr>
         <tr>
+          <td>getModificationInfo</td>
+          <td>function</td>
+          <td><b>Returns a promise</b> with an object containing informations about modification matching the key specified in argument.<br>
+  <table> 
+              <tbody><tr>
+                  <th style="width:25%">Argument</th>
+                  <th style="width:25%">Type</th>
+                  <th>Description</th>
+                </tr>  
+                <tr>
+                  <td><em>key</em></td>
+                  <td>string</td>
+                  <td>The modification key.</td>
+                </tr>
+              </tbody>
+            </table> 
+          </td>
+        </tr>
+        <tr>
           <td>hit</td>
           <td>object</td>
              <td>Gives you some functions to send one or further hits:

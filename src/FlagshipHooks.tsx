@@ -2,6 +2,7 @@ import { useContext, useEffect } from 'react';
 import {
     FsModifsRequestedList,
     GetModificationsOutput,
+    GetModificationInfoOutput,
     IFlagshipVisitor,
     HitShape
 } from '@flagship.io/js-sdk';
@@ -15,17 +16,13 @@ declare type UseFsModificationsOutput = GetModificationsOutput;
 
 const reportNoVisitor = (log: FsLogger | null): void => {
     if (log) {
-        log.error(
-            'sdk not correctly initialized... Make sure fsVisitor is ready.'
-        );
+        log.error('sdk not correctly initialized... Make sure fsVisitor is ready.');
     }
 };
 
 const safeModeLog = (log: FsLogger | null, functionName: string): void => {
     if (log) {
-        log.error(
-            `${functionName} is disabled because the SDK is in safe mode.`
-        );
+        log.error(`${functionName} is disabled because the SDK is in safe mode.`);
     }
 };
 
@@ -43,9 +40,7 @@ export const useFsActivate = (
         if (!fsVisitor) {
             reportNoVisitor(state.log);
         } else {
-            fsVisitor.activateModifications(
-                modificationKeys.map((key) => ({ key }))
-            );
+            fsVisitor.activateModifications(modificationKeys.map((key) => ({ key })));
         }
         return undefined;
     }, applyEffectScope);
@@ -66,25 +61,21 @@ export const useFsSynchronize = (
         if (!fsVisitor) {
             reportNoVisitor(state.log);
         } else {
-            fsVisitor
-                .synchronizeModifications(activateAllModifications)
-                .then((/* statusCode */) => {
-                    if (setState) {
-                        setState({
-                            ...state,
-                            fsVisitor,
-                            status: {
-                                ...state.status,
-                                isLoading: false,
-                                lastRefresh: new Date().toISOString()
-                            }
-                        });
-                    } else {
-                        throw new Error(
-                            'Error: useFsSynchronize > useEffect, setState is undefined'
-                        );
-                    }
-                });
+            fsVisitor.synchronizeModifications(activateAllModifications).then((/* statusCode */) => {
+                if (setState) {
+                    setState({
+                        ...state,
+                        fsVisitor,
+                        status: {
+                            ...state.status,
+                            isLoading: false,
+                            lastRefresh: new Date().toISOString()
+                        }
+                    });
+                } else {
+                    throw new Error('Error: useFsSynchronize > useEffect, setState is undefined');
+                }
+            });
         }
 
         return undefined;
@@ -117,15 +108,9 @@ const getCacheModifications = (
         if (log) {
             log.warn('fsVisitor not initialized, returns default value');
         }
-        return safeMode_getCacheModifications(
-            modificationsRequested,
-            activateAllModifications
-        );
+        return safeMode_getCacheModifications(modificationsRequested, activateAllModifications);
     }
-    return fsVisitor.getModifications(
-        modificationsRequested,
-        activateAllModifications
-    );
+    return fsVisitor.getModifications(modificationsRequested, activateAllModifications);
 };
 
 export const useFsModifications = (
@@ -138,18 +123,10 @@ export const useFsModifications = (
     } = useContext(FlagshipContext);
 
     if (hasError) {
-        return safeMode_getCacheModifications(
-            modificationsRequested,
-            activateAllModifications
-        );
+        return safeMode_getCacheModifications(modificationsRequested, activateAllModifications);
     }
 
-    return getCacheModifications(
-        fsVisitor,
-        modificationsRequested,
-        activateAllModifications,
-        log
-    );
+    return getCacheModifications(fsVisitor, modificationsRequested, activateAllModifications, log);
 };
 
 export declare type UseFlagshipParams = {
@@ -160,6 +137,7 @@ export declare type UseFlagshipParams = {
 };
 export declare type UseFlagshipOutput = {
     modifications: GetModificationsOutput;
+    getModificationInfo: null | ((key: string) => Promise<null | GetModificationInfoOutput>);
     status: FsStatus;
     hit: {
         send(hit: HitShape): void;
@@ -174,10 +152,7 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
               modifications: { requested: [], activateAll: false }
           };
     const {
-        modifications: {
-            requested: modificationsRequested,
-            activateAll: activateAllModifications = false
-        }
+        modifications: { requested: modificationsRequested, activateAll: activateAllModifications = false }
     } = computedOptions;
     const {
         hasError,
@@ -185,11 +160,9 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
     } = useContext(FlagshipContext);
     if (hasError) {
         return {
-            modifications: safeMode_getCacheModifications(
-                modificationsRequested,
-                activateAllModifications
-            ),
+            modifications: safeMode_getCacheModifications(modificationsRequested, activateAllModifications),
             status,
+            getModificationInfo: null,
             hit: {
                 send: (): void => {
                     safeModeLog(log, 'send hit');
@@ -222,12 +195,8 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
     send.bind(fsVisitor);
     sendMultiple.bind(fsVisitor);
     return {
-        modifications: getCacheModifications(
-            fsVisitor,
-            modificationsRequested,
-            activateAllModifications,
-            log
-        ),
+        modifications: getCacheModifications(fsVisitor, modificationsRequested, activateAllModifications, log),
+        getModificationInfo: fsVisitor !== null ? (fsVisitor as IFlagshipVisitor).getModificationInfo : null,
         status,
         hit: {
             send,

@@ -28,12 +28,9 @@ describe('useFsModifications hook', () => {
             {children}
         </FlagshipProvider>
     );
-    const { result, waitForValueToChange } = renderHook(
-        () => useFsModifications(defaultParams),
-        {
-            wrapper
-        }
-    );
+    const { result, waitForValueToChange } = renderHook(() => useFsModifications(defaultParams), {
+        wrapper
+    });
     const resultBeforeApiCall = result.current;
     beforeAll(() => {
         //
