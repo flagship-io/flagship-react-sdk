@@ -78,10 +78,8 @@ const App = () => (
                 id: 'test-visitor-id',
                 context: {}
             }}
-            config={{
-                fetchNow: true,
-                enableConsoleLogs: true
-            }}
+            fetchNow={true}
+            enableConsoleLogs={true}
         >
             {/* [...] */}
         </FlagshipProvider>
@@ -195,7 +193,7 @@ This is all available props which you can use inside the `FlagshipProvider` reac
                 </tr>  
                 <tr>
                   <td><em>fsModifications</em></td>
-                  <td>It contains the last modifications saved in cache.
+                  <td>Array. It contains the last modifications saved in cache.
                   </td>
                 </tr>
               </tbody>
@@ -236,19 +234,25 @@ Here are the attributes which you can set inside the SDK settings object:
           <td>fetchNow</td>
           <td>boolean</td>
           <td>false</td>
-          <td>Decide to fetch automatically modifications data when creating a new <a href='README.md#flagshipvisitor-class'>FlagshipVisitor</a>.</td>
+          <td>Decide to fetch automatically modifications when SDK is initialized.</td>
         </tr>
         <tr>
           <td>activateNow</td>
           <td>boolean</td>
           <td>false</td>
-          <td>Decide to trigger automatically the data when creating a new <a href='README.md#flagshipvisitor-class'>FlagshipVisitor</a>.<br><b>NOTE</b>: when set to <i>true</i>, it will implicitly set <i>fetchNow=true</i> as well.</td>
+          <td>Decide to trigger automatically the data when SDK is initialized.<br><b>NOTE</b>: when set to <i>true</i>, it will implicitly set <i>fetchNow=true</i> as well.</td>
         </tr>
         <tr>
           <td>enableConsoleLogs</td>
           <td>boolean</td>
           <td>false</td>
           <td>Enable it to display logs on the console when SDK is running.<br>This will only display logs such as <i>Warnings</i>, <i>Errors</i>, <i>Fatal errors</i> and <i>Info</i>.</td>
+        </tr>
+        <tr>
+          <td>enableSafeMode</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>Enable it to run the SDK into a safe mode when an error might occurs through the SDK.<br>When safe mode is triggered, default modifications will be returned and other function will just be executed without doing anything.<br><b>NOTE</b>: This feature is currently catching errors globally (SDK + your app) which might leads to unexpected SDK safe mode if the error comes from your app. We're working on that issue.</td>
         </tr>
         <tr>
           <td>enableErrorLayout</td>
@@ -393,6 +397,25 @@ Most used hook from the Flagship React SDK. Through this hook, you can access to
           <td>modifications</td>
           <td>object</td>
           <td>An <i>object</i> where each key is a modification with corresponding value
+          </td>
+        </tr>
+        <tr>
+          <td>getModificationInfo</td>
+          <td>function</td>
+          <td><b>Returns a promise</b> with an object containing informations about modification matching the key specified in argument.<br>
+  <table> 
+              <tbody><tr>
+                  <th style="width:25%">Argument</th>
+                  <th style="width:25%">Type</th>
+                  <th>Description</th>
+                </tr>  
+                <tr>
+                  <td><em>key</em></td>
+                  <td>string</td>
+                  <td>The modification key.</td>
+                </tr>
+              </tbody>
+            </table> 
           </td>
         </tr>
         <tr>

@@ -1,10 +1,4 @@
-import React, {
-    useState,
-    useEffect,
-    SetStateAction,
-    Dispatch,
-    useContext
-} from 'react';
+import React, { useState, useEffect, SetStateAction, Dispatch, useContext } from 'react';
 // / <reference path="@flagship.io/js-sdk/flagship.d.ts" />
 import flagship, {
     FlagshipSdkConfig,
@@ -16,9 +10,7 @@ import flagship, {
 import { FsLogger } from '@flagship.io/js-sdk-logs';
 import loggerHelper from './lib/loggerHelper';
 // eslint-disable-next-line import/no-cycle
-import FlagshipErrorBoundary, {
-    HandleErrorBoundaryDisplay
-} from './FlagshipErrorBoundary';
+import FlagshipErrorBoundary, { HandleErrorBoundaryDisplay } from './FlagshipErrorBoundary';
 
 export declare type FsStatus = {
     isLoading: boolean;
@@ -39,6 +31,7 @@ export declare type FsState = {
 
 export interface FlagshipReactSdkConfig extends FlagshipSdkConfig {
     enableErrorLayout: boolean;
+    enableSafeMode: boolean;
 }
 
 export const initState: FsState = {
@@ -66,7 +59,6 @@ interface FlagshipProviderProps {
     children: React.ReactNode;
     loadingComponent?: React.ReactNode;
     envId: string;
-    config?: FlagshipReactSdkConfig;
     visitorData: {
         id: string;
         context?: FlagshipVisitorContext;
@@ -74,6 +66,18 @@ interface FlagshipProviderProps {
     reactNative?: {
         handleErrorDisplay: HandleErrorBoundaryDisplay;
     };
+    // config V1 - DEPRECATED
+    config?: FlagshipReactSdkConfig;
+    // config V2 - begin
+    fetchNow?: boolean;
+    activateNow?: boolean;
+    enableConsoleLogs?: boolean;
+    enableErrorLayout?: boolean;
+    enableSafeMode?: boolean;
+    nodeEnv?: string;
+    flagshipApi?: string;
+    apiKey?: string;
+    // config V2 - end
     initialModifications?: DecisionApiCampaign[];
     onInitStart?(): void;
     onInitDone?(): void;
@@ -90,21 +94,50 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     children,
     reactNative,
     envId,
-    config,
     visitorData,
     loadingComponent,
     initialModifications,
     onSavingModificationsInCache,
     onInitStart,
     onInitDone,
-    onUpdate
+    onUpdate,
+    // config V1 [deprecated]
+    config,
+    // config V2
+    fetchNow,
+    activateNow,
+    enableConsoleLogs,
+    enableErrorLayout,
+    enableSafeMode,
+    nodeEnv,
+    flagshipApi,
+    apiKey
 }: FlagshipProviderProps) => {
     const { id, context } = visitorData;
+    const extractConfiguration = (): FlagshipReactSdkConfig => {
+        const configDeprecated = config; // V1
+        const configV2: FlagshipReactSdkConfig = {
+            fetchNow: fetchNow || false,
+            activateNow: activateNow || false,
+            enableConsoleLogs: enableConsoleLogs || false,
+            enableErrorLayout: enableErrorLayout || false,
+            enableSafeMode: enableSafeMode || false,
+            nodeEnv: nodeEnv || 'production',
+            flagshipApi,
+            apiKey
+        };
+        if (configDeprecated) {
+            return {
+                ...configV2,
+                ...configDeprecated
+            };
+        }
+        return configV2;
+    };
+    const configuration = extractConfiguration();
     const [state, setState] = useState({
         ...initState,
-        log: loggerHelper.getLogger(
-            config as { enableConsoleLogs: boolean; nodeEnv: string }
-        ),
+        log: loggerHelper.getLogger(configuration as { enableConsoleLogs: boolean; nodeEnv: string }),
         private: {
             ...initState.private,
             previousFetchedModifications: initialModifications
@@ -125,25 +158,28 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             setError({ error, hasError: true });
         }
     };
-    const computedConfig: FlagshipSdkConfig = state.private
-        .previousFetchedModifications
-        ? {
-              ...config,
-              initialModifications: [
-                  ...state.private.previousFetchedModifications
-              ]
-          }
-        : (config as FlagshipSdkConfig);
+    const computeConfig = () => {
+        if (Array.isArray(state.private.previousFetchedModifications)) {
+            return {
+                ...configuration,
+                initialModifications: [...state.private.previousFetchedModifications]
+            };
+        }
+        if (state.private.previousFetchedModifications) {
+            state.log.warn(
+                'initialModifications props is not correctly set and has been ignored, please check the documentation.'
+            );
+        }
+        return { ...configuration };
+    };
+    const computedConfig: FlagshipSdkConfig = computeConfig();
 
     const handleErrorDisplay = reactNative && reactNative.handleErrorDisplay;
 
     // Call FlagShip any time context get changed.
     useEffect(() => {
         const fsSdk = flagship.start(envId, computedConfig);
-        const visitorInstance = fsSdk.createVisitor(
-            id,
-            context as FlagshipVisitorContext
-        );
+        const visitorInstance = fsSdk.newVisitor(id, context as FlagshipVisitorContext);
         setState({
             ...state,
             status: {
@@ -168,22 +204,19 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                     ...state.status,
                     isLoading: false,
                     lastRefresh: new Date().toISOString(),
-                    firstInitSuccess:
-                        state.status.firstInitSuccess ||
-                        new Date().toISOString()
+                    firstInitSuccess: state.status.firstInitSuccess || new Date().toISOString()
                 },
                 fsVisitor: visitorInstance,
                 fsModifications: visitorInstance.fetchedModifications || null,
                 private: {
-                    previousFetchedModifications:
-                        visitorInstance.fetchedModifications || undefined
+                    previousFetchedModifications: visitorInstance.fetchedModifications || undefined
                 }
             });
             if (onInitDone) {
                 tryCatchCallback(onInitDone);
             }
         });
-    }, [envId, id, JSON.stringify(config) + JSON.stringify(context)]);
+    }, [envId, id, JSON.stringify(configuration) + JSON.stringify(context)]);
 
     useEffect(() => {
         if (onUpdate) {
@@ -210,14 +243,12 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         setError({ error, hasError: !!error });
     };
     return (
-        <FlagshipContext.Provider
-            value={{ state, setState, hasError: errorData.hasError }}
-        >
+        <FlagshipContext.Provider value={{ state, setState, hasError: errorData.hasError }}>
             <FlagshipErrorBoundary
                 customerChildren={children}
                 onError={handleError}
                 error={errorData.error}
-                sdkSettings={config as FlagshipReactSdkConfig}
+                sdkSettings={configuration as FlagshipReactSdkConfig}
                 handleDisplay={handleErrorDisplay}
                 log={state.log}
             >
@@ -228,10 +259,16 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 };
 
 FlagshipProvider.defaultProps = {
-    config: {
-        enableErrorLayout: false
-    },
+    config: undefined,
     loadingComponent: undefined,
+    fetchNow: false,
+    activateNow: false,
+    enableConsoleLogs: false,
+    enableErrorLayout: false,
+    enableSafeMode: false,
+    nodeEnv: 'production',
+    flagshipApi: undefined,
+    apiKey: undefined,
     initialModifications: undefined,
     onInitStart: (): void => {
         // do nothing

@@ -47,6 +47,7 @@ export const providerProps = {
     config: {
         fetchNow: true,
         enableConsoleLogs: true,
+        enableSafeMode: true,
         enableErrorLayout: true,
         nodeEnv: 'production'
     },

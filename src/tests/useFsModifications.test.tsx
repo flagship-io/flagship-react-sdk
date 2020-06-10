@@ -19,7 +19,7 @@ describe('useFsModifications hook', () => {
     const wrapper = ({ children }: { children: React.ReactNode }): any => (
         <FlagshipProvider
             envId={providerProps.envId}
-            config={providerProps.config}
+            {...providerProps.config}
             visitorData={providerProps.visitorData}
             onInitDone={() => {
                 isReady = true;
@@ -28,12 +28,9 @@ describe('useFsModifications hook', () => {
             {children}
         </FlagshipProvider>
     );
-    const { result, waitForValueToChange } = renderHook(
-        () => useFsModifications(defaultParams),
-        {
-            wrapper
-        }
-    );
+    const { result, waitForValueToChange } = renderHook(() => useFsModifications(defaultParams), {
+        wrapper
+    });
     const resultBeforeApiCall = result.current;
     beforeAll(() => {
         //

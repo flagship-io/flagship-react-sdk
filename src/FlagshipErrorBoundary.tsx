@@ -39,13 +39,16 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
     }
 
     componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-        this.props.log.fatal(
-            `An error occurred. The SDK is switching into safe mode:\n${error.stack}`
-        );
-        this.setState({
-            error,
-            errorInfo
-        });
+        const isSafeModeEnabled = this.props.sdkSettings.enableSafeMode;
+        if (isSafeModeEnabled) {
+            this.props.log.fatal(
+                `An error occurred. The SDK is switching into safe mode:\n${error.stack}`
+            );
+            this.setState({
+                error,
+                errorInfo
+            });
+        }
     }
 
     static getDerivedStateFromError(error: Error): { error: Error } {
@@ -56,15 +59,18 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
     }
 
     componentDidUpdate(prevProps: Props, prevState: State): void {
-        if (this.state.error !== prevState.error) {
-            this.props.onError(this.state.error as Error);
-        }
-        if (this.props.error !== prevProps.error) {
-            this.props.log.fatal(
-                `An error occurred. The SDK is switching into safe mode:\n${
-                    (this.props.error as Error).stack
-                }`
-            );
+        const isSafeModeEnabled = this.props.sdkSettings.enableSafeMode;
+        if (isSafeModeEnabled) {
+            if (this.state.error !== prevState.error) {
+                this.props.onError(this.state.error as Error);
+            }
+            if (this.props.error !== prevProps.error) {
+                this.props.log.fatal(
+                    `An error occurred. The SDK is switching into safe mode:\n${
+                        (this.props.error as Error).stack
+                    }`
+                );
+            }
         }
     }
 
@@ -75,9 +81,9 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
             handleDisplay,
             customerChildren,
             error: errorProp,
-            sdkSettings: { nodeEnv, enableErrorLayout }
+            sdkSettings: { nodeEnv, enableErrorLayout, enableSafeMode }
         } = this.props;
-        if (errorProp || error) {
+        if (enableSafeMode && (errorProp || error)) {
             const errorCopy = errorProp || error;
             if (handleDisplay) {
                 return handleDisplay({
