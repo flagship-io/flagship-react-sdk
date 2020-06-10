@@ -58,9 +58,7 @@ describe('useFsModifications hook', () => {
         expect(resultBeforeApiCall.status.hasError).toEqual(false);
         expect(resultBeforeApiCall.status.isLoading).toEqual(true);
         expect(resultBeforeApiCall.status.lastRefresh).toEqual(null);
-        expect(typeof resultBeforeApiCall.getModificationInfo).toEqual(
-            'function'
-        );
+        expect(typeof resultBeforeApiCall.getModificationInfo).toEqual('function');
         // AFTER
         expect(resultAfterApiCall.modifications).toEqual({
             discount: '10%'
@@ -70,9 +68,7 @@ describe('useFsModifications hook', () => {
         expect(resultAfterApiCall.status.hasError).toEqual(false);
         expect(resultAfterApiCall.status.isLoading).toEqual(false);
         expect(typeof resultAfterApiCall.status.lastRefresh).toEqual('string');
-        expect(typeof resultAfterApiCall.getModificationInfo).toEqual(
-            'function'
-        );
+        expect(typeof resultAfterApiCall.getModificationInfo).toEqual('function');
 
         expect(isReady).toEqual(true);
     });
@@ -89,12 +85,9 @@ describe('useFsModifications hook', () => {
                 {children}
             </FlagshipProvider>
         );
-        const { result, waitForValueToChange } = renderHook(
-            () => useFlagship(),
-            {
-                wrapper
-            }
-        );
+        const { result, waitForValueToChange } = renderHook(() => useFlagship(), {
+            wrapper
+        });
         const resultBeforeApiCall = result.current;
 
         await waitForValueToChange(() => result.current);
@@ -107,9 +100,7 @@ describe('useFsModifications hook', () => {
         expect(resultBeforeApiCall.status.hasError).toEqual(false);
         expect(resultBeforeApiCall.status.isLoading).toEqual(true);
         expect(resultBeforeApiCall.status.lastRefresh).toEqual(null);
-        expect(typeof resultBeforeApiCall.getModificationInfo).toEqual(
-            'function'
-        );
+        expect(typeof resultBeforeApiCall.getModificationInfo).toEqual('function');
         // AFTER
         expect(resultAfterApiCall.modifications).toEqual({});
         expect(typeof resultAfterApiCall.hit.send).toEqual('function');
@@ -117,9 +108,7 @@ describe('useFsModifications hook', () => {
         expect(resultAfterApiCall.status.hasError).toEqual(false);
         expect(resultAfterApiCall.status.isLoading).toEqual(false);
         expect(typeof resultAfterApiCall.status.lastRefresh).toEqual('string');
-        expect(typeof resultAfterApiCall.getModificationInfo).toEqual(
-            'function'
-        );
+        expect(typeof resultAfterApiCall.getModificationInfo).toEqual('function');
 
         expect(isReady).toEqual(true);
     });
