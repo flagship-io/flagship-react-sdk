@@ -1,9 +1,6 @@
 import './App.css';
 
-import {
-    FlagshipProvider,
-    FlagshipReactSdkConfig
-} from '@flagship.io/react-sdk';
+import { FlagshipProvider } from '@flagship.io/react-sdk';
 import React, { createContext, Dispatch, SetStateAction } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 
@@ -48,6 +45,10 @@ export const SettingContext = createContext<AppSettings | null>(null);
 const App: React.FC = () => {
     const [currentSettings, setSettings] = React.useState<SdkSettings>({
         envId: config.envId,
+        fetchNow: config.fetchNow,
+        enableConsoleLogs: config.enableConsoleLogs,
+        enableErrorLayout: config.enableErrorLayout,
+        nodeEnv: 'production',
         visitorData: { ...config.visitorData }
     });
     const [QA, setQA] = React.useState<QA>({
@@ -58,19 +59,14 @@ const App: React.FC = () => {
     });
     return (
         <>
-            <SettingContext.Provider
-                value={{ currentSettings, setSettings, QA, setQA }}
-            >
+            <SettingContext.Provider value={{ currentSettings, setSettings, QA, setQA }}>
                 <FlagshipProvider
                     envId={currentSettings.envId}
                     fetchNow={currentSettings.fetchNow}
-                    activateNow={currentSettings.activateNow}
                     enableConsoleLogs={currentSettings.enableConsoleLogs}
                     enableErrorLayout={currentSettings.enableErrorLayout}
-                    enableSafeMode={currentSettings.enableSafeMode}
+                    enableSafeMode={true}
                     nodeEnv={currentSettings.nodeEnv}
-                    flagshipApi={currentSettings.flagshipApi}
-                    apiKey={currentSettings.apiKey}
                     visitorData={currentSettings.visitorData}
                     onInitStart={() => {
                         console.log('React SDK init start');
@@ -79,10 +75,7 @@ const App: React.FC = () => {
                         console.log('React SDK init done');
                     }}
                     onUpdate={({ fsModifications }) => {
-                        console.log(
-                            'React SDK updated with modifications:\n' +
-                                JSON.stringify(fsModifications)
-                        );
+                        console.log('React SDK updated with modifications:\n' + JSON.stringify(fsModifications));
                     }}
                     loadingComponent={
                         <Container className="mt5">

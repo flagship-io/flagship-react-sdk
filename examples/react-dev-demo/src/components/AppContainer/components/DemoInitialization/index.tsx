@@ -11,9 +11,7 @@ import PlayConfig from './components/normal/PlayConfig';
 
 export const DemoInitialization = () => {
     const name = 'initialization';
-    const { currentSettings: currSettings, setSettings, QA } = useContext(
-        SettingContext
-    ) as AppSettings;
+    const { currentSettings: currSettings, setSettings, QA } = useContext(SettingContext) as AppSettings;
     const [newSettings, setNewSettings] = React.useState<SdkSettings>({
         ...currSettings
     });
@@ -25,9 +23,8 @@ export const DemoInitialization = () => {
                 <Alert variant="dark" className="fs-alert demoHook">
                     <Alert.Heading>{name}</Alert.Heading>
                     <p>
-                        The <b>{name}</b> is proceed with{' '}
-                        <b>FlagshipProvider</b>. In this demo app, it is plugged
-                        like so:
+                        The <b>{name}</b> is proceed with <b>FlagshipProvider</b>. In this demo app, it is plugged like
+                        so:
                     </p>
                     <CodeBlock
                         className="mv3"
@@ -38,49 +35,16 @@ const App: React.FC = () => (
   <>
       <FlagshipProvider
       envId={${currSettings.envId}}
-      fetchNow={${
-          typeof currSettings.fetchNow === 'undefined'
-              ? 'false'
-              : currSettings.fetchNow.toString()
-      }}
-      activateNow={${
-          typeof currSettings.activateNow === 'undefined'
-              ? 'false'
-              : currSettings.activateNow.toString()
-      }}
+      fetchNow={${typeof currSettings.fetchNow === 'undefined' ? 'false' : currSettings.fetchNow.toString()}}
+      activateNow={${typeof currSettings.activateNow === 'undefined' ? 'false' : currSettings.activateNow.toString()}}
       enableConsoleLogs={${
-          typeof currSettings.enableConsoleLogs === 'undefined'
-              ? 'false'
-              : currSettings.enableConsoleLogs.toString()
+          typeof currSettings.enableConsoleLogs === 'undefined' ? 'false' : currSettings.enableConsoleLogs.toString()
       }}
       enableErrorLayout={${
-          typeof currSettings.enableErrorLayout === 'undefined'
-              ? 'false'
-              : currSettings.enableErrorLayout.toString()
+          typeof currSettings.enableErrorLayout === 'undefined' ? 'false' : currSettings.enableErrorLayout.toString()
       }}
-      enableSafeMode={${
-          typeof currSettings.enableSafeMode === 'undefined'
-              ? 'false'
-              : currSettings.enableSafeMode.toString()
-      }}
-      nodeEnv={${
-          typeof currSettings.nodeEnv === 'undefined'
-              ? 'undefined'
-              : currSettings.nodeEnv.toString()
-      }}
-      flagshipApi={${
-          typeof currSettings.flagshipApi === 'undefined'
-              ? ''
-              : currSettings.flagshipApi.toString()
-      }}
-      apiKey={${
-          typeof currSettings.apiKey === 'undefined'
-              ? 'null'
-              : currSettings.apiKey.toString()
-      }}
-      visitorData={
-        ${JSON.stringify(currSettings.visitorData, null, 2)}
-    }
+      nodeEnv="${typeof currSettings.nodeEnv === 'undefined' ? 'undefined' : currSettings.nodeEnv.toString()}"
+      visitorData=${JSON.stringify(currSettings.visitorData, null, 2)}
       onInitStart={() => {
         console.log("init start");
       }}
@@ -106,10 +70,7 @@ const App: React.FC = () => (
   </>
 );          `}
                     />
-                    <p>
-                        To understand impact of each props, you can change some
-                        value dynamically here:{' '}
-                    </p>
+                    <p>To understand impact of each props, you can change some value dynamically here: </p>
                     <h3
                         id="playWithConfig"
                         style={{
@@ -120,11 +81,7 @@ const App: React.FC = () => (
                     >
                         1 - Playing with <i>config</i>
                     </h3>
-                    {QA.enabled ? (
-                        <PlayConfigQA></PlayConfigQA>
-                    ) : (
-                        <PlayConfig></PlayConfig>
-                    )}
+                    {QA.enabled ? <PlayConfigQA></PlayConfigQA> : <PlayConfig></PlayConfig>}
                     <h3
                         style={{
                             borderBottom: '1px solid grey',
@@ -134,11 +91,7 @@ const App: React.FC = () => (
                     >
                         2 - Playing with <i>visitorData</i>
                     </h3>
-                    {QA.enabled ? (
-                        <PlayVisitorDataQA></PlayVisitorDataQA>
-                    ) : (
-                        <PlayVisitorData></PlayVisitorData>
-                    )}
+                    {QA.enabled ? <PlayVisitorDataQA></PlayVisitorDataQA> : <PlayVisitorData></PlayVisitorData>}
                 </Alert>
             </Col>
         </Row>
