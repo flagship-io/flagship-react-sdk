@@ -196,6 +196,11 @@ This is all available props which you can use inside the `FlagshipProvider` reac
                   <td>Array. It contains the last modifications saved in cache.
                   </td>
                 </tr>
+                <tr>
+                  <td><em>config</em></td>
+                  <td>Object. Contains current configuration properties running on React SDK.
+                  </td>
+                </tr>
               </tbody>
             </table></td>
         </tr>
