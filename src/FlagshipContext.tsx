@@ -85,6 +85,7 @@ interface FlagshipProviderProps {
     onUpdate?(
         sdkData: {
             fsModifications: DecisionApiCampaign[] | null;
+            config: FlagshipReactSdkConfig;
         },
         fsVisitor: IFlagshipVisitor | null
     ): void;
@@ -138,6 +139,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     const [state, setState] = useState({
         ...initState,
         log: loggerHelper.getLogger(configuration as { enableConsoleLogs: boolean; nodeEnv: string }),
+        config: configuration,
         private: {
             ...initState.private,
             previousFetchedModifications: initialModifications
@@ -223,7 +225,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             tryCatchCallback(() => {
                 onUpdate(
                     {
-                        fsModifications: state.fsModifications
+                        fsModifications: state.fsModifications,
+                        config: { ...state.config, ...state.fsVisitor?.config }
                     },
                     state.fsVisitor
                 );

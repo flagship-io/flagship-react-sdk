@@ -4,7 +4,7 @@ import { render, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import flagship from '@flagship.io/js-sdk';
-import { FlagshipProvider } from '../FlagshipContext';
+import { FlagshipProvider, FlagshipReactSdkConfig } from '../FlagshipContext';
 import { providerProps, fetchedModifications } from './mock';
 
 describe('fsContext provider', () => {
@@ -111,64 +111,9 @@ describe('fsContext provider', () => {
         expect(isCalled.onUpdateParams.sdkVisitor).not.toBe(null);
         expect(isReady).toEqual(true);
     });
-    test('it should consider other props [configV2]', async () => {
-        let computedFsVisitor: flagship.IFlagshipVisitor | null = null;
-        const customFetchedModifications = fetchedModifications;
-        customFetchedModifications[0].variation.modifications.value = {
-            discount: '99%'
-        };
-        const { container } = render(
-            <FlagshipProvider
-                envId={providerProps.envId}
-                {...providerProps.config}
-                visitorData={providerProps.visitorData}
-                initialModifications={customFetchedModifications} // <------- testing this
-                onInitStart={() => {
-                    isReady = true;
-                }}
-                onUpdate={(sdkData, sdkVisitor) => {
-                    if (sdkVisitor) {
-                        computedFsVisitor = sdkVisitor;
-                    }
-                }}
-            >
-                <div>Hello</div>
-            </FlagshipProvider>
-        );
-        await waitFor(() => {
-            if (!isReady) {
-                throw new Error('not ready');
-            }
-        });
-
-        const modifications: flagship.DecisionApiResponseData | null =
-            computedFsVisitor &&
-            ((computedFsVisitor as flagship.IFlagshipVisitor).fetchedModifications as flagship.DecisionApiCampaign[]);
-        expect(modifications).toEqual(customFetchedModifications);
-
-        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).envId).toEqual(
-            providerProps.envId
-        );
-        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).context).toEqual(
-            providerProps.visitorData.context
-        );
-        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).id).toEqual(
-            providerProps.visitorData.id
-        );
-        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).config).toEqual({
-            activateNow: false,
-            enableConsoleLogs: true,
-            enableErrorLayout: true,
-            fetchNow: true,
-            apiKey: null,
-            flagshipApi: 'https://decision-api.flagship.io/v1/',
-            initialModifications: customFetchedModifications,
-            nodeEnv: 'production'
-        });
-        expect(isReady).toEqual(true);
-    });
     test('it should log a warning ignore "initialModifications" props if badly set', async () => {
         let computedFsVisitor: flagship.IFlagshipVisitor | null = null;
+        let computedSdkConfig: FlagshipReactSdkConfig | null = null;
         const customFetchedModifications = { modifications: [...fetchedModifications] };
 
         const { container } = render(
@@ -181,6 +126,9 @@ describe('fsContext provider', () => {
                     isReady = true;
                 }}
                 onUpdate={(sdkData, sdkVisitor) => {
+                    if (sdkData && sdkData.config) {
+                        computedSdkConfig = sdkData.config;
+                    }
                     if (sdkVisitor) {
                         computedFsVisitor = sdkVisitor;
                     }
@@ -216,10 +164,11 @@ describe('fsContext provider', () => {
         expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).id).toEqual(
             providerProps.visitorData.id
         );
-        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).config).toEqual({
+        expect(computedSdkConfig).toEqual({
             activateNow: false,
             enableConsoleLogs: true,
             enableErrorLayout: true,
+            enableSafeMode: true,
             fetchNow: true,
             apiKey: null,
             flagshipApi: 'https://decision-api.flagship.io/v1/',
@@ -230,6 +179,7 @@ describe('fsContext provider', () => {
     });
     test('it should consider other props [configV1]', async () => {
         let computedFsVisitor: flagship.IFlagshipVisitor | null = null;
+        let computedSdkConfig: FlagshipReactSdkConfig | null = null;
         const customFetchedModifications = fetchedModifications;
         customFetchedModifications[0].variation.modifications.value = {
             discount: '99%'
@@ -244,6 +194,9 @@ describe('fsContext provider', () => {
                     isReady = true;
                 }}
                 onUpdate={(sdkData, sdkVisitor) => {
+                    if (sdkData && sdkData.config) {
+                        computedSdkConfig = sdkData.config;
+                    }
                     if (sdkVisitor) {
                         computedFsVisitor = sdkVisitor;
                     }
@@ -272,10 +225,72 @@ describe('fsContext provider', () => {
         expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).id).toEqual(
             providerProps.visitorData.id
         );
-        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).config).toEqual({
+        expect(computedSdkConfig).toEqual({
             activateNow: false,
             enableConsoleLogs: true,
             enableErrorLayout: true,
+            enableSafeMode: true,
+            fetchNow: true,
+            apiKey: null,
+            flagshipApi: 'https://decision-api.flagship.io/v1/',
+            initialModifications: customFetchedModifications,
+            nodeEnv: 'production'
+        });
+        expect(isReady).toEqual(true);
+    });
+    test('it should consider other props [configV2]', async () => {
+        let computedFsVisitor: flagship.IFlagshipVisitor | null = null;
+        let computedSdkConfig: FlagshipReactSdkConfig | null = null;
+        const customFetchedModifications = fetchedModifications;
+        customFetchedModifications[0].variation.modifications.value = {
+            discount: '99%'
+        };
+        const { container } = render(
+            <FlagshipProvider
+                envId={providerProps.envId}
+                {...providerProps.config}
+                visitorData={providerProps.visitorData}
+                initialModifications={customFetchedModifications} // <------- testing this
+                onInitStart={() => {
+                    isReady = true;
+                }}
+                onUpdate={(sdkData, sdkVisitor) => {
+                    if (sdkData && sdkData.config) {
+                        computedSdkConfig = sdkData.config;
+                    }
+                    if (sdkVisitor) {
+                        computedFsVisitor = sdkVisitor;
+                    }
+                }}
+            >
+                <div>Hello</div>
+            </FlagshipProvider>
+        );
+        await waitFor(() => {
+            if (!isReady) {
+                throw new Error('not ready');
+            }
+        });
+
+        const modifications: flagship.DecisionApiResponseData | null =
+            computedFsVisitor &&
+            ((computedFsVisitor as flagship.IFlagshipVisitor).fetchedModifications as flagship.DecisionApiCampaign[]);
+        expect(modifications).toEqual(customFetchedModifications);
+
+        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).envId).toEqual(
+            providerProps.envId
+        );
+        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).context).toEqual(
+            providerProps.visitorData.context
+        );
+        expect(computedFsVisitor && (computedFsVisitor as flagship.IFlagshipVisitor).id).toEqual(
+            providerProps.visitorData.id
+        );
+        expect(computedSdkConfig).toEqual({
+            activateNow: false,
+            enableConsoleLogs: true,
+            enableErrorLayout: true,
+            enableSafeMode: true,
             fetchNow: true,
             apiKey: null,
             flagshipApi: 'https://decision-api.flagship.io/v1/',
