@@ -39,16 +39,7 @@ const PlayWithModifications: React.FC = () => {
                     setFsParams({ ...values.fsParams });
                 }}
             >
-                {({
-                    handleSubmit,
-                    handleChange,
-                    handleBlur,
-                    setFieldValue,
-                    values,
-                    touched,
-                    isValid,
-                    errors
-                }) => (
+                {({ handleSubmit, handleChange, handleBlur, setFieldValue, values, touched, isValid, errors }) => (
                     <Form noValidate onSubmit={handleSubmit}>
                         <Form.Group as={Col} md="12" controlId="settingsForm">
                             <Form.Label>useFlagship arguments</Form.Label>
@@ -60,11 +51,7 @@ const PlayWithModifications: React.FC = () => {
                                 width="100%"
                                 onChange={({ error, jsObject }) => {
                                     if (!error) {
-                                        setFieldValue(
-                                            'fsParams',
-                                            jsObject || {},
-                                            true
-                                        );
+                                        setFieldValue('fsParams', jsObject || {}, true);
                                         setError(false);
                                     } else {
                                         setError(true);
@@ -96,7 +83,13 @@ const PlayWithModifications: React.FC = () => {
             <div className="mb3">
                 <JSONInput
                     id="fsIutput"
-                    placeholder={output}
+                    placeholder={Object.keys(output).reduce(
+                        (reducer, key) => ({
+                            ...reducer,
+                            [key]: typeof output[key] === 'function' ? '**** defined function ****' : output[key]
+                        }),
+                        {}
+                    )}
                     locale={locale}
                     height="550px"
                     viewOnly={true}
