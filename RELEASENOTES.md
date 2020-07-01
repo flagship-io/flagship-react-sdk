@@ -1,5 +1,11 @@
 # Flagship REACT SDK - Release notes
 
+## ➡️ Version 1.2.2
+
+### Bug fixes 🐛
+
+-   Fixed getModificationInfo always returning an error.
+
 ## ➡️ Version 1.2.1
 
 ### Bug fixes 🐛
