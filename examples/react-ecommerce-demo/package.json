@@ -17,7 +17,7 @@
     "license": "ISC",
     "dependencies": {
         "@flagship.io/js-sdk": "^1.2.1",
-        "@flagship.io/react-sdk": "^1.2.1",
+        "@flagship.io/react-sdk": "^1.2.2",
         "@risingstack/react-easy-state": "^6.3.0",
         "js-cookie": "^2.2.1",
         "next": "^9.3.6",
