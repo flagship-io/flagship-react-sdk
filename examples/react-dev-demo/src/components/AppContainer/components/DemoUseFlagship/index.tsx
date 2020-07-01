@@ -8,6 +8,8 @@ import PlayWithHitsQA from './components/qa/PlayWithHits';
 import { SettingContext, AppSettings } from '../../../../App';
 import PlayWithModificationsQA from './components/qa/PlayWithModifications';
 import PlayWithModifications from './components/normal/PlayWithModifications';
+import PlayWithModificationInfo from './components/normal/PlayWithModificationInfo';
+import PlayWithModificationInfoQA from './components/qa/PlayWithModificationInfo';
 
 export const DemoUseFlagship = () => {
     const fsParams = {
@@ -33,9 +35,8 @@ export const DemoUseFlagship = () => {
                 <Alert variant="dark" className="fs-alert demoHook">
                     <Alert.Heading>{demoHookName}</Alert.Heading>
                     <p>
-                        Use <b>{demoHookName}</b> hook to get access to further
-                        stuff such as <i>modifications</i>, <i>sdk status</i>,{' '}
-                        <i>hits</i> :
+                        Use <b>{demoHookName}</b> hook to get access to further stuff such as <i>modifications</i>,{' '}
+                        <i>sdk status</i>, <i>hits</i> :
                     </p>
                     <CodeBlock
                         className="mv3"
@@ -69,10 +70,7 @@ const {
                         2 - Reading <i>fsStatus</i>
                     </h3>
 
-                    <p>
-                        It gives you some information about the current status
-                        of the SDK:
-                    </p>
+                    <p>It gives you some information about the current status of the SDK:</p>
                     <CodeBlock
                         className="mv3"
                         codeString={`
@@ -83,11 +81,13 @@ fsStatus=${JSON.stringify(fsStatus, null, 2)};
                     <h3>
                         3 - Playing with <i>hits</i>
                     </h3>
-                    {QA.enabled ? (
-                        <PlayWithHitsQA></PlayWithHitsQA>
-                    ) : (
-                        <PlayWithHits></PlayWithHits>
-                    )}
+                    {QA.enabled ? <PlayWithHitsQA></PlayWithHitsQA> : <PlayWithHits></PlayWithHits>}
+                    <div className="fsAnchor" id="getModificationInfos"></div>
+                    <h3 className="mt3">
+                        4 - Get modification <i>informations</i>
+                    </h3>
+                    {!QA.enabled && <PlayWithModificationInfo></PlayWithModificationInfo>}
+                    <PlayWithModificationInfoQA></PlayWithModificationInfoQA>
                 </Alert>
             </Col>
         </Row>

@@ -196,7 +196,11 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
     sendMultiple.bind(fsVisitor);
     return {
         modifications: getCacheModifications(fsVisitor, modificationsRequested, activateAllModifications, log),
-        getModificationInfo: fsVisitor !== null ? (fsVisitor as IFlagshipVisitor).getModificationInfo : null,
+        getModificationInfo:
+            fsVisitor !== null
+                ? (key: string): Promise<GetModificationInfoOutput | null> =>
+                      (fsVisitor as IFlagshipVisitor).getModificationInfo(key)
+                : null,
         status,
         hit: {
             send,
