@@ -3,6 +3,7 @@
     "version": "1.2.1",
     "description": "Flagship REACT SDK",
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "files": [
         "dist",
         "CONTRIBUTING.md",
@@ -21,7 +22,8 @@
         "update:reactDemoDev": "cd ./examples/react-dev-demo && npm install @flagship.io/react-sdk@latest @flagship.io/js-sdk@latest --save && cd ../../",
         "update:reactDemoEcommerce": "cd ./examples/react-ecommerce-demo && npm install @flagship.io/react-sdk@latest @flagship.io/js-sdk@latest --save && cd ../../",
         "clean": "rm -rf ./node_modules/react && rm -rf ./node_modules/react-dom",
-        "build": "npm install @flagship.io/js-sdk@latest --save && rm -rf dist && tsc"
+        "build": "npm install @flagship.io/js-sdk@latest --save && rm -rf dist && tsc",
+        "build:skipUpdate": "rm -rf dist && tsc"
     },
     "repository": {
         "type": "git",
@@ -51,8 +53,8 @@
     ],
     "homepage": "https://github.com/abtasty/flagship-react-sdk#readme",
     "dependencies": {
-        "@flagship.io/js-sdk": "^1.2.1",
-        "@flagship.io/js-sdk-logs": "0.0.4"
+        "@flagship.io/js-sdk": "file:flagship.io-js-sdk-1.2.1.tgz",
+        "@flagship.io/js-sdk-logs": "^0.1.1"
     },
     "peerDependencies": {
         "react": "^16.8.0"

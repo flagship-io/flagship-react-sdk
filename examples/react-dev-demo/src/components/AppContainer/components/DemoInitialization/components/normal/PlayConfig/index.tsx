@@ -12,10 +12,10 @@ const PlayConfig: React.FC = () => {
 
     const handleEnvId = (e) => setNewSettings({ ...newSettings, envId: e.target.value });
 
-    const handleNodeEnv = (e) =>
+    const handleSettings = (e, key) =>
         setNewSettings({
             ...newSettings,
-            nodeEnv: e.target.value
+            [key]: e.target.value
         });
     return (
         <>
@@ -47,7 +47,7 @@ const PlayConfig: React.FC = () => {
                     }}
                 >
                     <div>nodeEnv: </div>
-                    <Form.Control as="select" onChange={handleNodeEnv}>
+                    <Form.Control as="select" onChange={(e) => handleSettings(e, 'nodeEnv')}>
                         <option key={newSettings.nodeEnv}>{newSettings.nodeEnv}</option>
                         {config.sandbox.nodeEnv
                             .filter((i) => i != newSettings.nodeEnv)
@@ -56,6 +56,44 @@ const PlayConfig: React.FC = () => {
                             ))}
                     </Form.Control>
                 </Form.Group>
+                <Form.Group
+                    controlId="initForm.Control1.21"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginLeft: '16px'
+                    }}
+                >
+                    <div>decisionMode: </div>
+                    <Form.Control as="select" onChange={(e) => handleSettings(e, 'decisionMode')}>
+                        <option key={newSettings.decisionMode}>{newSettings.decisionMode}</option>
+                        {config.sandbox.decisionMode
+                            .filter((i) => i != newSettings.decisionMode)
+                            .map((id) => (
+                                <option key={id}>{id}</option>
+                            ))}
+                    </Form.Control>
+                </Form.Group>
+                {newSettings.decisionMode === 'Bucketing' && (
+                    <Form.Group
+                        controlId="initForm.Control1.21"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            marginLeft: '16px'
+                        }}
+                    >
+                        <div>pollingInterval: </div>
+                        <Form.Control as="select" onChange={(e) => handleSettings(e, 'pollingInterval')}>
+                            <option key={newSettings.pollingInterval}>{newSettings.pollingInterval} minutes</option>
+                            {config.sandbox.pollingInterval
+                                .filter((i) => i != newSettings.pollingInterval)
+                                .map((id) => (
+                                    <option key={id}>{id} minutes</option>
+                                ))}
+                        </Form.Control>
+                    </Form.Group>
+                )}
                 {Object.keys({
                     ...config.sandbox.config
                 })

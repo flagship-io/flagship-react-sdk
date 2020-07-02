@@ -70,6 +70,8 @@ interface FlagshipProviderProps {
     config?: FlagshipReactSdkConfig;
     // config V2 - begin
     fetchNow?: boolean;
+    decisionMode?: 'API' | 'Bucketing';
+    pollingInterval?: number;
     activateNow?: boolean;
     enableConsoleLogs?: boolean;
     enableErrorLayout?: boolean;
@@ -109,6 +111,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     activateNow,
     enableConsoleLogs,
     enableErrorLayout,
+    decisionMode,
+    pollingInterval,
     enableSafeMode,
     nodeEnv,
     flagshipApi,
@@ -119,6 +123,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         const configDeprecated = config; // V1
         const configV2: FlagshipReactSdkConfig = {
             fetchNow: fetchNow || false,
+            decisionMode: decisionMode || 'API',
+            pollingInterval: pollingInterval || null,
             activateNow: activateNow || false,
             enableConsoleLogs: enableConsoleLogs || false,
             enableErrorLayout: enableErrorLayout || false,
@@ -266,6 +272,8 @@ FlagshipProvider.defaultProps = {
     loadingComponent: undefined,
     fetchNow: false,
     activateNow: false,
+    decisionMode: 'API',
+    pollingInterval: undefined,
     enableConsoleLogs: false,
     enableErrorLayout: false,
     enableSafeMode: false,

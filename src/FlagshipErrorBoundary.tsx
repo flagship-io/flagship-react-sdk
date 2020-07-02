@@ -41,9 +41,7 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
     componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
         const isSafeModeEnabled = this.props.sdkSettings.enableSafeMode;
         if (isSafeModeEnabled) {
-            this.props.log.fatal(
-                `An error occurred. The SDK is switching into safe mode:\n${error.stack}`
-            );
+            this.props.log.fatal(`An error occurred. The SDK is switching into safe mode:\n${error.stack}`);
             this.setState({
                 error,
                 errorInfo
@@ -66,9 +64,7 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
             }
             if (this.props.error !== prevProps.error) {
                 this.props.log.fatal(
-                    `An error occurred. The SDK is switching into safe mode:\n${
-                        (this.props.error as Error).stack
-                    }`
+                    `An error occurred. The SDK is switching into safe mode:\n${(this.props.error as Error).stack}`
                 );
             }
         }

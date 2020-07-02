@@ -40,6 +40,10 @@ const App: React.FC = () => (
       enableConsoleLogs={${
           typeof currSettings.enableConsoleLogs === 'undefined' ? 'false' : currSettings.enableConsoleLogs.toString()
       }}
+      decisionMode="${typeof currSettings.decisionMode === 'undefined' ? 'API' : currSettings.decisionMode.toString()}"
+      pollingInterval={${
+          typeof currSettings.pollingInterval === 'undefined' ? 'undefined' : currSettings.pollingInterval.toString()
+      }} // minute(s)
       enableErrorLayout={${
           typeof currSettings.enableErrorLayout === 'undefined' ? 'false' : currSettings.enableErrorLayout.toString()
       }}
@@ -79,7 +83,7 @@ const App: React.FC = () => (
                             paddingBottom: '8px'
                         }}
                     >
-                        1 - Playing with <i>config</i>
+                        1 - Playing with <i>sdk settings</i>
                     </h3>
                     {QA.enabled ? <PlayConfigQA></PlayConfigQA> : <PlayConfig></PlayConfig>}
                     <h3

@@ -15,6 +15,7 @@ const PlayConfig: React.FC = () => {
                 settings: {
                     fetchNow: currentSettings.fetchNow,
                     activateNow: currentSettings.activateNow,
+                    decisionMode: currentSettings.decisionMode,
                     enableConsoleLogs: currentSettings.enableConsoleLogs,
                     enableErrorLayout: currentSettings.enableErrorLayout,
                     enableSafeMode: currentSettings.enableSafeMode,
@@ -54,9 +55,7 @@ const PlayConfig: React.FC = () => {
                         <Form.Control.Feedback type="invalid">{errors.envId}</Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group as={Col} md="12" controlId="settingsForm">
-                        <Form.Label>
-                            "<i>config</i>" prop
-                        </Form.Label>
+                        <Form.Label>SDK settings props</Form.Label>
                         <JSONInput
                             id="settings"
                             placeholder={values.settings}
