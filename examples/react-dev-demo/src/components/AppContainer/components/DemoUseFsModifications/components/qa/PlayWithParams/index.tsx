@@ -1,8 +1,7 @@
-import React from 'react';
-import CodeBlock from '../../../../../../common/CodeBlock';
 import { useFsModifications } from '@flagship.io/react-sdk';
-import { Button, Form, Col } from 'react-bootstrap';
 import { Formik } from 'formik';
+import React from 'react';
+import { Button, Col, Form } from 'react-bootstrap';
 import JSONInput from 'react-json-editor-ajrm';
 import locale from 'react-json-editor-ajrm/locale/en';
 
@@ -34,21 +33,10 @@ const PlayWithParams: React.FC = () => {
                     setFsParams([...values.fsParams]);
                 }}
             >
-                {({
-                    handleSubmit,
-                    handleChange,
-                    handleBlur,
-                    setFieldValue,
-                    values,
-                    touched,
-                    isValid,
-                    errors
-                }) => (
+                {({ handleSubmit, handleChange, handleBlur, setFieldValue, values, touched, isValid, errors }) => (
                     <Form noValidate onSubmit={handleSubmit}>
                         <Form.Group as={Col} md="12" controlId="settingsForm">
-                            <Form.Label>
-                                useFsModifications arguments
-                            </Form.Label>
+                            <Form.Label>useFsModifications arguments</Form.Label>
                             <JSONInput
                                 id="fsParams"
                                 placeholder={values.fsParams}
@@ -57,11 +45,7 @@ const PlayWithParams: React.FC = () => {
                                 width="100%"
                                 onChange={({ error, jsObject }) => {
                                     if (!error) {
-                                        setFieldValue(
-                                            'fsParams',
-                                            jsObject || {},
-                                            true
-                                        );
+                                        setFieldValue('fsParams', jsObject || {}, true);
                                         setError(false);
                                     } else {
                                         setError(true);

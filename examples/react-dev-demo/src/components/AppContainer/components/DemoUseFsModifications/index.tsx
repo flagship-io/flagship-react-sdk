@@ -1,10 +1,9 @@
-import { useFsModifications } from '@flagship.io/react-sdk';
 import React, { useContext } from 'react';
-import { Alert, Col, Row, Button } from 'react-bootstrap';
-import CodeBlock from '../../../common/CodeBlock';
+import { Alert, Col, Row } from 'react-bootstrap';
+
+import { AppSettings, SettingContext } from '../../../../App';
 import PlayWithParams from './components/normal/PlayWithParams';
 import PlayWithParamsQA from './components/qa/PlayWithParams';
-import { SettingContext, AppSettings } from '../../../../App';
 
 export const DemoUseFsModifications = () => {
     const demoHookName = 'useFsModifications';
@@ -15,11 +14,7 @@ export const DemoUseFsModifications = () => {
                 <div className="fsAnchor" id={demoHookName} />
                 <Alert variant="dark" className="fs-alert demoHook">
                     <Alert.Heading>{demoHookName}</Alert.Heading>
-                    {QA.enabled ? (
-                        <PlayWithParamsQA></PlayWithParamsQA>
-                    ) : (
-                        <PlayWithParams></PlayWithParams>
-                    )}
+                    {QA.enabled ? <PlayWithParamsQA></PlayWithParamsQA> : <PlayWithParams></PlayWithParams>}
                 </Alert>
             </Col>
         </Row>

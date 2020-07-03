@@ -75,13 +75,13 @@ const App: React.FC = () => {
                     nodeEnv={currentSettings.nodeEnv}
                     visitorData={currentSettings.visitorData}
                     onInitStart={() => {
-                        console.log('React SDK init start');
+                        console.log('onInitStart - triggered');
                     }}
                     onInitDone={() => {
-                        console.log('React SDK init done');
+                        console.log('onInitDone - triggered');
                     }}
                     onUpdate={({ fsModifications }) => {
-                        console.log('React SDK updated with modifications:\n' + JSON.stringify(fsModifications));
+                        console.log('onUpdate - triggered');
                     }}
                     loadingComponent={
                         <Container className="mt5">

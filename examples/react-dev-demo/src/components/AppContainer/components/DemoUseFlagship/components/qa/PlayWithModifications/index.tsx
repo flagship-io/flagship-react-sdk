@@ -1,8 +1,7 @@
-import React from 'react';
 import { useFlagship } from '@flagship.io/react-sdk';
-import CodeBlock from '../../../../../../common/CodeBlock';
-import { Button, Form, Col } from 'react-bootstrap';
 import { Formik } from 'formik';
+import React from 'react';
+import { Button, Col, Form } from 'react-bootstrap';
 import JSONInput from 'react-json-editor-ajrm';
 import locale from 'react-json-editor-ajrm/locale/en';
 
@@ -20,7 +19,6 @@ const PlayWithModifications: React.FC = () => {
         }
     });
     const output = useFlagship(fsParams);
-    const { modifications: fsModifications } = output;
     return (
         <>
             <Formik

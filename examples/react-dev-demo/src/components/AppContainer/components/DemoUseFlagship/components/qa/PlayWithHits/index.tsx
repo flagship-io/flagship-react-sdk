@@ -72,7 +72,10 @@ const PlayWithHits: React.FC = () => {
         { ...payloads.event },
         { ...payloads.item }
     ]);
-    React.useEffect(() => setHitPayload(payloads[currentTestedHit]), [currentTestedHit]);
+    const update = () => {
+        setHitPayload(payloads[currentTestedHit]);
+    };
+    React.useEffect(update, [currentTestedHit]);
     const { hit: fsHit } = useFlagship();
     return (
         <>

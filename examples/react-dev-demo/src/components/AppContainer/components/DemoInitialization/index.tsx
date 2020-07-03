@@ -1,20 +1,19 @@
-import CodeBlock from '../../../common/CodeBlock';
 import React, { useContext } from 'react';
-import { Alert, Button, Col, Form, Row } from 'react-bootstrap';
+import { Alert, Col, Row } from 'react-bootstrap';
 
-import { AppSettings, SdkSettings, SettingContext } from '../../../../App';
-import config from '../../../../config';
+import { AppSettings, SettingContext } from '../../../../App';
+import CodeBlock from '../../../common/CodeBlock';
+import PlayConfig from './components/normal/PlayConfig';
+import PlayVisitorData from './components/normal/PlayVisitorData';
 import PlayConfigQA from './components/qa/PlayConfig';
 import PlayVisitorDataQA from './components/qa/PlayVisitorData';
-import PlayVisitorData from './components/normal/PlayVisitorData';
-import PlayConfig from './components/normal/PlayConfig';
 
 export const DemoInitialization = () => {
     const name = 'initialization';
-    const { currentSettings: currSettings, setSettings, QA } = useContext(SettingContext) as AppSettings;
-    const [newSettings, setNewSettings] = React.useState<SdkSettings>({
-        ...currSettings
-    });
+    const { currentSettings: currSettings, QA /* setSettings */ } = useContext(SettingContext) as AppSettings;
+    // const [newSettings, setNewSettings] = React.useState<SdkSettings>({
+    //     ...currSettings
+    // });
 
     return (
         <Row>
