@@ -13,11 +13,18 @@ const PlayConfig: React.FC = () => {
 
     const handleEnvId = (e) => setNewSettings({ ...newSettings, envId: e.target.value });
 
-    const handleSettings = (e, key) =>
+    const handleSettings = (e, key) => {
+        const computeValue = () => {
+            if (key === 'pollingInterval') {
+                return parseInt(e.target.value.split(' min')[0]);
+            }
+            return e.target.value;
+        };
         setNewSettings({
             ...newSettings,
-            [key]: e.target.value
+            [key]: computeValue()
         });
+    };
     return (
         <>
             <Form>

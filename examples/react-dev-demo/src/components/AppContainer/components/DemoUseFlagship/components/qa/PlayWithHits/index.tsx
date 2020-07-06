@@ -4,7 +4,7 @@ import { Button, Form, Col, Nav } from 'react-bootstrap';
 import { Formik } from 'formik';
 import JSONInput from 'react-json-editor-ajrm';
 import locale from 'react-json-editor-ajrm/locale/en';
-import flagship from '@flagship.io/js-sdk';
+import { HitShape } from '@flagship.io/js-sdk';
 
 const PlayWithHits: React.FC = () => {
     const defaultTransactionHitPayload = {
@@ -175,7 +175,7 @@ const PlayWithHits: React.FC = () => {
                 onSubmit={(values, { setSubmitting }) => {
                     setSubmitting(false);
                     setHitsPayload([...values.hitsPayload]);
-                    fsHit.sendMultiple([...values.hitsPayload] as flagship.HitShape[]);
+                    fsHit.sendMultiple([...values.hitsPayload] as HitShape[]);
                 }}
             >
                 {({ handleSubmit, handleChange, handleBlur, setFieldValue, values, touched, isValid, errors }) => (
