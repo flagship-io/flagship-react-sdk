@@ -7,7 +7,7 @@ const PlayWithParams: React.FC = () => {
     const fsModifications = useFsModifications([
         {
             key: 'color',
-            defaultValue: '#FF33E3',
+            defaultValue: '#FF33E3', // pink
             activate: false
         }
     ]);
@@ -23,7 +23,7 @@ const PlayWithParams: React.FC = () => {
 const fsModifications = useFsModifications([
     {
         key: 'color',
-        defaultValue: '#FF33E3',
+        defaultValue: '#FF33E3', // pink
         activate: false
     }
 ]);`}
@@ -40,9 +40,8 @@ const fsModifications = useFsModifications([
                 </Button>
             </div>
             <div className="mv3">
-                Based on the campaign that we set on Flagship platform, the
-                color of the button will change depending values set in the{' '}
-                <a href="#playWithVisitorContext">visitor context</a>.
+                Based on the campaign that we set on Flagship platform, the color of the button will change depending
+                values set in the <a href="#playWithVisitorContext">visitor context</a>.
             </div>
             <CodeBlock
                 className="mv3"

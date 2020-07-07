@@ -33,7 +33,7 @@ const fsParams = {
         requested: [
             {
                 key: 'btnColor',
-                defaultValue: 'green',
+                defaultValue: '#FF33E3', // pink
                 activate: false
             }
         ]

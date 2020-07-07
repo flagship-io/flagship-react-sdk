@@ -12,7 +12,7 @@ const PlayWithModifications: React.FC = () => {
             requested: [
                 {
                     key: 'btnColor',
-                    defaultValue: 'green',
+                    defaultValue: '#FF33E3',
                     activate: false
                 }
             ]

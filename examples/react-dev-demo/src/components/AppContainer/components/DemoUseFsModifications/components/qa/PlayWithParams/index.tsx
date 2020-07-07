@@ -10,7 +10,7 @@ const PlayWithParams: React.FC = () => {
     const [fsParams, setFsParams] = React.useState([
         {
             key: 'btnColor',
-            defaultValue: 'green',
+            defaultValue: '#FF33E3', // pink
             activate: false
         }
     ]);
