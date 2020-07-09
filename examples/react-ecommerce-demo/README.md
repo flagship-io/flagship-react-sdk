@@ -12,7 +12,7 @@
 
     <div style='max-width: 400px;'>
 
-    ![demo1](./src/assets/img/demo1.png)
+    ![demo1](./assets/img/demo1.png)
 
     </div>
 
@@ -35,7 +35,7 @@
 
     <div style='max-width: 400px;'>
 
-    ![demo2](./src/assets/img/demo2.png)
+    ![demo2](./assets/img/demo2.png)
 
     </div>
 
@@ -45,7 +45,7 @@
 
     <div style='max-width: 400px;'>
 
-    ![demo4](./src/assets/img/demo4.png)
+    ![demo4](./assets/img/demo4.png)
 
     </div>
 
@@ -53,7 +53,7 @@
 
     <div style='max-width: 400px;'>
 
-    ![demo3](./src/assets/img/demo3.png)
+    ![demo3](./assets/img/demo3.png)
 
     </div>
 
