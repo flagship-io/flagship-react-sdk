@@ -46,8 +46,6 @@ const PlayWithModificationInfo: React.FC = () => {
                 validate={(values) => {
                     const errors: any = {};
 
-                    setError(errors !== {});
-
                     return errors;
                 }}
                 onSubmit={(values, { setSubmitting }) => {
@@ -62,6 +60,8 @@ const PlayWithModificationInfo: React.FC = () => {
                             .catch((e) => {
                                 setFsOutput({ data: { error: e.message }, loading: false });
                             });
+                    } else {
+                        // nothing
                     }
                 }}
             >
