@@ -6,17 +6,23 @@
 
 <h3 align="center">Bring your features to life</h3>
 
+<div style='display: flex; justify-content: space-around;'>
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Apache2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 [![GitHub release](https://img.shields.io/github/v/release/abtasty/flagship-react-sdk.svg)](https://github.com/abtasty/flagship-react-sdk/releases)
 
-**Visit [https://developers.flagship.io/](https://developers.flagship.io/) to get started with Flagship.**
+</div>
 
 ## Docs
+
+**Visit [https://developers.flagship.io/](https://developers.flagship.io/) to get started with Flagship.**
 
 -   [Installation & Getting Started](http://developers.flagship.io/react/v1.x.x/#getting-started)
 -   [Flagship Provider Props](http://developers.flagship.io/react/v1.x.x/#flagshipprovider-props)
@@ -77,6 +83,7 @@ Following demos illustrate how the SDK is used in practice ☕
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## Licence
