@@ -38,6 +38,7 @@ const PlayWithParams: React.FC = () => {
                         <Form.Group as={Col} md="12" controlId="settingsForm">
                             <Form.Label>useFsModifications arguments</Form.Label>
                             <JSONInput
+                                waitAfterKeyPress={3000}
                                 id="fsParams"
                                 placeholder={values.fsParams}
                                 locale={locale}
@@ -76,6 +77,7 @@ const PlayWithParams: React.FC = () => {
             <div className="mv3 b">useFsModifications output:</div>
             <div className="mb3">
                 <JSONInput
+                    waitAfterKeyPress={3000}
                     id="fsOutput"
                     placeholder={output}
                     locale={locale}

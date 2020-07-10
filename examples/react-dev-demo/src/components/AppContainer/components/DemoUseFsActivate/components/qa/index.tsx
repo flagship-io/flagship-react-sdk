@@ -34,6 +34,7 @@ const PlayWithActivateQA: React.FC = () => {
                         <Form.Group as={Col} md="12" controlId="settingsForm">
                             <Form.Label>useFsModifications arguments</Form.Label>
                             <JSONInput
+                                waitAfterKeyPress={3000}
                                 id="modificationToActivate"
                                 placeholder={values.modificationToActivate}
                                 locale={locale}

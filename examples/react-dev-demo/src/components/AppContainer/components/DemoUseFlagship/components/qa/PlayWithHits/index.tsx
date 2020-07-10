@@ -125,6 +125,7 @@ const PlayWithHits: React.FC = () => {
                         <Form.Group as={Col} md="12" controlId="settingsForm">
                             <Form.Label>{currentTestedHit} hit payload</Form.Label>
                             <JSONInput
+                                waitAfterKeyPress={3000}
                                 id="hitPayload"
                                 placeholder={values.hitPayload}
                                 locale={locale}
@@ -183,6 +184,7 @@ const PlayWithHits: React.FC = () => {
                         <Form.Group as={Col} md="12" controlId="settingsForm">
                             <Form.Label>sendMultiple argument</Form.Label>
                             <JSONInput
+                                waitAfterKeyPress={3000}
                                 id="hitsPayload"
                                 placeholder={values.hitsPayload}
                                 locale={locale}

@@ -22,6 +22,7 @@ const PlayWithModificationInfo: React.FC = () => {
             }
             return (
                 <JSONInput
+                    waitAfterKeyPress={3000}
                     id="fsGetModificationOutput"
                     placeholder={fsOutput.data}
                     locale={locale}

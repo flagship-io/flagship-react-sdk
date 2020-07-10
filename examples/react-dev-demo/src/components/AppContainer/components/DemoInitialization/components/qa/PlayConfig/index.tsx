@@ -57,6 +57,7 @@ const PlayConfig: React.FC = () => {
                     <Form.Group as={Col} md="12" controlId="settingsForm">
                         <Form.Label>SDK settings props</Form.Label>
                         <JSONInput
+                            waitAfterKeyPress={3000}
                             id="settings"
                             placeholder={values.settings}
                             locale={locale}
