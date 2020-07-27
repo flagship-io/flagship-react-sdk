@@ -55,7 +55,7 @@
     ],
     "homepage": "https://github.com/abtasty/flagship-react-sdk#readme",
     "dependencies": {
-        "@flagship.io/js-sdk": "^2.0.0",
+        "@flagship.io/js-sdk": "^2.0.1",
         "@flagship.io/js-sdk-logs": "^0.1.1"
     },
     "peerDependencies": {
