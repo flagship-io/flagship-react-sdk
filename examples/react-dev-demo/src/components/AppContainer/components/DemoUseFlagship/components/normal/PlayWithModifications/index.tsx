@@ -31,9 +31,8 @@ const PlayWithModifications: React.FC = () => {
                 </Button>
             </div>
             <div className="mv3">
-                Based on the campaign that we set on Flagship platform, the
-                color of the button will change depending values set in the{' '}
-                <a href="#playWithVisitorContext">visitor context</a>.
+                Based on the campaign that we set on Flagship platform, the color of the button will change depending
+                values set in the <a href="#playWithVisitorContext">visitor context</a>.
             </div>
             <CodeBlock
                 className="mv3"
@@ -43,7 +42,7 @@ const PlayWithModifications: React.FC = () => {
         backgroundColor: fsModifications.color
     }}
 >
-    {\`My color tells my visitor mood (backgroundColor=\${fsModifications.color})\`}
+    {\`I'm a button customized with Flagship (backgroundColor=\${fsModifications.color})\`}
 </Button>`}
             />
         </>

@@ -1,31 +1,18 @@
 import { useFlagship } from '@flagship.io/react-sdk';
 import React, { useContext } from 'react';
-import { Alert, Col, Row, Button, Nav } from 'react-bootstrap';
+import { Alert, Col, Row } from 'react-bootstrap';
+
+import { AppSettings, SettingContext } from '../../../../App';
 import CodeBlock from '../../../common/CodeBlock';
-import { TransactionHit } from '@flagship.io/js-sdk';
 import PlayWithHits from './components/normal/PlayWithHits';
-import PlayWithHitsQA from './components/qa/PlayWithHits';
-import { SettingContext, AppSettings } from '../../../../App';
-import PlayWithModificationsQA from './components/qa/PlayWithModifications';
-import PlayWithModifications from './components/normal/PlayWithModifications';
 import PlayWithModificationInfo from './components/normal/PlayWithModificationInfo';
+import PlayWithModifications from './components/normal/PlayWithModifications';
+import PlayWithHitsQA from './components/qa/PlayWithHits';
 import PlayWithModificationInfoQA from './components/qa/PlayWithModificationInfo';
+import PlayWithModificationsQA from './components/qa/PlayWithModifications';
 
 export const DemoUseFlagship = () => {
-    const fsParams = {
-        modifications: {
-            requested: [
-                {
-                    key: 'btnColor',
-                    defaultValue: 'green',
-                    activate: false
-                }
-            ]
-        }
-    };
-    const output = useFlagship(fsParams);
-    const { modifications: fsModifications } = output;
-    const { status: fsStatus, hit: fsHit } = useFlagship();
+    const { status: fsStatus } = useFlagship();
     const demoHookName = 'useFlagship';
     const { QA } = useContext(SettingContext) as AppSettings;
     return (
@@ -46,7 +33,7 @@ const fsParams = {
         requested: [
             {
                 key: 'btnColor',
-                defaultValue: 'green',
+                defaultValue: '#FF33E3', // pink
                 activate: false
             }
         ]

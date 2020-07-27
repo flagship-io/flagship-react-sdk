@@ -1,20 +1,19 @@
-import CodeBlock from '../../../common/CodeBlock';
 import React, { useContext } from 'react';
-import { Alert, Button, Col, Form, Row } from 'react-bootstrap';
+import { Alert, Col, Row } from 'react-bootstrap';
 
-import { AppSettings, SdkSettings, SettingContext } from '../../../../App';
-import config from '../../../../config';
+import { AppSettings, SettingContext } from '../../../../App';
+import CodeBlock from '../../../common/CodeBlock';
+import PlayConfig from './components/normal/PlayConfig';
+import PlayVisitorData from './components/normal/PlayVisitorData';
 import PlayConfigQA from './components/qa/PlayConfig';
 import PlayVisitorDataQA from './components/qa/PlayVisitorData';
-import PlayVisitorData from './components/normal/PlayVisitorData';
-import PlayConfig from './components/normal/PlayConfig';
 
 export const DemoInitialization = () => {
     const name = 'initialization';
-    const { currentSettings: currSettings, setSettings, QA } = useContext(SettingContext) as AppSettings;
-    const [newSettings, setNewSettings] = React.useState<SdkSettings>({
-        ...currSettings
-    });
+    const { currentSettings: currSettings, QA /* setSettings */ } = useContext(SettingContext) as AppSettings;
+    // const [newSettings, setNewSettings] = React.useState<SdkSettings>({
+    //     ...currSettings
+    // });
 
     return (
         <Row>
@@ -40,6 +39,10 @@ const App: React.FC = () => (
       enableConsoleLogs={${
           typeof currSettings.enableConsoleLogs === 'undefined' ? 'false' : currSettings.enableConsoleLogs.toString()
       }}
+      decisionMode="${typeof currSettings.decisionMode === 'undefined' ? 'API' : currSettings.decisionMode.toString()}"
+      pollingInterval={${
+          typeof currSettings.pollingInterval === 'undefined' ? 'undefined' : currSettings.pollingInterval.toString()
+      }} // minute(s)
       enableErrorLayout={${
           typeof currSettings.enableErrorLayout === 'undefined' ? 'false' : currSettings.enableErrorLayout.toString()
       }}
@@ -79,7 +82,7 @@ const App: React.FC = () => (
                             paddingBottom: '8px'
                         }}
                     >
-                        1 - Playing with <i>config</i>
+                        1 - Playing with <i>sdk settings</i>
                     </h3>
                     {QA.enabled ? <PlayConfigQA></PlayConfigQA> : <PlayConfig></PlayConfig>}
                     <h3

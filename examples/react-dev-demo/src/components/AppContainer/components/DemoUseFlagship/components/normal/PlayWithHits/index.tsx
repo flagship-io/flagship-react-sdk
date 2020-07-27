@@ -1,16 +1,11 @@
 import React from 'react';
 import { Button, Nav } from 'react-bootstrap';
 import CodeBlock from '../../../../../../common/CodeBlock';
-import {
-    TransactionHit,
-    ScreenHit,
-    ItemHit,
-    EventHit
-} from '@flagship.io/js-sdk';
+import { TransactionHit, ScreenHit, ItemHit, EventHit } from '@flagship.io/js-sdk';
 import { useFlagship } from '@flagship.io/react-sdk';
 
 const PlayWithHits: React.FC = () => {
-    const { status: fsStatus, hit: fsHit } = useFlagship();
+    const { hit: fsHit } = useFlagship();
     const multipleHitBundle = {
         multipleCodeString: `<Button
     onClick={() => {
@@ -66,8 +61,7 @@ const PlayWithHits: React.FC = () => {
                             paymentMethod: 'myPaymentMethod',
                             itemCount: 2,
                             couponCode: 'myCOUPON',
-                            documentLocation:
-                                'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
+                            documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
                             pageTitle: 'myScreen'
                         }
                     } as {
@@ -81,8 +75,7 @@ const PlayWithHits: React.FC = () => {
                             action: 'signOff',
                             label: 'yolo label ;)',
                             value: 123,
-                            documentLocation:
-                                'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
+                            documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
                             pageTitle: 'YoloTitle'
                         }
                     } as {
@@ -139,8 +132,7 @@ const PlayWithHits: React.FC = () => {
                             paymentMethod: 'myPaymentMethod',
                             itemCount: 2,
                             couponCode: 'myCOUPON',
-                            documentLocation:
-                                'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
+                            documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
                             pageTitle: 'myScreen'
                         }
                     } as {
@@ -176,8 +168,7 @@ const PlayWithHits: React.FC = () => {
                     const mockHit = {
                         type: 'Screen',
                         data: {
-                            documentLocation:
-                                'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
+                            documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
                             pageTitle: 'YoloScreen'
                         }
                     } as {
@@ -225,8 +216,7 @@ const PlayWithHits: React.FC = () => {
                             code: 'yoloCode',
                             category: 'yoloCategory',
                             quantity: 1234444,
-                            documentLocation:
-                                'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
+                            documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
                             pageTitle: 'YoloScreen'
                         }
                     } as {
@@ -272,8 +262,7 @@ const PlayWithHits: React.FC = () => {
                             action: 'signOff',
                             label: 'yolo label ;)',
                             value: 123,
-                            documentLocation:
-                                'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
+                            documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
                             pageTitle: 'YoloTitle'
                         }
                     } as {
@@ -294,9 +283,8 @@ const PlayWithHits: React.FC = () => {
     return (
         <>
             <div className="mb3">
-                If you're not familiar with the payload that you should a
-                provide to the hit you want to send, you'll have all details
-                available in the{' '}
+                If you're not familiar with the payload that you should a provide to the hit you want to send, you'll
+                have all details available in the{' '}
                 <a href="https://github.com/abtasty/flagship-react-sdk#shape-of-possible-hits-to-send">
                     SDK Hit documentation
                 </a>
@@ -305,8 +293,8 @@ const PlayWithHits: React.FC = () => {
             <div>
                 <b>NOTE:</b>
                 <p>
-                    It is not necessary to provide parameters to{' '}
-                    <i>useFlagship</i> if your purpose is only to send hits.
+                    It is not necessary to provide parameters to <i>useFlagship</i> if your purpose is only to send
+                    hits.
                 </p>
                 <CodeBlock
                     className="mv3"
@@ -317,48 +305,30 @@ const { hit: fsHit } = useFlagship();`}
             <p>Send a hit, demo: </p>
             <Nav variant="tabs" defaultActiveKey="hitTransaction">
                 <Nav.Item>
-                    <Nav.Link
-                        eventKey="hitTransaction"
-                        onClick={() => setHitToTest(transactionHitBundle)}
-                    >
+                    <Nav.Link eventKey="hitTransaction" onClick={() => setHitToTest(transactionHitBundle)}>
                         Transaction Hit
                     </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                    <Nav.Link
-                        eventKey="hitScreen"
-                        onClick={() => setHitToTest(screenHitBundle)}
-                    >
+                    <Nav.Link eventKey="hitScreen" onClick={() => setHitToTest(screenHitBundle)}>
                         Screen Hit
                     </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                    <Nav.Link
-                        eventKey="hitEvent"
-                        onClick={() => setHitToTest(eventHitBundle)}
-                    >
+                    <Nav.Link eventKey="hitEvent" onClick={() => setHitToTest(eventHitBundle)}>
                         Event Hit
                     </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                    <Nav.Link
-                        eventKey="hitItem"
-                        onClick={() => setHitToTest(itemHitBundle)}
-                    >
+                    <Nav.Link eventKey="hitItem" onClick={() => setHitToTest(itemHitBundle)}>
                         Item Hit
                     </Nav.Link>
                 </Nav.Item>
             </Nav>
-            <CodeBlock
-                className="mv3"
-                codeString={currentTestedHit.simpleCodeString}
-            />
+            <CodeBlock className="mv3" codeString={currentTestedHit.simpleCodeString} />
             <div>{currentTestedHit.simpleComponent}</div>
             <div className="mt3">Send multiple mixed hit, demo: </div>
-            <CodeBlock
-                className="mv3"
-                codeString={multipleHitBundle.multipleCodeString}
-            />
+            <CodeBlock className="mv3" codeString={multipleHitBundle.multipleCodeString} />
             <div>{multipleHitBundle.multipleComponent}</div>
         </>
     );

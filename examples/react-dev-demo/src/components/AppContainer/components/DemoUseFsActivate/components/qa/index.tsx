@@ -1,18 +1,14 @@
-import React from 'react';
-import { useFsModifications, useFsActivate } from '@flagship.io/react-sdk';
-import { Button, Form, Col } from 'react-bootstrap';
+import { useFsActivate } from '@flagship.io/react-sdk';
 import { Formik } from 'formik';
+import React from 'react';
+import { Button, Col, Form } from 'react-bootstrap';
 import JSONInput from 'react-json-editor-ajrm';
 import locale from 'react-json-editor-ajrm/locale/en';
 
 const PlayWithActivateQA: React.FC = () => {
     const [hasError, setError] = React.useState(false);
     const [toggle, setToggle] = React.useState(false);
-    const [modificationToActivate, setModificationToActivate] = React.useState([
-        'btnColor',
-        'otherKey1',
-        'otherKey2'
-    ]);
+    const [modificationToActivate, setModificationToActivate] = React.useState(['btnColor', 'otherKey1', 'otherKey2']);
     useFsActivate(modificationToActivate, [toggle]);
     return (
         <>
@@ -29,28 +25,16 @@ const PlayWithActivateQA: React.FC = () => {
                 }}
                 onSubmit={(values, { setSubmitting }) => {
                     setSubmitting(false);
-                    setModificationToActivate([
-                        ...values.modificationToActivate
-                    ]);
+                    setModificationToActivate([...values.modificationToActivate]);
                     setToggle(!toggle);
                 }}
             >
-                {({
-                    handleSubmit,
-                    handleChange,
-                    handleBlur,
-                    setFieldValue,
-                    values,
-                    touched,
-                    isValid,
-                    errors
-                }) => (
+                {({ handleSubmit, handleChange, handleBlur, setFieldValue, values, touched, isValid, errors }) => (
                     <Form noValidate onSubmit={handleSubmit}>
                         <Form.Group as={Col} md="12" controlId="settingsForm">
-                            <Form.Label>
-                                useFsModifications arguments
-                            </Form.Label>
+                            <Form.Label>useFsModifications arguments</Form.Label>
                             <JSONInput
+                                waitAfterKeyPress={3000}
                                 id="modificationToActivate"
                                 placeholder={values.modificationToActivate}
                                 locale={locale}
@@ -58,11 +42,7 @@ const PlayWithActivateQA: React.FC = () => {
                                 width="100%"
                                 onChange={({ error, jsObject }) => {
                                     if (!error) {
-                                        setFieldValue(
-                                            'modificationToActivate',
-                                            jsObject || {},
-                                            true
-                                        );
+                                        setFieldValue('modificationToActivate', jsObject || {}, true);
                                         setError(false);
                                     } else {
                                         setError(true);

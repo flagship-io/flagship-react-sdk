@@ -1,8 +1,7 @@
-import React from 'react';
-import CodeBlock from '../../../../../../common/CodeBlock';
 import { useFsModifications } from '@flagship.io/react-sdk';
-import { Button, Form, Col } from 'react-bootstrap';
 import { Formik } from 'formik';
+import React from 'react';
+import { Button, Col, Form } from 'react-bootstrap';
 import JSONInput from 'react-json-editor-ajrm';
 import locale from 'react-json-editor-ajrm/locale/en';
 
@@ -11,7 +10,7 @@ const PlayWithParams: React.FC = () => {
     const [fsParams, setFsParams] = React.useState([
         {
             key: 'btnColor',
-            defaultValue: 'green',
+            defaultValue: '#FF33E3', // pink
             activate: false
         }
     ]);
@@ -34,22 +33,12 @@ const PlayWithParams: React.FC = () => {
                     setFsParams([...values.fsParams]);
                 }}
             >
-                {({
-                    handleSubmit,
-                    handleChange,
-                    handleBlur,
-                    setFieldValue,
-                    values,
-                    touched,
-                    isValid,
-                    errors
-                }) => (
+                {({ handleSubmit, handleChange, handleBlur, setFieldValue, values, touched, isValid, errors }) => (
                     <Form noValidate onSubmit={handleSubmit}>
                         <Form.Group as={Col} md="12" controlId="settingsForm">
-                            <Form.Label>
-                                useFsModifications arguments
-                            </Form.Label>
+                            <Form.Label>useFsModifications arguments</Form.Label>
                             <JSONInput
+                                waitAfterKeyPress={3000}
                                 id="fsParams"
                                 placeholder={values.fsParams}
                                 locale={locale}
@@ -57,11 +46,7 @@ const PlayWithParams: React.FC = () => {
                                 width="100%"
                                 onChange={({ error, jsObject }) => {
                                     if (!error) {
-                                        setFieldValue(
-                                            'fsParams',
-                                            jsObject || {},
-                                            true
-                                        );
+                                        setFieldValue('fsParams', jsObject || {}, true);
                                         setError(false);
                                     } else {
                                         setError(true);
@@ -92,6 +77,7 @@ const PlayWithParams: React.FC = () => {
             <div className="mv3 b">useFsModifications output:</div>
             <div className="mb3">
                 <JSONInput
+                    waitAfterKeyPress={3000}
                     id="fsOutput"
                     placeholder={output}
                     locale={locale}

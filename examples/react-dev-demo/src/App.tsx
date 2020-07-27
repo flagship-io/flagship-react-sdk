@@ -15,6 +15,8 @@ export interface SdkSettings {
     envId: string;
     fetchNow?: boolean;
     activateNow?: boolean;
+    decisionMode?: 'API' | 'Bucketing';
+    pollingInterval?: number;
     enableConsoleLogs?: boolean;
     enableErrorLayout?: boolean;
     enableSafeMode?: boolean;
@@ -46,6 +48,8 @@ const App: React.FC = () => {
     const [currentSettings, setSettings] = React.useState<SdkSettings>({
         envId: config.envId,
         fetchNow: config.fetchNow,
+        decisionMode: config.decisionMode as 'API',
+        pollingInterval: config.pollingInterval,
         enableConsoleLogs: config.enableConsoleLogs,
         enableErrorLayout: config.enableErrorLayout,
         nodeEnv: 'production',
@@ -65,17 +69,19 @@ const App: React.FC = () => {
                     fetchNow={currentSettings.fetchNow}
                     enableConsoleLogs={currentSettings.enableConsoleLogs}
                     enableErrorLayout={currentSettings.enableErrorLayout}
+                    decisionMode={currentSettings.decisionMode}
+                    pollingInterval={currentSettings.pollingInterval}
                     enableSafeMode={true}
                     nodeEnv={currentSettings.nodeEnv}
                     visitorData={currentSettings.visitorData}
                     onInitStart={() => {
-                        console.log('React SDK init start');
+                        console.log('onInitStart - triggered');
                     }}
                     onInitDone={() => {
-                        console.log('React SDK init done');
+                        console.log('onInitDone - triggered');
                     }}
                     onUpdate={({ fsModifications }) => {
-                        console.log('React SDK updated with modifications:\n' + JSON.stringify(fsModifications));
+                        console.log('onUpdate - triggered');
                     }}
                     loadingComponent={
                         <Container className="mt5">

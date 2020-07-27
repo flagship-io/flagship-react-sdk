@@ -1,21 +1,21 @@
 {
-  "compilerOptions": {
-    "outDir": "dist",
-    "module": "commonjs",
-    "target": "es5",
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "removeComments": true,
-    "declaration": true,
-    "esModuleInterop": true,
-    "sourceMap": true,
-    "jsx": "react",
-    "lib": ["es6", "dom", "es2016", "es2017"],
-    "typeRoots": ["index.d.ts", "node_modules/@types"]
-  },
-  "include": ["./src/**/*.tsx", "./src/**/*.ts"],
-  "exclude": ["node_modules", "**/*.test.ts", "dist"]
-  // "awesomeTypescriptLoaderOptions": {
-  //     "silent": true,
-  // }
+    "compilerOptions": {
+        "outDir": "dist",
+        "module": "commonjs",
+        "target": "es5",
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "removeComments": true,
+        "declaration": true,
+        "esModuleInterop": true,
+        "sourceMap": true,
+        "jsx": "react",
+        "lib": ["es6", "dom", "es2016", "es2017"],
+        "typeRoots": ["index.d.ts", "node_modules/@types"]
+    },
+    "include": ["./src/**/*.tsx", "./src/**/*.ts"],
+    "exclude": ["node_modules", "dist", "examples", "**/*.test.ts", "**/*.test.tsx", "dist"]
+    // "awesomeTypescriptLoaderOptions": {
+    //     "silent": true,
+    // }
 }

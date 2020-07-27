@@ -12,7 +12,7 @@ export const DemoErrorBoundary = () => {
         setTriggerError(false);
     }, [triggerError]);
 
-    const { currentSettings, setSettings, QA } = useContext(SettingContext) as AppSettings;
+    const { currentSettings /*, setSettings, QA */ } = useContext(SettingContext) as AppSettings;
     return (
         <Row>
             <Col>

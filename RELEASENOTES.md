@@ -1,5 +1,17 @@
 # Flagship REACT SDK - Release notes
 
+## ➡️ Version 1.3.0
+
+### Breaking changes ⚠️
+
+-   `config` prop is not supported anymore.
+
+### New features 🎉
+
+-   Now supports Bucketing behavior:
+    -   `decisionMode` prop added, value is either "API" or "Bucketing".
+    -   `pollingInterval` prop added, value is a number. Must be specified when `decisionMode=Bucketing`.
+
 ## ➡️ Version 1.2.2
 
 ### Bug fixes 🐛
