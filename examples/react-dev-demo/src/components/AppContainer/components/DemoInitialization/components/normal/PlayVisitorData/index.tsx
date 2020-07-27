@@ -1,19 +1,11 @@
 import React, { useContext } from 'react';
-import { Formik } from 'formik';
-import { Form, Button, Col } from 'react-bootstrap';
-import {
-    SettingContext,
-    AppSettings,
-    SdkSettings
-} from '../../../../../../../App';
-import JSONInput from 'react-json-editor-ajrm';
-import locale from 'react-json-editor-ajrm/locale/en';
+import { Button, Form } from 'react-bootstrap';
+
+import { AppSettings, SdkSettings, SettingContext } from '../../../../../../../App';
 import config from '../../../../../../../config';
 
 const PlayVisitorData: React.FC = () => {
-    const { currentSettings: currSettings, setSettings } = useContext(
-        SettingContext
-    ) as AppSettings;
+    const { currentSettings: currSettings, setSettings } = useContext(SettingContext) as AppSettings;
 
     const [newSettings, setNewSettings] = React.useState<SdkSettings>({
         ...currSettings
@@ -48,22 +40,15 @@ const PlayVisitorData: React.FC = () => {
                 ...newSettings,
                 visitorData: {
                     ...newSettings.visitorData,
-                    context: Object.entries(temp.visitorData.context).reduce(
-                        (reducer, [key, value]) => {
-                            if (key === keyToRemove) {
-                                if (
-                                    Object.keys(
-                                        config.visitorData.context
-                                    ).includes(keyToRemove)
-                                ) {
-                                    return { ...reducer, [key]: false };
-                                }
-                                return reducer;
+                    context: Object.entries(temp.visitorData.context).reduce((reducer, [key, value]) => {
+                        if (key === keyToRemove) {
+                            if (Object.keys(config.visitorData.context).includes(keyToRemove)) {
+                                return { ...reducer, [key]: false };
                             }
-                            return { ...reducer, [key]: value };
-                        },
-                        {}
-                    )
+                            return reducer;
+                        }
+                        return { ...reducer, [key]: value };
+                    }, {})
                 }
             });
         }
@@ -81,11 +66,9 @@ const PlayVisitorData: React.FC = () => {
                 >
                     <div>visitorId: </div>
                     <Form.Control as="select" onChange={handleVisitorId}>
-                        <option key={currSettings.visitorData.id}>
-                            {currSettings.visitorData.id}
-                        </option>
+                        <option key={currSettings.visitorData.id}>{currSettings.visitorData.id}</option>
                         {config.sandbox.visitorId
-                            .filter((i) => i != currSettings.visitorData.id)
+                            .filter((i) => i !== currSettings.visitorData.id)
                             .map((id) => (
                                 <option key={id}>{id}</option>
                             ))}
@@ -102,13 +85,7 @@ const PlayVisitorData: React.FC = () => {
                             key={key}
                             type="checkbox"
                             id={`default-${key}`}
-                            checked={
-                                newSettings.visitorData.context.hasOwnProperty(
-                                    key
-                                )
-                                    ? !!value
-                                    : false
-                            }
+                            checked={newSettings.visitorData.context.hasOwnProperty(key) ? !!value : false}
                             onChange={handleVisitorContext}
                             label={JSON.stringify({ [key]: value })}
                         />
@@ -121,10 +98,7 @@ const PlayVisitorData: React.FC = () => {
                     justifyContent: 'flex-end'
                 }}
             >
-                <Button
-                    variant="secondary"
-                    onClick={() => setSettings({ ...newSettings })}
-                >
+                <Button variant="secondary" onClick={() => setSettings({ ...newSettings })}>
                     Apply change
                 </Button>
             </div>

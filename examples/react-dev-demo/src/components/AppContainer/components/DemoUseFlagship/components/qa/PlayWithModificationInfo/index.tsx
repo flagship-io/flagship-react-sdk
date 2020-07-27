@@ -1,8 +1,7 @@
-import React from 'react';
 import { useFlagship } from '@flagship.io/react-sdk';
-import CodeBlock from '../../../../../../common/CodeBlock';
-import { Button, Form, Col } from 'react-bootstrap';
 import { Formik } from 'formik';
+import React from 'react';
+import { Button, Col, Form } from 'react-bootstrap';
 import JSONInput from 'react-json-editor-ajrm';
 import locale from 'react-json-editor-ajrm/locale/en';
 
@@ -23,6 +22,7 @@ const PlayWithModificationInfo: React.FC = () => {
             }
             return (
                 <JSONInput
+                    waitAfterKeyPress={3000}
                     id="fsGetModificationOutput"
                     placeholder={fsOutput.data}
                     locale={locale}
@@ -61,6 +61,8 @@ const PlayWithModificationInfo: React.FC = () => {
                             .catch((e) => {
                                 setFsOutput({ data: { error: e.message }, loading: false });
                             });
+                    } else {
+                        // nothing
                     }
                 }}
             >

@@ -66,10 +66,9 @@ interface FlagshipProviderProps {
     reactNative?: {
         handleErrorDisplay: HandleErrorBoundaryDisplay;
     };
-    // config V1 - DEPRECATED
-    config?: FlagshipReactSdkConfig;
-    // config V2 - begin
     fetchNow?: boolean;
+    decisionMode?: 'API' | 'Bucketing';
+    pollingInterval?: number;
     activateNow?: boolean;
     enableConsoleLogs?: boolean;
     enableErrorLayout?: boolean;
@@ -77,7 +76,6 @@ interface FlagshipProviderProps {
     nodeEnv?: string;
     flagshipApi?: string;
     apiKey?: string;
-    // config V2 - end
     initialModifications?: DecisionApiCampaign[];
     onInitStart?(): void;
     onInitDone?(): void;
@@ -102,9 +100,6 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     onInitStart,
     onInitDone,
     onUpdate,
-    // config V1 [deprecated]
-    config,
-    // config V2
     fetchNow,
     activateNow,
     enableConsoleLogs,
@@ -112,13 +107,16 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     enableSafeMode,
     nodeEnv,
     flagshipApi,
-    apiKey
+    apiKey,
+    decisionMode,
+    pollingInterval
 }: FlagshipProviderProps) => {
     const { id, context } = visitorData;
     const extractConfiguration = (): FlagshipReactSdkConfig => {
-        const configDeprecated = config; // V1
         const configV2: FlagshipReactSdkConfig = {
             fetchNow: fetchNow || false,
+            decisionMode: decisionMode || 'API',
+            pollingInterval: pollingInterval || null,
             activateNow: activateNow || false,
             enableConsoleLogs: enableConsoleLogs || false,
             enableErrorLayout: enableErrorLayout || false,
@@ -127,12 +125,6 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             flagshipApi,
             apiKey
         };
-        if (configDeprecated) {
-            return {
-                ...configV2,
-                ...configDeprecated
-            };
-        }
         return configV2;
     };
     const configuration = extractConfiguration();
@@ -262,10 +254,11 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 };
 
 FlagshipProvider.defaultProps = {
-    config: undefined,
     loadingComponent: undefined,
     fetchNow: false,
     activateNow: false,
+    decisionMode: 'API',
+    pollingInterval: undefined,
     enableConsoleLogs: false,
     enableErrorLayout: false,
     enableSafeMode: false,

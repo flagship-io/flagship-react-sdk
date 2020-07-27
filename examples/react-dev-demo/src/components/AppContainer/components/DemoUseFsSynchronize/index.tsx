@@ -1,8 +1,6 @@
-import { useFsSynchronize } from '@flagship.io/react-sdk';
 import React from 'react';
-import { Alert, Col, Form, Row } from 'react-bootstrap';
+import { Alert, Col, Row } from 'react-bootstrap';
 
-import CodeBlock from '../../../common/CodeBlock';
 import PlayWithSynchronize from './components/normal';
 
 export const DemoUseFsSynchronize: React.FC = () => {

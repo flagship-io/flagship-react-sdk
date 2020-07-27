@@ -4,7 +4,6 @@ import { Form } from 'react-bootstrap';
 import { useFsSynchronize } from '@flagship.io/react-sdk';
 
 const PlayWithSynchronize: React.FC = () => {
-    const demoHookName = 'useFsSynchronize';
     const [listenedValue, setValue] = React.useState(false);
     const [activateAllModifications, setActivate] = React.useState(false);
     useFsSynchronize([listenedValue], activateAllModifications);
@@ -15,13 +14,11 @@ const PlayWithSynchronize: React.FC = () => {
                 codeString={`useFsSynchronize([listenedValue], activateAllModifications);`}
             ></CodeBlock>
             <div>
-                When <b>listenedValue</b> value changed, it will update
-                modifications in cache (=synchronization).
+                When <b>listenedValue</b> value changed, it will update modifications in cache (=synchronization).
             </div>
             <div className="mb3">
-                You can also notice that enabling{' '}
-                <b>activateAllModifications</b> to true will modify the payload
-                sent to the Flagship API and thus trigger an activate.
+                You can also notice that enabling <b>activateAllModifications</b> to true will modify the payload sent
+                to the Flagship API and thus trigger an activate.
             </div>
             <Form>
                 <Form.Group controlId="demoFsSynchronize.ControlSelect1">
