@@ -1,4 +1,8 @@
-![Flagship logo](../../src/assets/img/flagshipLogo.jpg)
+<p align="center">
+
+<img  src="https://mk0abtastybwtpirqi5t.kinstacdn.com/wp-content/uploads/picture-solutions-persona-product-flagship.jpg"  width="211"  height="182"  alt="flagship-js-sdk"  />
+
+</p>
 
 # Sample of React app illustrating ecommerce website using [Flagship - React SDK](../../README.md)
 
