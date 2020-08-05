@@ -137,7 +137,7 @@ export declare type UseFlagshipParams = {
 };
 export declare type UseFlagshipOutput = {
     modifications: GetModificationsOutput;
-    getModificationInfo: null | ((key: string) => Promise<null | GetModificationInfoOutput>);
+    getModificationInfo: (key: string) => Promise<null | GetModificationInfoOutput>;
     status: FsStatus;
     hit: {
         send(hit: HitShape): void;
@@ -162,7 +162,7 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
         return {
             modifications: safeMode_getCacheModifications(modificationsRequested, activateAllModifications),
             status,
-            getModificationInfo: null,
+            getModificationInfo: (): Promise<null> => new Promise((resolve) => resolve(null)),
             hit: {
                 send: (): void => {
                     safeModeLog(log, 'send hit');
@@ -196,11 +196,11 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
     sendMultiple.bind(fsVisitor);
     return {
         modifications: getCacheModifications(fsVisitor, modificationsRequested, activateAllModifications, log),
-        getModificationInfo:
-            fsVisitor !== null
-                ? (key: string): Promise<GetModificationInfoOutput | null> =>
-                      (fsVisitor as IFlagshipVisitor).getModificationInfo(key)
-                : null,
+        getModificationInfo: (key: string): Promise<GetModificationInfoOutput | null> => {
+            return fsVisitor !== null
+                ? (fsVisitor as IFlagshipVisitor).getModificationInfo(key)
+                : new Promise((resolve) => resolve(null));
+        },
         status,
         hit: {
             send,

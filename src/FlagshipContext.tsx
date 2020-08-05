@@ -149,6 +149,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         try {
             callback();
         } catch (error) {
+            state.log.fatal(`error: ${error.stack}`);
             setError({ error, hasError: true });
         }
     };
@@ -235,6 +236,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     };
 
     const handleError = (error: Error): void => {
+        state.log.fatal(`error: ${error.stack}`);
         setError({ error, hasError: !!error });
     };
     return (
