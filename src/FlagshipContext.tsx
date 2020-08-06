@@ -5,7 +5,8 @@ import flagship, {
     FlagshipVisitorContext,
     IFlagshipVisitor,
     SaveCacheArgs,
-    DecisionApiCampaign
+    DecisionApiCampaign,
+    BucketingApiResponse
 } from '@flagship.io/js-sdk';
 import { FsLogger } from '@flagship.io/js-sdk-logs';
 import loggerHelper from './lib/loggerHelper';
@@ -49,6 +50,8 @@ export const initState: FsState = {
     }
 };
 
+export type BucketingSuccessArgs = { status: string; payload: BucketingApiResponse };
+
 const FlagshipContext = React.createContext<{
     hasError: boolean;
     state: FsState;
@@ -79,6 +82,8 @@ interface FlagshipProviderProps {
     initialModifications?: DecisionApiCampaign[];
     onInitStart?(): void;
     onInitDone?(): void;
+    onBucketingSuccess?(data: BucketingSuccessArgs): void;
+    onBucketingFail?(error: Error): void;
     onSavingModificationsInCache?(args: SaveCacheArgs): void;
     onUpdate?(
         sdkData: {
@@ -99,6 +104,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     onSavingModificationsInCache,
     onInitStart,
     onInitDone,
+    onBucketingSuccess,
+    onBucketingFail,
     onUpdate,
     fetchNow,
     activateNow,
@@ -174,6 +181,16 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     // Call FlagShip any time context get changed.
     useEffect(() => {
         const fsSdk = flagship.start(envId, computedConfig);
+        fsSdk.eventEmitter.on('bucketPollingSuccess', ({ status, payload }: BucketingSuccessArgs) => {
+            if (onBucketingSuccess) {
+                onBucketingSuccess({ status, payload });
+            }
+        });
+        fsSdk.eventEmitter.on('bucketPollingFailed', (error: Error) => {
+            if (onBucketingFail) {
+                onBucketingFail(error);
+            }
+        });
         const visitorInstance = fsSdk.newVisitor(id, context as FlagshipVisitorContext);
         setState({
             ...state,
