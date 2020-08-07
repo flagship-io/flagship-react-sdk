@@ -53,6 +53,32 @@ examples/react-dev-demo$ npm start
         rm -fr ./node_modules/react && npm start
         ```
 
+## QA
+
+1. Unzip the file `.zip` file
+
+2. Open a terminal, and go to the path where you unzipped. (We'll assume, you unzipped in `Downloads` folder)
+
+3. Now follow this path by running :
+
+    ```
+    cd NAME_OF_THE_UNZIPPED_FOLDER/examples/react-dev-demo
+    ```
+
+4. Run :
+
+    ```
+    npm install
+    ```
+
+5. Run :
+
+    ```
+    npm start
+    ```
+
+6. The QA app is now running locally on your computer, you're ready !
+
 ## More about Flagship REACT SDK ?
 
 [👉Click here 😎](../../README.md)
