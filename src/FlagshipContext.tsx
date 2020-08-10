@@ -80,6 +80,7 @@ interface FlagshipProviderProps {
     flagshipApi?: string;
     apiKey?: string;
     initialModifications?: DecisionApiCampaign[];
+    initialBucketing?: BucketingApiResponse;
     onInitStart?(): void;
     onInitDone?(): void;
     onBucketingSuccess?(data: BucketingSuccessArgs): void;
@@ -101,6 +102,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     visitorData,
     loadingComponent,
     initialModifications,
+    initialBucketing,
     onSavingModificationsInCache,
     onInitStart,
     onInitDone,
@@ -129,6 +131,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             enableErrorLayout: enableErrorLayout || false,
             enableSafeMode: enableSafeMode || false,
             nodeEnv: nodeEnv || 'production',
+            initialBucketing: initialBucketing || null,
             flagshipApi,
             apiKey
         };
