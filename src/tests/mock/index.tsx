@@ -14,9 +14,7 @@ export const defaultConfig: FlagshipSdkConfig = {
     // Nothing
 };
 
-export const DefaultLoadingComponent: React.SFC = () => (
-    <div>Loading Flagship React SDK</div>
-);
+export const DefaultLoadingComponent: React.SFC = () => <div>Loading Flagship React SDK</div>;
 
 export const defaultContext: {
     hasError: boolean;
@@ -24,6 +22,7 @@ export const defaultContext: {
 } = {
     hasError: false,
     state: {
+        fsSdk: null,
         fsVisitor: null,
         log: null,
         fsModifications: null,

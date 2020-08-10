@@ -135,9 +135,12 @@ export declare type UseFlagshipParams = {
         activateAll?: boolean;
     };
 };
+
 export declare type UseFlagshipOutput = {
     modifications: GetModificationsOutput;
     getModificationInfo: (key: string) => Promise<null | GetModificationInfoOutput>;
+    startBucketingPolling(): void;
+    stopBucketingPolling(): void;
     status: FsStatus;
     hit: {
         send(hit: HitShape): void;
@@ -156,13 +159,19 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
     } = computedOptions;
     const {
         hasError,
-        state: { fsVisitor, status, log }
+        state: { fsSdk, fsVisitor, status, log }
     } = useContext(FlagshipContext);
     if (hasError) {
         return {
             modifications: safeMode_getCacheModifications(modificationsRequested, activateAllModifications),
             status,
             getModificationInfo: (): Promise<null> => new Promise((resolve) => resolve(null)),
+            startBucketingPolling: (): void => {
+                safeModeLog(log, 'send startBucketingPolling');
+            },
+            stopBucketingPolling: (): void => {
+                safeModeLog(log, 'send startBucketingPolling');
+            },
             hit: {
                 send: (): void => {
                     safeModeLog(log, 'send hit');
@@ -200,6 +209,20 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
             return fsVisitor !== null
                 ? (fsVisitor as IFlagshipVisitor).getModificationInfo(key)
                 : new Promise((resolve) => resolve(null));
+        },
+        startBucketingPolling: (): void => {
+            if (fsSdk) {
+                fsSdk.startBucketingPolling();
+            } else if (log) {
+                log.error('startBucketingPolling not ready yet.');
+            }
+        },
+        stopBucketingPolling: (): void => {
+            if (fsSdk) {
+                fsSdk.stopBucketingPolling();
+            } else if (log) {
+                log.error('stopBucketingPolling not ready yet.');
+            }
         },
         status,
         hit: {

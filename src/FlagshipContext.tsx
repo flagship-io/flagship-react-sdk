@@ -6,7 +6,8 @@ import flagship, {
     IFlagshipVisitor,
     SaveCacheArgs,
     DecisionApiCampaign,
-    BucketingApiResponse
+    BucketingApiResponse,
+    IFlagship
 } from '@flagship.io/js-sdk';
 import { FsLogger } from '@flagship.io/js-sdk-logs';
 import loggerHelper from './lib/loggerHelper';
@@ -21,6 +22,7 @@ export declare type FsStatus = {
 };
 
 export declare type FsState = {
+    fsSdk: IFlagship | null;
     fsVisitor: IFlagshipVisitor | null;
     fsModifications: DecisionApiCampaign[] | null;
     status: FsStatus;
@@ -36,6 +38,7 @@ export interface FlagshipReactSdkConfig extends FlagshipSdkConfig {
 }
 
 export const initState: FsState = {
+    fsSdk: null,
     fsVisitor: null,
     log: null,
     fsModifications: null,
@@ -183,6 +186,14 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 
     // Call FlagShip any time context get changed.
     useEffect(() => {
+        if (
+            state.fsSdk &&
+            state.fsSdk.config.decisionMode !== computedConfig.decisionMode &&
+            state.fsSdk.config.decisionMode === 'Bucketing'
+        ) {
+            state.fsSdk.stopBucketingPolling(); // force bucketing to stop
+            state.log.debug('bucketing automatically stopped because the decision mode has changed');
+        }
         const fsSdk = flagship.start(envId, computedConfig);
         fsSdk.eventEmitter.on('bucketPollingSuccess', ({ status, payload }: BucketingSuccessArgs) => {
             if (onBucketingSuccess) {
@@ -201,8 +212,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 ...state.status,
                 isLoading: true
             },
-            fsVisitor: visitorInstance
-            // fsModifications: ???
+            fsVisitor: visitorInstance,
+            fsSdk
         });
         if (onInitStart) {
             tryCatchCallback(onInitStart);
@@ -222,6 +233,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                     firstInitSuccess: state.status.firstInitSuccess || new Date().toISOString()
                 },
                 fsVisitor: visitorInstance,
+                fsSdk,
                 fsModifications: visitorInstance.fetchedModifications || null,
                 private: {
                     previousFetchedModifications: visitorInstance.fetchedModifications || undefined
