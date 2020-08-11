@@ -213,6 +213,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 isLoading: true
             },
             fsVisitor: visitorInstance,
+            fsModifications: visitorInstance.fetchedModifications || null,
             fsSdk
         });
         if (onInitStart) {
