@@ -36,6 +36,9 @@ const AppHeader: React.FC = () => {
                         <NavDropdown.Item eventKey="4.5" href="#getModificationInfos">
                             Get modification Informations
                         </NavDropdown.Item>
+                        <NavDropdown.Item eventKey="4.6" href="#startOrStopBucketing">
+                            Start or stop manually bucketing polling
+                        </NavDropdown.Item>
                         <NavDropdown.Item eventKey="4.1" href="#useFsActivate">
                             Activate modification(s)
                         </NavDropdown.Item>

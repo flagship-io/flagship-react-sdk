@@ -139,8 +139,8 @@ export declare type UseFlagshipParams = {
 export declare type UseFlagshipOutput = {
     modifications: GetModificationsOutput;
     getModificationInfo: (key: string) => Promise<null | GetModificationInfoOutput>;
-    startBucketingPolling(): void;
-    stopBucketingPolling(): void;
+    startBucketingPolling(): { success: boolean; reason?: string };
+    stopBucketingPolling(): { success: boolean; reason?: string };
     status: FsStatus;
     hit: {
         send(hit: HitShape): void;
@@ -166,11 +166,19 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
             modifications: safeMode_getCacheModifications(modificationsRequested, activateAllModifications),
             status,
             getModificationInfo: (): Promise<null> => new Promise((resolve) => resolve(null)),
-            startBucketingPolling: (): void => {
+            startBucketingPolling: (): { success: boolean; reason?: string } => {
                 safeModeLog(log, 'send startBucketingPolling');
+                return {
+                    success: false,
+                    reason: 'Safe mode enabled'
+                };
             },
-            stopBucketingPolling: (): void => {
+            stopBucketingPolling: (): { success: boolean; reason?: string } => {
                 safeModeLog(log, 'send startBucketingPolling');
+                return {
+                    success: false,
+                    reason: 'Safe mode enabled'
+                };
             },
             hit: {
                 send: (): void => {
@@ -210,19 +218,29 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
                 ? (fsVisitor as IFlagshipVisitor).getModificationInfo(key)
                 : new Promise((resolve) => resolve(null));
         },
-        startBucketingPolling: (): void => {
+        startBucketingPolling: (): { success: boolean; reason?: string } => {
             if (fsSdk) {
-                fsSdk.startBucketingPolling();
-            } else if (log) {
+                return fsSdk.startBucketingPolling();
+            }
+            if (log) {
                 log.error('startBucketingPolling not ready yet.');
             }
+            return {
+                success: false,
+                reason: 'startBucketingPolling not ready yet.'
+            };
         },
-        stopBucketingPolling: (): void => {
+        stopBucketingPolling: (): { success: boolean; reason?: string } => {
             if (fsSdk) {
-                fsSdk.stopBucketingPolling();
-            } else if (log) {
+                return fsSdk.stopBucketingPolling();
+            }
+            if (log) {
                 log.error('stopBucketingPolling not ready yet.');
             }
+            return {
+                success: false,
+                reason: 'startBucketingPolling not ready yet.'
+            };
         },
         status,
         hit: {

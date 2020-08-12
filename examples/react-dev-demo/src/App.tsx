@@ -3,6 +3,7 @@ import './App.css';
 import { FlagshipProvider } from '@flagship.io/react-sdk';
 import React, { createContext, Dispatch, SetStateAction } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
+import { NotificationContainer } from 'react-notifications';
 
 import { AppContainer } from './components/AppContainer';
 import config from './config';
@@ -22,7 +23,7 @@ export interface SdkSettings {
     enableSafeMode?: boolean;
     nodeEnv?: string;
     flagshipApi?: string;
-    apiKey?: string;
+    apiKey: string | null;
     visitorData: {
         id: string;
         context: VisitorContext;
@@ -52,6 +53,8 @@ const App: React.FC = () => {
         pollingInterval: config.pollingInterval,
         enableConsoleLogs: config.enableConsoleLogs,
         enableErrorLayout: config.enableErrorLayout,
+        flagshipApi: config.flagshipApi,
+        apiKey: config.apiKey,
         nodeEnv: 'production',
         visitorData: { ...config.visitorData }
     });
@@ -69,8 +72,10 @@ const App: React.FC = () => {
                     fetchNow={currentSettings.fetchNow}
                     enableConsoleLogs={currentSettings.enableConsoleLogs}
                     enableErrorLayout={currentSettings.enableErrorLayout}
-                    decisionMode={currentSettings.decisionMode}
                     pollingInterval={currentSettings.pollingInterval}
+                    flagshipApi={currentSettings.flagshipApi}
+                    apiKey={currentSettings.apiKey}
+                    decisionMode={currentSettings.decisionMode}
                     enableSafeMode={true}
                     nodeEnv={currentSettings.nodeEnv}
                     visitorData={currentSettings.visitorData}
@@ -100,6 +105,7 @@ const App: React.FC = () => {
                         </Container>
                     }
                 >
+                    <NotificationContainer />
                     <AppHeader />
                     <QaHeader />
                     <AppContainer />

@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { Button, Form } from 'react-bootstrap';
+import { NotificationManager } from 'react-notifications';
 
 import { AppSettings, SdkSettings, SettingContext } from '../../../../../../../App';
 import config from '../../../../../../../config';
@@ -98,7 +99,13 @@ const PlayVisitorData: React.FC = () => {
                     justifyContent: 'flex-end'
                 }}
             >
-                <Button variant="secondary" onClick={() => setSettings({ ...newSettings })}>
+                <Button
+                    variant="secondary"
+                    onClick={() => {
+                        setSettings({ ...newSettings });
+                        NotificationManager.info('Settings updated');
+                    }}
+                >
                     Apply change
                 </Button>
             </div>

@@ -81,7 +81,7 @@ interface FlagshipProviderProps {
     enableSafeMode?: boolean;
     nodeEnv?: string;
     flagshipApi?: string;
-    apiKey?: string;
+    apiKey?: string | null;
     initialModifications?: DecisionApiCampaign[];
     initialBucketing?: BucketingApiResponse;
     onInitStart?(): void;

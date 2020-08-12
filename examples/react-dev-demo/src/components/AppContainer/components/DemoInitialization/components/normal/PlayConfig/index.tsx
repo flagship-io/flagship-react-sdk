@@ -5,6 +5,8 @@ import { AppSettings, SdkSettings, SettingContext } from '../../../../../../../A
 import config from '../../../../../../../config';
 import CodeBlock from '../../../../../../common/CodeBlock';
 
+import { NotificationManager } from 'react-notifications';
+
 const PlayConfig: React.FC = () => {
     const { currentSettings: currSettings, setSettings /* , QA */ } = useContext(SettingContext) as AppSettings;
     const [newSettings, setNewSettings] = React.useState<SdkSettings>({
@@ -63,6 +65,40 @@ const PlayConfig: React.FC = () => {
                                 <option key={id}>{id}</option>
                             ))}
                     </Form.Control>
+                </Form.Group>
+                <Form.Group
+                    controlId="initForm.Control1.22"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginLeft: '16px'
+                    }}
+                >
+                    <div>flagshipApi: </div>
+                    <Form.Control as="select" onChange={(e) => handleSettings(e, 'flagshipApi')}>
+                        <option key={newSettings.flagshipApi}>{newSettings.flagshipApi}</option>
+                        {config.sandbox.flagshipApi
+                            .filter((i) => i !== newSettings.flagshipApi)
+                            .map((id) => (
+                                <option key={id}>{id}</option>
+                            ))}
+                    </Form.Control>
+                </Form.Group>
+                <Form.Group
+                    controlId="initForm.Control1.23"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginLeft: '16px'
+                    }}
+                >
+                    <div>apiKey: </div>
+                    <Form.Control
+                        type="text"
+                        className="fsTextField"
+                        onChange={(e) => handleSettings(e, 'apiKey')}
+                        placeholder={newSettings.apiKey || 'null'}
+                    ></Form.Control>
                 </Form.Group>
                 <Form.Group
                     controlId="initForm.Control1.21"
@@ -132,7 +168,13 @@ const PlayConfig: React.FC = () => {
                     justifyContent: 'flex-end'
                 }}
             >
-                <Button variant="secondary" onClick={() => setSettings({ ...newSettings })}>
+                <Button
+                    variant="secondary"
+                    onClick={() => {
+                        setSettings({ ...newSettings, apiKey: newSettings.apiKey || null });
+                        NotificationManager.info('Settings updated');
+                    }}
+                >
                     Apply change
                 </Button>
             </div>

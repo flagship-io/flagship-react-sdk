@@ -47,7 +47,12 @@ const App: React.FC = () => (
           typeof currSettings.enableErrorLayout === 'undefined' ? 'false' : currSettings.enableErrorLayout.toString()
       }}
       nodeEnv="${typeof currSettings.nodeEnv === 'undefined' ? 'undefined' : currSettings.nodeEnv.toString()}"
-      visitorData=${JSON.stringify(currSettings.visitorData, null, 2)}
+      flagshipApi="${
+          typeof currSettings.flagshipApi === 'undefined' ? 'undefined' : currSettings.flagshipApi.toString()
+      }"
+      apiKey="${!currSettings.apiKey ? 'null' : currSettings.apiKey.toString()}"
+      visitorData=${JSON.stringify(currSettings.visitorData, null, 8).slice(0, -2)}
+      }
       onInitStart={() => {
         console.log("init start");
       }}

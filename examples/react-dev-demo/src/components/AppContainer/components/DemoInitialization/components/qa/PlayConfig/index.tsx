@@ -4,6 +4,8 @@ import { Form, Button, Col } from 'react-bootstrap';
 import { SettingContext, AppSettings } from '../../../../../../../App';
 import JSONInput from 'react-json-editor-ajrm';
 import locale from 'react-json-editor-ajrm/locale/en';
+import { NotificationManager } from 'react-notifications';
+
 const PlayConfig: React.FC = () => {
     const { currentSettings, setSettings } = useContext(SettingContext) as AppSettings;
 
@@ -38,6 +40,7 @@ const PlayConfig: React.FC = () => {
                     envId: values.envId,
                     ...values.settings
                 });
+                NotificationManager.info('Settings updated');
             }}
         >
             {({ handleSubmit, handleChange, handleBlur, setFieldValue, values, touched, isValid, errors }) => (

@@ -6,6 +6,8 @@ const config = {
     enableConsoleLogs: true,
     enableErrorLayout: true,
     nodeEnv: 'production',
+    flagshipApi: 'https://decision-api.flagship.io/v1/',
+    apiKey: null,
     enableSafeMode: true,
     visitorData: {
         id: 'test-vid',
@@ -21,6 +23,7 @@ const config = {
         nodeEnv: ['production', 'development'],
         pollingInterval: [1, 2, 5, 10],
         decisionMode: ['API', 'Bucketing'],
+        flagshipApi: ['https://decision-api.flagship.io/v1/', 'https://decision.flagship.io/v2/'],
         visitorId: ['test-vid', 'test-vid_2', 'test-vid_3']
     }
 };
