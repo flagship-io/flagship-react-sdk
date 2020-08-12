@@ -33,7 +33,7 @@ const fsModifications = useFsModifications([
                 <Button
                     variant="secondary"
                     style={{
-                        backgroundColor: fsModifications.color
+                        backgroundColor: fsModifications.color as string
                     }}
                 >
                     {`My color tells my visitor mood (backgroundColor=${fsModifications.color})`}
