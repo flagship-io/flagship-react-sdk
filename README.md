@@ -24,16 +24,16 @@
 
 **Visit [https://developers.flagship.io/](https://developers.flagship.io/) to get started with Flagship.**
 
--   [Installation & Getting Started](http://developers.flagship.io/react/v1.3.x/#getting-started)
--   [Flagship Provider Props](http://developers.flagship.io/react/v1.3.x/#flagshipprovider-props)
--   [Available Hooks](http://developers.flagship.io/react/v1.3.x/#flagship-hooks)
+-   [Installation & Getting Started](http://developers.flagship.io/react/v2.x.x/#getting-started)
+-   [Flagship Provider Props](http://developers.flagship.io/react/v2.x.x/#flagshipprovider-props)
+-   [Available Hooks](http://developers.flagship.io/react/v2.x.x/#flagship-hooks)
 
-    -   [useFlagship](http://developers.flagship.io/react/v1.3.x/#useflagship)
-    -   [useFsModifications](http://developers.flagship.io/react/v1.3.x/#usefsmodifications)
-    -   [useFsActivate](http://developers.flagship.io/react/v1.3.x/#usefsactivate)
-    -   [useFsSynchronize](http://developers.flagship.io/react/v1.3.x/#usefssynchronize)
+    -   [useFlagship](http://developers.flagship.io/react/v2.x.x/#useflagship)
+    -   [useFsModifications](http://developers.flagship.io/react/v2.x.x/#usefsmodifications)
+    -   [useFsActivate](http://developers.flagship.io/react/v2.x.x/#usefsactivate)
+    -   [useFsSynchronize](http://developers.flagship.io/react/v2.x.x/#usefssynchronize)
 
--   [Hit tracking](http://developers.flagship.io/react/v1.3.x/#hit)
+-   [Hit tracking](http://developers.flagship.io/react/v2.x.x/#hit)
 -   [Release Notes](https://github.com/abtasty/flagship-react-sdk/blob/master/RELEASENOTES.md)
 
 ## Examples

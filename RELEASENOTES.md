@@ -1,6 +1,6 @@
 # Flagship REACT SDK - Release notes
 
-## ➡️ Version 1.4.0
+## ➡️ Version 2.0.0
 
 ### New features 🎉
 
@@ -178,6 +178,10 @@ Be aware that `apiKey` will be mandatory in the next major release as it will us
         );
         ```
 
+### Breaking changes #4 ⚠️
+
+-   `fetchNow` prop is now `true` by default.
+
 ## ➡️ Version 1.3.1
 
 ### Bug fixes 🐛
@@ -188,7 +192,7 @@ Be aware that `apiKey` will be mandatory in the next major release as it will us
 
 ### Breaking changes ⚠️
 
--   `config` prop is not supported anymore.
+-   `config` prop is not supported anymore. Currently deprecated and will be deleted in next major release.
 
 ### New features 🎉
 
