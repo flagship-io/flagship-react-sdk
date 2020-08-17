@@ -1,5 +1,183 @@
 # Flagship REACT SDK - Release notes
 
+## ➡️ Version 1.4.0
+
+### New features 🎉
+
+-   Add `initialBucketing` prop. It takes the data received from the flagship bucketing api endpoint. Can be useful when you save this data in cache.
+
+-   Add `onBucketingSuccess` and `onBucketingFail` callback props. Those callbacks are called after a bucketing polling has either succeed or failed.
+
+    Example:
+
+    ```javascript
+    <FlagshipProvider
+        /* [...] */
+        onBucketingSuccess={(bucketingData) => {
+            // shape of bucketingData: { status: string; payload: BucketingApiResponse }
+            console.log('Bucketing polling succeed with following data: ' + JSON.stringify(bucketingData));
+        }}
+        onBucketingFail={(error) => {
+            console.log('Bucketing polling failed with following error: ' + error);
+        }}
+    >
+        {children}
+    </FlagshipProvider>
+    ```
+
+-   Add `startBucketingPolling` and `stopBucketingPolling` function available in `useFlagship` hook. It allows to start/stop the bucketing polling whenever you want.
+
+    Example:
+
+    ```javascript
+    import { useFlagship } from '@flagship.io/react-sdk';
+
+    const { startBucketingPolling, stopBucketingPolling } = useFlagship();
+
+    // [...]
+
+    return (
+        <>
+            <Button
+                onClick={() => {
+                    const { success, reason } = startBucketingPolling();
+                    if (!success) {
+                        console.log('startBucketingPolling failed because ' + reason);
+                    } else {
+                        console.log('bucketing starts !');
+                    }
+                }}
+            >
+                Start the bucketing
+            </Button>
+            <Button
+                onClick={() => {
+                    const { success, reason } = stopBucketingPolling();
+                    if (!success) {
+                        console.log('stopBucketingPolling failed because ' + reason);
+                    } else {
+                        console.log('bucketing stops !');
+                    }
+                }}
+            >
+                Stop the bucketing
+            </Button>
+        </>
+    );
+    ```
+
+### Bug fixes 🐛
+
+-   Bucketing is stopped automatically when value of `decisionMode` changes dynamically from `"Bucketing"` to another value.
+
+-   When bucketing enabled, fix event's http request sent twice.
+
+### Breaking changes #1 ⚠️
+
+Due to bucketing optimization, the bucketing allocate a variation to a visitor differently than SDK v1.3.X
+
+-   As a result, assuming you have campaign with the following traffic allocation:
+
+    -   50% => `variation1`
+    -   50% => `variation2`
+
+    By upgrading to this version, you might see your visitor switching from `variation1` to `variation2` and vice-versa.
+
+### Breaking changes #2 ⚠️
+
+Be aware that `apiKey` will be mandatory in the next major release as it will use the [Decision API v2](http://developers.flagship.io/api/v2/).
+
+-   Make sure to initialize your `FlagshipProvider` component is set correctly:
+
+    -   **BEFORE**:
+
+    ```javascript
+        <FlagshipProvider
+            envId="YOUR_ENV_ID"
+            visitorData={{
+                id: 'YOUR_VISITOR_ID',
+                context: {}
+            }}
+        >
+    ```
+
+    -   **NOW**:
+
+    ```javascript
+        <FlagshipProvider
+            envId="YOUR_ENV_ID"
+            visitorData={{
+                id: 'YOUR_VISITOR_ID',
+                context: {}
+            }}
+            apiKey="YOUR_API_KEY" // <== Required in next major release
+        >
+    ```
+
+### Breaking changes #3 ⚠️
+
+-   `getModificationInfo` attribute from `useFlagship` hook, is now always defined:
+
+    -   **BEFORE**:
+
+        ```javascript
+        import { useFlagship } from '@flagship.io/react-sdk';
+
+        const { getModificationInfo } = useFlagship();
+
+        // [...]
+
+        return (
+            <>
+                <Button
+                    onClick={() => {
+                        if (getModificationInfo) {
+                            console.log('Flagship SDK not ready !');
+                        } else {
+                            getModificationInfo(/* args... */).then((data) => {
+                                if (data === null) {
+                                    console.log('getModificationInfo returns no data');
+                                } else {
+                                    console.log('getModificationInfo returns: ' + data);
+                                }
+                            });
+                        }
+                    }}
+                >
+                    Get the modification informations
+                </Button>
+            </>
+        );
+        ```
+
+    -   **NOW**:
+
+        ```javascript
+        import { useFlagship } from '@flagship.io/react-sdk';
+
+        const { getModificationInfo } = useFlagship();
+
+        // [...]
+
+        return (
+            <>
+                <Button
+                    onClick={() => {
+                        getModificationInfo(/* args... */).then((data) => {
+                            if (data === null) {
+                                console.log('getModificationInfo returns no data');
+                            } else {
+                                console.log('getModificationInfo returns: ' + data);
+                            }
+                        });
+                    }}
+                >
+                    Get the modification informations
+                </Button>
+            </>
+        );
+        ```
+
 ## ➡️ Version 1.3.1
 
 ### Bug fixes 🐛

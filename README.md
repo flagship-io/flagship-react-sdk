@@ -42,11 +42,13 @@ Following demos illustrate how the SDK is used in practice ☕
 
 -   With React (for developers):
 
+<a href="https://abtasty.github.io/flagship-react-sdk/">
 <div style="max-width: 850px; margin: 0 auto;">
 
 ![react-dev-demo](./src/assets/gif/react-dev-demo.gif)
 
 </div>
+</a>
 <div style="display: flex; justify-content: space-around; font-size: 24px">
 
 [Readme 📖](examples/react-dev-demo/README.md)
@@ -57,16 +59,33 @@ Following demos illustrate how the SDK is used in practice ☕
 
 -   With React, e-commerce app:
 
+<a href="https://react-ecommerce-demo.internal.flagship.io/">
 <div style="max-width: 850px; margin: 0 auto;">
 
 ![react-ecommerce-demo](./src/assets/gif/react-ecommerce-demo.gif)
 
 </div>
+</a>
 <div style="display: flex; justify-content: space-around; font-size: 24px">
 
 [Readme 📖](examples/react-ecommerce-demo/README.md)
 
 [Live Demo 🕹](https://react-ecommerce-demo.internal.flagship.io/)
+
+</div>
+
+-   With React, codeSandbox, using campaign displaying cats / dogs / both:
+
+<a href="https://codesandbox.io/s/flagship-sdk-react-example-sg5qu">
+<div style="max-width: 850px; margin: 0 auto;">
+
+![react-ecommerce-demo](./src/assets/gif/react-sandbox.gif)
+
+</div>
+</a>
+<div style="display: flex; justify-content: space-around; font-size: 24px">
+
+[Live Demo 🕹](https://codesandbox.io/s/flagship-sdk-react-example-sg5qu)
 
 </div>
 
