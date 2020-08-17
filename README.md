@@ -1,6 +1,6 @@
 <p align="center">
 
-<img  src="https://mk0abtastybwtpirqi5t.kinstacdn.com/wp-content/uploads/picture-solutions-persona-product-flagship.jpg"  width="211"  height="182"  alt="flagship-js-sdk"  />
+<img  src="https://mk0abtastybwtpirqi5t.kinstacdn.com/wp-content/uploads/picture-solutions-persona-product-flagship.jpg"  width="211"  height="182"  alt="flagship-react-sdk"  />
 
 </p>
 
@@ -35,6 +35,7 @@
 
 -   [Hit tracking](http://developers.flagship.io/react/v2.x.x/#hit)
 -   [Release Notes](https://github.com/abtasty/flagship-react-sdk/blob/master/RELEASENOTES.md)
+-   [Contributing](https://github.com/abtasty/flagship-react-sdk/blob/master/CONTRIBUTING.md)
 
 ## Examples
 
