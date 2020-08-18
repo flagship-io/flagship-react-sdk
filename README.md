@@ -80,7 +80,7 @@ Following demos illustrate how the SDK is used in practice ☕
 <a href="https://codesandbox.io/s/flagship-sdk-react-example-sg5qu">
 <div style="max-width: 850px; margin: 0 auto;">
 
-![react-ecommerce-demo](./src/assets/gif/react-sandbox.gif)
+![react-sandbox-demo](./src/assets/gif/react-sandbox.gif)
 
 </div>
 </a>
