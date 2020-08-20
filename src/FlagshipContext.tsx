@@ -61,6 +61,13 @@ const FlagshipContext = React.createContext<{
     setState: Dispatch<SetStateAction<FsState>> | null;
 }>({ state: { ...initState }, setState: null, hasError: false });
 
+export type FsOnUpdateArguments = {
+    fsModifications: DecisionApiCampaign[] | null;
+    config: FlagshipReactSdkConfig;
+};
+
+export type FsOnUpdate = (data: FsOnUpdateArguments, visitor: IFlagshipVisitor | null) => void;
+
 interface FlagshipProviderProps {
     children: React.ReactNode;
     loadingComponent?: React.ReactNode;
@@ -89,13 +96,7 @@ interface FlagshipProviderProps {
     onBucketingSuccess?(data: BucketingSuccessArgs): void;
     onBucketingFail?(error: Error): void;
     onSavingModificationsInCache?(args: SaveCacheArgs): void;
-    onUpdate?(
-        sdkData: {
-            fsModifications: DecisionApiCampaign[] | null;
-            config: FlagshipReactSdkConfig;
-        },
-        fsVisitor: IFlagshipVisitor | null
-    ): void;
+    onUpdate?: FsOnUpdate;
 }
 
 export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({

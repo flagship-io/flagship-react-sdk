@@ -9,7 +9,7 @@ import {
     DecisionApiResponseData,
     GetModificationsOutput
 } from '@flagship.io/js-sdk';
-import { FlagshipProvider, FlagshipReactSdkConfig } from '../FlagshipContext';
+import { FlagshipProvider, FlagshipReactSdkConfig, FsOnUpdateArguments } from '../FlagshipContext';
 import { providerProps, fetchedModifications } from './mock';
 
 describe('fsContext provider', () => {
@@ -62,7 +62,7 @@ describe('fsContext provider', () => {
             onInitDone: boolean;
             onUpdate: boolean;
             onUpdateParams: {
-                sdkData?: GetModificationsOutput | null;
+                sdkData?: FsOnUpdateArguments;
                 sdkVisitor?: IFlagshipVisitor | null;
             };
         } = {
@@ -105,9 +105,11 @@ describe('fsContext provider', () => {
         expect(isCalled.onSavingModificationsInCache).toEqual(true);
         expect(isCalled.onUpdate).toEqual(true);
         expect(isCalled.onUpdateParams.sdkData).toHaveProperty('fsModifications');
-        expect((isCalled.onUpdateParams.sdkData as GetModificationsOutput).fsModifications.length > 0).toEqual(true);
+        expect(((isCalled.onUpdateParams.sdkData as any).fsModifications as DecisionApiCampaign[]).length > 0).toEqual(
+            true
+        );
         expect(
-            (isCalled.onUpdateParams.sdkData as GetModificationsOutput).fsModifications.filter(
+            ((isCalled.onUpdateParams.sdkData as any).fsModifications as DecisionApiCampaign[]).filter(
                 (i: any) => !i.variation.reference
             )
         ).toEqual(fetchedModifications);
@@ -174,6 +176,7 @@ describe('fsContext provider', () => {
             apiKey: null,
             flagshipApi: 'https://decision-api.flagship.io/v1/',
             initialModifications: null,
+            initialBucketing: null,
             nodeEnv: 'production'
         });
         expect(isReady).toEqual(true);
@@ -181,7 +184,7 @@ describe('fsContext provider', () => {
     test('it should consider other props', async () => {
         let computedFsVisitor: IFlagshipVisitor | null = null;
         let computedSdkConfig: FlagshipReactSdkConfig | null = null;
-        const customFetchedModifications = fetchedModifications;
+        const customFetchedModifications = fetchedModifications as DecisionApiCampaign[];
         customFetchedModifications[0].variation.modifications.value = {
             discount: '99%'
         };
@@ -233,6 +236,7 @@ describe('fsContext provider', () => {
             apiKey: null,
             flagshipApi: 'https://decision-api.flagship.io/v1/',
             initialModifications: customFetchedModifications,
+            initialBucketing: null,
             nodeEnv: 'production'
         });
         expect(isReady).toEqual(true);

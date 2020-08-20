@@ -6,5 +6,10 @@ module.exports = {
     testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$',
     setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
     snapshotSerializers: ['enzyme-to-json/serializer'],
-    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node']
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+    globals: {
+        'ts-jest': {
+            diagnostics: false
+        }
+    }
 };

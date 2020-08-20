@@ -62,5 +62,29 @@ export const fetchedModifications = [
             reference: false
         },
         variationGroupId: 'bqjfstuirtfg01mctmo0'
+    },
+    {
+        id: 'bsq046crms2g1jsvtb20',
+        variation: {
+            id: 'bsq046crms2g1jsvtb40',
+            modifications: {
+                type: 'JSON',
+                value: {
+                    array: [1, 2, 3],
+                    complex: {
+                        carray: [
+                            {
+                                cobject: 0
+                            }
+                        ]
+                    },
+                    object: {
+                        value: 123456
+                    }
+                }
+            },
+            reference: false
+        },
+        variationGroupId: 'bsq046crms2g1jsvtb30'
     }
 ];
