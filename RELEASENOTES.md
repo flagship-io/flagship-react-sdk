@@ -182,6 +182,69 @@ Be aware that `apiKey` will be mandatory in the next major release as it will us
 
 -   `fetchNow` prop is now `true` by default.
 
+### Breaking changes #5 ⚠️
+
+-   `useFsSynchronize` has been removed. Campaigns synchronization is now handle using `useFlagship` hook:
+
+
+    -   **BEFORE**:
+
+        ```jsx
+        import { useFsSynchronize } from '@flagship.io/react-sdk';
+
+        var activateAllModifications = false;
+
+        useFsSynchronize([listenedValue], activateAllModifications); // when "listenedValue" changes, it triggers a synchronize
+
+        // [...]
+
+        return (
+            <>
+                <Button
+                    onClick={() => {
+                       // [...] (Update the value of "listenedValue" )
+                    }}
+                >
+                    Test
+                </Button>
+            </>
+        );
+        ```
+
+    -   **NOW**:
+
+        ```jsx
+        import { useFlagship } from '@flagship.io/react-sdk';
+
+        var activateAllModifications = false;
+
+        const { synchronizeModifications } = useFlagship();
+
+        // [...]
+
+        return (
+            <>
+                <Button
+                    onClick={() => {
+                        synchronizeModifications(activateAllModifications)
+                            .then((statusCode) => {
+                                if (statusCode < 300) {
+                                    // Notify success...
+                                } else {
+                                    // Notify failure...
+                                }
+                            })
+                            .catch((error) => {
+                                // Notify error...
+                            });
+                    }}
+                >
+                    Trigger a synchronize
+                </Button>
+            </>
+        )
+        ```
+
 ## ➡️ Version 1.3.1
 
 ### Bug fixes 🐛
