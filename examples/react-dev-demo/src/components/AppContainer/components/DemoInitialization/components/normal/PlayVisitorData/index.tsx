@@ -17,7 +17,7 @@ const PlayVisitorData: React.FC = () => {
             ...newSettings,
             visitorData: {
                 ...newSettings.visitorData,
-                id: e.target.value
+                id: e?.target?.value
             }
         });
 
@@ -66,14 +66,13 @@ const PlayVisitorData: React.FC = () => {
                     }}
                 >
                     <div>visitorId: </div>
-                    <Form.Control as="select" onChange={handleVisitorId}>
-                        <option key={currSettings.visitorData.id}>{currSettings.visitorData.id}</option>
-                        {config.sandbox.visitorId
-                            .filter((i) => i !== currSettings.visitorData.id)
-                            .map((id) => (
-                                <option key={id}>{id}</option>
-                            ))}
-                    </Form.Control>
+                    <Form.Control
+                        type="text"
+                        className="fsTextField"
+                        onChange={handleVisitorId}
+                        value={newSettings.visitorData.id}
+                        placeholder={newSettings.visitorData.id || 'this field is required !'}
+                    ></Form.Control>
                 </Form.Group>
                 <div className="fsAnchor" id="playWithVisitorContext" />
                 <Form.Group controlId="initForm.ControlSelect3">

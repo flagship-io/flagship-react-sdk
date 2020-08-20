@@ -46,7 +46,7 @@ const AppHeader: React.FC = () => {
                             Send Hit(s)
                         </NavDropdown.Item>
                         <NavDropdown.Item eventKey="4.3" href="#useFsSynchronize">
-                            Refresh modifications
+                            Campaign synchronization
                         </NavDropdown.Item>
                         <NavDropdown.Item eventKey="4.4" href="#safeMode">
                             Safe Mode

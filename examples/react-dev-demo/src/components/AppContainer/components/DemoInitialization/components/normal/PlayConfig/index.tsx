@@ -39,14 +39,13 @@ const PlayConfig: React.FC = () => {
                     }}
                 >
                     <div>envId: </div>
-                    <Form.Control as="select" onChange={handleEnvId}>
-                        <option key={newSettings.envId}>{newSettings.envId}</option>
-                        {config.sandbox.envId
-                            .filter((i) => i !== newSettings.envId)
-                            .map((id) => (
-                                <option key={id}>{id}</option>
-                            ))}
-                    </Form.Control>
+                    <Form.Control
+                        type="text"
+                        className="fsTextField"
+                        onChange={(e) => handleSettings(e, 'envId')}
+                        value={newSettings.envId}
+                        placeholder={newSettings.apiKey || 'this field is required !'}
+                    ></Form.Control>
                 </Form.Group>
                 <Form.Group
                     controlId="initForm.Control1.11"
