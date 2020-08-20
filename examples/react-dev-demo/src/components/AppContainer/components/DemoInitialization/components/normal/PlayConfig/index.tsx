@@ -13,8 +13,6 @@ const PlayConfig: React.FC = () => {
         ...currSettings
     });
 
-    const handleEnvId = (e) => setNewSettings({ ...newSettings, envId: e.target.value });
-
     const handleSettings = (e, key) => {
         const computeValue = () => {
             if (key === 'pollingInterval') {

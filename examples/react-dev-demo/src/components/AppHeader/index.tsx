@@ -25,9 +25,6 @@ const AppHeader: React.FC = () => {
                         <NavDropdown.Item eventKey="4.2" href="#useFsActivate">
                             useFsActivate
                         </NavDropdown.Item>
-                        <NavDropdown.Item eventKey="4.3" href="#useFsSynchronize">
-                            useFsSynchronize
-                        </NavDropdown.Item>
                     </NavDropdown>
                     <NavDropdown title="Features" id="nav-dropdown">
                         <NavDropdown.Item eventKey="4.0" href="#useFlagship">
@@ -45,7 +42,7 @@ const AppHeader: React.FC = () => {
                         <NavDropdown.Item eventKey="4.2" href="#sendHits">
                             Send Hit(s)
                         </NavDropdown.Item>
-                        <NavDropdown.Item eventKey="4.3" href="#useFsSynchronize">
+                        <NavDropdown.Item eventKey="4.3" href="#campaignsSynchronization">
                             Campaign synchronization
                         </NavDropdown.Item>
                         <NavDropdown.Item eventKey="4.4" href="#safeMode">

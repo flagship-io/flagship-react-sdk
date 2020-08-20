@@ -4,13 +4,12 @@ import { Alert, Col, Row } from 'react-bootstrap';
 import PlayWithSynchronize from './components/normal';
 
 export const DemoUseFsSynchronize: React.FC = () => {
-    const demoHookName = 'useFsSynchronize';
     return (
         <Row>
             <Col>
-                <div className="fsAnchor" id={demoHookName} />
+                <div className="fsAnchor" id="campaignsSynchronization" />
                 <Alert variant="dark" className="fs-alert demoHook">
-                    <Alert.Heading>{demoHookName}</Alert.Heading>
+                    <Alert.Heading>Campaigns synchronization</Alert.Heading>
                     <PlayWithSynchronize></PlayWithSynchronize>
                 </Alert>
             </Col>

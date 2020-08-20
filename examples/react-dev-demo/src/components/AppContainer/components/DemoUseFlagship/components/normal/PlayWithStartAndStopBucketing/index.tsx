@@ -1,13 +1,8 @@
 import React from 'react';
 
 import CodeBlock from '../../../../../../common/CodeBlock';
-import { AppSettings, SettingContext } from '../../../../../../../App';
-import { Alert, Button } from 'react-bootstrap';
-import { useFlagship } from '@flagship.io/react-sdk';
-import { NotificationManager } from 'react-notifications';
 
 const PlayWithStartAndStopBucketing: React.FC = () => {
-    const { startBucketingPolling, stopBucketingPolling } = useFlagship();
     return (
         <>
             <div className="mv3">

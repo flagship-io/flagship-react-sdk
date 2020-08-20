@@ -31,7 +31,6 @@
     -   [useFlagship](http://developers.flagship.io/react/v2.x.x/#useflagship)
     -   [useFsModifications](http://developers.flagship.io/react/v2.x.x/#usefsmodifications)
     -   [useFsActivate](http://developers.flagship.io/react/v2.x.x/#usefsactivate)
-    -   [useFsSynchronize](http://developers.flagship.io/react/v2.x.x/#usefssynchronize)
 
 -   [Hit tracking](http://developers.flagship.io/react/v2.x.x/#hit)
 -   [Release Notes](https://github.com/abtasty/flagship-react-sdk/blob/master/RELEASENOTES.md)
