@@ -36,7 +36,7 @@ return (
             Trigger a synchronize
         </Button>
     </>
-`}
+)`}
             ></CodeBlock>
             <div className="mb3">
                 <code>synchronizeModifications</code> is accessible by extracting it from <code>useFlagship</code> hook.
