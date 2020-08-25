@@ -3,7 +3,7 @@ import './App.css';
 import { FlagshipProvider } from '@flagship.io/react-sdk';
 import React, { createContext, Dispatch, SetStateAction } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
-import { NotificationContainer } from 'react-notifications';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 import { AppContainer } from './components/AppContainer';
 import config from './config';
@@ -87,6 +87,11 @@ const App: React.FC = () => {
                     }}
                     onUpdate={({ fsModifications }) => {
                         console.log('onUpdate - triggered');
+                    }}
+                    onBucketingSuccess={({ status }) => {
+                        if (status === '200') {
+                            NotificationManager.info('Bucketing has been updated (status = 200)');
+                        }
                     }}
                     loadingComponent={
                         <Container className="mt5">

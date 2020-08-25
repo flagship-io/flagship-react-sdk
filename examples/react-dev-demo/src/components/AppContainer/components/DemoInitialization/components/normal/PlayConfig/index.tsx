@@ -126,11 +126,11 @@ const PlayConfig: React.FC = () => {
                     >
                         <div>pollingInterval: </div>
                         <Form.Control as="select" onChange={(e) => handleSettings(e, 'pollingInterval')}>
-                            <option key={newSettings.pollingInterval}>{newSettings.pollingInterval} minutes</option>
+                            <option key={newSettings.pollingInterval}>{newSettings.pollingInterval} secondes</option>
                             {config.sandbox.pollingInterval
                                 .filter((i) => i !== newSettings.pollingInterval)
                                 .map((id) => (
-                                    <option key={id}>{id} minutes</option>
+                                    <option key={id}>{id} secondes</option>
                                 ))}
                         </Form.Control>
                     </Form.Group>

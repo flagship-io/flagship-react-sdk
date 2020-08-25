@@ -2,7 +2,7 @@ const config = {
     envId: 'bn1ab7m56qolupi5sa0g',
     fetchNow: true,
     decisionMode: 'API',
-    pollingInterval: 5,
+    pollingInterval: 60,
     enableConsoleLogs: true,
     enableErrorLayout: true,
     nodeEnv: 'production',
@@ -21,7 +21,7 @@ const config = {
         },
         envId: ['bn1ab7m56qolupi5sa0g_fake_1', 'bn1ab7m56qolupi5sa0g_fake_2'],
         nodeEnv: ['production', 'development'],
-        pollingInterval: [1, 2, 5, 10],
+        pollingInterval: [10, 60, 120, 300],
         decisionMode: ['API', 'Bucketing'],
         flagshipApi: ['https://decision-api.flagship.io/v1/', 'https://decision.flagship.io/v2/'],
         visitorId: ['test-vid', 'test-vid_2', 'test-vid_3']
