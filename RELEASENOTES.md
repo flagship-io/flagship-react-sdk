@@ -247,6 +247,10 @@ Be aware that `apiKey` will be mandatory in the next major release as it will us
         )
         ```
 
+### Breaking changes #6 ⚠️
+
+-   `pollingInterval` setting is now a period interval defined in **seconds** (not minutes). Minimal value is 1 second.
+
 ## ➡️ Version 1.3.1
 
 ### Bug fixes 🐛
