@@ -33,8 +33,8 @@ export declare type FsState = {
 };
 
 export interface FlagshipReactSdkConfig extends FlagshipSdkConfig {
-    enableErrorLayout: boolean;
-    enableSafeMode: boolean;
+    enableErrorLayout?: boolean;
+    enableSafeMode?: boolean;
 }
 
 export const initState: FsState = {
@@ -81,12 +81,13 @@ interface FlagshipProviderProps {
     };
     fetchNow?: boolean;
     decisionMode?: 'API' | 'Bucketing';
-    pollingInterval?: number;
+    pollingInterval?: number | null;
     activateNow?: boolean;
     enableConsoleLogs?: boolean;
     enableErrorLayout?: boolean;
     enableSafeMode?: boolean;
     nodeEnv?: string;
+    timeout?: number;
     flagshipApi?: string;
     apiKey?: string | null;
     initialModifications?: DecisionApiCampaign[];
@@ -113,6 +114,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     onBucketingSuccess,
     onBucketingFail,
     onUpdate,
+    timeout,
     fetchNow,
     activateNow,
     enableConsoleLogs,
@@ -131,6 +133,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             decisionMode: decisionMode || 'API',
             pollingInterval: pollingInterval || null,
             activateNow: activateNow || false,
+            timeout: timeout || undefined,
             enableConsoleLogs: enableConsoleLogs || false,
             enableErrorLayout: enableErrorLayout || false,
             enableSafeMode: enableSafeMode || false,

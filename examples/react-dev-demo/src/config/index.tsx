@@ -3,6 +3,7 @@ const config = {
     fetchNow: true,
     decisionMode: 'API',
     pollingInterval: 60,
+    timeout: 2,
     enableConsoleLogs: true,
     enableErrorLayout: true,
     nodeEnv: 'production',
@@ -23,6 +24,7 @@ const config = {
         nodeEnv: ['production', 'development'],
         pollingInterval: [10, 60, 120, 300],
         decisionMode: ['API', 'Bucketing'],
+        timeout: [0.01, 0.5, 1, 2],
         flagshipApi: ['https://decision-api.flagship.io/v1/', 'https://decision.flagship.io/v2/'],
         visitorId: ['test-vid', 'test-vid_2', 'test-vid_3']
     }

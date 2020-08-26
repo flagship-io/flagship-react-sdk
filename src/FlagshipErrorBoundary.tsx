@@ -84,7 +84,7 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
             if (handleDisplay) {
                 return handleDisplay({
                     children,
-                    debugMode: nodeEnv !== 'production' && enableErrorLayout,
+                    debugMode: nodeEnv !== 'production' && !!enableErrorLayout,
                     isCollapse,
                     error: errorCopy,
                     onClickCollapse: () => {
@@ -97,7 +97,7 @@ class FlagshipErrorBoundary extends React.Component<Props, State> {
             }
             return (
                 <ReactErrorBoundaryContainer
-                    debugMode={nodeEnv !== 'production' && enableErrorLayout}
+                    debugMode={nodeEnv !== 'production' && !!enableErrorLayout}
                     isCollapse={isCollapse}
                     error={errorCopy}
                     onClickCollapse={() => {
