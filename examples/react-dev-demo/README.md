@@ -14,9 +14,9 @@
 
 ### Prerequisites
 
--   **Node.js**: version 6.0.0 or later...
+-   **Node.js**: version 6.0.0 or later.
 
--   **Npm**: version 5.2.0 or later...
+-   **Npm**: version 5.2.0 or later.
 
 ## Getting Started
 
