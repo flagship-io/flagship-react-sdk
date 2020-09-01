@@ -35,15 +35,20 @@ export const DemoErrorBoundary = () => {
                         </Button>
                         {currentSettings.nodeEnv === 'production' && (
                             <div className="mv3">
-                                <b>NOTE:</b> You might not see the banner because you are in 'production' environment.
-                                You need to change value of <i>nodeEnv</i> in <a href="#playWithConfig">SDK settings</a>
-                                .
+                                <Alert variant="warning">
+                                    <b>NOTE:</b> You might not see the banner because you are in 'production'
+                                    environment. You need to change value of <i>nodeEnv</i> in{' '}
+                                    <a href="#playWithConfig">SDK settings</a>.
+                                </Alert>
                             </div>
                         )}
                         {!currentSettings.enableErrorLayout && (
                             <div className="mv3">
-                                <b>NOTE:</b> You might not see the banner because the setting <i>enableErrorLayout</i>{' '}
-                                is disabled, you need to change the value in <a href="#playWithConfig">SDK settings</a>.
+                                <Alert variant="warning">
+                                    <b>NOTE:</b> You CAN'T see the banner because the setting <i>enableErrorLayout</i>{' '}
+                                    is disabled, you need to change the value in{' '}
+                                    <a href="#playWithConfig">SDK settings</a>.
+                                </Alert>
                             </div>
                         )}
                     </div>

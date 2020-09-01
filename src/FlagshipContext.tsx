@@ -5,7 +5,9 @@ import flagship, {
     FlagshipVisitorContext,
     IFlagshipVisitor,
     SaveCacheArgs,
-    DecisionApiCampaign
+    DecisionApiCampaign,
+    BucketingApiResponse,
+    IFlagship
 } from '@flagship.io/js-sdk';
 import { FsLogger } from '@flagship.io/js-sdk-logs';
 import loggerHelper from './lib/loggerHelper';
@@ -20,6 +22,7 @@ export declare type FsStatus = {
 };
 
 export declare type FsState = {
+    fsSdk: IFlagship | null;
     fsVisitor: IFlagshipVisitor | null;
     fsModifications: DecisionApiCampaign[] | null;
     status: FsStatus;
@@ -35,6 +38,7 @@ export interface FlagshipReactSdkConfig extends FlagshipSdkConfig {
 }
 
 export const initState: FsState = {
+    fsSdk: null,
     fsVisitor: null,
     log: null,
     fsModifications: null,
@@ -49,11 +53,20 @@ export const initState: FsState = {
     }
 };
 
+export type BucketingSuccessArgs = { status: string; payload: BucketingApiResponse };
+
 const FlagshipContext = React.createContext<{
     hasError: boolean;
     state: FsState;
     setState: Dispatch<SetStateAction<FsState>> | null;
 }>({ state: { ...initState }, setState: null, hasError: false });
+
+export type FsOnUpdateArguments = {
+    fsModifications: DecisionApiCampaign[] | null;
+    config: FlagshipReactSdkConfig;
+};
+
+export type FsOnUpdate = (data: FsOnUpdateArguments, visitor: IFlagshipVisitor | null) => void;
 
 interface FlagshipProviderProps {
     children: React.ReactNode;
@@ -75,18 +88,15 @@ interface FlagshipProviderProps {
     enableSafeMode?: boolean;
     nodeEnv?: string;
     flagshipApi?: string;
-    apiKey?: string;
+    apiKey?: string | null;
     initialModifications?: DecisionApiCampaign[];
+    initialBucketing?: BucketingApiResponse;
     onInitStart?(): void;
     onInitDone?(): void;
+    onBucketingSuccess?(data: BucketingSuccessArgs): void;
+    onBucketingFail?(error: Error): void;
     onSavingModificationsInCache?(args: SaveCacheArgs): void;
-    onUpdate?(
-        sdkData: {
-            fsModifications: DecisionApiCampaign[] | null;
-            config: FlagshipReactSdkConfig;
-        },
-        fsVisitor: IFlagshipVisitor | null
-    ): void;
+    onUpdate?: FsOnUpdate;
 }
 
 export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
@@ -96,9 +106,12 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     visitorData,
     loadingComponent,
     initialModifications,
+    initialBucketing,
     onSavingModificationsInCache,
     onInitStart,
     onInitDone,
+    onBucketingSuccess,
+    onBucketingFail,
     onUpdate,
     fetchNow,
     activateNow,
@@ -122,6 +135,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             enableErrorLayout: enableErrorLayout || false,
             enableSafeMode: enableSafeMode || false,
             nodeEnv: nodeEnv || 'production',
+            initialBucketing: initialBucketing || null,
             flagshipApi,
             apiKey
         };
@@ -149,6 +163,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         try {
             callback();
         } catch (error) {
+            state.log.fatal(`error: ${error.stack}`);
             setError({ error, hasError: true });
         }
     };
@@ -172,7 +187,25 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 
     // Call FlagShip any time context get changed.
     useEffect(() => {
+        if (
+            state.fsSdk &&
+            state.fsSdk.config.decisionMode !== computedConfig.decisionMode &&
+            state.fsSdk.config.decisionMode === 'Bucketing'
+        ) {
+            state.fsSdk.stopBucketingPolling(); // force bucketing to stop
+            state.log.debug('bucketing automatically stopped because the decision mode has changed');
+        }
         const fsSdk = flagship.start(envId, computedConfig);
+        fsSdk.eventEmitter.on('bucketPollingSuccess', ({ status, payload }: BucketingSuccessArgs) => {
+            if (onBucketingSuccess) {
+                onBucketingSuccess({ status, payload });
+            }
+        });
+        fsSdk.eventEmitter.on('bucketPollingFailed', (error: Error) => {
+            if (onBucketingFail) {
+                onBucketingFail(error);
+            }
+        });
         const visitorInstance = fsSdk.newVisitor(id, context as FlagshipVisitorContext);
         setState({
             ...state,
@@ -180,8 +213,9 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 ...state.status,
                 isLoading: true
             },
-            fsVisitor: visitorInstance
-            // fsModifications: ???
+            fsVisitor: visitorInstance,
+            fsModifications: visitorInstance.fetchedModifications || null,
+            fsSdk
         });
         if (onInitStart) {
             tryCatchCallback(onInitStart);
@@ -201,6 +235,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                     firstInitSuccess: state.status.firstInitSuccess || new Date().toISOString()
                 },
                 fsVisitor: visitorInstance,
+                fsSdk,
                 fsModifications: visitorInstance.fetchedModifications || null,
                 private: {
                     previousFetchedModifications: visitorInstance.fetchedModifications || undefined
@@ -235,6 +270,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     };
 
     const handleError = (error: Error): void => {
+        state.log.fatal(`error: ${error.stack}`);
         setError({ error, hasError: !!error });
     };
     return (

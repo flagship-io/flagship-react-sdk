@@ -56,13 +56,8 @@ const ReactErrorBoundaryContainer: React.SFC<Props> = ({
                             marginTop: '8px'
                         }}
                     >
-                        <h3 style={{ color: 'white' }}>
-                            Flagship React SDK has crashed.
-                        </h3>
-                        <button
-                            style={{ ...btnStyle }}
-                            onClick={onClickCollapse}
-                        >
+                        <h3 style={{ color: 'white' }}>Flagship React SDK has crashed.</h3>
+                        <button style={{ ...btnStyle }} onClick={onClickCollapse}>
                             {isCollapse ? 'Hide details' : 'Show details'}
                         </button>
                     </div>

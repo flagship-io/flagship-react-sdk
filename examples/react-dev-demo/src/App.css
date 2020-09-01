@@ -37,6 +37,15 @@ form .form-check {
     border-color: black !important;
 }
 
+.fsTextField {
+    max-width: 400px;
+    margin-left: 16px;
+}
+
+.alert a {
+    color: #de436f !important;
+}
+
 .fsNavbar,
 .alert-dark.fs-alert,
 .fsNavbar .dropdown-menu,

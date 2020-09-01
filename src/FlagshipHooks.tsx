@@ -11,7 +11,6 @@ import FlagshipContext, { FsStatus } from './FlagshipContext';
 
 declare type ModificationKeys = Array<string>;
 declare type UseFsActivateOutput = void;
-declare type UseFsSynchronize = void;
 declare type UseFsModificationsOutput = GetModificationsOutput;
 
 const reportNoVisitor = (log: FsLogger | null): void => {
@@ -42,42 +41,6 @@ export const useFsActivate = (
         } else {
             fsVisitor.activateModifications(modificationKeys.map((key) => ({ key })));
         }
-        return undefined;
-    }, applyEffectScope);
-};
-
-export const useFsSynchronize = (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    applyEffectScope: any[] = [],
-    activateAllModifications = false
-): UseFsSynchronize => {
-    const { state, setState, hasError } = useContext(FlagshipContext);
-    useEffect(() => {
-        const { fsVisitor } = state;
-
-        if (hasError) {
-            return safeModeLog(state.log, 'UseFsSynchronize');
-        }
-        if (!fsVisitor) {
-            reportNoVisitor(state.log);
-        } else {
-            fsVisitor.synchronizeModifications(activateAllModifications).then((/* statusCode */) => {
-                if (setState) {
-                    setState({
-                        ...state,
-                        fsVisitor,
-                        status: {
-                            ...state.status,
-                            isLoading: false,
-                            lastRefresh: new Date().toISOString()
-                        }
-                    });
-                } else {
-                    throw new Error('Error: useFsSynchronize > useEffect, setState is undefined');
-                }
-            });
-        }
-
         return undefined;
     }, applyEffectScope);
 };
@@ -135,9 +98,13 @@ export declare type UseFlagshipParams = {
         activateAll?: boolean;
     };
 };
+
 export declare type UseFlagshipOutput = {
     modifications: GetModificationsOutput;
-    getModificationInfo: null | ((key: string) => Promise<null | GetModificationInfoOutput>);
+    getModificationInfo: (key: string) => Promise<null | GetModificationInfoOutput>;
+    synchronizeModifications(activate: boolean): Promise<number>;
+    startBucketingPolling(): { success: boolean; reason?: string };
+    stopBucketingPolling(): { success: boolean; reason?: string };
     status: FsStatus;
     hit: {
         send(hit: HitShape): void;
@@ -156,13 +123,34 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
     } = computedOptions;
     const {
         hasError,
-        state: { fsVisitor, status, log }
+        state: { fsSdk, fsVisitor, status, log }
     } = useContext(FlagshipContext);
     if (hasError) {
         return {
             modifications: safeMode_getCacheModifications(modificationsRequested, activateAllModifications),
             status,
-            getModificationInfo: null,
+            synchronizeModifications: (activate = false): Promise<number> => {
+                safeModeLog(log, 'synchronizeModifications');
+                return new Promise((resolve) => resolve(400));
+            },
+            getModificationInfo: (): Promise<null> => {
+                safeModeLog(log, 'getModificationInfo');
+                return new Promise((resolve) => resolve(null));
+            },
+            startBucketingPolling: (): { success: boolean; reason?: string } => {
+                safeModeLog(log, 'startBucketingPolling');
+                return {
+                    success: false,
+                    reason: 'Safe mode enabled'
+                };
+            },
+            stopBucketingPolling: (): { success: boolean; reason?: string } => {
+                safeModeLog(log, 'startBucketingPolling');
+                return {
+                    success: false,
+                    reason: 'Safe mode enabled'
+                };
+            },
             hit: {
                 send: (): void => {
                     safeModeLog(log, 'send hit');
@@ -192,15 +180,48 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
             logSdkNotReady();
         }
     };
+
+    const synchronizeModifications = (activate = false): Promise<number> => {
+        if (fsVisitor && fsVisitor.synchronizeModifications) {
+            return fsVisitor.synchronizeModifications(activate);
+        }
+        logSdkNotReady();
+        return new Promise((resolve) => resolve(405));
+    };
     send.bind(fsVisitor);
     sendMultiple.bind(fsVisitor);
     return {
+        synchronizeModifications,
         modifications: getCacheModifications(fsVisitor, modificationsRequested, activateAllModifications, log),
-        getModificationInfo:
-            fsVisitor !== null
-                ? (key: string): Promise<GetModificationInfoOutput | null> =>
-                      (fsVisitor as IFlagshipVisitor).getModificationInfo(key)
-                : null,
+        getModificationInfo: (key: string): Promise<GetModificationInfoOutput | null> => {
+            return fsVisitor !== null
+                ? (fsVisitor as IFlagshipVisitor).getModificationInfo(key)
+                : new Promise((resolve) => resolve(null));
+        },
+        startBucketingPolling: (): { success: boolean; reason?: string } => {
+            if (fsSdk) {
+                return fsSdk.startBucketingPolling();
+            }
+            if (log) {
+                log.error('startBucketingPolling not ready yet.');
+            }
+            return {
+                success: false,
+                reason: 'startBucketingPolling not ready yet.'
+            };
+        },
+        stopBucketingPolling: (): { success: boolean; reason?: string } => {
+            if (fsSdk) {
+                return fsSdk.stopBucketingPolling();
+            }
+            if (log) {
+                log.error('stopBucketingPolling not ready yet.');
+            }
+            return {
+                success: false,
+                reason: 'startBucketingPolling not ready yet.'
+            };
+        },
         status,
         hit: {
             send,

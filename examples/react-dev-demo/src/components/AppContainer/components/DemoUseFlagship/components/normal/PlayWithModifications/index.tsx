@@ -24,7 +24,7 @@ const PlayWithModifications: React.FC = () => {
                 <Button
                     variant="secondary"
                     style={{
-                        backgroundColor: fsModifications.color
+                        backgroundColor: fsModifications.color as string
                     }}
                 >
                     {`I'm a button customized with Flagship (backgroundColor=${fsModifications.color})`}

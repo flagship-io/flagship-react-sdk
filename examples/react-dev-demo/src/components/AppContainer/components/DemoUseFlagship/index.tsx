@@ -10,6 +10,8 @@ import PlayWithModifications from './components/normal/PlayWithModifications';
 import PlayWithHitsQA from './components/qa/PlayWithHits';
 import PlayWithModificationInfoQA from './components/qa/PlayWithModificationInfo';
 import PlayWithModificationsQA from './components/qa/PlayWithModifications';
+import PlayWithStartAndStopBucketing from './components/normal/PlayWithStartAndStopBucketing';
+import PlayWithStartAndStopBucketingQA from './components/qa/PlayWithStartAndStopBucketing';
 
 export const DemoUseFlagship = () => {
     const { status: fsStatus } = useFlagship();
@@ -75,6 +77,12 @@ fsStatus=${JSON.stringify(fsStatus, null, 2)};
                     </h3>
                     {!QA.enabled && <PlayWithModificationInfo></PlayWithModificationInfo>}
                     <PlayWithModificationInfoQA></PlayWithModificationInfoQA>
+                    <div className="fsAnchor" id="startOrStopBucketing"></div>
+                    <h3 className="mt3">
+                        5 - Start or stop <i>bucketing polling</i>
+                    </h3>
+                    {!QA.enabled && <PlayWithStartAndStopBucketing></PlayWithStartAndStopBucketing>}
+                    <PlayWithStartAndStopBucketingQA></PlayWithStartAndStopBucketingQA>
                 </Alert>
             </Col>
         </Row>

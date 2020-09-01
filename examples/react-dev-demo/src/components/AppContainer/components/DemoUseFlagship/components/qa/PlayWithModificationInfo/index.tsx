@@ -4,6 +4,7 @@ import React from 'react';
 import { Button, Col, Form } from 'react-bootstrap';
 import JSONInput from 'react-json-editor-ajrm';
 import locale from 'react-json-editor-ajrm/locale/en';
+import { NotificationManager } from 'react-notifications';
 
 const PlayWithModificationInfo: React.FC = () => {
     const [hasError, setError] = React.useState(false);
@@ -57,9 +58,12 @@ const PlayWithModificationInfo: React.FC = () => {
                         getModificationInfo(values.fsParams)
                             .then((response) => {
                                 setFsOutput({ data: response, loading: false });
+                                NotificationManager.info('getModificationInfo succeed');
                             })
                             .catch((e) => {
                                 setFsOutput({ data: { error: e.message }, loading: false });
+                                NotificationManager.error('getModificationInfo failed with ' + e.stack);
+                                setError(true);
                             });
                     } else {
                         // nothing
