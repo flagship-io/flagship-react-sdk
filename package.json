@@ -1,6 +1,6 @@
 {
     "name": "@flagship.io/react-sdk",
-    "version": "1.3.1",
+    "version": "2.0.0",
     "description": "Flagship REACT SDK",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -17,7 +17,7 @@
         "version": "npm run build",
         "checkReleasePrerequisites": "docker -v",
         "publish": "npm run update:reactDemoDev && npm run update:reactDemoEcommerce && git add . && git commit -m\"Post publish update\" && git push && npm run publish:reactDemoDev && npm run publish:reactDemoEcommerce",
-        "publish:reactDemoDev": "cd ./examples/react-dev-demo && npm run deploy:github",
+        "publish:reactDemoDev": "cd ./examples/react-dev-demo && npm i && npm run deploy:github",
         "publish:reactDemoEcommerce": "cd ./examples/react-ecommerce-demo && npm run release:docker",
         "update:fsLog": "npm install @flagship.io/js-sdk-logs@latest --save",
         "update:reactDemoDev": "cd ./examples/react-dev-demo && npm install @flagship.io/react-sdk@latest @flagship.io/js-sdk@latest --save && cd ../../",
@@ -56,7 +56,7 @@
     ],
     "homepage": "https://github.com/abtasty/flagship-react-sdk#readme",
     "dependencies": {
-        "@flagship.io/js-sdk": "^2.0.2",
+        "@flagship.io/js-sdk": "^2.1.0",
         "@flagship.io/js-sdk-logs": "^0.1.2"
     },
     "peerDependencies": {
