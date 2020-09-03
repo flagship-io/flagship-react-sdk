@@ -33,8 +33,8 @@ export declare type FsState = {
 };
 
 export interface FlagshipReactSdkConfig extends FlagshipSdkConfig {
-    enableErrorLayout: boolean;
-    enableSafeMode: boolean;
+    enableErrorLayout?: boolean;
+    enableSafeMode?: boolean;
 }
 
 export const initState: FsState = {
@@ -81,12 +81,13 @@ interface FlagshipProviderProps {
     };
     fetchNow?: boolean;
     decisionMode?: 'API' | 'Bucketing';
-    pollingInterval?: number;
+    pollingInterval?: number | null;
     activateNow?: boolean;
     enableConsoleLogs?: boolean;
     enableErrorLayout?: boolean;
     enableSafeMode?: boolean;
     nodeEnv?: string;
+    timeout?: number;
     flagshipApi?: string;
     apiKey?: string | null;
     initialModifications?: DecisionApiCampaign[];
@@ -113,6 +114,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     onBucketingSuccess,
     onBucketingFail,
     onUpdate,
+    timeout,
     fetchNow,
     activateNow,
     enableConsoleLogs,
@@ -131,6 +133,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             decisionMode: decisionMode || 'API',
             pollingInterval: pollingInterval || null,
             activateNow: activateNow || false,
+            timeout: timeout || undefined,
             enableConsoleLogs: enableConsoleLogs || false,
             enableErrorLayout: enableErrorLayout || false,
             enableSafeMode: enableSafeMode || false,
@@ -187,18 +190,25 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 
     // Call FlagShip any time context get changed.
     useEffect(() => {
-        if (
-            state.fsSdk &&
-            state.fsSdk.config.decisionMode !== computedConfig.decisionMode &&
-            state.fsSdk.config.decisionMode === 'Bucketing'
-        ) {
+        let previousBucketing = null;
+        if (state.fsSdk && state.fsSdk.config.decisionMode === 'Bucketing') {
             state.fsSdk.stopBucketingPolling(); // force bucketing to stop
-            state.log.debug('bucketing automatically stopped because the decision mode has changed');
+            state.log.info(
+                'Bucketing automatically stopped because a setting props from FlagshipProvider has changed. Bucketing will restart automatically if decisionMode is still "Bucketing"'
+            );
+
+            state.fsSdk.eventEmitter.removeAllListeners(); // remove all listeners
+
+            previousBucketing = state.fsSdk.bucket?.data || null;
         }
-        const fsSdk = flagship.start(envId, computedConfig);
+        const fsSdk = flagship.start(envId, {
+            ...computedConfig,
+            initialBucketing:
+                computedConfig.initialBucketing === null ? previousBucketing : computedConfig.initialBucketing
+        });
         fsSdk.eventEmitter.on('bucketPollingSuccess', ({ status, payload }: BucketingSuccessArgs) => {
             if (onBucketingSuccess) {
-                onBucketingSuccess({ status, payload });
+                onBucketingSuccess({ status: status.toString(), payload });
             }
         });
         fsSdk.eventEmitter.on('bucketPollingFailed', (error: Error) => {

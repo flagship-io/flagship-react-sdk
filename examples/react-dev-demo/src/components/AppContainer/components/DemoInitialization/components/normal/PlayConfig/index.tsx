@@ -17,6 +17,8 @@ const PlayConfig: React.FC = () => {
         const computeValue = () => {
             if (key === 'pollingInterval') {
                 return parseInt(e.target.value.split(' min')[0]);
+            } else if (key === 'timeout') {
+                return parseFloat(e.target.value.split(' second(s)')[0]);
             }
             return e.target.value;
         };
@@ -126,15 +128,35 @@ const PlayConfig: React.FC = () => {
                     >
                         <div>pollingInterval: </div>
                         <Form.Control as="select" onChange={(e) => handleSettings(e, 'pollingInterval')}>
-                            <option key={newSettings.pollingInterval}>{newSettings.pollingInterval} minutes</option>
+                            <option key={'pollingInterval' + newSettings.pollingInterval?.toString()}>
+                                {newSettings.pollingInterval} secondes
+                            </option>
                             {config.sandbox.pollingInterval
                                 .filter((i) => i !== newSettings.pollingInterval)
                                 .map((id) => (
-                                    <option key={id}>{id} minutes</option>
+                                    <option key={id}>{id} secondes</option>
                                 ))}
                         </Form.Control>
                     </Form.Group>
                 )}
+                <Form.Group
+                    controlId="initForm.Control1.23"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginLeft: '16px'
+                    }}
+                >
+                    <div>timeout: </div>
+                    <Form.Control as="select" onChange={(e) => handleSettings(e, 'timeout')}>
+                        <option key={newSettings.timeout}>{newSettings.timeout} second(s)</option>
+                        {config.sandbox.timeout
+                            .filter((i) => i !== newSettings.timeout)
+                            .map((id) => (
+                                <option key={id}>{id} second(s)</option>
+                            ))}
+                    </Form.Control>
+                </Form.Group>
                 {Object.keys({
                     ...config.sandbox.config
                 })

@@ -1,9 +1,9 @@
 import './App.css';
 
-import { FlagshipProvider } from '@flagship.io/react-sdk';
+import { FlagshipProvider, FlagshipReactSdkConfig } from '@flagship.io/react-sdk';
 import React, { createContext, Dispatch, SetStateAction } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
-import { NotificationContainer } from 'react-notifications';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 import { AppContainer } from './components/AppContainer';
 import config from './config';
@@ -12,16 +12,11 @@ import QaHeader from './components/QaHeader';
 interface VisitorContext {
     [key: string]: any;
 }
-export interface SdkSettings {
+export interface SdkSettings extends FlagshipReactSdkConfig {
     envId: string;
-    fetchNow?: boolean;
-    activateNow?: boolean;
-    decisionMode?: 'API' | 'Bucketing';
-    pollingInterval?: number;
-    enableConsoleLogs?: boolean;
-    enableErrorLayout?: boolean;
-    enableSafeMode?: boolean;
     nodeEnv?: string;
+    enableSafeMode?: boolean;
+    enableErrorLayout?: boolean;
     flagshipApi?: string;
     apiKey: string | null;
     visitorData: {
@@ -53,6 +48,7 @@ const App: React.FC = () => {
         pollingInterval: config.pollingInterval,
         enableConsoleLogs: config.enableConsoleLogs,
         enableErrorLayout: config.enableErrorLayout,
+        timeout: config.timeout,
         flagshipApi: config.flagshipApi,
         apiKey: config.apiKey,
         nodeEnv: 'production',
@@ -75,6 +71,7 @@ const App: React.FC = () => {
                     pollingInterval={currentSettings.pollingInterval}
                     flagshipApi={currentSettings.flagshipApi}
                     apiKey={currentSettings.apiKey}
+                    timeout={currentSettings.timeout}
                     decisionMode={currentSettings.decisionMode}
                     enableSafeMode={true}
                     nodeEnv={currentSettings.nodeEnv}
@@ -87,6 +84,11 @@ const App: React.FC = () => {
                     }}
                     onUpdate={({ fsModifications }) => {
                         console.log('onUpdate - triggered');
+                    }}
+                    onBucketingSuccess={({ status }) => {
+                        if (status === '200') {
+                            NotificationManager.info('Bucketing has been updated (status = 200)');
+                        }
                     }}
                     loadingComponent={
                         <Container className="mt5">

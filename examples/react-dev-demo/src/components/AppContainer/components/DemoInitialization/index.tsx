@@ -11,9 +11,6 @@ import PlayVisitorDataQA from './components/qa/PlayVisitorData';
 export const DemoInitialization = () => {
     const name = 'initialization';
     const { currentSettings: currSettings, QA /* setSettings */ } = useContext(SettingContext) as AppSettings;
-    // const [newSettings, setNewSettings] = React.useState<SdkSettings>({
-    //     ...currSettings
-    // });
 
     return (
         <Row>
@@ -41,8 +38,9 @@ const App: React.FC = () => (
       }}
       decisionMode="${typeof currSettings.decisionMode === 'undefined' ? 'API' : currSettings.decisionMode.toString()}"
       pollingInterval={${
-          typeof currSettings.pollingInterval === 'undefined' ? 'undefined' : currSettings.pollingInterval.toString()
+          typeof currSettings.pollingInterval === 'undefined' ? 'undefined' : currSettings.pollingInterval?.toString()
       }} // minute(s)
+      timeout={${typeof currSettings.timeout === 'undefined' ? '2' : currSettings.timeout?.toString()}} // second(s)
       enableErrorLayout={${
           typeof currSettings.enableErrorLayout === 'undefined' ? 'false' : currSettings.enableErrorLayout.toString()
       }}
