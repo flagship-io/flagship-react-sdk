@@ -1,10 +1,20 @@
 # Flagship REACT SDK - Release notes
 
-## ➡️ Version 2.0.0
+## ➡️ Version 2.0.1
 
 ### New features 🎉
 
 -   Panic mode supported. When you've enabled panic mode through the web dashboard, the SDK will detect it and be in safe mode. Logs will appear to warns you and default values for modifications will be return.
+
+-   `timeout` setting added. It specify the timeout duration when fetching campaigns via API mode (`decisionMode = "API"`), defined in **seconds**. Minimal value should be greater than 0. More to come on this setting soon...
+
+### Breaking changes ⚠️
+
+-   `pollingInterval` setting is now a period interval defined in **seconds** (not minutes). Minimal value is 1 second.
+
+## ➡️ Version 2.0.0
+
+### New features 🎉
 
 -   Add `initialBucketing` prop. It takes the data received from the flagship bucketing api endpoint. Can be useful when you save this data in cache.
 
