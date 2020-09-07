@@ -1,5 +1,11 @@
 # Flagship REACT SDK - Release notes
 
+## ➡️ Version 2.0.2
+
+### New features 🎉
+
+-   New optimization when sending activate calls. The visitor instance in the SDK is updated instead of being recreated from scratch.
+
 ## ➡️ Version 2.0.1
 
 ### New features 🎉

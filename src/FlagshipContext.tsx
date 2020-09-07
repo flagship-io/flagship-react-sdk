@@ -216,7 +216,28 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 onBucketingFail(error);
             }
         });
-        const visitorInstance = fsSdk.newVisitor(id, context as FlagshipVisitorContext);
+
+        let visitorInstance: IFlagshipVisitor;
+        // if already previous visitor
+        if (state?.fsVisitor && state.fsVisitor.envId === fsSdk.envId && state.fsVisitor.id === id) {
+            if (state.fsVisitor.context !== context) {
+                state.log.debug(
+                    `update visitor after re-render, but context is different (old vs new): vContext (${JSON.stringify(
+                        state.fsVisitor?.context
+                    )} vs ${JSON.stringify(context)})`
+                );
+            } else {
+                state.log.debug(`update visitor after re-render`);
+            }
+            visitorInstance = (fsSdk as any).updateVisitor(state.fsVisitor, context);
+        } else {
+            if (state?.fsVisitor) {
+                state.log.debug(
+                    `unable to update visitor after re-render because of strong update (old vs new): envId (${state.fsVisitor?.envId} vs ${fsSdk.envId}) or vId (${state.fsVisitor?.id} vs ${id})`
+                );
+            }
+            visitorInstance = fsSdk.newVisitor(id, context as FlagshipVisitorContext);
+        }
         setState({
             ...state,
             status: {
@@ -269,7 +290,12 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 );
             });
         }
-    }, [state]);
+    }, [
+        Object.keys(state).map((key) => {
+            const stateDuplicate: any = state;
+            return stateDuplicate[key];
+        })
+    ]);
 
     const handleDisplay = (): React.ReactNode => {
         const isFirstInit = !fsVisitor || !firstInitSuccess;
