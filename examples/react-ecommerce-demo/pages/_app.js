@@ -9,6 +9,8 @@ function MyApp({ Component, pageProps, cartObj, fsFlags }) {
     return (
         <>
             <Head>
+                /* ************** Tag ABTast ************** */
+                <script type="text/javascript" src="https://try.abtasty.com/887ea4f558dc29f53bbe24e5a24e3c8d.js"></script>
                 <title>Shoppers &mdash; Colorlib e-Commerce Template</title>
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
