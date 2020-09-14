@@ -6,6 +6,7 @@ import flagship, {
     IFlagshipVisitor,
     SaveCacheArgs,
     DecisionApiCampaign,
+    PostFlagshipApiCallback,
     BucketingApiResponse,
     IFlagship
 } from '@flagship.io/js-sdk';
@@ -78,6 +79,7 @@ interface FlagshipProviderProps {
     };
     reactNative?: {
         handleErrorDisplay: HandleErrorBoundaryDisplay;
+        httpCallback: PostFlagshipApiCallback;
     };
     fetchNow?: boolean;
     decisionMode?: 'API' | 'Bucketing';
@@ -170,10 +172,19 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             setError({ error, hasError: true });
         }
     };
-    const computeConfig = () => {
+    const computeConfig = (): FlagshipSdkConfig => {
+        const sdkConfig = {
+            internal: {
+                react: {},
+                reactNative: {
+                    httpCallback: reactNative?.httpCallback
+                }
+            }
+        };
         if (Array.isArray(state.private.previousFetchedModifications)) {
             return {
                 ...configuration,
+                ...sdkConfig,
                 initialModifications: [...state.private.previousFetchedModifications]
             };
         }
@@ -182,11 +193,11 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 'initialModifications props is not correctly set and has been ignored, please check the documentation.'
             );
         }
-        return { ...configuration };
+        return { ...configuration, ...sdkConfig };
     };
     const computedConfig: FlagshipSdkConfig = computeConfig();
 
-    const handleErrorDisplay = reactNative && reactNative.handleErrorDisplay;
+    const handleErrorDisplay = reactNative?.handleErrorDisplay;
 
     // Call FlagShip any time context get changed.
     useEffect(() => {

@@ -166,6 +166,12 @@ describe('fsContext provider', () => {
         );
         expect(computedFsVisitor && (computedFsVisitor as IFlagshipVisitor).id).toEqual(providerProps.visitorData.id);
         expect(computedSdkConfig).toEqual({
+            internal: {
+                react: {},
+                reactNative: {
+                    httpCallback: undefined
+                }
+            },
             activateNow: false,
             enableConsoleLogs: true,
             enableErrorLayout: true,
@@ -227,6 +233,12 @@ describe('fsContext provider', () => {
         );
         expect(computedFsVisitor && (computedFsVisitor as IFlagshipVisitor).id).toEqual(providerProps.visitorData.id);
         expect(computedSdkConfig).toEqual({
+            internal: {
+                react: {},
+                reactNative: {
+                    httpCallback: undefined
+                }
+            },
             activateNow: false,
             enableConsoleLogs: true,
             enableErrorLayout: true,
