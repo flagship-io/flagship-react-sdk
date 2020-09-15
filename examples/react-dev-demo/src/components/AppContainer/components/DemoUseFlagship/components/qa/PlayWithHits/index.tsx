@@ -11,24 +11,24 @@ const PlayWithHits: React.FC = () => {
         type: 'Transaction',
         data: {
             transactionId: '12451342423',
-            affiliation: 'yoloAffiliation',
+            affiliation: 'testAffiliation',
             totalRevenue: 999,
             shippingCost: 888,
-            shippingMethod: 'yoloShippingMethod',
-            currency: 'yoloCurrency',
+            shippingMethod: 'testShippingMethod',
+            currency: 'testCurrency',
             taxes: 1234444,
-            paymentMethod: 'yoloPaymentMethod',
+            paymentMethod: 'testPaymentMethod',
             itemCount: 2,
-            couponCode: 'YOLOCOUPON',
+            couponCode: 'TESTCOUPON',
             documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-            pageTitle: 'YoloScreen'
+            pageTitle: 'TestScreen'
         }
     };
     const defaultScreenHitPayload = {
         type: 'Screen',
         data: {
             documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-            pageTitle: 'YoloScreen'
+            pageTitle: 'TestScreen'
         }
     };
     const defaultEventHitPayload = {
@@ -36,23 +36,23 @@ const PlayWithHits: React.FC = () => {
         data: {
             category: 'User Engagement',
             action: 'signOff',
-            label: 'yolo label ;)',
+            label: 'test label ;)',
             value: 123,
             documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-            pageTitle: 'YoloTitle'
+            pageTitle: 'TestTitle'
         }
     };
     const defaultItemHitPayload = {
         type: 'Item',
         data: {
             transactionId: '12451342423',
-            name: 'yoloItem',
+            name: 'testItem',
             price: 999,
-            code: 'yoloCode',
-            category: 'yoloCategory',
+            code: 'testCode',
+            category: 'testCategory',
             quantity: 1234444,
             documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-            pageTitle: 'YoloScreen'
+            pageTitle: 'TestScreen'
         }
     };
     const payloads = {
