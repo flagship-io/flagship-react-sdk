@@ -32,11 +32,11 @@ const PlayWithHits: React.FC = () => {
             data: {
                 category: 'User Engagement',
                 action: 'signOff',
-                label: 'yolo label ;)',
+                label: 'test label ;)',
                 value: 123,
                 documentLocation:
                     'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-                pageTitle: 'YoloTitle'
+                pageTitle: 'TestTitle'
             }
         };
         fsHit.sendMultiple([transactionHit, eventHit]);
@@ -73,10 +73,10 @@ const PlayWithHits: React.FC = () => {
                         data: {
                             category: 'User Engagement',
                             action: 'signOff',
-                            label: 'yolo label ;)',
+                            label: 'test label ;)',
                             value: 123,
                             documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-                            pageTitle: 'YoloTitle'
+                            pageTitle: 'TestTitle'
                         }
                     } as {
                         type: 'Event';
@@ -153,7 +153,7 @@ const PlayWithHits: React.FC = () => {
             type: 'Screen',
             data: {
                 documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-                pageTitle: 'YoloScreen',
+                pageTitle: 'TestScreen',
             },
         };
         fsHit.send(mockHit);
@@ -169,7 +169,7 @@ const PlayWithHits: React.FC = () => {
                         type: 'Screen',
                         data: {
                             documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-                            pageTitle: 'YoloScreen'
+                            pageTitle: 'TestScreen'
                         }
                     } as {
                         type: 'Screen';
@@ -189,13 +189,13 @@ const PlayWithHits: React.FC = () => {
             type: 'Item',
             data: {
               transactionId: '12451342423',
-              name: 'yoloItem',
+              name: 'testItem',
               price: 999,
-              code: 'yoloCode',
-              category: 'yoloCategory',
+              code: 'testCode',
+              category: 'testCategory',
               quantity: 1234444,
               documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-              pageTitle: 'YoloScreen',
+              pageTitle: 'TestScreen',
             }
         };
         fsHit.send(mockHit);
@@ -211,13 +211,13 @@ const PlayWithHits: React.FC = () => {
                         type: 'Item',
                         data: {
                             transactionId: '12451342423',
-                            name: 'yoloItem',
+                            name: 'testItem',
                             price: 999,
-                            code: 'yoloCode',
-                            category: 'yoloCategory',
+                            code: 'testCode',
+                            category: 'testCategory',
                             quantity: 1234444,
                             documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-                            pageTitle: 'YoloScreen'
+                            pageTitle: 'TestScreen'
                         }
                     } as {
                         type: 'Item';
@@ -239,11 +239,11 @@ const PlayWithHits: React.FC = () => {
             data: {
                 category: 'User Engagement',
                 action: 'signOff',
-                label: 'yolo label ;)',
+                label: 'test label ;)',
                 value: 123,
                 documentLocation:
                     'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-                pageTitle: 'YoloTitle'
+                pageTitle: 'TestTitle'
             }
         };
         fsHit.send(mockHit);
@@ -260,10 +260,10 @@ const PlayWithHits: React.FC = () => {
                         data: {
                             category: 'User Engagement',
                             action: 'signOff',
-                            label: 'yolo label ;)',
+                            label: 'test label ;)',
                             value: 123,
                             documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-                            pageTitle: 'YoloTitle'
+                            pageTitle: 'TestTitle'
                         }
                     } as {
                         type: 'Event';

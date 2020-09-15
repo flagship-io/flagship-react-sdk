@@ -131,14 +131,14 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     const { id, context } = visitorData;
     const extractConfiguration = (): FlagshipReactSdkConfig => {
         const configV2: FlagshipReactSdkConfig = {
-            fetchNow: fetchNow || false,
+            fetchNow: typeof fetchNow !== 'boolean' ? true : fetchNow,
             decisionMode: decisionMode || 'API',
             pollingInterval: pollingInterval || null,
-            activateNow: activateNow || false,
-            timeout: timeout || undefined,
-            enableConsoleLogs: enableConsoleLogs || false,
-            enableErrorLayout: enableErrorLayout || false,
-            enableSafeMode: enableSafeMode || false,
+            activateNow: typeof activateNow !== 'boolean' ? false : activateNow,
+            timeout: typeof timeout !== 'number' ? undefined : timeout,
+            enableConsoleLogs: typeof enableConsoleLogs !== 'boolean' ? false : enableConsoleLogs,
+            enableErrorLayout: typeof enableErrorLayout !== 'boolean' ? false : enableErrorLayout,
+            enableSafeMode: typeof enableSafeMode !== 'boolean' ? false : enableSafeMode,
             nodeEnv: nodeEnv || 'production',
             initialBucketing: initialBucketing || null,
             flagshipApi,
@@ -212,8 +212,9 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 
             previousBucketing = state.fsSdk.bucket?.data || null;
         }
-        const fsSdk = flagship.start(envId, {
-            ...computedConfig,
+        const { apiKey: theApiKey, ...otherComputedConfig } = computedConfig;
+        const fsSdk = flagship.start(envId, theApiKey, {
+            ...otherComputedConfig,
             initialBucketing:
                 computedConfig.initialBucketing === null ? previousBucketing : computedConfig.initialBucketing
         });
@@ -242,6 +243,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             }
             visitorInstance = (fsSdk as any).updateVisitor(state.fsVisitor, context);
         } else {
+            // if existing visitor
             if (state?.fsVisitor) {
                 state.log.debug(
                     `unable to update visitor after re-render because of strong update (old vs new): envId (${state.fsVisitor?.envId} vs ${fsSdk.envId}) or vId (${state.fsVisitor?.id} vs ${id})`
@@ -249,24 +251,9 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             }
             visitorInstance = fsSdk.newVisitor(id, context as FlagshipVisitorContext);
         }
-        setState({
-            ...state,
-            status: {
-                ...state.status,
-                isLoading: true
-            },
-            fsVisitor: visitorInstance,
-            fsModifications: visitorInstance.fetchedModifications || null,
-            fsSdk
-        });
         if (onInitStart) {
             tryCatchCallback(onInitStart);
         }
-        visitorInstance.on('saveCache', (args) => {
-            if (onSavingModificationsInCache) {
-                tryCatchCallback(() => onSavingModificationsInCache(args));
-            }
-        });
         visitorInstance.on('ready', () => {
             setState({
                 ...state,
@@ -286,6 +273,21 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             if (onInitDone) {
                 tryCatchCallback(onInitDone);
             }
+        });
+        visitorInstance.on('saveCache', (args) => {
+            if (onSavingModificationsInCache) {
+                tryCatchCallback(() => onSavingModificationsInCache(args));
+            }
+        });
+        setState({
+            ...state,
+            status: {
+                ...state.status,
+                isLoading: true
+            },
+            fsVisitor: visitorInstance,
+            fsModifications: visitorInstance.fetchedModifications || null,
+            fsSdk
         });
     }, [envId, id, JSON.stringify(configuration) + JSON.stringify(context)]);
 
@@ -310,7 +312,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 
     const handleDisplay = (): React.ReactNode => {
         const isFirstInit = !fsVisitor || !firstInitSuccess;
-        if (isLoading && loadingComponent && isFirstInit) {
+        if (isLoading && loadingComponent && isFirstInit && fetchNow) {
             return <>{loadingComponent}</>;
         }
         return <>{children}</>;
