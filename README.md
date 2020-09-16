@@ -24,15 +24,18 @@
 
 **Visit [https://developers.flagship.io/](https://developers.flagship.io/) to get started with Flagship.**
 
--   [Installation & Getting Started](http://developers.flagship.io/react/v2.x.x/#getting-started)
--   [Flagship Provider Props](http://developers.flagship.io/react/v2.x.x/#flagshipprovider-props)
--   [Available Hooks](http://developers.flagship.io/react/v2.x.x/#flagship-hooks)
+-   [Installation & Getting Started](https://developers.flagship.io/docs/sdk/react/v2.0#getting-started)
+-   [API Reference](https://developers.flagship.io/docs/sdk/react/v2.0#api-reference)
+-   [Flagship Provider Props](https://developers.flagship.io/docs/sdk/react/v2.0#flagshipprovider)
+-   Available Hooks
 
-    -   [useFlagship](http://developers.flagship.io/react/v2.x.x/#useflagship)
-    -   [useFsModifications](http://developers.flagship.io/react/v2.x.x/#usefsmodifications)
-    -   [useFsActivate](http://developers.flagship.io/react/v2.x.x/#usefsactivate)
+    -   [useFlagship](https://developers.flagship.io/docs/sdk/react/v2.0#useflagship)
+    -   [useFsModifications](https://developers.flagship.io/docs/sdk/react/v2.0#usefsmodifications)
+    -   [useFsActivate](https://developers.flagship.io/docs/sdk/react/v2.0#usefsactivate)
 
--   [Hit tracking](http://developers.flagship.io/react/v2.x.x/#hit)
+-   [Getting modifications](https://developers.flagship.io/docs/sdk/react/v2.0#getting-modifications)
+-   [Campaign synchronization](https://developers.flagship.io/docs/sdk/react/v2.0#campaign-synchronization)
+-   [Hit tracking](https://developers.flagship.io/docs/sdk/react/v2.0#hit-tracking)
 -   [Release Notes](https://github.com/abtasty/flagship-react-sdk/blob/master/RELEASENOTES.md)
 -   [Contributing](https://github.com/abtasty/flagship-react-sdk/blob/master/CONTRIBUTING.md)
 
