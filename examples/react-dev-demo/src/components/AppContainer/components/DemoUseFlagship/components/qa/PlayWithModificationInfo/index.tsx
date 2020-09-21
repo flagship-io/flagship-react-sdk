@@ -71,7 +71,7 @@ const PlayWithModificationInfo: React.FC = () => {
                 }}
             >
                 {({ handleSubmit, handleChange, handleBlur, setFieldValue, values, touched, isValid, errors }) => (
-                    <Form noValidate onSubmit={handleSubmit}>
+                    <Form noValidate onSubmit={handleSubmit as any}>
                         <Form.Group as={Col} md="12" controlId="modificationInfoKey">
                             <Form.Label>Modification key</Form.Label>
                             <Form.Control

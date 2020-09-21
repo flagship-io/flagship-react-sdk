@@ -121,7 +121,7 @@ const PlayWithHits: React.FC = () => {
                 }}
             >
                 {({ handleSubmit, handleChange, handleBlur, setFieldValue, values, touched, isValid, errors }) => (
-                    <Form noValidate onSubmit={handleSubmit}>
+                    <Form noValidate onSubmit={handleSubmit as any}>
                         <Form.Group as={Col} md="12" controlId="settingsForm">
                             <Form.Label>{currentTestedHit} hit payload</Form.Label>
                             <JSONInput
@@ -180,7 +180,7 @@ const PlayWithHits: React.FC = () => {
                 }}
             >
                 {({ handleSubmit, handleChange, handleBlur, setFieldValue, values, touched, isValid, errors }) => (
-                    <Form noValidate onSubmit={handleSubmit}>
+                    <Form noValidate onSubmit={handleSubmit as any}>
                         <Form.Group as={Col} md="12" controlId="settingsForm">
                             <Form.Label>sendMultiple argument</Form.Label>
                             <JSONInput

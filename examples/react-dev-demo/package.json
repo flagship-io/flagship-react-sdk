@@ -13,13 +13,13 @@
         "formik": "^2.1.4",
         "gh-pages": "^2.1.1",
         "react": "^16.12.0",
-        "react-bootstrap": "^1.0.0-beta.16",
+        "react-bootstrap": "^1.3.0",
         "react-dom": "^16.12.0",
         "react-json-editor-ajrm": "^2.5.9",
         "react-notifications": "^1.6.0",
         "react-scripts": "3.2.0",
         "react-syntax-highlighter": "^12.2.1",
-        "typescript": "3.7.2"
+        "typescript": "^4.0.3"
     },
     "scripts": {
         "start": "react-scripts start",
@@ -27,6 +27,7 @@
         "deploy:github": "npm run build && gh-pages -d build",
         "predeploy": "npm run build",
         "deploy": "gh-pages -d build",
+        "tsc": "tsc -v",
         "test": "react-scripts test --watchAll=false",
         "eject": "react-scripts eject"
     },

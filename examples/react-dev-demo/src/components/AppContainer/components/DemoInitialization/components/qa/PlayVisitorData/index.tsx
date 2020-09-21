@@ -35,7 +35,7 @@ const PlayVisitorData: React.FC = () => {
             }}
         >
             {({ handleSubmit, handleChange, handleBlur, setFieldValue, values, touched, isValid, errors }) => (
-                <Form noValidate onSubmit={handleSubmit}>
+                <Form noValidate onSubmit={handleSubmit as any}>
                     <Form.Group as={Col} md="12" controlId="validationFormik01">
                         <Form.Label>Visitor ID</Form.Label>
                         <Form.Control
