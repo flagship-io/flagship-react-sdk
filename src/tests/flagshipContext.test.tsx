@@ -139,7 +139,9 @@ describe('fsContext provider', () => {
         );
         expect(
             ((isCalled.onUpdateParams.sdkData as any).fsModifications as DecisionApiCampaign[]).filter(
-                (i: any) => !i.variation.reference
+                (campaign: any) =>
+                    !campaign.variation.reference &&
+                    ['bqjfstuirtfg01mctmn0', 'bsq046crms2g1jsvtb20'].includes(campaign.id)
             )
         ).toEqual(fetchedModifications);
         expect(isCalled.onUpdateParams.sdkVisitor).not.toBe(null);
