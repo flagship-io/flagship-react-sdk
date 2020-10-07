@@ -1,5 +1,13 @@
 # Flagship REACT SDK - Release notes
 
+## ➡️ Version 2.0.6
+
+### Bug fixes 🐛
+
+-   Safe mode side effects still processing even if `enableSafeMode` is falsy. Not anymore.
+
+-   Fix rendering issue, not immediately considering modifications from `initialModifications`, when it's set.
+
 ## ➡️ Version 2.0.5
 
 -   Minor change.

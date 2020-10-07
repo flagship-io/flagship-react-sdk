@@ -333,16 +333,20 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     };
     return (
         <FlagshipContext.Provider value={{ state, setState, hasError: errorData.hasError }}>
-            <FlagshipErrorBoundary
-                customerChildren={children}
-                onError={handleError}
-                error={errorData.error}
-                sdkSettings={configuration as FlagshipReactSdkConfig}
-                handleDisplay={handleErrorDisplay}
-                log={state.log}
-            >
-                {handleDisplay()}
-            </FlagshipErrorBoundary>
+            {enableSafeMode ? (
+                <FlagshipErrorBoundary
+                    customerChildren={children}
+                    onError={handleError}
+                    error={errorData.error}
+                    sdkSettings={configuration as FlagshipReactSdkConfig}
+                    handleDisplay={handleErrorDisplay}
+                    log={state.log}
+                >
+                    {handleDisplay()}
+                </FlagshipErrorBoundary>
+            ) : (
+                handleDisplay()
+            )}
         </FlagshipContext.Provider>
     );
 };
