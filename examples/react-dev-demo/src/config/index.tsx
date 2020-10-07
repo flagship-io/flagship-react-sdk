@@ -6,10 +6,10 @@ const config = {
     timeout: 2,
     enableConsoleLogs: true,
     enableErrorLayout: true,
+    enableSafeMode: true,
     nodeEnv: 'production',
     flagshipApi: 'https://decision-api.flagship.io/v1/',
     apiKey: null,
-    enableSafeMode: true,
     visitorData: {
         id: 'test-vid',
         context: { isAwesome: false, isEvil: false }
@@ -17,6 +17,7 @@ const config = {
     sandbox: {
         config: {
             fetchNow: true,
+            enableSafeMode: true,
             enableConsoleLogs: true,
             enableErrorLayout: true
         },

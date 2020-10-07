@@ -51,6 +51,15 @@ export const DemoErrorBoundary = () => {
                                 </Alert>
                             </div>
                         )}
+                        {!currentSettings.enableSafeMode && (
+                            <div className="mv3">
+                                <Alert variant="warning">
+                                    <b>NOTE:</b> You CAN'T see the banner because the setting <i>enableSafeMode</i> is
+                                    disabled, you need to change the value in <a href="#playWithConfig">SDK settings</a>
+                                    .
+                                </Alert>
+                            </div>
+                        )}
                     </div>
                 </Alert>
             </Col>
