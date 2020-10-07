@@ -48,6 +48,7 @@ const App: React.FC = () => {
         pollingInterval: config.pollingInterval,
         enableConsoleLogs: config.enableConsoleLogs,
         enableErrorLayout: config.enableErrorLayout,
+        enableSafeMode: config.enableSafeMode,
         timeout: config.timeout,
         flagshipApi: config.flagshipApi,
         apiKey: config.apiKey,

@@ -38,7 +38,7 @@ const PlayWithModifications: React.FC = () => {
                 }}
             >
                 {({ handleSubmit, handleChange, handleBlur, setFieldValue, values, touched, isValid, errors }) => (
-                    <Form noValidate onSubmit={handleSubmit}>
+                    <Form noValidate onSubmit={handleSubmit as any}>
                         <Form.Group as={Col} md="12" controlId="settingsForm">
                             <Form.Label>useFlagship arguments</Form.Label>
                             <JSONInput

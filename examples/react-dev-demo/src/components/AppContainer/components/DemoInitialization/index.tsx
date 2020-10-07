@@ -44,6 +44,9 @@ const App: React.FC = () => (
       enableErrorLayout={${
           typeof currSettings.enableErrorLayout === 'undefined' ? 'false' : currSettings.enableErrorLayout.toString()
       }}
+      enableSafeMode={${
+          typeof currSettings.enableSafeMode === 'undefined' ? 'false' : currSettings.enableSafeMode.toString()
+      }}
       nodeEnv="${typeof currSettings.nodeEnv === 'undefined' ? 'undefined' : currSettings.nodeEnv.toString()}"
       flagshipApi="${
           typeof currSettings.flagshipApi === 'undefined' ? 'undefined' : currSettings.flagshipApi.toString()

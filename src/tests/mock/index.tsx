@@ -28,6 +28,7 @@ export const defaultContext: {
         fsModifications: null,
         status: {
             isLoading: true,
+            isVisitorDefined: false,
             lastRefresh: null,
             firstInitSuccess: null,
             hasError: false

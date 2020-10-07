@@ -44,7 +44,7 @@ const PlayConfig: React.FC = () => {
             }}
         >
             {({ handleSubmit, handleChange, handleBlur, setFieldValue, values, touched, isValid, errors }) => (
-                <Form noValidate onSubmit={handleSubmit}>
+                <Form noValidate onSubmit={handleSubmit as any}>
                     <Form.Group as={Col} md="12" controlId="envIdForm">
                         <Form.Label>Environment ID</Form.Label>
                         <Form.Control

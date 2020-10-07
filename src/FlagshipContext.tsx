@@ -17,6 +17,7 @@ import FlagshipErrorBoundary, { HandleErrorBoundaryDisplay } from './FlagshipErr
 
 export declare type FsStatus = {
     isLoading: boolean;
+    isVisitorDefined: boolean;
     hasError: boolean;
     lastRefresh: string | null;
     firstInitSuccess: string | null;
@@ -45,6 +46,7 @@ export const initState: FsState = {
     fsModifications: null,
     status: {
         isLoading: true,
+        isVisitorDefined: false,
         firstInitSuccess: null,
         lastRefresh: null,
         hasError: false
@@ -65,6 +67,7 @@ const FlagshipContext = React.createContext<{
 export type FsOnUpdateArguments = {
     fsModifications: DecisionApiCampaign[] | null;
     config: FlagshipReactSdkConfig;
+    status: FsStatus;
 };
 
 export type FsOnUpdate = (data: FsOnUpdateArguments, visitor: IFlagshipVisitor | null) => void;
@@ -161,7 +164,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         error: Error | null;
     }>({ hasError: false, error: null });
     const {
-        status: { isLoading, firstInitSuccess },
+        status: { isLoading, isVisitorDefined, firstInitSuccess },
         fsVisitor
     } = state;
     const tryCatchCallback = (callback: any): void => {
@@ -195,7 +198,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         }
         return { ...configuration, ...sdkConfig };
     };
-    const computedConfig: FlagshipSdkConfig = computeConfig();
+    const computedConfig: FlagshipSdkConfig = computeConfig(); // FINAL CONFIG
 
     const handleErrorDisplay = reactNative?.handleErrorDisplay;
 
@@ -259,6 +262,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 ...state,
                 status: {
                     ...state.status,
+                    isVisitorDefined: !!visitorInstance,
                     isLoading: false,
                     lastRefresh: new Date().toISOString(),
                     firstInitSuccess: state.status.firstInitSuccess || new Date().toISOString()
@@ -283,6 +287,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             ...state,
             status: {
                 ...state.status,
+                isVisitorDefined: !!visitorInstance,
                 isLoading: true
             },
             fsVisitor: visitorInstance,
@@ -296,6 +301,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             tryCatchCallback(() => {
                 onUpdate(
                     {
+                        status: state.status,
                         fsModifications: state.fsModifications,
                         config: { ...state.config, ...state.fsVisitor?.config }
                     },
@@ -315,6 +321,9 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         if (isLoading && loadingComponent && isFirstInit && fetchNow) {
             return <>{loadingComponent}</>;
         }
+        if (computedConfig.initialModifications && !isVisitorDefined) {
+            return null;
+        }
         return <>{children}</>;
     };
 
@@ -324,16 +333,20 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     };
     return (
         <FlagshipContext.Provider value={{ state, setState, hasError: errorData.hasError }}>
-            <FlagshipErrorBoundary
-                customerChildren={children}
-                onError={handleError}
-                error={errorData.error}
-                sdkSettings={configuration as FlagshipReactSdkConfig}
-                handleDisplay={handleErrorDisplay}
-                log={state.log}
-            >
-                {handleDisplay()}
-            </FlagshipErrorBoundary>
+            {enableSafeMode ? (
+                <FlagshipErrorBoundary
+                    customerChildren={children}
+                    onError={handleError}
+                    error={errorData.error}
+                    sdkSettings={configuration as FlagshipReactSdkConfig}
+                    handleDisplay={handleErrorDisplay}
+                    log={state.log}
+                >
+                    {handleDisplay()}
+                </FlagshipErrorBoundary>
+            ) : (
+                handleDisplay()
+            )}
         </FlagshipContext.Provider>
     );
 };
