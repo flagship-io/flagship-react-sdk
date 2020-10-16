@@ -4,8 +4,8 @@
     "private": false,
     "homepage": "https://abtasty.github.io/flagship-react-sdk/",
     "dependencies": {
-        "@flagship.io/js-sdk": "^2.1.4",
-        "@flagship.io/react-sdk": "^2.0.5",
+        "@flagship.io/js-sdk": "^2.1.5",
+        "@flagship.io/react-sdk": "^2.0.6",
         "@types/node": "12.12.14",
         "@types/react": "16.9.13",
         "@types/react-dom": "16.9.4",
