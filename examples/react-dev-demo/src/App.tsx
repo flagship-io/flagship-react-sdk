@@ -9,6 +9,7 @@ import { AppContainer } from './components/AppContainer';
 import config from './config';
 import AppHeader from './components/AppHeader';
 import QaHeader from './components/QaHeader';
+import { getLocalStorage } from './helper/utils';
 interface VisitorContext {
     [key: string]: any;
 }
@@ -41,20 +42,25 @@ export interface QA {
 export const SettingContext = createContext<AppSettings | null>(null);
 
 const App: React.FC = () => {
-    const [currentSettings, setSettings] = React.useState<SdkSettings>({
-        envId: config.envId,
-        fetchNow: config.fetchNow,
-        decisionMode: config.decisionMode as 'API',
-        pollingInterval: config.pollingInterval,
-        enableConsoleLogs: config.enableConsoleLogs,
-        enableErrorLayout: config.enableErrorLayout,
-        enableSafeMode: config.enableSafeMode,
-        timeout: config.timeout,
-        flagshipApi: config.flagshipApi,
-        apiKey: config.apiKey,
-        nodeEnv: 'production',
-        visitorData: { ...config.visitorData }
-    });
+    const initializeSettings = () => {
+        const settingsFromLocalStorage = getLocalStorage() || {};
+        return {
+            envId: config.envId,
+            fetchNow: config.fetchNow,
+            decisionMode: config.decisionMode as 'API',
+            pollingInterval: config.pollingInterval,
+            enableConsoleLogs: config.enableConsoleLogs,
+            enableErrorLayout: config.enableErrorLayout,
+            enableSafeMode: config.enableSafeMode,
+            timeout: config.timeout,
+            flagshipApi: config.flagshipApi,
+            apiKey: config.apiKey,
+            nodeEnv: 'production',
+            visitorData: { ...config.visitorData },
+            ...settingsFromLocalStorage
+        };
+    };
+    const [currentSettings, setSettings] = React.useState<SdkSettings>(initializeSettings());
     const [QA, setQA] = React.useState<QA>({
         enabled: false,
         show: {
@@ -84,7 +90,7 @@ const App: React.FC = () => {
                         console.log('onInitDone - triggered');
                     }}
                     onUpdate={({ fsModifications }) => {
-                        console.log('onUpdate - triggered');
+                        console.log('onUpdate - triggered with modifications:' + JSON.stringify(fsModifications));
                     }}
                     onBucketingSuccess={({ status }) => {
                         if (status === '200') {
