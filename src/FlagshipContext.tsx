@@ -297,7 +297,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     }, [envId, id, JSON.stringify(configuration) + JSON.stringify(context)]);
 
     useEffect(() => {
-        if (onUpdate) {
+        const isSdkReady = state.status.isVisitorDefined;
+        if (onUpdate && isSdkReady) {
             tryCatchCallback(() => {
                 onUpdate(
                     {
@@ -309,12 +310,12 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 );
             });
         }
-    }, [
-        Object.keys(state).map((key) => {
-            const stateDuplicate: any = state;
-            return stateDuplicate[key];
-        })
-    ]);
+    }, [state?.config, state?.fsModifications, state.status.isVisitorDefined]);
+
+    // DEBUG
+    useEffect(() => {
+        console.log(JSON.stringify({ status: state.status, fsSdk: state.fsSdk }));
+    }, [state]);
 
     const handleDisplay = (): React.ReactNode => {
         const isFirstInit = !fsVisitor || !firstInitSuccess;
