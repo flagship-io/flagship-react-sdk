@@ -89,8 +89,12 @@ const App: React.FC = () => {
                     onInitDone={() => {
                         console.log('onInitDone - triggered');
                     }}
-                    onUpdate={({ fsModifications }) => {
-                        console.log('onUpdate - triggered with modifications:' + JSON.stringify(fsModifications));
+                    onUpdate={({ fsModifications, status: { isSdkReady } }) => {
+                        console.log(
+                            'onUpdate - triggered with modifications:' +
+                                JSON.stringify(fsModifications) +
+                                `${!isSdkReady ? ' (SDK is still not ready)' : ''}`
+                        );
                     }}
                     onBucketingSuccess={({ status }) => {
                         if (status === '200') {

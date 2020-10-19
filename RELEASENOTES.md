@@ -2,6 +2,12 @@
 
 ## ➡️ Version 2.0.6
 
+### Improvements 💪
+
+-   `enableSafeMode` prop is triggered in a better way and `status` object is giving more data, have a look to the [documentation](https://developers.flagship.io/docs/sdk/react/v2.0#useflagship-output-status) for full details.
+
+## ➡️ Version 2.0.6
+
 ### Bug fixes 🐛
 
 -   Safe mode side effects still processing even if `enableSafeMode` is falsy. Not anymore.

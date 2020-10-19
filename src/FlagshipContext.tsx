@@ -17,6 +17,7 @@ import FlagshipErrorBoundary, { HandleErrorBoundaryDisplay } from './FlagshipErr
 
 export declare type FsStatus = {
     isLoading: boolean;
+    isSdkReady: boolean;
     isVisitorDefined: boolean;
     hasError: boolean;
     lastRefresh: string | null;
@@ -46,6 +47,7 @@ export const initState: FsState = {
     fsModifications: null,
     status: {
         isLoading: true,
+        isSdkReady: false,
         isVisitorDefined: false,
         firstInitSuccess: null,
         lastRefresh: null,
@@ -233,6 +235,12 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         });
 
         let visitorInstance: IFlagshipVisitor;
+        let newVisitorDetected = true;
+
+        if (onInitStart) {
+            tryCatchCallback(onInitStart);
+        }
+
         // if already previous visitor
         if (state?.fsVisitor && state.fsVisitor.envId === fsSdk.envId && state.fsVisitor.id === id) {
             if (state.fsVisitor.context !== context) {
@@ -244,6 +252,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             } else {
                 state.log.debug(`update visitor after re-render`);
             }
+            newVisitorDetected = false;
             visitorInstance = (fsSdk as any).updateVisitor(state.fsVisitor, context);
         } else {
             // if existing visitor
@@ -253,9 +262,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 );
             }
             visitorInstance = fsSdk.newVisitor(id, context as FlagshipVisitorContext);
-        }
-        if (onInitStart) {
-            tryCatchCallback(onInitStart);
+            newVisitorDetected = true;
         }
         visitorInstance.on('ready', () => {
             setState({
@@ -265,7 +272,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                     isVisitorDefined: !!visitorInstance,
                     isLoading: false,
                     lastRefresh: new Date().toISOString(),
-                    firstInitSuccess: state.status.firstInitSuccess || new Date().toISOString()
+                    firstInitSuccess: (!newVisitorDetected && state.status.firstInitSuccess) || new Date().toISOString()
                 },
                 fsVisitor: visitorInstance,
                 fsSdk,
@@ -297,12 +304,12 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     }, [envId, id, JSON.stringify(configuration) + JSON.stringify(context)]);
 
     useEffect(() => {
-        const isSdkReady = state.status.isVisitorDefined;
-        if (onUpdate && isSdkReady) {
+        const isSdkReady = state.status.isVisitorDefined && state.status.firstInitSuccess !== null;
+        if (onUpdate) {
             tryCatchCallback(() => {
                 onUpdate(
                     {
-                        status: state.status,
+                        status: { ...state.status, isSdkReady },
                         fsModifications: state.fsModifications,
                         config: { ...state.config, ...state.fsVisitor?.config }
                     },
@@ -312,10 +319,10 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         }
     }, [state?.config, state?.fsModifications, state.status.isVisitorDefined]);
 
-    // DEBUG
-    useEffect(() => {
-        console.log(JSON.stringify({ status: state.status, fsSdk: state.fsSdk }));
-    }, [state]);
+    // NOTE: DEBUG only
+    // useEffect(() => {
+    //     console.log(JSON.stringify({ status: state.status, fsSdk: state.fsSdk }));
+    // }, [state]);
 
     const handleDisplay = (): React.ReactNode => {
         const isFirstInit = !fsVisitor || !firstInitSuccess;
