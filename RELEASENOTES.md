@@ -1,10 +1,10 @@
 # Flagship REACT SDK - Release notes
 
-## ➡️ Version 2.0.6
+## ➡️ Version 2.0.7
 
 ### Improvements 💪
 
--   `enableSafeMode` prop is triggered in a better way and `status` object is giving more data, have a look to the [documentation](https://developers.flagship.io/docs/sdk/react/v2.0#useflagship-output-status) for full details.
+-   `onUpdate` prop is triggered in a better way and `status` object is giving more data, have a look to the [documentation](https://developers.flagship.io/docs/sdk/react/v2.0#useflagship-output-status) for full details.
 
 ## ➡️ Version 2.0.6
 
