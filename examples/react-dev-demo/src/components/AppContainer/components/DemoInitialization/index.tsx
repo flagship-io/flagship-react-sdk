@@ -1,5 +1,6 @@
-import React, { useContext } from 'react';
-import { Alert, Col, Row } from 'react-bootstrap';
+import React, { useContext, useState } from 'react';
+import { Alert, Col, Row, Button } from 'react-bootstrap';
+import { NotificationManager } from 'react-notifications';
 
 import { AppSettings, SettingContext } from '../../../../App';
 import CodeBlock from '../../../common/CodeBlock';
@@ -7,11 +8,12 @@ import PlayConfig from './components/normal/PlayConfig';
 import PlayVisitorData from './components/normal/PlayVisitorData';
 import PlayConfigQA from './components/qa/PlayConfig';
 import PlayVisitorDataQA from './components/qa/PlayVisitorData';
+import { getLocalStorage, saveLocalStorage } from '../../../../helper/utils';
 
 export const DemoInitialization = () => {
     const name = 'initialization';
     const { currentSettings: currSettings, QA /* setSettings */ } = useContext(SettingContext) as AppSettings;
-
+    const [displayLocalStorageWarning, closeLocalStorageWarning] = useState(true);
     return (
         <Row>
             <Col>
@@ -90,6 +92,27 @@ const App: React.FC = () => (
                     >
                         1 - Playing with <i>sdk settings</i>
                     </h3>
+                    {displayLocalStorageWarning && getLocalStorage() && (
+                        <div className="mv3">
+                            <Alert variant="warning">
+                                <b>NOTE:</b> Some previous settings were found in your local storage.
+                                <Button
+                                    className="ml3"
+                                    variant="secondary"
+                                    onClick={() => {
+                                        if (saveLocalStorage(() => null).success) {
+                                            NotificationManager.info('Settings in local storage deleted');
+                                        } else {
+                                            NotificationManager.info('Failed to deleted settings in local storage');
+                                        }
+                                        closeLocalStorageWarning(false);
+                                    }}
+                                >
+                                    Clear settings from local storage
+                                </Button>
+                            </Alert>
+                        </div>
+                    )}
                     {QA.enabled ? <PlayConfigQA></PlayConfigQA> : <PlayConfig></PlayConfig>}
                     <h3
                         style={{

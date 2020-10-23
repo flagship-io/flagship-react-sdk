@@ -6,6 +6,7 @@ import config from '../../../../../../../config';
 import CodeBlock from '../../../../../../common/CodeBlock';
 
 import { NotificationManager } from 'react-notifications';
+import { saveLocalStorage } from '../../../../../../../helper/utils';
 
 const PlayConfig: React.FC = () => {
     const { currentSettings: currSettings, setSettings /* , QA */ } = useContext(SettingContext) as AppSettings;
@@ -195,6 +196,18 @@ const PlayConfig: React.FC = () => {
                     }}
                 >
                     Apply change
+                </Button>
+                <Button
+                    className="PrimaryBtn ml3"
+                    onClick={() => {
+                        if (saveLocalStorage(() => ({ ...newSettings, apiKey: newSettings.apiKey || null })).success) {
+                            NotificationManager.info('Settings saved in local storage');
+                        } else {
+                            NotificationManager.error('Unable to save settings in local storage');
+                        }
+                    }}
+                >
+                    Save in local storage
                 </Button>
             </div>
             <div>Since we have set those settings:</div>

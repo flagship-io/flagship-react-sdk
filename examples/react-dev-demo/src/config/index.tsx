@@ -9,7 +9,7 @@ const config = {
     enableSafeMode: true,
     nodeEnv: 'production',
     flagshipApi: 'https://decision-api.flagship.io/v1/',
-    apiKey: null,
+    apiKey: 'M2FYdfXsJ12tjJQuadw7y9DZojqNGBvecpjGXY93',
     visitorData: {
         id: 'test-vid',
         context: { isAwesome: false, isEvil: false }

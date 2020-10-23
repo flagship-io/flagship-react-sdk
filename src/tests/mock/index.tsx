@@ -27,6 +27,7 @@ export const defaultContext: {
         log: null,
         fsModifications: null,
         status: {
+            isSdkReady: false,
             isLoading: true,
             isVisitorDefined: false,
             lastRefresh: null,
