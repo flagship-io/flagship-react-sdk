@@ -361,7 +361,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 
 FlagshipProvider.defaultProps = {
     loadingComponent: undefined,
-    fetchNow: false,
+    fetchNow: true,
     activateNow: false,
     decisionMode: 'API',
     pollingInterval: undefined,
