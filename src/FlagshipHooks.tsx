@@ -45,12 +45,6 @@ export const useFsActivate = (
     }, applyEffectScope);
 };
 
-// NOTES:
-/*
-two possible solutions to avoid massive 'activate api' calls:
-1) wrap the 'useFsModificationsCache' in a useEffect and plug correctly the useEffect the way you need
-2) in the JS SDK, make a cache to understand if the activate call already be done before.
-*/
 const safeMode_getCacheModifications = (
     modificationsRequested: FsModifsRequestedList,
     activateAllModifications = false
