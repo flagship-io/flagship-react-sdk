@@ -42,6 +42,12 @@ form .form-check {
     margin-left: 16px;
 }
 
+.PrimaryBtn {
+    color: white !important;
+    background-color: #de436f !important;
+    border-color: transparent !important;
+}
+
 .alert a {
     color: #de436f !important;
 }

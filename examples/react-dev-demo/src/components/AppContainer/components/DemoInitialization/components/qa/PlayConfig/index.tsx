@@ -5,6 +5,7 @@ import { SettingContext, AppSettings } from '../../../../../../../App';
 import JSONInput from 'react-json-editor-ajrm';
 import locale from 'react-json-editor-ajrm/locale/en';
 import { NotificationManager } from 'react-notifications';
+import { saveLocalStorage as saveLS } from '../../../../../../../helper/utils';
 
 const PlayConfig: React.FC = () => {
     const { currentSettings, setSettings } = useContext(SettingContext) as AppSettings;
@@ -13,6 +14,7 @@ const PlayConfig: React.FC = () => {
     return (
         <Formik
             initialValues={{
+                saveLocalStorage: false,
                 envId: currentSettings.envId,
                 settings: {
                     fetchNow: currentSettings.fetchNow,
@@ -33,14 +35,22 @@ const PlayConfig: React.FC = () => {
                 }
                 return errors;
             }}
-            onSubmit={(values, { setSubmitting }) => {
+            onSubmit={(pValues, { setSubmitting }) => {
+                const { saveLocalStorage, ...values } = pValues;
                 setSubmitting(false);
-                setSettings({
+                const payload = {
                     ...currentSettings,
                     envId: values.envId,
                     ...values.settings
-                });
+                };
+                setSettings(payload);
                 NotificationManager.info('Settings updated');
+
+                if (saveLocalStorage && saveLS(() => payload).success) {
+                    NotificationManager.info('Settings saved in local storage');
+                } else {
+                    saveLS(() => null); // clean
+                }
             }}
         >
             {({ handleSubmit, handleChange, handleBlur, setFieldValue, values, touched, isValid, errors }) => (
@@ -79,6 +89,15 @@ const PlayConfig: React.FC = () => {
                                     fontSize: '16px'
                                 }
                             }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="localStorageCheckbox">
+                        <Form.Label>Save those settings in local storage ?</Form.Label>
+                        <Form.Check
+                            type="checkbox"
+                            checked={values.saveLocalStorage}
+                            onChange={(e) => setFieldValue('saveLocalStorage', e.currentTarget.checked)}
+                            label={values.saveLocalStorage ? 'Yes.' : 'Nope.'}
                         />
                     </Form.Group>
                     <div className="flex justify-end ph3">

@@ -117,6 +117,7 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
     } = computedOptions;
     const {
         hasError,
+        setState,
         state: { fsSdk, fsVisitor, status, log }
     } = useContext(FlagshipContext);
     if (hasError) {
@@ -177,7 +178,12 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
 
     const synchronizeModifications = (activate = false): Promise<number> => {
         if (fsVisitor && fsVisitor.synchronizeModifications) {
-            return fsVisitor.synchronizeModifications(activate);
+            return fsVisitor.synchronizeModifications(activate).then((data) => {
+                if (setState) {
+                    setState((s) => ({ ...s, fsModifications: fsVisitor.fetchedModifications }));
+                }
+                return data;
+            });
         }
         logSdkNotReady();
         return new Promise((resolve) => resolve(405));
