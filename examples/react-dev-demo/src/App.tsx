@@ -9,6 +9,7 @@ import config from './config';
 import AppHeader from './components/AppHeader';
 import QaHeader from './components/QaHeader';
 import { getLocalStorage } from './helper/utils';
+import { Container, Row, Col } from 'react-bootstrap';
 interface VisitorContext {
     [key: string]: any;
 }
