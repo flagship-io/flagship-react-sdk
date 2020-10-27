@@ -25,7 +25,8 @@ const PlayConfig: React.FC = () => {
                     enableSafeMode: currentSettings.enableSafeMode,
                     nodeEnv: currentSettings.nodeEnv,
                     flagshipApi: currentSettings.flagshipApi,
-                    apiKey: currentSettings.apiKey
+                    apiKey: currentSettings.apiKey,
+                    initialModifications: currentSettings.initialModifications
                 }
             }}
             validate={(values) => {

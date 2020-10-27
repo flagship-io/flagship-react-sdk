@@ -2,7 +2,6 @@ import './App.css';
 
 import { FlagshipProvider, FlagshipReactSdkConfig } from '@flagship.io/react-sdk';
 import React, { createContext, Dispatch, SetStateAction } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 import { AppContainer } from './components/AppContainer';
@@ -81,6 +80,7 @@ const App: React.FC = () => {
                     timeout={currentSettings.timeout}
                     decisionMode={currentSettings.decisionMode}
                     enableSafeMode={true}
+                    initialModifications={currentSettings.initialModifications || undefined}
                     nodeEnv={currentSettings.nodeEnv}
                     visitorData={currentSettings.visitorData}
                     onInitStart={() => {

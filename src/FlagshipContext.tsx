@@ -168,7 +168,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         error: Error | null;
     }>({ hasError: false, error: null });
     const {
-        status: { isLoading, isVisitorDefined, firstInitSuccess },
+        status: { isLoading, isVisitorDefined, firstInitSuccess, lastRefresh },
         fsVisitor
     } = state;
     const tryCatchCallback = (callback: any): void => {
@@ -216,41 +216,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         });
     };
 
-    // Call Flagship once if SSR detected
-    if (isServer && !isVisitorDefined) {
-        state.log.debug(`SDK run on server side detected.`);
-        const fsSdk = initSdk();
-        const visitorInstance = fsSdk.newVisitor(id, context as FlagshipVisitorContext);
-        setState((s) => ({
-            ...s,
-            status: {
-                ...state.status,
-                isVisitorDefined: !!visitorInstance
-            },
-            fsVisitor: visitorInstance,
-            fsModifications: visitorInstance.fetchedModifications || null,
-            fsSdk
-        }));
-    }
-
-    // Call FlagShip any time context get changed.
-    useEffect(() => {
-        if (!isBrowser) {
-            state.log.debug(`useEffect triggered in an environment other than browser, SDK stopped.`);
-            return;
-        }
-        let previousBucketing = null;
-        if (state.fsSdk && state.fsSdk.config.decisionMode === 'Bucketing') {
-            state.fsSdk.stopBucketingPolling(); // force bucketing to stop
-            state.log.info(
-                'Bucketing automatically stopped because a setting props from FlagshipProvider has changed. Bucketing will restart automatically if decisionMode is still "Bucketing"'
-            );
-
-            state.fsSdk.eventEmitter.removeAllListeners(); // remove all listeners
-
-            previousBucketing = state.fsSdk.bucket?.data || null;
-        }
-        const fsSdk = initSdk(previousBucketing);
+    const postInitSdkForClientSide = (fsSdk: IFlagship): void => {
         fsSdk.eventEmitter.on('bucketPollingSuccess', ({ status, payload }: BucketingSuccessArgs) => {
             if (onBucketingSuccess) {
                 onBucketingSuccess({ status: status.toString(), payload });
@@ -265,7 +231,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         let visitorInstance: IFlagshipVisitor;
         let newVisitorDetected = true;
 
-        if (onInitStart) {
+        if (onInitStart && !isVisitorDefined) {
             tryCatchCallback(onInitStart);
         }
 
@@ -293,6 +259,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             newVisitorDetected = true;
         }
         visitorInstance.on('ready', () => {
+            const firstInitSuccessOldValue = firstInitSuccess;
+
             setState({
                 ...state,
                 status: {
@@ -309,9 +277,6 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                     previousFetchedModifications: visitorInstance.fetchedModifications || undefined
                 }
             });
-            if (onInitDone) {
-                tryCatchCallback(onInitDone);
-            }
         });
         visitorInstance.on('saveCache', (args) => {
             if (onSavingModificationsInCache) {
@@ -329,6 +294,47 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             fsModifications: visitorInstance.fetchedModifications || null,
             fsSdk
         });
+    };
+
+    // Call Flagship once if SSR detected
+    if (isServer && !isVisitorDefined) {
+        state.log.debug(`SDK run on server side detected.`);
+        const fsSdk = initSdk();
+        const visitorInstance = fsSdk.newVisitor(id, context as FlagshipVisitorContext);
+        setState((s) => ({
+            ...s,
+            status: {
+                ...state.status,
+                isVisitorDefined: !!visitorInstance
+            },
+            fsVisitor: visitorInstance,
+            fsModifications: visitorInstance.fetchedModifications || null,
+            fsSdk
+        }));
+    } else if (isBrowser && !isVisitorDefined && firstInitSuccess === null) {
+        const fsSdk = initSdk();
+        postInitSdkForClientSide(fsSdk);
+    }
+
+    // Call FlagShip any time context get changed.
+    useEffect(() => {
+        if (!isBrowser) {
+            state.log.debug(`useEffect triggered in an environment other than browser, SDK stopped.`);
+            return;
+        }
+        let previousBucketing = null;
+        if (state.fsSdk && state.fsSdk.config.decisionMode === 'Bucketing') {
+            state.fsSdk.stopBucketingPolling(); // force bucketing to stop
+            state.log.info(
+                'Bucketing automatically stopped because a setting props from FlagshipProvider has changed. Bucketing will restart automatically if decisionMode is still "Bucketing"'
+            );
+
+            state.fsSdk.eventEmitter.removeAllListeners(); // remove all listeners
+
+            previousBucketing = state.fsSdk.bucket?.data || null;
+        }
+        const fsSdk = initSdk(previousBucketing);
+        postInitSdkForClientSide(fsSdk);
     }, [envId, id, JSON.stringify(configuration) + JSON.stringify(context)]);
 
     useEffect(() => {
@@ -346,6 +352,12 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             });
         }
     }, [state?.config, state?.fsModifications, state.status.isVisitorDefined]);
+
+    useEffect(() => {
+        if (onInitDone && !!firstInitSuccess && firstInitSuccess === lastRefresh && !isLoading) {
+            tryCatchCallback(onInitDone);
+        }
+    }, [state?.status]);
 
     // NOTE: DEBUG only
     // useEffect(() => {

@@ -1,5 +1,19 @@
 # Flagship REACT SDK - Release notes
 
+## ➡️ Version 2.0.8
+
+### Improvements 💪
+
+-   `onInitStart` and `onInitDone` prop is triggered in a better way.
+
+-   Flagship React SDK is forced to runs synchronously in SSR. Check [the documentation](https://developers.flagship.io/docs/sdk/react/v2.0) to see features available or not in SSR.
+
+### New features 🎉
+
+-   Add universal app demo. [Click here](./examples/react-universal-demo/README.md) to see the source code.
+
+-   Add full ssr app demo. [Click here](./examples/react-ssr-demo/README.md) to see the source code.
+
 ## ➡️ Version 2.0.7
 
 ### Improvements 💪
