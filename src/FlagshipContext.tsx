@@ -10,6 +10,7 @@ import flagship, {
     BucketingApiResponse,
     IFlagship
 } from '@flagship.io/js-sdk';
+import useSSR from 'use-ssr';
 import { FsLogger } from '@flagship.io/js-sdk-logs';
 import loggerHelper from './lib/loggerHelper';
 // eslint-disable-next-line import/no-cycle
@@ -134,6 +135,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     pollingInterval
 }: FlagshipProviderProps) => {
     const { id, context } = visitorData;
+    const { isBrowser, isServer, isNative } = useSSR();
     const extractConfiguration = (): FlagshipReactSdkConfig => {
         const configV2: FlagshipReactSdkConfig = {
             fetchNow: typeof fetchNow !== 'boolean' ? true : fetchNow,
@@ -204,8 +206,39 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 
     const handleErrorDisplay = reactNative?.handleErrorDisplay;
 
+    const initSdk = (previousBucketing?: BucketingApiResponse | null | undefined): IFlagship => {
+        const { apiKey: theApiKey, ...otherComputedConfig } = computedConfig;
+        return flagship.start(envId, theApiKey, {
+            ...otherComputedConfig,
+            fetchNow: isServer ? false : otherComputedConfig.fetchNow, // NOTE: force SDK to run once to keep synchronous processing on SSR.
+            initialBucketing:
+                computedConfig.initialBucketing === null ? previousBucketing : computedConfig.initialBucketing
+        });
+    };
+
+    // Call Flagship once if SSR detected
+    if (isServer && !isVisitorDefined) {
+        state.log.debug(`SDK run on server side detected.`);
+        const fsSdk = initSdk();
+        const visitorInstance = fsSdk.newVisitor(id, context as FlagshipVisitorContext);
+        setState((s) => ({
+            ...s,
+            status: {
+                ...state.status,
+                isVisitorDefined: !!visitorInstance
+            },
+            fsVisitor: visitorInstance,
+            fsModifications: visitorInstance.fetchedModifications || null,
+            fsSdk
+        }));
+    }
+
     // Call FlagShip any time context get changed.
     useEffect(() => {
+        if (!isBrowser) {
+            state.log.debug(`useEffect triggered in an environment other than browser, SDK stopped.`);
+            return;
+        }
         let previousBucketing = null;
         if (state.fsSdk && state.fsSdk.config.decisionMode === 'Bucketing') {
             state.fsSdk.stopBucketingPolling(); // force bucketing to stop
@@ -217,12 +250,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 
             previousBucketing = state.fsSdk.bucket?.data || null;
         }
-        const { apiKey: theApiKey, ...otherComputedConfig } = computedConfig;
-        const fsSdk = flagship.start(envId, theApiKey, {
-            ...otherComputedConfig,
-            initialBucketing:
-                computedConfig.initialBucketing === null ? previousBucketing : computedConfig.initialBucketing
-        });
+        const fsSdk = initSdk(previousBucketing);
         fsSdk.eventEmitter.on('bucketPollingSuccess', ({ status, payload }: BucketingSuccessArgs) => {
             if (onBucketingSuccess) {
                 onBucketingSuccess({ status: status.toString(), payload });
@@ -328,9 +356,6 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         const isFirstInit = !fsVisitor || !firstInitSuccess;
         if (isLoading && loadingComponent && isFirstInit && fetchNow) {
             return <>{loadingComponent}</>;
-        }
-        if (computedConfig.initialModifications && !isVisitorDefined) {
-            return null;
         }
         return <>{children}</>;
     };
