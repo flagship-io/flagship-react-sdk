@@ -8,7 +8,7 @@ const config = {
     enableErrorLayout: true,
     enableSafeMode: true,
     nodeEnv: 'production',
-    flagshipApi: 'https://decision-api.flagship.io/v1/',
+    flagshipApi: 'https://decision.flagship.io/v2/',
     apiKey: 'M2FYdfXsJ12tjJQuadw7y9DZojqNGBvecpjGXY93',
     visitorData: {
         id: 'test-vid',
@@ -26,7 +26,7 @@ const config = {
         pollingInterval: [10, 60, 120, 300],
         decisionMode: ['API', 'Bucketing'],
         timeout: [0.01, 0.5, 1, 2],
-        flagshipApi: ['https://decision-api.flagship.io/v1/', 'https://decision.flagship.io/v2/'],
+        flagshipApi: ['https://decision.flagship.io/v2/', 'https://decision-api.flagship.io/v1/'],
         visitorId: ['test-vid', 'test-vid_2', 'test-vid_3']
     }
 };
