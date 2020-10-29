@@ -311,9 +311,9 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             fsModifications: visitorInstance.fetchedModifications || null,
             fsSdk
         }));
-    } else if (isBrowser && !isVisitorDefined && firstInitSuccess === null) {
+    } else if ((isNative || isBrowser) && !isVisitorDefined && firstInitSuccess === null) {
         const fsSdk = initSdk();
-        postInitSdkForClientSide(fsSdk);
+        postInitSdkForClientSide(fsSdk); // same for native (= React native)
     }
 
     // Call FlagShip any time context get changed.
