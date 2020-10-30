@@ -15,6 +15,7 @@ import { FsLogger } from '@flagship.io/js-sdk-logs';
 import loggerHelper from './lib/loggerHelper';
 // eslint-disable-next-line import/no-cycle
 import FlagshipErrorBoundary, { HandleErrorBoundaryDisplay } from './FlagshipErrorBoundary';
+import { areWeTestingWithJest } from './lib/utils';
 
 export declare type FsStatus = {
     isLoading: boolean;
@@ -136,6 +137,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 }: FlagshipProviderProps) => {
     const { id, context } = visitorData;
     const { isBrowser, isServer, isNative } = useSSR();
+    const isJest = areWeTestingWithJest();
     const extractConfiguration = (): FlagshipReactSdkConfig => {
         const configV2: FlagshipReactSdkConfig = {
             fetchNow: typeof fetchNow !== 'boolean' ? true : fetchNow,
@@ -258,17 +260,28 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             visitorInstance = fsSdk.newVisitor(id, context as FlagshipVisitorContext);
             newVisitorDetected = true;
         }
+        setState((s) => ({
+            ...s,
+            status: {
+                ...s.status,
+                isVisitorDefined: !!visitorInstance,
+                isLoading: true
+            },
+            fsVisitor: visitorInstance,
+            fsModifications: visitorInstance.fetchedModifications || null,
+            fsSdk
+        }));
         visitorInstance.on('ready', () => {
             const firstInitSuccessOldValue = firstInitSuccess;
 
-            setState({
-                ...state,
+            setState((s) => ({
+                ...s,
                 status: {
-                    ...state.status,
+                    ...s.status,
                     isVisitorDefined: !!visitorInstance,
                     isLoading: false,
                     lastRefresh: new Date().toISOString(),
-                    firstInitSuccess: (!newVisitorDetected && state.status.firstInitSuccess) || new Date().toISOString()
+                    firstInitSuccess: (!newVisitorDetected && s.status.firstInitSuccess) || new Date().toISOString()
                 },
                 fsVisitor: visitorInstance,
                 fsSdk,
@@ -276,42 +289,31 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 private: {
                     previousFetchedModifications: visitorInstance.fetchedModifications || undefined
                 }
-            });
+            }));
         });
         visitorInstance.on('saveCache', (args) => {
             if (onSavingModificationsInCache) {
                 tryCatchCallback(() => onSavingModificationsInCache(args));
             }
         });
-        setState({
-            ...state,
-            status: {
-                ...state.status,
-                isVisitorDefined: !!visitorInstance,
-                isLoading: true
-            },
-            fsVisitor: visitorInstance,
-            fsModifications: visitorInstance.fetchedModifications || null,
-            fsSdk
-        });
     };
 
     // Call Flagship once if SSR detected
-    if (isServer && !isVisitorDefined) {
+    if (!isJest && isServer && !isVisitorDefined) {
         state.log.debug(`SDK run on server side detected.`);
         const fsSdk = initSdk();
         const visitorInstance = fsSdk.newVisitor(id, context as FlagshipVisitorContext);
         setState((s) => ({
             ...s,
             status: {
-                ...state.status,
+                ...s.status,
                 isVisitorDefined: !!visitorInstance
             },
             fsVisitor: visitorInstance,
             fsModifications: visitorInstance.fetchedModifications || null,
             fsSdk
         }));
-    } else if ((isNative || isBrowser) && !isVisitorDefined && firstInitSuccess === null) {
+    } else if ((isJest || isNative || isBrowser) && !isVisitorDefined && firstInitSuccess === null) {
         const fsSdk = initSdk();
         postInitSdkForClientSide(fsSdk); // same for native (= React native)
     }
