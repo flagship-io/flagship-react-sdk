@@ -8,8 +8,8 @@
         "post-update": "yarn upgrade --latest"
     },
     "dependencies": {
-        "@flagship.io/js-sdk": "2.1.7",
-        "@flagship.io/react-sdk": "2.0.6",
+        "@flagship.io/js-sdk": "^2.1.8",
+        "@flagship.io/react-sdk": "^2.0.8",
         "next": "latest",
         "react": "^16.13.1",
         "react-dom": "^16.13.1"
