@@ -91,6 +91,17 @@ Following demos illustrate how the SDK is used in practice ☕
 [Live Demo 🕹](https://codesandbox.io/s/flagship-sdk-react-example-sg5qu)
 
 </div>
+</a>
+
+-   With an universal (isomorphic) app, uses React both on server and client side:
+
+[Source code 📚](./examples/react-universal-demo/README.md)
+
+-   With a server side rendering app, uses React on server:
+
+[Source code 📚](./examples/react-ssr-demo/README.md)
+
+</div>
 
 ## Contributors
 

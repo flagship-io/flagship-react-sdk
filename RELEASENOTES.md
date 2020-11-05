@@ -1,5 +1,19 @@
 # Flagship REACT SDK - Release notes
 
+## ➡️ Version 2.0.8
+
+### Improvements 💪
+
+-   `onInitStart` and `onInitDone` prop is triggered in a better way.
+
+-   Flagship React SDK is forced to runs synchronously in SSR. We will update [the documentation](https://developers.flagship.io/docs/sdk/react/v2.0) to indicate features available or not in SSR.
+
+### New features 🎉
+
+-   Add universal app demo. [Click here](./examples/react-universal-demo/README.md) to see the source code.
+
+-   Add full ssr app demo. [Click here](./examples/react-ssr-demo/README.md) to see the source code.
+
 ## ➡️ Version 2.0.7
 
 ### Improvements 💪
@@ -238,7 +252,6 @@ Be aware that `apiKey` will be mandatory in the next major release as it will us
 
 -   `useFsSynchronize` has been removed. Campaigns synchronization is now handle using `useFlagship` hook:
 
-
     -   **BEFORE**:
 
         ```jsx
@@ -254,7 +267,7 @@ Be aware that `apiKey` will be mandatory in the next major release as it will us
             <>
                 <Button
                     onClick={() => {
-                       // [...] (Update the value of "listenedValue" )
+                        // [...] (Update the value of "listenedValue" )
                     }}
                 >
                     Test
@@ -294,7 +307,7 @@ Be aware that `apiKey` will be mandatory in the next major release as it will us
                     Trigger a synchronize
                 </Button>
             </>
-        )
+        );
         ```
 
 ### Breaking changes #6 ⚠️

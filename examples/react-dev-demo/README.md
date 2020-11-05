@@ -34,6 +34,53 @@ examples/react-dev-demo$ npm start
 
 ## Run with local Flagship JS SDK
 
+Two possible ways exist.
+
+### 1st option:
+
+-   You need to create a local package of `@flagship.io/react-sdk`:
+
+    -   1 - At the root level (=`PATH/TO/flagship-react-sdk`), run:
+
+        ```
+        npm i && npm run build && npm pack
+        ```
+
+    -   2 - You supposed to have a `.tgz` file freshly created, with following name `flagship.io-react-sdk-x.x.x.tgz` where `x.x.x` corresponding to last version of the Flagship React SDK.
+
+    -   3 - Move this `.tgz` file to the example that you want to run locally, in our case `react-dev-demo`:
+        ```
+        mv ./flagship.io-react-sdk-x.x.x.tgz ./examples/react-dev-demo
+        ```
+    -   4 - [Skip this step if first time following **1st option** steps] As npm keeps some cache of node modules, we must rename the `.tgz` file so npm will consider our package as a new one:
+
+        ```
+        mv ./flagship.io-react-sdk-x.x.x.tgz ./flagship.io-react-sdk-x.x.x_UNIQUE_VALUE.tgz
+        ```
+
+        and also delete previous version:
+
+        ```
+        rm -r ./node_modules/@flagship.io && rm ./package-lock.json
+        ```
+
+    -   6 - Edit the `package.json` to consider the `.tgz` for Flagship React SDK, it should look like this:
+
+        ```
+        "@flagship.io/js-sdk": "flagship.io-react-sdk-x.x.x_UNIQUE_VALUE.tgz",
+        ```
+
+    -   7 - Install the modules:
+        ```
+        npm i
+        ```
+    -   8 - Start the project, it's ready:
+        ```
+        npm run start
+        ```
+
+### 2nd option:
+
 -   You need to link `@flagship.io/react-sdk` :
 
     -   1 - At the root level (=`PATH/TO/flagship-react-sdk`), run:

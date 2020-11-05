@@ -16,11 +16,14 @@
         "release": "npm run checkReleasePrerequisites && docker login https://docker.pkg.github.com && np",
         "version": "npm run build",
         "checkReleasePrerequisites": "docker -v",
-        "publish": "npm run update:reactDemoDev && npm run update:reactDemoEcommerce && git add . && git commit -m\"Post publish update\" && git push && npm run publish:reactDemoDev && npm run publish:reactDemoEcommerce",
+        "publish": "npm run update:examples && npm run publish:reactDemoDev && npm run publish:reactDemoEcommerce && git add . && git commit -m\"Post publish update\" && git push",
         "publish:reactDemoDev": "cd ./examples/react-dev-demo && npm i && npm run deploy:github",
         "publish:reactDemoEcommerce": "cd ./examples/react-ecommerce-demo && npm run release:docker",
         "update:fsLog": "npm install @flagship.io/js-sdk-logs@latest --save",
+        "update:examples": "npm run update:reactDemoDev && npm run update:reactDemoEcommerce && npm run update:reactUniversalDemo && npm run update:reactSSRDemo",
         "update:reactDemoDev": "cd ./examples/react-dev-demo && npm install @flagship.io/react-sdk@latest @flagship.io/js-sdk@latest --save && cd ../../",
+        "update:reactUniversalDemo": "cd ./examples/react-universal-demo && npm install @flagship.io/react-sdk@latest @flagship.io/js-sdk@latest --save && cd ../../",
+        "update:reactSSRDemo": "cd ./examples/react-ssr-demo && npm install @flagship.io/react-sdk@latest @flagship.io/js-sdk@latest --save && cd ../../",
         "update:reactDemoEcommerce": "cd ./examples/react-ecommerce-demo && npm install @flagship.io/react-sdk@latest @flagship.io/js-sdk@latest --save && cd ../../",
         "contributors:add": "all-contributors add",
         "contributors:generate": "all-contributors generate",
@@ -57,7 +60,8 @@
     "homepage": "https://github.com/abtasty/flagship-react-sdk#readme",
     "dependencies": {
         "@flagship.io/js-sdk": "^2.1.8",
-        "@flagship.io/js-sdk-logs": "^0.1.2"
+        "@flagship.io/js-sdk-logs": "^0.1.2",
+        "use-ssr": "^1.0.23"
     },
     "peerDependencies": {
         "react": "^16.8.0"
