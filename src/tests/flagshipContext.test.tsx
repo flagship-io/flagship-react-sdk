@@ -262,8 +262,8 @@ describe('fsContext provider', () => {
             enableSafeMode: true,
             timeout: 2,
             fetchNow: true,
-            apiKey: null,
-            flagshipApi: 'https://decision-api.flagship.io/v1/',
+            apiKey: 'M2FYdfXsJ12tjJQuadw7y9DZojqNGBvecpjGXY93',
+            flagshipApi: 'https://decision.flagship.io/v2/',
             initialModifications: null,
             initialBucketing: null,
             nodeEnv: 'production'
@@ -329,8 +329,8 @@ describe('fsContext provider', () => {
             decisionMode: 'API',
             pollingInterval: null,
             fetchNow: true,
-            apiKey: null,
-            flagshipApi: 'https://decision-api.flagship.io/v1/',
+            apiKey: 'M2FYdfXsJ12tjJQuadw7y9DZojqNGBvecpjGXY93',
+            flagshipApi: 'https://decision.flagship.io/v2/',
             initialModifications: customFetchedModifications,
             initialBucketing: null,
             nodeEnv: 'production'
