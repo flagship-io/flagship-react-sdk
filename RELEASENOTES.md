@@ -6,7 +6,7 @@
 
 -   `onInitStart` and `onInitDone` prop is triggered in a better way.
 
--   Flagship React SDK is forced to runs synchronously in SSR. Check [the documentation](https://developers.flagship.io/docs/sdk/react/v2.0) to see features available or not in SSR.
+-   Flagship React SDK is forced to runs synchronously in SSR. We will update [the documentation](https://developers.flagship.io/docs/sdk/react/v2.0) to indicate features available or not in SSR.
 
 ### New features 🎉
 
@@ -252,7 +252,6 @@ Be aware that `apiKey` will be mandatory in the next major release as it will us
 
 -   `useFsSynchronize` has been removed. Campaigns synchronization is now handle using `useFlagship` hook:
 
-
     -   **BEFORE**:
 
         ```jsx
@@ -268,7 +267,7 @@ Be aware that `apiKey` will be mandatory in the next major release as it will us
             <>
                 <Button
                     onClick={() => {
-                       // [...] (Update the value of "listenedValue" )
+                        // [...] (Update the value of "listenedValue" )
                     }}
                 >
                     Test
@@ -308,7 +307,7 @@ Be aware that `apiKey` will be mandatory in the next major release as it will us
                     Trigger a synchronize
                 </Button>
             </>
-        )
+        );
         ```
 
 ### Breaking changes #6 ⚠️
