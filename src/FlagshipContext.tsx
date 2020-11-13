@@ -61,12 +61,13 @@ export const initState: FsState = {
 };
 
 export type BucketingSuccessArgs = { status: string; payload: BucketingApiResponse };
-
-const FlagshipContext = React.createContext<{
+export type FsContext = {
     hasError: boolean;
     state: FsState;
     setState: Dispatch<SetStateAction<FsState>> | null;
-}>({ state: { ...initState }, setState: null, hasError: false });
+};
+
+const FlagshipContext = React.createContext<FsContext>({ state: { ...initState }, setState: null, hasError: false });
 
 export type FsOnUpdateArguments = {
     fsModifications: DecisionApiCampaign[] | null;
@@ -83,6 +84,7 @@ interface FlagshipProviderProps {
     visitorData: {
         id: string;
         context?: FlagshipVisitorContext;
+        isAnonymous: boolean;
     };
     reactNative?: {
         handleErrorDisplay: HandleErrorBoundaryDisplay;
@@ -135,26 +137,24 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     decisionMode,
     pollingInterval
 }: FlagshipProviderProps) => {
-    const { id, context } = visitorData;
+    const id = visitorData?.id;
+    const context = visitorData?.context;
     const { isBrowser, isServer, isNative } = useSSR();
     const isJest = areWeTestingWithJest();
-    const extractConfiguration = (): FlagshipReactSdkConfig => {
-        const configV2: FlagshipReactSdkConfig = {
-            fetchNow: typeof fetchNow !== 'boolean' ? true : fetchNow,
-            decisionMode: decisionMode || 'API',
-            pollingInterval: pollingInterval || null,
-            activateNow: typeof activateNow !== 'boolean' ? false : activateNow,
-            timeout: typeof timeout !== 'number' ? undefined : timeout,
-            enableConsoleLogs: typeof enableConsoleLogs !== 'boolean' ? false : enableConsoleLogs,
-            enableErrorLayout: typeof enableErrorLayout !== 'boolean' ? false : enableErrorLayout,
-            enableSafeMode: typeof enableSafeMode !== 'boolean' ? false : enableSafeMode,
-            nodeEnv: nodeEnv || 'production',
-            initialBucketing: initialBucketing || null,
-            flagshipApi,
-            apiKey
-        };
-        return configV2;
-    };
+    const extractConfiguration = (): FlagshipReactSdkConfig => ({
+        fetchNow: typeof fetchNow !== 'boolean' ? true : fetchNow,
+        decisionMode: decisionMode || 'API',
+        pollingInterval: pollingInterval || null,
+        activateNow: typeof activateNow !== 'boolean' ? false : activateNow,
+        timeout: typeof timeout !== 'number' ? undefined : timeout,
+        enableConsoleLogs: typeof enableConsoleLogs !== 'boolean' ? false : enableConsoleLogs,
+        enableErrorLayout: typeof enableErrorLayout !== 'boolean' ? false : enableErrorLayout,
+        enableSafeMode: typeof enableSafeMode !== 'boolean' ? false : enableSafeMode,
+        nodeEnv: nodeEnv || 'production',
+        initialBucketing: initialBucketing || null,
+        flagshipApi,
+        apiKey
+    });
     const configuration = extractConfiguration();
     const [state, setState] = useState({
         ...initState,
@@ -218,6 +218,28 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         });
     };
 
+    const checkIfVisitorShouldBeNew = (fsSdk: IFlagship): boolean => {
+        if (state?.fsVisitor && state.fsVisitor.envId === fsSdk.envId && state.fsVisitor.id === id) {
+            if (state.fsVisitor.context !== context) {
+                state.log.debug(
+                    `update visitor after re-render, but context is different (old vs new): vContext (${JSON.stringify(
+                        state.fsVisitor?.context
+                    )} vs ${JSON.stringify(context)})`
+                );
+            } else {
+                state.log.debug(`update visitor after re-render`);
+            }
+            return false;
+        }
+        // log if visitor id
+        if (state?.fsVisitor) {
+            state.log.debug(
+                `unable to update visitor after re-render because of strong update (old vs new): envId (${state.fsVisitor?.envId} vs ${fsSdk.envId}) or vId (${state.fsVisitor?.id} vs ${id})`
+            );
+        }
+        return true;
+    };
+
     const postInitSdkForClientSide = (fsSdk: IFlagship): void => {
         fsSdk.eventEmitter.on('bucketPollingSuccess', ({ status, payload }: BucketingSuccessArgs) => {
             if (onBucketingSuccess) {
@@ -230,36 +252,16 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             }
         });
 
-        let visitorInstance: IFlagshipVisitor;
-        let newVisitorDetected = true;
-
         if (onInitStart && !isVisitorDefined) {
             tryCatchCallback(onInitStart);
         }
 
         // if already previous visitor
-        if (state?.fsVisitor && state.fsVisitor.envId === fsSdk.envId && state.fsVisitor.id === id) {
-            if (state.fsVisitor.context !== context) {
-                state.log.debug(
-                    `update visitor after re-render, but context is different (old vs new): vContext (${JSON.stringify(
-                        state.fsVisitor?.context
-                    )} vs ${JSON.stringify(context)})`
-                );
-            } else {
-                state.log.debug(`update visitor after re-render`);
-            }
-            newVisitorDetected = false;
-            visitorInstance = (fsSdk as any).updateVisitor(state.fsVisitor, context);
-        } else {
-            // if existing visitor
-            if (state?.fsVisitor) {
-                state.log.debug(
-                    `unable to update visitor after re-render because of strong update (old vs new): envId (${state.fsVisitor?.envId} vs ${fsSdk.envId}) or vId (${state.fsVisitor?.id} vs ${id})`
-                );
-            }
-            visitorInstance = fsSdk.newVisitor(id, context as FlagshipVisitorContext);
-            newVisitorDetected = true;
-        }
+        const newVisitorDetected = checkIfVisitorShouldBeNew(fsSdk);
+        // NOTE: whenever the visitor is updated or created and no matter (fetchNow/activateNow is true/false), it will ALWAYS emit "ready" event.
+        const visitorInstance = newVisitorDetected
+            ? fsSdk.newVisitor(id, context as FlagshipVisitorContext)
+            : (fsSdk as any).updateVisitor(state.fsVisitor, context);
         setState((s) => ({
             ...s,
             status: {
@@ -272,8 +274,6 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             fsSdk
         }));
         visitorInstance.on('ready', () => {
-            const firstInitSuccessOldValue = firstInitSuccess;
-
             setState((s) => ({
                 ...s,
                 status: {
