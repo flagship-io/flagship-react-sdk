@@ -84,7 +84,7 @@ interface FlagshipProviderProps {
     visitorData: {
         id: string;
         context?: FlagshipVisitorContext;
-        isAnonymous: boolean;
+        isAnonymous?: boolean;
     };
     reactNative?: {
         handleErrorDisplay: HandleErrorBoundaryDisplay;
@@ -139,6 +139,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 }: FlagshipProviderProps) => {
     const id = visitorData?.id;
     const context = visitorData?.context;
+    const isAnonymous = visitorData?.isAnonymous || false;
     const { isBrowser, isServer, isNative } = useSSR();
     const isJest = areWeTestingWithJest();
     const extractConfiguration = (): FlagshipReactSdkConfig => ({
@@ -169,10 +170,16 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         hasError: boolean;
         error: Error | null;
     }>({ hasError: false, error: null });
+
+    const handleError = (error: Error): void => {
+        state.log.fatal(`error: ${error.stack}`);
+        setError({ error, hasError: !!error });
+    };
     const {
         status: { isLoading, isVisitorDefined, firstInitSuccess, lastRefresh },
         fsVisitor
     } = state;
+
     const tryCatchCallback = (callback: any): void => {
         try {
             callback();
@@ -291,7 +298,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 }
             }));
         });
-        visitorInstance.on('saveCache', (args) => {
+        visitorInstance.on('saveCache', (args: SaveCacheArgs) => {
             if (onSavingModificationsInCache) {
                 tryCatchCallback(() => onSavingModificationsInCache(args));
             }
@@ -320,6 +327,12 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 
     // Call FlagShip any time context get changed.
     useEffect(() => {
+        if (!id && !errorData.hasError) {
+            const errorMsg =
+                'No visitor id found. Make sure you\'ve set in prop something like this: visitorData={{id: "MY_VISITOR_ID_VALUE"}} inside the FlagshipProvider component.';
+            handleError(new Error(errorMsg));
+            return;
+        }
         if (!isBrowser) {
             state.log.debug(`useEffect triggered in an environment other than browser, SDK stopped.`);
             return;
@@ -372,11 +385,6 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             return <>{loadingComponent}</>;
         }
         return <>{children}</>;
-    };
-
-    const handleError = (error: Error): void => {
-        state.log.fatal(`error: ${error.stack}`);
-        setError({ error, hasError: !!error });
     };
     return (
         <FlagshipContext.Provider value={{ state, setState, hasError: errorData.hasError }}>
