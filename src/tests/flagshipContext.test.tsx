@@ -452,7 +452,7 @@ describe('fsContext provider', () => {
 
         expect(isReady).toEqual(true);
     });
-    test('it should compute correctly the visitor when first rendering + "isAnonymous=true" then switch to authenticate', async () => {
+    test('it should compute correctly the visitor when first rendering + "isAnonymous=true" then switch to authenticate and then sign out', async () => {
         let sdkStatus;
         let sdkVisitorInstance;
         const renderProvider = (vId, isAnonymous) => (
@@ -500,6 +500,21 @@ describe('fsContext provider', () => {
 
         expect(sdkVisitorInstance.id).toEqual(providerProps.visitorData.id);
         expect(sdkVisitorInstance.anonymousId).toEqual(anonymousIdForTest);
+
+        expect(isReady).toEqual(true);
+
+        // Update visitor id and isAnonymous so that the visitor must be considered as signed off
+        isReady = false;
+        rerender(renderProvider(anonymousIdForTest, true));
+
+        await waitFor(() => {
+            if (!isReady) {
+                throw new Error('not ready');
+            }
+        });
+
+        expect(sdkVisitorInstance.id).toEqual(anonymousIdForTest);
+        expect(sdkVisitorInstance.anonymousId).toEqual(null);
 
         expect(isReady).toEqual(true);
     });
