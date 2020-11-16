@@ -8,7 +8,8 @@ import flagship, {
     DecisionApiCampaign,
     PostFlagshipApiCallback,
     BucketingApiResponse,
-    IFlagship
+    IFlagship,
+    ReadyListenerOutput
 } from '@flagship.io/js-sdk';
 import useSSR from 'use-ssr';
 import { FsLogger } from '@flagship.io/js-sdk-logs';
@@ -141,6 +142,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     const context = visitorData?.context;
     const isAnonymous = visitorData?.isAnonymous || false;
     const previousIsAnonymous = useRef<boolean>(isAnonymous);
+    const isFirstRun = useRef(true);
     const { isBrowser, isServer, isNative } = useSSR();
     const isJest = areWeTestingWithJest();
     const extractConfiguration = (): FlagshipReactSdkConfig => ({
@@ -281,10 +283,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             fsModifications: visitorInstance.fetchedModifications || null,
             fsSdk
         }));
-        visitorInstance.on('ready', () => {
-            console.log(
-                `visitorInstance onREADY visitorInstance.id:${visitorInstance.id} and fsVisitor.anonymousId:${visitorInstance.anonymousId}`
-            ); // TODO: delete log
+        visitorInstance.on('ready', (readyData: ReadyListenerOutput) => {
+            const { withError } = readyData;
             setState((s) => ({
                 ...s,
                 status: {
@@ -292,6 +292,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                     isVisitorDefined: !!visitorInstance,
                     isLoading: false,
                     lastRefresh: new Date().toISOString(),
+                    hasError: withError,
                     firstInitSuccess: (!newVisitorDetected && s.status.firstInitSuccess) || new Date().toISOString()
                 },
                 fsVisitor: visitorInstance,
@@ -329,8 +330,54 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         postInitSdkForClientSide(fsSdk); // same for native (= React native)
     }
 
+    const updateVisitorIfIdentityChanged = (): boolean => {
+        const isBeingAnonymous = previousIsAnonymous.current === false && isAnonymous === true;
+        const isBeingAuthenticated = previousIsAnonymous.current === true && isAnonymous === false;
+        const hasVisitorIdentityChange = isBeingAnonymous || isBeingAuthenticated;
+        const updateVisitorAndStatus = (fsV: IFlagshipVisitor, isLoadingValue: boolean): void => {
+            setState((s) => ({
+                ...s,
+                status: {
+                    ...s.status,
+                    isLoading: isLoadingValue
+                },
+                fsVisitor: fsV
+            }));
+        };
+        if (!fsVisitor) {
+            handleError(
+                new Error(
+                    'Trying to change the anonymous status of visitor that has not been initialized or does not exist.'
+                )
+            );
+        } else {
+            if (isBeingAnonymous) {
+                // make sure the fsVisitor has an id to avoid the "no anonymous" error when unauthenticate.
+                if (!fsVisitor.anonymousId) {
+                    fsVisitor.anonymousId = id;
+                }
+                fsVisitor.unauthenticate().then(() => updateVisitorAndStatus(fsVisitor, false));
+            } else if (isBeingAuthenticated) {
+                fsVisitor.authenticate(id).then(() => updateVisitorAndStatus(fsVisitor, false)); // As explain in the doc, the id might or might not be the same as the anonymous id.
+            }
+
+            if (hasVisitorIdentityChange) {
+                updateVisitorAndStatus(fsVisitor, true);
+            }
+        }
+
+        previousIsAnonymous.current = isAnonymous;
+
+        return hasVisitorIdentityChange;
+    };
+
     // Call FlagShip any time context get changed.
     useEffect(() => {
+        // DON'T RUN THE CODE FIRST TIME RUNNING. Already init before the first rendering.
+        if (isFirstRun.current) {
+            isFirstRun.current = false;
+            return;
+        }
         if (!id && !errorData.hasError) {
             const errorMsg =
                 'No visitor id found. Make sure you\'ve set in prop something like this: visitorData={{id: "MY_VISITOR_ID_VALUE"}} inside the FlagshipProvider component.';
@@ -342,6 +389,14 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             return;
         }
         let previousBucketing = null;
+
+        // STEP 1: First check if the isAnonymous has changed (this step must be in this useEffect as it listen the visitorId as well)
+        const isVisitorIdentityChanged = updateVisitorIfIdentityChanged();
+        if (isVisitorIdentityChanged) {
+            return; // If true, means, already updated so don't need to go further
+        }
+
+        // STEP 2: if step 1 is falsy, then check bucketing
         if (state.fsSdk && state.fsSdk.config.decisionMode === 'Bucketing') {
             state.fsSdk.stopBucketingPolling(); // force bucketing to stop
             state.log.info(
@@ -352,9 +407,13 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 
             previousBucketing = state.fsSdk.bucket?.data || null;
         }
+
+        // STEP 3: refresh bucketing with new SDK instance
         const fsSdk = initSdk(previousBucketing);
+
+        // STEP 4: check if should update the visitor or create a brand new one.
         postInitSdkForClientSide(fsSdk);
-    }, [envId, id, JSON.stringify(configuration) + JSON.stringify(context)]);
+    }, [envId, id, isAnonymous, JSON.stringify(configuration) + JSON.stringify(context)]);
 
     useEffect(() => {
         const isSdkReady = state.status.isVisitorDefined && state.status.firstInitSuccess !== null;
@@ -370,45 +429,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 );
             });
         }
-    }, [state?.config, state?.fsModifications, state.status.isVisitorDefined]);
-
-    useEffect(() => {
-        const isBeingAnonymous = previousIsAnonymous.current === false && isAnonymous === true;
-        const isBeingAuthenticated = previousIsAnonymous.current === true && isAnonymous === false;
-        const hasVisitorIdentityChange = isBeingAnonymous || isBeingAuthenticated;
-
-        if (!fsVisitor) {
-            handleError(
-                new Error(
-                    'Trying to change the anonymous status of visitor that has not been initialized or does not exist.'
-                )
-            );
-        } else {
-            if (isBeingAnonymous) {
-                // make sure the fsVisitor has an id to avoid the "no anonymous" error when unauthenticate.
-                if (!fsVisitor.anonymousId) {
-                    fsVisitor.anonymousId = id;
-                }
-                fsVisitor.unauthenticate();
-            } else if (isBeingAuthenticated) {
-                fsVisitor.authenticate(id); // As explain in the doc, the id might or might not be the same as the anonymous id.
-            }
-
-            if (hasVisitorIdentityChange) {
-                console.log(`fsVisitor.id:${fsVisitor.id} and fsVisitor.anonymousId:${fsVisitor.anonymousId}`); // TODO: delete log
-                setState((s) => ({
-                    ...s,
-                    status: {
-                        ...s.status,
-                        isLoading: true
-                    },
-                    fsVisitor
-                }));
-            }
-        }
-
-        previousIsAnonymous.current = isAnonymous;
-    }, [isAnonymous]);
+    }, [state?.config, state?.fsModifications, state.status]);
 
     useEffect(() => {
         if (onInitDone && !!firstInitSuccess && firstInitSuccess === lastRefresh && !isLoading) {

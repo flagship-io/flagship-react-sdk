@@ -10,7 +10,7 @@ import {
     GetModificationsOutput
 } from '@flagship.io/js-sdk';
 import { FlagshipProvider, FlagshipReactSdkConfig, FsOnUpdateArguments } from '../FlagshipContext';
-import { providerProps, fetchedModifications } from './mock';
+import { providerProps, fetchedModifications, anonymousIdForTest } from './mock';
 
 describe('fsContext provider', () => {
     let isReady: boolean;
@@ -415,6 +415,91 @@ describe('fsContext provider', () => {
         // should display a bottom bar on the screen for developer to debug
         expect(container.querySelectorAll('.fsErrorDebugContainer').length).toEqual(1);
         expect(container.querySelectorAll('.fsErrorDebugContainer')[0].innerHTML.includes('crash test')).toEqual(true);
+
+        expect(isReady).toEqual(true);
+    });
+    test('it should compute correctly the visitor when first rendering + "isAnonymous=false"', async () => {
+        let sdkStatus;
+        let sdkVisitorInstance;
+        const { container } = render(
+            <FlagshipProvider
+                envId={providerProps.envId}
+                {...providerProps.config}
+                nodeEnv="development"
+                visitorData={{ ...providerProps.visitorData, isAnonymous: false, id: anonymousIdForTest }}
+                onInitDone={() => {
+                    isReady = true;
+                }}
+                onUpdate={({ status }, fsVisitor) => {
+                    sdkStatus = status;
+                    sdkVisitorInstance = fsVisitor;
+                }}
+                onInitStart={() => {
+                    //
+                }}
+            >
+                <div>Hello I'm visible, even with safe mode</div>
+            </FlagshipProvider>
+        );
+        await waitFor(() => {
+            if (!isReady) {
+                throw new Error('not ready');
+            }
+        });
+
+        expect(sdkVisitorInstance.id).toEqual(anonymousIdForTest);
+        expect(sdkVisitorInstance.anonymousId).toEqual(null);
+
+        expect(isReady).toEqual(true);
+    });
+    test('it should compute correctly the visitor when first rendering + "isAnonymous=true" then switch to authenticate', async () => {
+        let sdkStatus;
+        let sdkVisitorInstance;
+        const renderProvider = (vId, isAnonymous) => (
+            <FlagshipProvider
+                envId={providerProps.envId}
+                {...providerProps.config}
+                fetchNow={false}
+                nodeEnv="development"
+                visitorData={{ ...providerProps.visitorData, isAnonymous, id: vId }}
+                onInitDone={() => {
+                    isReady = true;
+                }}
+                onUpdate={({ status }, fsVisitor) => {
+                    sdkStatus = status;
+                    sdkVisitorInstance = fsVisitor;
+                }}
+                onInitStart={() => {
+                    //
+                }}
+            >
+                <div>Hello I'm visible, even with safe mode</div>
+            </FlagshipProvider>
+        );
+        const { container, rerender } = render(renderProvider(anonymousIdForTest, true));
+        await waitFor(() => {
+            if (!isReady) {
+                throw new Error('not ready');
+            }
+        });
+
+        expect(sdkVisitorInstance.id).toEqual(anonymousIdForTest);
+        expect(sdkVisitorInstance.anonymousId).toEqual(null);
+
+        expect(isReady).toEqual(true);
+
+        // Update visitor id and isAnonymous so that the visitor must be considered as authenticated
+        isReady = false;
+        rerender(renderProvider(providerProps.visitorData.id, false));
+
+        await waitFor(() => {
+            if (!isReady) {
+                throw new Error('not ready');
+            }
+        });
+
+        expect(sdkVisitorInstance.id).toEqual(providerProps.visitorData.id);
+        expect(sdkVisitorInstance.anonymousId).toEqual(anonymousIdForTest);
 
         expect(isReady).toEqual(true);
     });
