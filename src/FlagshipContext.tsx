@@ -1,4 +1,4 @@
-import React, { useState, useEffect, SetStateAction, Dispatch, useContext } from 'react';
+import React, { useState, useEffect, SetStateAction, Dispatch, useContext, useRef } from 'react';
 // / <reference path="@flagship.io/js-sdk/flagship.d.ts" />
 import flagship, {
     FlagshipSdkConfig,
@@ -140,6 +140,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     const id = visitorData?.id;
     const context = visitorData?.context;
     const isAnonymous = visitorData?.isAnonymous || false;
+    const previousIsAnonymous = useRef<boolean>(isAnonymous);
     const { isBrowser, isServer, isNative } = useSSR();
     const isJest = areWeTestingWithJest();
     const extractConfiguration = (): FlagshipReactSdkConfig => ({
@@ -281,6 +282,9 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             fsSdk
         }));
         visitorInstance.on('ready', () => {
+            console.log(
+                `visitorInstance onREADY visitorInstance.id:${visitorInstance.id} and fsVisitor.anonymousId:${visitorInstance.anonymousId}`
+            ); // TODO: delete log
             setState((s) => ({
                 ...s,
                 status: {
@@ -367,6 +371,44 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             });
         }
     }, [state?.config, state?.fsModifications, state.status.isVisitorDefined]);
+
+    useEffect(() => {
+        const isBeingAnonymous = previousIsAnonymous.current === false && isAnonymous === true;
+        const isBeingAuthenticated = previousIsAnonymous.current === true && isAnonymous === false;
+        const hasVisitorIdentityChange = isBeingAnonymous || isBeingAuthenticated;
+
+        if (!fsVisitor) {
+            handleError(
+                new Error(
+                    'Trying to change the anonymous status of visitor that has not been initialized or does not exist.'
+                )
+            );
+        } else {
+            if (isBeingAnonymous) {
+                // make sure the fsVisitor has an id to avoid the "no anonymous" error when unauthenticate.
+                if (!fsVisitor.anonymousId) {
+                    fsVisitor.anonymousId = id;
+                }
+                fsVisitor.unauthenticate();
+            } else if (isBeingAuthenticated) {
+                fsVisitor.authenticate(id); // As explain in the doc, the id might or might not be the same as the anonymous id.
+            }
+
+            if (hasVisitorIdentityChange) {
+                console.log(`fsVisitor.id:${fsVisitor.id} and fsVisitor.anonymousId:${fsVisitor.anonymousId}`); // TODO: delete log
+                setState((s) => ({
+                    ...s,
+                    status: {
+                        ...s.status,
+                        isLoading: true
+                    },
+                    fsVisitor
+                }));
+            }
+        }
+
+        previousIsAnonymous.current = isAnonymous;
+    }, [isAnonymous]);
 
     useEffect(() => {
         if (onInitDone && !!firstInitSuccess && firstInitSuccess === lastRefresh && !isLoading) {

@@ -21,6 +21,15 @@ const PlayVisitorData: React.FC = () => {
             }
         });
 
+    const handleAnonymous = (e) =>
+        setNewSettings({
+            ...newSettings,
+            visitorData: {
+                ...newSettings.visitorData,
+                isAnonymous: e.currentTarget.checked
+            }
+        });
+
     const handleVisitorContext = (e) => {
         const node = JSON.parse(e.currentTarget.parentElement.innerText);
         const temp = { ...newSettings };
@@ -65,7 +74,7 @@ const PlayVisitorData: React.FC = () => {
                         marginLeft: '16px'
                     }}
                 >
-                    <div>visitorId: </div>
+                    <div>visitor id: </div>
                     <Form.Control
                         type="text"
                         className="fsTextField"
@@ -90,6 +99,16 @@ const PlayVisitorData: React.FC = () => {
                             label={JSON.stringify({ [key]: value })}
                         />
                     ))}
+                </Form.Group>
+                <Form.Group controlId="initForm.ControlSelect4">
+                    <Form.Label>visitor anonymous ?</Form.Label>
+                    <Form.Check
+                        type="checkbox"
+                        id={`default-isAnonymous`}
+                        checked={newSettings.visitorData.isAnonymous || false}
+                        onChange={handleAnonymous}
+                        label={'isAnonymous=' + newSettings.visitorData.isAnonymous}
+                    />
                 </Form.Group>
             </Form>
             <div

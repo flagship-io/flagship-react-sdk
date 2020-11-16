@@ -12,7 +12,8 @@ const config = {
     apiKey: 'M2FYdfXsJ12tjJQuadw7y9DZojqNGBvecpjGXY93',
     visitorData: {
         id: 'test-vid',
-        context: { isAwesome: false, isEvil: false }
+        context: { isAwesome: false, isEvil: false },
+        isAnonymous: false
     },
     sandbox: {
         config: {

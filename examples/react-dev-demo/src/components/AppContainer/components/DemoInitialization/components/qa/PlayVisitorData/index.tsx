@@ -27,6 +27,7 @@ const PlayVisitorData: React.FC = () => {
                 setSettings({
                     ...currentSettings,
                     visitorData: {
+                        ...currentSettings.visitorData,
                         id: values.vId,
                         context: values.vContext || {}
                     }
