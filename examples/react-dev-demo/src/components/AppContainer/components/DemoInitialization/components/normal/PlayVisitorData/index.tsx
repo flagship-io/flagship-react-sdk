@@ -26,7 +26,7 @@ const PlayVisitorData: React.FC = () => {
             ...newSettings,
             visitorData: {
                 ...newSettings.visitorData,
-                isAnonymous: e.currentTarget.checked
+                isAuthenticated: e.currentTarget.checked
             }
         });
 
@@ -104,10 +104,10 @@ const PlayVisitorData: React.FC = () => {
                     <Form.Label>visitor anonymous ?</Form.Label>
                     <Form.Check
                         type="checkbox"
-                        id={`default-isAnonymous`}
-                        checked={newSettings.visitorData.isAnonymous || false}
+                        id={`default-isAuthenticated`}
+                        checked={newSettings.visitorData.isAuthenticated || false}
                         onChange={handleAnonymous}
-                        label={'isAnonymous=' + newSettings.visitorData.isAnonymous}
+                        label={'isAuthenticated=' + newSettings.visitorData.isAuthenticated}
                     />
                 </Form.Group>
             </Form>

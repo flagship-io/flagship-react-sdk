@@ -13,7 +13,7 @@ const config = {
     visitorData: {
         id: 'test-vid',
         context: { isAwesome: false, isEvil: false },
-        isAnonymous: false
+        isAuthenticated: false
     },
     sandbox: {
         config: {
