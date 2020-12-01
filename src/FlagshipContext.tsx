@@ -385,8 +385,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             handleError(new Error(errorMsg));
             return;
         }
-        if (!isBrowser) {
-            state.log.debug(`useEffect triggered in an environment other than browser, SDK stopped.`);
+        if (isServer) {
+            state.log.warn(`useEffect triggered in a server environment, SDK stopped.`);
             return;
         }
         let previousBucketing = null;
