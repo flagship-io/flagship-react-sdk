@@ -21,6 +21,15 @@ const PlayVisitorData: React.FC = () => {
             }
         });
 
+    const handleAnonymous = (e) =>
+        setNewSettings({
+            ...newSettings,
+            visitorData: {
+                ...newSettings.visitorData,
+                isAuthenticated: e.currentTarget.checked
+            }
+        });
+
     const handleVisitorContext = (e) => {
         const node = JSON.parse(e.currentTarget.parentElement.innerText);
         const temp = { ...newSettings };
@@ -65,7 +74,7 @@ const PlayVisitorData: React.FC = () => {
                         marginLeft: '16px'
                     }}
                 >
-                    <div>visitorId: </div>
+                    <div>visitor id: </div>
                     <Form.Control
                         type="text"
                         className="fsTextField"
@@ -90,6 +99,16 @@ const PlayVisitorData: React.FC = () => {
                             label={JSON.stringify({ [key]: value })}
                         />
                     ))}
+                </Form.Group>
+                <Form.Group controlId="initForm.ControlSelect4">
+                    <Form.Label>visitor anonymous ?</Form.Label>
+                    <Form.Check
+                        type="checkbox"
+                        id={`default-isAuthenticated`}
+                        checked={newSettings.visitorData.isAuthenticated || false}
+                        onChange={handleAnonymous}
+                        label={'isAuthenticated=' + newSettings.visitorData.isAuthenticated}
+                    />
                 </Form.Group>
             </Form>
             <div

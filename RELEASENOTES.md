@@ -1,5 +1,90 @@
 # Flagship REACT SDK - Release notes
 
+## ➡️ Version 2.0.9
+
+In this new release, we are launching **visitor reconciliation** which means that the SDK will adopt specific behavior according the data you'll provide to the visitor (in `visitorData` property).
+
+### New features 🎉
+
+-   `enableCache` property has been added into `FlagshipProvider` component, it is a boolean, `true` by default, that will save the visitor experience across its sessions using the browser's local storage.
+
+-   `visitorData` property has a new attribute `isAuthenticated` that takes a boolean and is optional (`false` by default).
+
+**NOTE**: Implementing visitor reconciliation will require to ALWAYS consider wether your visitor is authenticated (`visitorData.isAuthenticated=true`) or anonymous (`visitorData.isAuthenticated=false`)
+
+Here an example:
+
+-   Your visitor arrives on your app for the first time (not authenticated).
+
+    ```javascript
+    import React from 'react';
+    import { FlagshipProvider } from '@flagship.io/react-sdk';
+
+    const App = () => (
+        <>
+            <FlagshipProvider
+                envId="YOUR_ENV_ID"
+                apiKey="YOUR_API_KEY"
+                visitorData={{
+                    isAuthenticated: false, // <=== Tells the SDK that the visitor is anonymous
+                    id: 'VISITOR_ANONYMOUS_ID", // you need to provide an id which will be considered as anonymous while "visitorData.isAuthenticated=true"
+                    context: {
+                        // some context
+                    },
+                }}
+            >
+                {/* [...] */}
+            </FlagshipProvider>
+        </>
+    );
+    ```
+
+    The visitor will match some campaigns and receive some modifications.
+
+-   Now, the visitor is logging in and you realized that it has an existing Flagship's visitor id. No problem, we need to update the `visitorData` accordingly to tell the SDK about those changes:
+
+    ```javascript
+    import React from 'react';
+    import { FlagshipProvider } from '@flagship.io/react-sdk';
+
+    const App = () => (
+        <>
+            <FlagshipProvider
+                envId="YOUR_ENV_ID"
+                apiKey="YOUR_API_KEY"
+                visitorData={{
+                    isAuthenticated: true, // <=== Tells the SDK that the visitor is no more anonymous !
+                    id: 'ID_OF_RECOGNIZED_VISITOR', // The existing visitor id that you found after authenticate the visitor.
+                    context: {
+                        // some context, can be updated accordingly
+                    }
+                }}
+            >
+                {/* [...] */}
+            </FlagshipProvider>
+        </>
+    );
+    ```
+
+    **NOTE**: When switching from `visitorData.isAuthenticated=false` to `visitorData.isAuthenticated=true`, you can still keep the previous value of `visitorData.id` (for example when your visitor has just signed up).
+
+    Great, the visitor will keep its previous (anonymous) experience for the campaigns that its still matches (will keep same variation).
+
+-   There is still a possible scenario that can happen. What if the visitor is signing out ? Well.. you'll have to decide between two options:
+
+    1. I want my visitor to keep its anonymous experience as it was before being authenticated.
+    2. I want my visitor to be a brand new visitor.
+
+    Process for option #1:
+
+    -   Change the value of `visitorData.isAuthenticated` from `true` to `false`
+    -   Make sure `visitorData.id` has the same value as before being authenticate.
+
+    Process for option #2:
+
+    -   Change the value of `visitorData.isAuthenticated` from `true` to `false`
+    -   Make sure `visitorData.id` has a new unique value.
+
 ## ➡️ Version 2.0.8
 
 ### Improvements 💪
