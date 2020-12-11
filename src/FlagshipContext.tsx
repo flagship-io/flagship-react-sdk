@@ -91,7 +91,6 @@ interface FlagshipProviderProps {
         handleErrorDisplay: HandleErrorBoundaryDisplay;
         httpCallback: PostFlagshipApiCallback;
     };
-    enableCache?: boolean;
     fetchNow?: boolean;
     decisionMode?: 'API' | 'Bucketing';
     pollingInterval?: number | null;
