@@ -1,12 +1,10 @@
 # Flagship REACT SDK - Release notes
 
-## ➡️ Version 2.0.9
+## ➡️ Version 2.1.0
 
-In this new release, we are launching **visitor reconciliation** which means that the SDK will adopt specific behavior according the data you'll provide to the visitor (in `visitorData` property).
+In this new release, we are launching **visitor reconciliation** which means that the SDK will adopt specific behavior according the data you'll provide to the visitor (in `visitorData` prop).
 
 ### New features 🎉
-
--   `enableCache` property has been added into `FlagshipProvider` component, it is a boolean, `true` by default, that will save the visitor experience across its sessions using the browser's local storage.
 
 -   `visitorData` property has a new attribute `isAuthenticated` that takes a boolean and is optional (`false` by default).
 
@@ -27,9 +25,9 @@ Here an example:
                 apiKey="YOUR_API_KEY"
                 visitorData={{
                     isAuthenticated: false, // <=== Tells the SDK that the visitor is anonymous
-                    id: 'VISITOR_ANONYMOUS_ID", // you need to provide an id which will be considered as anonymous while "visitorData.isAuthenticated=true"
+                    id: 'VISITOR_ANONYMOUS_ID", // you need to provide an id which will be considered as an anonymous id
                     context: {
-                        // some context
+                        some: 'value'
                     },
                 }}
             >
@@ -41,7 +39,7 @@ Here an example:
 
     The visitor will match some campaigns and receive some modifications.
 
--   Now, the visitor is logging in and you realized that it has an existing Flagship's visitor id. No problem, we need to update the `visitorData` accordingly to tell the SDK about those changes:
+-   Now, the visitor is logging in. No problem, we need to update the `visitorData` accordingly to tell the SDK about those changes:
 
     ```javascript
     import React from 'react';
@@ -54,7 +52,7 @@ Here an example:
                 apiKey="YOUR_API_KEY"
                 visitorData={{
                     isAuthenticated: true, // <=== Tells the SDK that the visitor is no more anonymous !
-                    id: 'ID_OF_RECOGNIZED_VISITOR', // The existing visitor id that you found after authenticate the visitor.
+                    id: 'ID_OF_RECOGNIZED_VISITOR', // Put a new id here so that it will reconciliated with the previous (anonymous) session.
                     context: {
                         // some context, can be updated accordingly
                     }
@@ -68,7 +66,7 @@ Here an example:
 
     **NOTE**: When switching from `visitorData.isAuthenticated=false` to `visitorData.isAuthenticated=true`, you can still keep the previous value of `visitorData.id` (for example when your visitor has just signed up).
 
-    Great, the visitor will keep its previous (anonymous) experience for the campaigns that its still matches (will keep same variation).
+    Great, the visitor will keep its previous (anonymous) experience, meaning that it'll still keep same variations for campaigns that it still match.
 
 -   There is still a possible scenario that can happen. What if the visitor is signing out ? Well.. you'll have to decide between two options:
 
