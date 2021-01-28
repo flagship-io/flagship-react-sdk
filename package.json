@@ -1,6 +1,6 @@
 {
     "name": "@flagship.io/react-sdk",
-    "version": "2.0.8",
+    "version": "2.0.9",
     "description": "Flagship REACT SDK",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -59,7 +59,7 @@
     ],
     "homepage": "https://github.com/abtasty/flagship-react-sdk#readme",
     "dependencies": {
-        "@flagship.io/js-sdk": "^2.1.8",
+        "@flagship.io/js-sdk": "^2.1.9",
         "@flagship.io/js-sdk-logs": "^0.1.2",
         "use-ssr": "^1.0.23"
     },
