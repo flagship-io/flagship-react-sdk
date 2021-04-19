@@ -28,14 +28,14 @@ const PlayWithHits: React.FC = () => {
         type: 'ScreenView',
         data: {
             documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-            pageTitle: 'TestScreenView'
+            pageTitle: 'TestScreenView',
         }
     };
     const defaultPageViewHitPayload = {
         type: 'PageView',
         data: {
             documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-            pageTitle: 'TestPageView'
+            pageTitle: 'TestPageView',
         }
     };
     const defaultEventHitPayload = {
