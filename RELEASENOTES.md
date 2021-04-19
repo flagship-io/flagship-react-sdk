@@ -1,12 +1,12 @@
 # Flagship REACT SDK - Release notes
 
-## ➡️ Version 2.1.11
+## ➡️ Version 2.0.11
 
 - Adds Pageview hit
 - Changes Screen hit to Screenview hit
 - Minor bug fixes
 
-## ➡️ Version 2.1.10
+## ➡️ Version 2.0.10
 
 - Bumps axios version from 0.19.2 to 0.21.1
 
