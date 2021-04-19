@@ -24,11 +24,18 @@ const PlayWithHits: React.FC = () => {
             pageTitle: 'TestScreen'
         }
     };
-    const defaultScreenHitPayload = {
-        type: 'Screen',
+    const defaultScreenViewHitPayload = {
+        type: 'ScreenView',
         data: {
             documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-            pageTitle: 'TestScreen'
+            pageTitle: 'TestScreenView'
+        }
+    };
+    const defaultPageViewHitPayload = {
+        type: 'PageView',
+        data: {
+            documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
+            pageTitle: 'TestPageView'
         }
     };
     const defaultEventHitPayload = {
@@ -57,9 +64,10 @@ const PlayWithHits: React.FC = () => {
     };
     const payloads = {
         transaction: defaultTransactionHitPayload,
-        screen: defaultScreenHitPayload,
+        screenview: defaultScreenViewHitPayload,
         event: defaultEventHitPayload,
-        item: defaultItemHitPayload
+        item: defaultItemHitPayload,
+        pageview: defaultPageViewHitPayload,
     };
     const [hasError, setError] = React.useState(false);
     const [hasError2, setError2] = React.useState(false);
@@ -68,9 +76,10 @@ const PlayWithHits: React.FC = () => {
 
     const [hitsPayload, setHitsPayload] = React.useState([
         { ...payloads.transaction },
-        { ...payloads.screen },
+        { ...payloads.screenview },
         { ...payloads.event },
-        { ...payloads.item }
+        { ...payloads.item },
+        { ...payloads.pageview },
     ]);
     const update = () => {
         setHitPayload(payloads[currentTestedHit]);
@@ -87,8 +96,13 @@ const PlayWithHits: React.FC = () => {
                     </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                    <Nav.Link eventKey="hitScreen" onClick={() => setHitToTest('screen')}>
-                        Screen Hit
+                    <Nav.Link eventKey="hitPageView" onClick={() => setHitToTest('pageview')}>
+                        PageView Hit
+                    </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                    <Nav.Link eventKey="hitScreenView" onClick={() => setHitToTest('screenview')}>
+                        ScreenView Hit
                     </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
