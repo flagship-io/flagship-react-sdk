@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Nav } from 'react-bootstrap';
 import CodeBlock from '../../../../../../common/CodeBlock';
-import { TransactionHit, ScreenHit, ItemHit, EventHit } from '@flagship.io/js-sdk';
+import { TransactionHit, ScreenViewHit, PageViewHit, ItemHit, EventHit } from '@flagship.io/js-sdk';
 import { useFlagship } from '@flagship.io/react-sdk';
 
 const PlayWithHits: React.FC = () => {
@@ -146,42 +146,79 @@ const PlayWithHits: React.FC = () => {
             </Button>
         )
     };
-    const screenHitBundle = {
+    const screenviewHitBundle = {
         simpleCodeString: `<Button
     onClick={() => {
         const mockHit = {
-            type: 'Screen',
+            type: 'ScreenView',
             data: {
                 documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-                pageTitle: 'TestScreen',
+                pageTitle: 'TestScreenView',
             },
         };
         fsHit.send(mockHit);
     }}
 >
-    Send a screen hit
+    Send a screenview hit
 </Button>`,
         simpleComponent: (
             <Button
                 variant="secondary"
                 onClick={() => {
                     const mockHit = {
-                        type: 'Screen',
+                        type: 'ScreenView',
                         data: {
                             documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
-                            pageTitle: 'TestScreen'
+                            pageTitle: 'TestScreenView',
                         }
                     } as {
-                        type: 'Screen';
-                        data: ScreenHit;
+                        type: 'ScreenView';
+                        data: ScreenViewHit;
                     };
                     fsHit.send(mockHit);
                 }}
             >
-                Send a screen hit
+                Send a screenview hit
             </Button>
         )
     };
+    const pageviewHitBundle = {
+        simpleCodeString: `<Button
+    onClick={() => {
+        const mockHit = {
+            type: 'PageView',
+            data: {
+                documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
+                pageTitle: 'TestPageView',
+            },
+        };
+        fsHit.send(mockHit);
+    }}
+>
+    Send a pageview hit
+</Button>`,
+        simpleComponent: (
+            <Button
+                variant="secondary"
+                onClick={() => {
+                    const mockHit = {
+                        type: 'PageView',
+                        data: {
+                            documentLocation: 'http%3A%2F%2Fabtastylab.com%2F60511af14f5e48764b83d36ddb8ece5a%2F',
+                            pageTitle: 'TestPageView',
+                        }
+                    } as {
+                        type: 'PageView';
+                        data: PageViewHit;
+                    };
+                    fsHit.send(mockHit);
+                }}
+            >
+                Send a pageview hit
+            </Button>
+        )
+    };
+
     const itemHitBundle = {
         simpleCodeString: `<Button
     onClick={() => {
@@ -310,7 +347,12 @@ const { hit: fsHit } = useFlagship();`}
                     </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                    <Nav.Link eventKey="hitScreen" onClick={() => setHitToTest(screenHitBundle)}>
+                    <Nav.Link eventKey="hitPageview" onClick={() => setHitToTest(pageviewHitBundle)}>
+                        Pageview Hit
+                    </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                    <Nav.Link eventKey="hitScreenview" onClick={() => setHitToTest(screenviewHitBundle)}>
                         Screen Hit
                     </Nav.Link>
                 </Nav.Item>
