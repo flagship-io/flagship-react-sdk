@@ -6,6 +6,7 @@ dist/
 
 *.tgz
 
+.idea
 .vscode/
 
 IMPROVEMENTS.md
