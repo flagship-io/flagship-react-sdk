@@ -314,8 +314,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             fsSdk
         }));
     } else if ((isJest || isNative || isBrowser) && !isVisitorDefined && firstInitSuccess === null) {
-        const fsSdk = initSdk();
-        postInitSdkForClientSide(fsSdk); // same for native (= React native)
+        // const fsSdk = initSdk();
+        // postInitSdkForClientSide(fsSdk); // same for native (= React native)
     }
 
     // Call FlagShip any time context get changed.
@@ -335,6 +335,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
 
             previousBucketing = state.fsSdk.bucket?.data || null;
         }
+
         const fsSdk = initSdk(previousBucketing);
         postInitSdkForClientSide(fsSdk);
     }, [envId, id, JSON.stringify(configuration) + JSON.stringify(context)]);
