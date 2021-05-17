@@ -23,13 +23,15 @@ export const DemoUseFlagship = () => {
                 <div className="fsAnchor" id={demoHookName} />
                 <Alert variant="dark" className="fs-alert demoHook">
                     <Alert.Heading>{demoHookName}</Alert.Heading>
-                    <p>
-                        Use <b>{demoHookName}</b> hook to get access to further stuff such as <i>modifications</i>,{' '}
-                        <i>sdk status</i>, <i>hits</i> :
-                    </p>
-                    <CodeBlock
-                        className="mv3"
-                        codeString={`import { useFlagship } from '@flagship.io/react-sdk';
+                    {!QA.enabled && (
+                        <>
+                            <p>
+                                Use <b>{demoHookName}</b> hook to get access to further stuff such as{' '}
+                                <i>modifications</i>, <i>sdk status</i>, <i>hits</i> :
+                            </p>
+                            <CodeBlock
+                                className="mv3"
+                                codeString={`import { useFlagship } from '@flagship.io/react-sdk';
 const fsParams = {
     modifications: {
         requested: [
@@ -46,7 +48,9 @@ const {
     status: fsStatus,
     hit: fsHit,
 } = useFlagship(fsParams);`}
-                    />
+                            />
+                        </>
+                    )}
                     <h3>
                         1 - Playing with <i>fsModifications</i>
                     </h3>

@@ -23,6 +23,7 @@ export interface SdkSettings extends FlagshipReactSdkConfig {
     visitorData: {
         id: string;
         context: VisitorContext;
+        isAuthenticated: boolean;
     };
 }
 export interface AppSettings {

@@ -13,7 +13,8 @@ const PlayVisitorData: React.FC = () => {
         <Formik
             initialValues={{
                 vId: currentSettings.visitorData.id,
-                vContext: currentSettings.visitorData.context
+                vContext: currentSettings.visitorData.context,
+                isAuthenticated: currentSettings.visitorData.isAuthenticated
             }}
             validate={(values) => {
                 const errors: any = {};
@@ -27,6 +28,8 @@ const PlayVisitorData: React.FC = () => {
                 setSettings({
                     ...currentSettings,
                     visitorData: {
+                        ...currentSettings.visitorData,
+                        isAuthenticated: values.isAuthenticated,
                         id: values.vId,
                         context: values.vContext || {}
                     }
@@ -70,6 +73,16 @@ const PlayVisitorData: React.FC = () => {
                                     fontSize: '16px'
                                 }
                             }}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="initForm.ControlSelect4">
+                        <Form.Label>visitor anonymous ?</Form.Label>
+                        <Form.Check
+                            type="checkbox"
+                            id={`default-isAuthenticated`}
+                            checked={values.isAuthenticated}
+                            onChange={() => setFieldValue('isAuthenticated', !values.isAuthenticated)}
+                            label={'isAuthenticated=' + values.isAuthenticated}
                         />
                     </Form.Group>
                     <div className="flex justify-end ph3">

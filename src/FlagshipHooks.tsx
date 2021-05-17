@@ -7,7 +7,7 @@ import {
     HitShape
 } from '@flagship.io/js-sdk';
 import { FsLogger } from '@flagship.io/js-sdk-logs';
-import FlagshipContext, { FsStatus } from './FlagshipContext';
+import FlagshipContext, { FsStatus, FsContext } from './FlagshipContext';
 
 declare type ModificationKeys = Array<string>;
 declare type UseFsActivateOutput = void;
@@ -29,7 +29,7 @@ export const useFsActivate = (
     modificationKeys: ModificationKeys,
     applyEffectScope: any[] = []
 ): UseFsActivateOutput => {
-    const { state, hasError } = useContext(FlagshipContext);
+    const { state, hasError } = useContext<FsContext>(FlagshipContext);
     useEffect((): void => {
         const { fsVisitor } = state;
 
@@ -77,7 +77,7 @@ export const useFsModifications = (
     const {
         state: { fsVisitor, log },
         hasError
-    } = useContext(FlagshipContext);
+    } = useContext<FsContext>(FlagshipContext);
 
     if (hasError) {
         return safeMode_getCacheModifications(modificationsRequested, activateAllModifications);
@@ -119,7 +119,7 @@ export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
         hasError,
         setState,
         state: { fsSdk, fsVisitor, status, log }
-    } = useContext(FlagshipContext);
+    } = useContext<FsContext>(FlagshipContext);
     if (hasError) {
         return {
             modifications: safeMode_getCacheModifications(modificationsRequested, activateAllModifications),

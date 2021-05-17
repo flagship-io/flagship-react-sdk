@@ -40,6 +40,8 @@ export const defaultContext: {
     }
 };
 
+export const anonymousIdForTest = 'anonymousTest';
+
 export const providerProps = {
     visitorData: {
         id: vId,
