@@ -1,8 +1,8 @@
 # Flagship REACT SDK - Release notes
 
-## ➡️ Version 2.1.13
+## ➡️ Version 2.1.0
 
-In this new release, we are launching **visitor reconciliation** which means that the SDK will adopt specific behavior according the data you'll provide to the visitor (in `visitorData` prop).
+In this new release, we are launching **experience continuity** which means that the SDK will adopt specific behavior according the data you'll provide to the visitor (in `visitorData` prop).
 
 ### New features 🎉
 
