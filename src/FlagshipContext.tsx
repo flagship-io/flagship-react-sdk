@@ -326,8 +326,8 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             fsSdk
         }));
     } else if ((isJest || isNative || isBrowser) && !isVisitorDefined && firstInitSuccess === null) {
-        // const fsSdk = initSdk();
-        // postInitSdkForClientSide(fsSdk); // same for native (= React native)
+        const fsSdk = initSdk();
+        postInitSdkForClientSide(fsSdk); // same for native (= React native)
     }
 
     const updateVisitorIfIdentityChanged = (): boolean => {

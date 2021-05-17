@@ -260,7 +260,8 @@ describe('fsContext provider', () => {
             decisionMode: 'API',
             pollingInterval: null,
             enableSafeMode: true,
-            timeout: 2,
+            enableClientCache: true,
+            timeout: 60,
             fetchNow: true,
             apiKey: 'M2FYdfXsJ12tjJQuadw7y9DZojqNGBvecpjGXY93',
             flagshipApi: 'https://decision.flagship.io/v2/',
@@ -325,7 +326,8 @@ describe('fsContext provider', () => {
             enableConsoleLogs: true,
             enableErrorLayout: true,
             enableSafeMode: true,
-            timeout: 2,
+            enableClientCache: true,
+            timeout: 60,
             decisionMode: 'API',
             pollingInterval: null,
             fetchNow: true,
@@ -461,7 +463,7 @@ describe('fsContext provider', () => {
                 {...providerProps.config}
                 fetchNow={false}
                 nodeEnv="development"
-                visitorData={{ ...providerProps.visitorData, isAnonymous, id: vId }}
+                visitorData={{ ...providerProps.visitorData, isAuthenticated: !isAnonymous, id: vId }}
                 onInitDone={() => {
                     isReady = true;
                 }}
