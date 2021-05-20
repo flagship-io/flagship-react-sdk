@@ -8,8 +8,8 @@
         "start": "nodemon src/index.js localhost 8080"
     },
     "dependencies": {
-        "@flagship.io/js-sdk": "^2.1.9",
-        "@flagship.io/react-sdk": "^2.0.9",
+        "@flagship.io/js-sdk": "^2.2.2",
+        "@flagship.io/react-sdk": "^2.1.1",
         "express": "4.17.1",
         "express-react-views": "0.11.0",
         "react": "16.8.6",
