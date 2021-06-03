@@ -1,6 +1,19 @@
 const LOCAL_STORAGE_NODE = 'fsDevDemo';
 
-export const saveLocalStorage: (callback: (oldPayload: any) => any) => { success: boolean; message: string } = (
+export const getLocalStorage = () => {
+  let str;
+  try {
+    str = localStorage.getItem(LOCAL_STORAGE_NODE);
+  } catch {
+    str = null;
+  }
+  return !str ? null : JSON.parse(str);
+};
+
+
+export const saveLocalStorage: (
+    callback: (oldPayload: any) => any
+) => { success: boolean; message: string } = (
   callback,
 ) => {
   const oldPayload = getLocalStorage();
@@ -12,22 +25,18 @@ export const saveLocalStorage: (callback: (oldPayload: any) => any) => { success
     };
   }
   if (newPayload === null) {
-    localStorage.removeItem(LOCAL_STORAGE_NODE);
+    try {
+      localStorage.removeItem(LOCAL_STORAGE_NODE);
+      // eslint-disable-next-line no-empty
+    } catch {}
   } else {
-    localStorage.setItem(LOCAL_STORAGE_NODE, JSON.stringify(newPayload));
+    try {
+      localStorage.setItem(LOCAL_STORAGE_NODE, JSON.stringify(newPayload));
+      // eslint-disable-next-line no-empty
+    } catch {}
   }
   return {
     success: true,
     message: 'ok',
   };
-};
-
-export const getLocalStorage = () => {
-  let str;
-  try {
-    str = localStorage.getItem(LOCAL_STORAGE_NODE);
-  } catch {
-    str = null;
-  }
-  return !str ? null : JSON.parse(str);
 };
