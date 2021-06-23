@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import {
     FsModifsRequestedList,
     GetModificationsOutput,
@@ -29,10 +29,15 @@ export const useFsActivate = (
     modificationKeys: ModificationKeys,
     applyEffectScope: any[] = []
 ): UseFsActivateOutput => {
+    const firstRendering = useRef(true);
     const { state, hasError } = useContext<FsContext>(FlagshipContext);
     useEffect((): void => {
         const { fsVisitor } = state;
 
+        if (firstRendering.current) {
+            firstRendering.current = false;
+            return undefined;
+        }
         if (hasError) {
             return safeModeLog(state.log, 'UseFsActivate');
         }
