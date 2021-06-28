@@ -1,5 +1,5 @@
 # Flagship REACT SDK - Release notes
-## ➡️ Version 2.1.3
+## ➡️ Version 2.1.5
 Minor bug fixes & improvements
 
 ## ➡️ Version 2.1.2

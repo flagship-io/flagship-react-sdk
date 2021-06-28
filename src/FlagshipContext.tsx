@@ -39,8 +39,26 @@ export declare type FsState = {
 };
 
 export interface FlagshipReactSdkConfig extends FlagshipSdkConfig {
+    fetchNow?: boolean;
+    pollingInterval?: number | null;
+    activateNow?: boolean;
+    enableConsoleLogs?: boolean;
+    decisionMode?: 'API' | 'Bucketing';
+    nodeEnv?: string;
+    enableClientCache?: boolean;
+    flagshipApi?: string;
+    apiKey?: string | null;
+    initialModifications?: DecisionApiCampaign[] | null;
+    initialBucketing?: BucketingApiResponse | null;
+    timeout?: number;
     enableErrorLayout?: boolean;
     enableSafeMode?: boolean;
+    internal?: {
+        react?: {};
+        reactNative?: {
+            httpCallback?: PostFlagshipApiCallback;
+        };
+    };
 }
 
 export const initState: FsState = {
