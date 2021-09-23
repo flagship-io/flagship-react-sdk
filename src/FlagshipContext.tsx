@@ -116,6 +116,7 @@ interface FlagshipProviderProps {
     enableConsoleLogs?: boolean;
     enableErrorLayout?: boolean;
     enableSafeMode?: boolean;
+    enableClientCache?: boolean;
     nodeEnv?: string;
     timeout?: number;
     flagshipApi?: string;
@@ -150,6 +151,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
     enableConsoleLogs,
     enableErrorLayout,
     enableSafeMode,
+    enableClientCache,
     nodeEnv,
     flagshipApi,
     apiKey,
@@ -172,6 +174,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         enableConsoleLogs: typeof enableConsoleLogs !== 'boolean' ? false : enableConsoleLogs,
         enableErrorLayout: typeof enableErrorLayout !== 'boolean' ? false : enableErrorLayout,
         enableSafeMode: typeof enableSafeMode !== 'boolean' ? false : enableSafeMode,
+        enableClientCache: typeof enableClientCache !== 'boolean' ? true : enableClientCache,
         nodeEnv: nodeEnv || 'production',
         initialBucketing: initialBucketing || null,
         flagshipApi,
