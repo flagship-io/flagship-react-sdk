@@ -1,236 +1,266 @@
-import { useContext, useEffect, useRef } from 'react';
-import {
-    FsModifsRequestedList,
-    GetModificationsOutput,
-    GetModificationInfoOutput,
-    IFlagshipVisitor,
-    HitShape
-} from '@flagship.io/js-sdk';
-import { FsLogger } from '@flagship.io/js-sdk-logs';
-import FlagshipContext, { FsStatus, FsContext } from './FlagshipContext';
+import { useContext } from 'react'
+import { HitAbstract, IFlagshipConfig, IHit, Modification, modificationsRequested, primitive } from '@flagship.io/js-sdk'
+import { FlagshipContext } from './FlagshipContext'
+import { logError, logWarn } from './utils'
 
-declare type ModificationKeys = Array<string>;
-declare type UseFsActivateOutput = void;
-declare type UseFsModificationsOutput = GetModificationsOutput;
+/**
+ * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
+ */
+export const useFsModifications:{
+    <T>(params: modificationsRequested<T>[], activateAll?: boolean): Promise<T[]>
+} = async (params, activateAll) => {
+  return useFsModificationsSync(params, activateAll)
+}
 
-const reportNoVisitor = (log: FsLogger | null): void => {
-    if (log) {
-        log.error('sdk not correctly initialized... Make sure fsVisitor is ready.');
-    }
-};
+/**
+ * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
+ */
+export const useFsModificationsSync:{
+    <T>(params: modificationsRequested<T>[], activateAll?: boolean): T[]
+} = (params, activateAll) => {
+  const { state } = useContext(FlagshipContext)
+  const { visitor, config } = state
+  const functionName = 'useFsModifications'
 
-const safeModeLog = (log: FsLogger | null, functionName: string): void => {
-    if (log) {
-        log.error(`${functionName} is disabled because the SDK is in safe mode.`);
-    }
-};
+  if (visitor) {
+    return visitor.getModificationsSync(params, activateAll)
+  }
 
-export const useFsActivate = (
-    modificationKeys: ModificationKeys,
-    applyEffectScope: any[] = []
-): UseFsActivateOutput => {
-    const firstRendering = useRef(true);
-    const { state, hasError } = useContext<FsContext>(FlagshipContext);
-    useEffect((): void => {
-        const { fsVisitor } = state;
+  logWarn(config, noVisitorDefault, functionName)
 
-        if (firstRendering.current) {
-            firstRendering.current = false;
-            return undefined;
-        }
-        if (hasError) {
-            return safeModeLog(state.log, 'UseFsActivate');
-        }
-        if (!fsVisitor) {
-            reportNoVisitor(state.log);
-        } else {
-            fsVisitor.activateModifications(modificationKeys.map((key) => ({ key })));
-        }
-        return undefined;
-    }, applyEffectScope);
-};
+  return params.map(item => {
+    return item.defaultValue
+  })
+}
 
-const safeMode_getCacheModifications = (
-    modificationsRequested: FsModifsRequestedList,
-    activateAllModifications = false
-): UseFsModificationsOutput => {
-    return modificationsRequested.reduce((reducer, modifRequested) => {
-        const newReducer: UseFsModificationsOutput = { ...reducer };
-        newReducer[modifRequested.key] = modifRequested.defaultValue;
-        return newReducer;
-    }, {});
-};
-const getCacheModifications = (
-    fsVisitor: IFlagshipVisitor | null,
-    modificationsRequested: FsModifsRequestedList,
-    activateAllModifications = false,
-    log: FsLogger | null
-): UseFsModificationsOutput => {
-    if (!fsVisitor) {
-        if (log) {
-            log.warn('fsVisitor not initialized, returns default value');
-        }
-        return safeMode_getCacheModifications(modificationsRequested, activateAllModifications);
-    }
-    return fsVisitor.getModifications(modificationsRequested, activateAllModifications);
-};
+/**
+ * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
+ */
+export const useFsModification:{
+  <T>(params: modificationsRequested<T>): Promise<T>
+} = async (params) => {
+  return useFsModificationSync(params)
+}
 
-export const useFsModifications = (
-    modificationsRequested: FsModifsRequestedList,
-    activateAllModifications = false
-): UseFsModificationsOutput => {
-    const {
-        state: { fsVisitor, log },
-        hasError
-    } = useContext<FsContext>(FlagshipContext);
+/**
+ * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
+ */
+export const useFsModificationSync:{
+  <T>(params: modificationsRequested<T>): T
+} = (params) => {
+  const { state } = useContext(FlagshipContext)
+  const { visitor, config } = state
+  const functionName = 'useFsModifications'
 
-    if (hasError) {
-        return safeMode_getCacheModifications(modificationsRequested, activateAllModifications);
+  if (visitor) {
+    return visitor.getModificationSync(params)
+  }
+
+  logWarn(config, noVisitorDefault, functionName)
+
+  return params.defaultValue
+}
+
+/**
+ * Get the campaign modification information value matching the given key.
+ * @param {string} key key which identify the modification.
+ */
+export const useFsModificationInfo = async (key: string):Promise<Modification | null> => {
+  return useFsModificationInfoSync(key)
+}
+
+/**
+ * Get the campaign modification information value matching the given key.
+ * @param {string} key key which identify the modification.
+ */
+export const useFsModificationInfoSync:{
+    (key: string):Modification | null} = (key: string) => {
+      const { state } = useContext(FlagshipContext)
+      const { visitor } = state
+      if (visitor) {
+        return visitor.getModificationInfoSync(key)
+      }
+      return null
     }
 
-    return getCacheModifications(fsVisitor, modificationsRequested, activateAllModifications, log);
+/**
+ * This function calls the decision api and update all the campaigns modifications from the server according to the visitor context.
+*/
+export const useFsSynchronizeModifications = async ():Promise<void> => {
+  const { state } = useContext(FlagshipContext)
+  const { visitor, config } = state
+  const functionName = 'useFsSynchronizeModifications'
+  try {
+    if (!visitor) {
+      reportNoVisitor(config, functionName)
+      return
+    }
+    await visitor.synchronizeModifications()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error:any) {
+    logError(config, error.message || error, functionName)
+  }
+}
+
+/**
+ * Report this user has seen this modification. Report this user has seen these modifications.
+ * @param params
+ * @returns
+ */
+export const useFsActivate:{
+    (keys: { key: string }[]): Promise<void>
+    (keys: string[]):Promise<void>
+} = async (params) => {
+  const { state } = useContext(FlagshipContext)
+  const { visitor, config } = state
+  const functionName = 'useFsModifications'
+
+  try {
+    if (!visitor) {
+      logWarn(config, noVisitorMessage, functionName)
+      return
+    }
+    await visitor.activateModifications(params)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error:any) {
+    logWarn(config, error.message || error, functionName)
+  }
+}
+
+export type UseFlagshipParams<T> ={
+  modifications:{
+    requested: modificationsRequested<T>[]
+    activateAll?: boolean
+  }
+}
+
+export type UseFlagshipOutput<T> = {
+  modifications: Promise<T|T[]>
+  modificationsAsync: T|T[]
+  getModificationInfo (key: string) : Promise<Modification | null>
+  getModificationInfoSync (key: string) : Modification | null
+  synchronizeModifications(): Promise<void>
+  /**
+ * Update the visitor context values, matching the given keys, used for targeting.
+ * A new context value associated with this key will be created if there is no previous matching value.
+ * Context keys must be String, and values types must be one of the following : Number, Boolean, String.
+ * @param context collection of keys, values.
+ */
+  updateContext(context: Record<string, primitive>):void
+  /**
+ * clear the actual visitor context
+ */
+  cleanContext():void
+    /**
+ * Authenticate anonymous visitor
+ * @param visitorId
+ */
+  authenticate(visitorId: string): void
+    /**
+ * This hook change authenticated Visitor to anonymous visitor
+ * @param visitorId
+ */
+  unauthenticate():void
+  hit: {
+      send:{
+        (hit: HitAbstract): Promise<void>
+        (hit: HitAbstract | IHit): Promise<void>
+      }
+      sendMultiple:{
+        (hit: HitAbstract[]): Promise<void>
+        (hit: IHit[]): Promise<void>
+      }
+  };
 };
 
-export declare type UseFlagshipParams = {
-    modifications: {
-        requested: FsModifsRequestedList;
-        activateAll?: boolean;
-    };
-};
+export const useFlagship = <T extends unknown>(options?:UseFlagshipParams<T>):UseFlagshipOutput<T> => {
+  const { modifications: { requested, activateAll } } = options || { modifications: { requested: [], activateAll: false } }
+  const { state } = useContext(FlagshipContext)
+  const { visitor, config } = state
 
-export declare type UseFlagshipOutput = {
-    modifications: GetModificationsOutput;
-    getModificationInfo: (key: string) => Promise<null | GetModificationInfoOutput>;
-    synchronizeModifications(activate: boolean): Promise<number>;
-    startBucketingPolling(): { success: boolean; reason?: string };
-    stopBucketingPolling(): { success: boolean; reason?: string };
-    status: FsStatus;
+  const fsUpdateContext = (context:Record<string, primitive>):void => {
+    const functionName = 'updateContext'
+    if (!visitor) {
+      logError(config, noVisitorMessage, functionName)
+      return
+    }
+    visitor.updateContext(context)
+    visitor.synchronizeModifications()
+  }
+
+  const fsCleanContext = ():void => {
+    const functionName = 'cleanContext'
+    if (!visitor) {
+      logError(config, noVisitorMessage, functionName)
+      return
+    }
+    visitor.clearContext()
+  }
+
+  const fsAuthenticate = (visitorId:string):void => {
+    const functionName = 'authenticate'
+    if (!visitor) {
+      logError(config, noVisitorMessage, functionName)
+      return
+    }
+    visitor.authenticate(visitorId)
+  }
+
+  const fsUnauthenticate = ():void => {
+    const functionName = 'unauthenticate'
+    if (!visitor) {
+      logError(config, noVisitorMessage, functionName)
+      return
+    }
+    visitor.unauthenticate()
+  }
+
+  /**
+ * Send a Hit to Flagship servers for reporting.
+ */
+  const fsSendHit:{
+  (hit: HitAbstract | IHit): Promise<void>} = (hit) => {
+    const functionName = 'sendHit'
+    if (!visitor) {
+      logError(config, noVisitorMessage, functionName)
+      return Promise.resolve()
+    }
+    return visitor.sendHit(hit)
+  }
+
+  /**
+ * Send a Hit to Flagship servers for reporting.
+ */
+  const fsSendHits:{
+    (hit: HitAbstract[]|IHit[]): Promise<void>} = (hit) => {
+      const functionName = 'sendHits'
+      if (!visitor) {
+        logError(config, noVisitorMessage, functionName)
+        return Promise.resolve()
+      }
+      return visitor.sendHits(hit)
+    }
+
+  return {
+    updateContext: fsUpdateContext,
+    cleanContext: fsCleanContext,
+    authenticate: fsAuthenticate,
+    unauthenticate: fsUnauthenticate,
+    synchronizeModifications: useFsSynchronizeModifications,
+    modificationsAsync: useFsModificationsSync(requested, activateAll),
+    modifications: useFsModifications(requested, activateAll),
+    getModificationInfo: useFsModificationInfo,
+    getModificationInfoSync: useFsModificationInfoSync,
     hit: {
-        send(hit: HitShape): void;
-        sendMultiple(hits: HitShape[]): void;
-    };
-};
-
-export const useFlagship = (options?: UseFlagshipParams): UseFlagshipOutput => {
-    const computedOptions = options
-        ? (options as UseFlagshipParams)
-        : {
-              modifications: { requested: [], activateAll: false }
-          };
-    const {
-        modifications: { requested: modificationsRequested, activateAll: activateAllModifications = false }
-    } = computedOptions;
-    const {
-        hasError,
-        setState,
-        state: { fsSdk, fsVisitor, status, log }
-    } = useContext<FsContext>(FlagshipContext);
-    if (hasError) {
-        return {
-            modifications: safeMode_getCacheModifications(modificationsRequested, activateAllModifications),
-            status,
-            synchronizeModifications: (activate = false): Promise<number> => {
-                safeModeLog(log, 'synchronizeModifications');
-                return new Promise((resolve) => resolve(400));
-            },
-            getModificationInfo: (): Promise<null> => {
-                safeModeLog(log, 'getModificationInfo');
-                return new Promise((resolve) => resolve(null));
-            },
-            startBucketingPolling: (): { success: boolean; reason?: string } => {
-                safeModeLog(log, 'startBucketingPolling');
-                return {
-                    success: false,
-                    reason: 'Safe mode enabled'
-                };
-            },
-            stopBucketingPolling: (): { success: boolean; reason?: string } => {
-                safeModeLog(log, 'startBucketingPolling');
-                return {
-                    success: false,
-                    reason: 'Safe mode enabled'
-                };
-            },
-            hit: {
-                send: (): void => {
-                    safeModeLog(log, 'send hit');
-                },
-                sendMultiple: (): void => {
-                    safeModeLog(log, 'send multiple hits');
-                }
-            }
-        };
+      send: fsSendHit,
+      sendMultiple: fsSendHits
     }
-    const logSdkNotReady = () => {
-        if (log) {
-            log.error('SDK not ready yet.');
-        }
-    };
-    const send = (hit: HitShape): void => {
-        if (fsVisitor && fsVisitor.sendHit) {
-            fsVisitor.sendHit(hit);
-        } else {
-            logSdkNotReady();
-        }
-    };
-    const sendMultiple = (hits: HitShape[]): void => {
-        if (fsVisitor && fsVisitor.sendHits) {
-            fsVisitor.sendHits(hits);
-        } else {
-            logSdkNotReady();
-        }
-    };
+  }
+}
 
-    const synchronizeModifications = (activate = false): Promise<number> => {
-        if (fsVisitor && fsVisitor.synchronizeModifications) {
-            return fsVisitor.synchronizeModifications(activate).then((data) => {
-                if (setState) {
-                    setState((s) => ({ ...s, fsModifications: fsVisitor.fetchedModifications }));
-                }
-                return data;
-            });
-        }
-        logSdkNotReady();
-        return new Promise((resolve) => resolve(405));
-    };
-    send.bind(fsVisitor);
-    sendMultiple.bind(fsVisitor);
-    return {
-        synchronizeModifications,
-        modifications: getCacheModifications(fsVisitor, modificationsRequested, activateAllModifications, log),
-        getModificationInfo: (key: string): Promise<GetModificationInfoOutput | null> => {
-            return fsVisitor !== null
-                ? (fsVisitor as IFlagshipVisitor).getModificationInfo(key)
-                : new Promise((resolve) => resolve(null));
-        },
-        startBucketingPolling: (): { success: boolean; reason?: string } => {
-            if (fsSdk) {
-                return fsSdk.startBucketingPolling();
-            }
-            if (log) {
-                log.error('startBucketingPolling not ready yet.');
-            }
-            return {
-                success: false,
-                reason: 'startBucketingPolling not ready yet.'
-            };
-        },
-        stopBucketingPolling: (): { success: boolean; reason?: string } => {
-            if (fsSdk) {
-                return fsSdk.stopBucketingPolling();
-            }
-            if (log) {
-                log.error('stopBucketingPolling not ready yet.');
-            }
-            return {
-                success: false,
-                reason: 'startBucketingPolling not ready yet.'
-            };
-        },
-        status,
-        hit: {
-            send,
-            sendMultiple
-        }
-    };
-};
+export const noVisitorMessage = 'sdk not correctly initialized... Make sure fsVisitor is ready.'
+export const noVisitorDefault = 'fsVisitor not initialized, returns default value'
+
+const reportNoVisitor = (config: IFlagshipConfig|undefined, tag:string): void => {
+  logError(config, noVisitorMessage, tag)
+}

@@ -1,20 +1,23 @@
-node_modules
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-dist/
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
 
-.idea
+# testing
+/coverage
 
-*.tgz
+# production
+/dist
 
-.idea
-.vscode/
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-IMPROVEMENTS.md
-
-coverage/
-
-examples/react-ecommerce-demo/.next/
-
-examples/react-ecommerce-demo/TOKEN.txt
-
-examples/react-universal-demo/.next/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
