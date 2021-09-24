@@ -94,23 +94,37 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   }, [lastModified])
 
   useEffect(() => {
-    if (!state.visitor) {
-      return
-    }
-
-    if (visitorData.context) {
-      state.visitor.updateContext(visitorData.context)
-    }
-    if (visitorData.id) {
-      state.visitor.visitorId = visitorData.id
-    }
-    state.visitor.setConsent(!!visitorData.hasConsented)
-    state.visitor.synchronizeModifications()
+    updateVisitor()
   }, [visitorData])
 
   useEffect(() => {
     initSdk()
   }, [envId, apiKey, decisionMode])
+
+  const updateVisitor = () => {
+    if (!state.visitor) {
+      return
+    }
+
+    if (visitorData.context) {
+      state.visitor.clearContext()
+      state.visitor.updateContext(visitorData.context)
+    }
+
+    state.visitor.setConsent(!!visitorData.hasConsented)
+
+    if (state.visitor.anonymousId && !visitorData.isAuthenticated) {
+      state.visitor.unauthenticate()
+    } else if (!state.visitor.anonymousId && visitorData.isAuthenticated) {
+      state.visitor.authenticate(visitorData.id)
+    }
+
+    if (visitorData.id) {
+      state.visitor.visitorId = visitorData.id
+    }
+
+    state.visitor.synchronizeModifications()
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onVisitorReady = (fsVisitor:Visitor, error:any) => {
@@ -119,24 +133,29 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       return
     }
 
+    const newStatus = {
+      isSdkReady: true,
+      isLoading: false,
+      isVisitorDefined: !!fsVisitor,
+      lastRefresh: new Date().toISOString(),
+      firstInitSuccess: new Date().toISOString()
+    }
+
     setState({
       ...state,
       visitor: fsVisitor,
       modifications: fsVisitor.modifications,
       status: {
         ...state.status,
-        isSdkReady: true,
-        isLoading: false,
-        isVisitorDefined: !!fsVisitor,
-        lastRefresh: new Date().toISOString(),
-        firstInitSuccess: new Date().toISOString()
+        ...newStatus
       }
     })
+
     if (onUpdate) {
       onUpdate({
         fsModifications: fsVisitor.modifications,
         config: Flagship.getConfig(),
-        status: state.status
+        status: newStatus
       })
     }
   }
@@ -158,13 +177,13 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
         const fsVisitor = Flagship.newVisitor({
           visitorId: visitorData.id,
           context: visitorData.context,
-          isAuthenticated: visitorData.isAuthenticated
+          isAuthenticated: visitorData.isAuthenticated,
+          hasConsented: !!visitorData.hasConsented
         })
 
         fsVisitor?.on('ready', error => {
           onVisitorReady(fsVisitor, error)
         })
-        fsVisitor?.setConsent(!!visitorData.hasConsented)
       }
     }
   }
