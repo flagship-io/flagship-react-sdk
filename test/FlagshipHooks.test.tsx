@@ -1,8 +1,7 @@
 import React from 'react'
 import { jest, expect, it, describe, beforeEach, afterEach } from '@jest/globals'
-import { renderHook } from '@testing-library/react-hooks'
 import * as FsHooks from '../src/FlagshipHooks'
-import { useFsModificationInfo, useFsModifications, useFsSynchronizeModifications } from '../src/FlagshipHooks'
+import { useFsModificationInfo, useFsModifications, useFsModification, useFsSynchronizeModifications } from '../src/FlagshipHooks'
 import { Mock } from 'jest-mock'
 import { HitType, LogLevel, Modification } from '@flagship.io/js-sdk'
 
@@ -24,8 +23,23 @@ describe('test FlagshipHooks', () => {
 
   it('useFsModifications return default ', async () => {
     useContextMock.mockReturnValue({ state: {} })
-    const result = await useFsModifications({ key: 'key', defaultValue: 'default' })
+    const result = await useFsModification({ key: 'key', defaultValue: 'default' })
     expect(result).toBe('default')
+  })
+
+  it('useFsModification modifications ', async () => {
+    const visitor = {
+      getModificationSync: jest.fn()
+    }
+    const expected = ['key1', 'key2']
+
+    visitor.getModificationSync.mockReturnValue(expected)
+    useContextMock.mockReturnValue({ state: { visitor } })
+    const key = { key: 'key', defaultValue: 'default' }
+    const result = await useFsModification(key)
+    expect(result).toEqual(expected)
+    expect(visitor.getModificationSync).toBeCalledTimes(1)
+    expect(visitor.getModificationSync).toBeCalledWith(key)
   })
 
   it('useFsModifications return array of default ', async () => {
@@ -37,17 +51,17 @@ describe('test FlagshipHooks', () => {
 
   it('useFsModifications modifications ', async () => {
     const visitor = {
-      getModificationSync: jest.fn()
+      getModificationsSync: jest.fn()
     }
     const expected = ['key1', 'key2']
 
-    visitor.getModificationSync.mockReturnValue(expected)
+    visitor.getModificationsSync.mockReturnValue(expected)
     useContextMock.mockReturnValue({ state: { visitor } })
     const keys = [{ key: 'key', defaultValue: 'default' }, { key: 'key1', defaultValue: 'default1' }]
     const result = await useFsModifications(keys)
     expect(result).toEqual(expected)
-    expect(visitor.getModificationSync).toBeCalledTimes(1)
-    expect(visitor.getModificationSync).toBeCalledWith(keys, undefined)
+    expect(visitor.getModificationsSync).toBeCalledTimes(1)
+    expect(visitor.getModificationsSync).toBeCalledWith(keys, undefined)
   })
 
   it('useFsModificationInfo return null ', async () => {
@@ -122,7 +136,7 @@ describe('test FlagshipHooks', () => {
     useContextMock.mockReturnValue({ state: { config } })
     const key = 'Key'
 
-    await FsHooks.useFsActivate(key)
+    await FsHooks.useFsActivate([key])
 
     expect(config.logManager.warning).toBeCalledTimes(1)
   })
@@ -135,16 +149,36 @@ describe('test FlagshipHooks', () => {
       logLevel: LogLevel.ALL
     }
     const visitor = {
-      activateModificationSync: jest.fn<Promise<void>, void[]>()
+      activateModifications: jest.fn<Promise<void>, void[]>()
     }
-    visitor.activateModificationSync.mockResolvedValue()
+    visitor.activateModifications.mockResolvedValue()
     useContextMock.mockReturnValue({ state: { config, visitor } })
-    const key = 'Key'
+    const key = ['Key']
 
     await FsHooks.useFsActivate(key)
-    expect(visitor.activateModificationSync).toBeCalledTimes(1)
-    expect(visitor.activateModificationSync).toBeCalledWith(key)
+    expect(visitor.activateModifications).toBeCalledTimes(1)
+    expect(visitor.activateModifications).toBeCalledWith(key)
     expect(config.logManager.warning).toBeCalledTimes(0)
+  })
+
+  it('useFsActivate throw error ', async () => {
+    const config = {
+      logManager: {
+        warning: jest.fn()
+      },
+      logLevel: LogLevel.ALL
+    }
+    const visitor = {
+      activateModifications: jest.fn<Promise<void>, void[]>()
+    }
+
+    const error = 'error'
+    visitor.activateModifications.mockRejectedValue(error)
+    useContextMock.mockReturnValue({ state: { config, visitor } })
+    const key = ['Key']
+
+    await FsHooks.useFsActivate(key)
+    expect(config.logManager.warning).toBeCalledTimes(1)
   })
 
   it('should ', async () => {
@@ -162,10 +196,12 @@ describe('test FlagshipHooks', () => {
       synchronizeModifications: jest.fn(),
       modificationsAsync: jest.fn(),
       modifications: jest.fn(),
+      getModificationsSync: jest.fn(),
       getModificationInfo: jest.fn(),
       getModificationInfoSync: jest.fn(),
       getModificationSync: jest.fn(),
-      sendHit: jest.fn()
+      sendHit: jest.fn(),
+      sendHits: jest.fn()
 
     }
     useContextMock.mockReturnValue({ state: { config } })
@@ -200,8 +236,8 @@ describe('test FlagshipHooks', () => {
     expect(visitor.sendHit).toBeCalledWith(hit)
 
     await fs.hit.sendMultiple([hit])
-    expect(visitor.sendHit).toBeCalledTimes(2)
-    expect(visitor.sendHit).toBeCalledWith([hit])
+    expect(visitor.sendHits).toBeCalledTimes(1)
+    expect(visitor.sendHits).toBeCalledWith([hit])
 
     const visitorId = 'visitor_id'
     fs.authenticate(visitorId)
