@@ -1,0 +1,19 @@
+{
+  "eslint.validate": ["javascript", "typescript"],
+  "cSpell.words": [
+    "allowlist",
+    "rerender",
+    "sprintf",
+    "targetings",
+    "unauthenticate"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": null
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": null
+  }
+}
