@@ -2,8 +2,7 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { DecisionMode, FlagshipProvider } from '@flagship.io/react-sdk'
 import {ENV_ID, API_KEY} from '../config'
-import { Dispatch, SetStateAction, useState } from 'react'
-import React from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 
 interface IVisitorData{
   id: string
@@ -48,7 +47,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   }
   const [visitorData,setVisitorData] = useState<IVisitorData>(initStat.visitorData)
   return (
-  <FlagshipProvider visitorData={visitorData} pollingInterval={60} loadingComponent={loadingComponent()} envId={ENV_ID} timeout={5} apiKey={API_KEY} decisionMode={DecisionMode.BUCKETING} >
+  <FlagshipProvider visitorData={visitorData} pollingInterval={10} loadingComponent={loadingComponent()} envId={ENV_ID} timeout={5} apiKey={API_KEY} decisionMode={DecisionMode.BUCKETING} >
      <Component {...pageProps} />
      <button style={{width:100, height:50}} value={"click me"} onClick={()=>{onClick()}}></button>
   </FlagshipProvider> )

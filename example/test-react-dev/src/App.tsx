@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import './App.css';
 import { DecisionMode, FlagshipProvider} from "@flagship.io/react-sdk"
 import {ENV_ID, API_KEY} from './config'
@@ -6,9 +6,10 @@ import Home from './Home';
 
 interface IVisitorData{
   id: string
-      context?: {
+  context?: {
           age: number
-  }
+  },
+  isAuthenticated: boolean
 }
 
 interface IAppContext {
@@ -17,10 +18,11 @@ interface IAppContext {
 }
 const initStat = {
   visitorData:{
-    id:"visitor_1",
+    id:"visitor_0",
     context:{
       age:20
     },
+    isAuthenticated:false
   },
   setVisitorData:()=>{}
 }
@@ -36,12 +38,15 @@ const loadingComponent = ()=>{
 }
 function App() {
   const [visitorData,setVisitorData] = useState<IVisitorData>(initStat.visitorData)
-  console.log("app");
+  
+  useEffect(()=>{
+    console.log("visitorData",visitorData);
+  },[visitorData])
 
   const onClick=()=>{
-    console.log("count",count);
-    setVisitorData({...visitorData,id:'visitor_'+ count })
     count++
+    console.log("count",count);
+    setVisitorData({...visitorData,id:'visitor_'+ count, isAuthenticated: !visitorData.isAuthenticated})
   }
   return(
   <FlagshipProvider visitorData={visitorData} pollingInterval={5} loadingComponent={loadingComponent()} envId={ENV_ID} timeout={5} apiKey={API_KEY} decisionMode={DecisionMode.DECISION_API}>
