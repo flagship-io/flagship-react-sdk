@@ -151,7 +151,7 @@ export type UseFlagshipOutput<S> = {
   /**
  * clear the actual visitor context
  */
-  cleanContext():void
+  clearContext():void
     /**
  * Authenticate anonymous visitor
  * @param visitorId
@@ -244,7 +244,7 @@ export const useFlagship = <S extends unknown>(options?:UseFlagshipParams<S>):Us
 
   return {
     updateContext: fsUpdateContext,
-    cleanContext: fsClearContext,
+    clearContext: fsClearContext,
     authenticate: fsAuthenticate,
     unauthenticate: fsUnauthenticate,
     synchronizeModifications: useFsSynchronizeModifications,

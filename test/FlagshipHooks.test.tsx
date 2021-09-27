@@ -211,7 +211,7 @@ describe('test FlagshipHooks', () => {
     const context = { key: 'context' }
 
     fs.updateContext(context)
-    fs.cleanContext()
+    fs.clearContext()
     fs.hit.send({ type: HitType.PAGE, documentLocation: 'home' })
     fs.hit.sendMultiple([{ type: HitType.PAGE, documentLocation: 'home' }])
     fs.authenticate('visitor_id')
@@ -227,8 +227,8 @@ describe('test FlagshipHooks', () => {
     expect(visitor.updateContext).toBeCalledTimes(1)
     expect(visitor.updateContext).toBeCalledWith(context)
 
-    fs.cleanContext()
-    expect(visitor.clearContext).toBeCalledTimes(1)
+    fs.clearContext()
+    expect(visitor.clearContext).toBeCalledTimes(2)
 
     const hit = { type: HitType.PAGE, documentLocation: 'home' }
     await fs.hit.send(hit)
