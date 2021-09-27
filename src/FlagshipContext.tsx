@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-use-before-define
 import React, { useState, useEffect, ReactNode, createContext, Dispatch, SetStateAction } from 'react'
-import { Flagship, FlagshipStatus, IFlagshipConfig, Modification, Visitor } from '@flagship.io/js-sdk'
+import { BucketingDTO, CampaignDTO, Flagship, FlagshipStatus, IFlagshipConfig, Modification, Visitor } from '@flagship.io/js-sdk'
 import { logError } from './utils'
 
 export type primitive = string | number | boolean
@@ -71,10 +71,13 @@ interface FlagshipProviderProps extends IFlagshipConfig{
       config: IFlagshipConfig
       status: FsStatus
     }):void
+    initialBucketing?:BucketingDTO
+    initialCampaigns?: CampaignDTO[]
+    initialModifications?: Map<string, Modification>
 }
 
 const initStat:FsState = {
-  status: { isLoading: false, isSdkReady: false }
+  status: { isLoading: true, isSdkReady: false }
 }
 
 export const FlagshipContext = createContext<FsContext>({ state: { ...initStat } })
@@ -84,7 +87,8 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   fetchNow, envId, apiKey, decisionMode,
   timeout, logLevel, statusChangedCallback,
   logManager, pollingInterval, visitorData, onInitStart,
-  onInitDone, onBucketingSuccess, onBucketingFail, loadingComponent, onBucketingUpdated, onUpdate, enableClientCache
+  onInitDone, onBucketingSuccess, onBucketingFail, loadingComponent, onBucketingUpdated, onUpdate, enableClientCache,
+  initialBucketing, initialCampaigns, initialModifications
 }:FlagshipProviderProps) => {
   const [state, setState] = useState<FsState>({ ...initStat })
   const [lastModified, setLastModified] = useState<Date>()
@@ -122,8 +126,34 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     if (visitorData.id) {
       state.visitor.visitorId = visitorData.id
     }
+  }
 
-    state.visitor.synchronizeModifications()
+  function initializeState (param:{ fsVisitor: Visitor, isLoading:boolean, isSdkReady:boolean }) {
+    const newStatus:FsStatus = {
+      isSdkReady: param.isSdkReady,
+      isLoading: param.isLoading,
+      isVisitorDefined: !!param.fsVisitor,
+      lastRefresh: new Date().toISOString()
+    }
+
+    setState((currentState) => {
+      if (!currentState.status.firstInitSuccess) {
+        newStatus.firstInitSuccess = new Date().toISOString()
+      }
+
+      return {
+        ...currentState,
+        visitor: param.fsVisitor,
+        modifications: param.fsVisitor.modifications,
+        config: Flagship.getConfig(),
+        status: {
+          ...currentState.status,
+          ...newStatus
+        }
+      }
+    })
+
+    return newStatus
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -133,22 +163,10 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       return
     }
 
-    const newStatus = {
+    const newStatus = initializeState({
+      fsVisitor,
       isSdkReady: true,
-      isLoading: false,
-      isVisitorDefined: !!fsVisitor,
-      lastRefresh: new Date().toISOString(),
-      firstInitSuccess: new Date().toISOString()
-    }
-
-    setState({
-      ...state,
-      visitor: fsVisitor,
-      modifications: fsVisitor.modifications,
-      status: {
-        ...state.status,
-        ...newStatus
-      }
+      isLoading: false
     })
 
     if (onUpdate) {
@@ -178,12 +196,22 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
           visitorId: visitorData.id,
           context: visitorData.context,
           isAuthenticated: visitorData.isAuthenticated,
-          hasConsented: !!visitorData.hasConsented
+          hasConsented: !!visitorData.hasConsented,
+          initialCampaigns,
+          initialModifications
         })
 
         fsVisitor?.on('ready', error => {
           onVisitorReady(fsVisitor, error)
         })
+
+        if (!fetchNow && fsVisitor) {
+          initializeState({
+            fsVisitor,
+            isSdkReady: true,
+            isLoading: false
+          })
+        }
       }
     }
   }
@@ -207,19 +235,14 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       onBucketingFail,
       onBucketingSuccess,
       enableClientCache,
-      onBucketingUpdated: onBucketingLastModified
-    })
-    setState({
-      ...state,
-      config: Flagship.getConfig(),
-      status: {
-        isLoading: true,
-        isSdkReady: false
-      }
+      onBucketingUpdated: onBucketingLastModified,
+      initialBucketing
     })
   }
   const handleDisplay = (): React.ReactNode => {
     const isFirstInit = !state.visitor
+    console.log(state.status)
+
     if (state.status.isLoading && loadingComponent && isFirstInit) {
       return <>{loadingComponent}</>
     }
