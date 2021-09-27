@@ -74,6 +74,10 @@ interface FlagshipProviderProps extends IFlagshipConfig{
     initialBucketing?:BucketingDTO
     initialCampaigns?: CampaignDTO[]
     initialModifications?: Map<string, Modification>
+      /**
+   * If true, it'll automatically call synchronizeModifications when the bucketing file has updated
+   */
+  synchronizeOnBucketingUpdated?:boolean
 }
 
 const initStat:FsState = {
@@ -88,13 +92,15 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   timeout, logLevel, statusChangedCallback,
   logManager, pollingInterval, visitorData, onInitStart,
   onInitDone, onBucketingSuccess, onBucketingFail, loadingComponent, onBucketingUpdated, onUpdate, enableClientCache,
-  initialBucketing, initialCampaigns, initialModifications
+  initialBucketing, initialCampaigns, initialModifications, synchronizeOnBucketingUpdated
 }:FlagshipProviderProps) => {
   const [state, setState] = useState<FsState>({ ...initStat })
   const [lastModified, setLastModified] = useState<Date>()
 
   useEffect(() => {
-    state.visitor?.synchronizeModifications()
+    if (synchronizeOnBucketingUpdated) {
+      state.visitor?.synchronizeModifications()
+    }
   }, [lastModified])
 
   useEffect(() => {
@@ -241,8 +247,6 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   }
   const handleDisplay = (): React.ReactNode => {
     const isFirstInit = !state.visitor
-    console.log(state.status)
-
     if (state.status.isLoading && loadingComponent && isFirstInit) {
       return <>{loadingComponent}</>
     }
