@@ -134,9 +134,10 @@ export type UseFlagshipParams<T> ={
   }
 }
 
-export type UseFlagshipOutput<T> = {
-  modifications: Promise<T|T[]>
-  modificationsAsync: T|T[]
+export type UseFlagshipOutput<S> = {
+  modifications: S|S[]
+  getModifications <T>(params: modificationsRequested<T>[], activateAll?: boolean): Promise<T[]>
+  getModificationsAsync<T>(params: modificationsRequested<T>[], activateAll?: boolean): T[]
   getModificationInfo (key: string) : Promise<Modification | null>
   getModificationInfoSync (key: string) : Modification | null
   synchronizeModifications(): Promise<void>
@@ -173,7 +174,7 @@ export type UseFlagshipOutput<T> = {
   };
 };
 
-export const useFlagship = <T extends unknown>(options?:UseFlagshipParams<T>):UseFlagshipOutput<T> => {
+export const useFlagship = <S extends unknown>(options?:UseFlagshipParams<S>):UseFlagshipOutput<S> => {
   const { modifications: { requested, activateAll } } = options || { modifications: { requested: [], activateAll: false } }
   const { state } = useContext(FlagshipContext)
   const { visitor, config } = state
@@ -186,7 +187,6 @@ export const useFlagship = <T extends unknown>(options?:UseFlagshipParams<T>):Us
     }
     visitor.clearContext()
     visitor.updateContext(context)
-    visitor.synchronizeModifications()// to remove
   }
 
   const fsClearContext = ():void => {
@@ -248,8 +248,9 @@ export const useFlagship = <T extends unknown>(options?:UseFlagshipParams<T>):Us
     authenticate: fsAuthenticate,
     unauthenticate: fsUnauthenticate,
     synchronizeModifications: useFsSynchronizeModifications,
-    modificationsAsync: useFsModificationsSync(requested, activateAll),
-    modifications: useFsModifications(requested, activateAll),
+    getModificationsAsync: useFsModificationsSync,
+    getModifications: useFsModifications,
+    modifications: useFsModificationsSync(requested, activateAll),
     getModificationInfo: useFsModificationInfo,
     getModificationInfoSync: useFsModificationInfoSync,
     hit: {
