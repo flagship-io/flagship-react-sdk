@@ -19,7 +19,7 @@ const click =()=>{
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
-        <p>{fs.modificationsAsync}</p>
+        <p>{fs.modifications}</p>
         <button style={{width:100, height:50}} value={"click me"} onClick={()=>{click()}}></button>
         <a
           className="App-link"
