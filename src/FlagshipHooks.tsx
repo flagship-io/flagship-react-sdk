@@ -184,11 +184,12 @@ export const useFlagship = <T extends unknown>(options?:UseFlagshipParams<T>):Us
       logError(config, noVisitorMessage, functionName)
       return
     }
+    visitor.clearContext()
     visitor.updateContext(context)
-    visitor.synchronizeModifications()
+    visitor.synchronizeModifications()// to remove
   }
 
-  const fsCleanContext = ():void => {
+  const fsClearContext = ():void => {
     const functionName = 'cleanContext'
     if (!visitor) {
       logError(config, noVisitorMessage, functionName)
@@ -243,7 +244,7 @@ export const useFlagship = <T extends unknown>(options?:UseFlagshipParams<T>):Us
 
   return {
     updateContext: fsUpdateContext,
-    cleanContext: fsCleanContext,
+    cleanContext: fsClearContext,
     authenticate: fsAuthenticate,
     unauthenticate: fsUnauthenticate,
     synchronizeModifications: useFsSynchronizeModifications,

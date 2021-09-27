@@ -21,9 +21,9 @@ jobs:
         steps:
             - uses: actions/checkout@master
             - name: Install modules
-              run: npm i
+              run: yarn install
             - name: Run tests
-              run: npm run test:coverage
+              run: yarn run test
             - uses: codecov/codecov-action@v1
               with:
                   #token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
