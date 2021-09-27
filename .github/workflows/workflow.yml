@@ -6,7 +6,7 @@ name: Code coverage
 # events but only for the master branch
 on:
     push:
-        branches: [master, bucketing]
+        branches: [master, new_sdk]
     pull_request:
         branches: [master]
 
