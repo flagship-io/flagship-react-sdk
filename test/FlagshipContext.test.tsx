@@ -13,13 +13,29 @@ let newVisitor:SpyInstance<any, unknown[]>
 
 const modifications = new Map<string, Modification>()
 
+const synchronizeModifications = jest.fn()
+const updateContext = jest.fn()
+const unauthenticate = jest.fn()
+const authenticate:Mock<void, [string]> = jest.fn()
+const setConsent = jest.fn()
+const clearContext = jest.fn()
+
 jest.mock('@flagship.io/js-sdk', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const flagship = jest.requireActual('@flagship.io/js-sdk') as any
 
   start = jest.spyOn(flagship.Flagship, 'start')
   newVisitor = jest.spyOn(flagship.Flagship, 'newVisitor')
-  const synchronizeModifications = jest.fn()
+
+  let fistStart = true
+  start.mockImplementation((apiKey, envId, { onBucketingUpdated, statusChangedCallback }:any) => {
+    statusChangedCallback(1)
+    statusChangedCallback(4)
+    if (fistStart) {
+      onBucketingUpdated(new Date())
+      fistStart = false
+    }
+  })
 
   newVisitor.mockImplementation(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -35,7 +51,25 @@ jest.mock('@flagship.io/js-sdk', () => {
       return Promise.resolve()
     })
 
-    const newVisitor = { synchronizeModifications, on: EventOn, modifications }
+    const newVisitor = {
+      anonymousId: '',
+      synchronizeModifications,
+      on: EventOn,
+      modifications,
+      updateContext,
+      unauthenticate,
+      authenticate,
+      setConsent,
+      clearContext
+    }
+
+    authenticate.mockImplementation((visitorId) => {
+      newVisitor.anonymousId = visitorId
+    })
+    unauthenticate.mockImplementation(() => {
+      newVisitor.anonymousId = ''
+    })
+
     newVisitor.synchronizeModifications()
     return newVisitor
   })
@@ -56,6 +90,7 @@ describe('Name of the group', () => {
   const onInitStart = jest.fn()
   const onInitDone = jest.fn()
   const onUpdate = jest.fn()
+  const onBucketingUpdated = jest.fn()
 
   it('should ', async () => {
     const props = {
@@ -66,7 +101,10 @@ describe('Name of the group', () => {
       statusChangedCallback,
       onInitStart,
       onInitDone,
-      onUpdate
+      onUpdate,
+      onBucketingUpdated,
+      loadingComponent: <div></div>,
+      synchronizeOnBucketingUpdated: true
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { rerender } = render(
@@ -86,10 +124,51 @@ describe('Name of the group', () => {
         hasConsented: visitorData.hasConsented
       })
 
+      expect(synchronizeModifications).toBeCalledTimes(2)
+      expect(onBucketingUpdated).toBeCalledTimes(1)
       expect(statusChangedCallback).toBeCalledTimes(2)
       expect(onInitStart).toBeCalledTimes(1)
       expect(onInitDone).toBeCalledTimes(1)
       expect(onUpdate).toBeCalledTimes(1)
+    })
+
+    // Authenticate visitor
+    rerender(
+      <FlagshipProvider {...props} visitorData={{ ...props.visitorData, isAuthenticated: true }}>
+         <div>children</div>
+      </FlagshipProvider>)
+
+    await waitFor(() => {
+      expect(start).toBeCalledTimes(1)
+      expect(authenticate).toBeCalledTimes(1)
+      expect(authenticate).toBeCalledWith(props.visitorData.id)
+    })
+
+    // Unauthenticate visitor
+    rerender(
+      <FlagshipProvider {...props} visitorData={{ ...props.visitorData, isAuthenticated: false }}>
+         <div>children</div>
+      </FlagshipProvider>)
+
+    await waitFor(() => {
+      expect(start).toBeCalledTimes(1)
+      expect(authenticate).toBeCalledTimes(1)
+      expect(unauthenticate).toBeCalledTimes(1)
+    })
+
+    // Update envId props
+    rerender(
+      <FlagshipProvider {...props} envId={'new_env_id'}>
+         <div>children</div>
+      </FlagshipProvider>)
+
+    await waitFor(() => {
+      expect(start).toBeCalledTimes(2)
+      expect(start).toBeCalledWith('new_env_id', apiKey, expect.objectContaining({ decisionMode: DecisionMode.DECISION_API, onBucketingUpdated: expect.anything() }))
+      expect(newVisitor).toBeCalledTimes(1)
+      expect(synchronizeModifications).toBeCalledTimes(3)
+      expect(authenticate).toBeCalledTimes(1)
+      expect(unauthenticate).toBeCalledTimes(1)
     })
   }
   )
