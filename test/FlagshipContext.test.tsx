@@ -30,6 +30,7 @@ jest.mock('@flagship.io/js-sdk', () => {
   newVisitor = jest.spyOn(flagship.Flagship, 'newVisitor')
 
   let fistStart = true
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   start.mockImplementation((apiKey, envId, { onBucketingUpdated, statusChangedCallback }:any) => {
     statusChangedCallback(1)
     statusChangedCallback(4)
@@ -39,6 +40,7 @@ jest.mock('@flagship.io/js-sdk', () => {
     }
   })
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let OnReadyCallback:(error?:any)=>void
 
   newVisitor.mockImplementation(() => {
@@ -52,8 +54,6 @@ jest.mock('@flagship.io/js-sdk', () => {
     })
 
     synchronizeModifications.mockImplementation(() => {
-      console.log(onEventError, OnReadyCallback)
-
       if (OnReadyCallback) {
         OnReadyCallback(onEventError ? new Error() : null)
       }
