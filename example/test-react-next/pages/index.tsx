@@ -28,7 +28,7 @@ const click =()=>{
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
 
-        <p>{fs.modificationsAsync}</p>
+        <p>{fs.modifications}</p>
         <button style={{width:100, height:50}} value={"click me"} onClick={()=>{click()}}></button>
 
         <p className={styles.description}>

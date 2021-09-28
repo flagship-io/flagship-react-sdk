@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app'
 import { DecisionMode, FlagshipProvider } from '@flagship.io/react-sdk'
 import {ENV_ID, API_KEY} from '../config'
 import React, { Dispatch, SetStateAction, useState } from 'react'
+import { campaigns } from '../campaigns'
 
 interface IVisitorData{
   id: string
@@ -38,7 +39,7 @@ const loadingComponent = ()=>{
 
 
 function MyApp({ Component, pageProps }: AppProps) {
-  console.log("app");
+  console.log("app", pageProps);
 
   const onClick=()=>{
     console.log("count",count);
@@ -47,9 +48,22 @@ function MyApp({ Component, pageProps }: AppProps) {
   }
   const [visitorData,setVisitorData] = useState<IVisitorData>(initStat.visitorData)
   return (
-  <FlagshipProvider visitorData={visitorData} pollingInterval={10} loadingComponent={loadingComponent()} envId={ENV_ID} timeout={5} apiKey={API_KEY} decisionMode={DecisionMode.BUCKETING} >
+  <FlagshipProvider visitorData={visitorData} initialCampaigns={campaigns} fetchNow={false} pollingInterval={10} loadingComponent={loadingComponent()} envId={ENV_ID} timeout={5} apiKey={API_KEY} decisionMode={DecisionMode.BUCKETING} >
      <Component {...pageProps} />
      <button style={{width:100, height:50}} value={"click me"} onClick={()=>{onClick()}}></button>
   </FlagshipProvider> )
+}
+
+// This gets called on every request
+export async function getServerSideProps() {
+  // Fetch data from external API
+  const res = await fetch(`https://jsonplaceholder.typicode.com/todos/1`)
+  const data = await res.json()
+
+  console.log('data server', data);
+  
+
+  // Pass data to the page via props
+  return { props: { campaigns } }
 }
 export default MyApp

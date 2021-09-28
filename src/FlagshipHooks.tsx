@@ -135,7 +135,7 @@ export type UseFlagshipParams<T> ={
 }
 
 export type UseFlagshipOutput<S> = {
-  modifications: S|S[]
+  modifications: S[]
   getModifications <T>(params: modificationsRequested<T>[], activateAll?: boolean): Promise<T[]>
   getModificationsAsync<T>(params: modificationsRequested<T>[], activateAll?: boolean): T[]
   getModificationInfo (key: string) : Promise<Modification | null>
