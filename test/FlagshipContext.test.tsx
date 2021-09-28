@@ -20,6 +20,8 @@ const authenticate:Mock<void, [string]> = jest.fn()
 const setConsent = jest.fn()
 const clearContext = jest.fn()
 
+let onEventError = false
+
 jest.mock('@flagship.io/js-sdk', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const flagship = jest.requireActual('@flagship.io/js-sdk') as any
@@ -37,17 +39,24 @@ jest.mock('@flagship.io/js-sdk', () => {
     }
   })
 
+  let OnReadyCallback:(error?:any)=>void
+
   newVisitor.mockImplementation(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const EventOn:Mock<void, [string, (error?:any)=>void] > = jest.fn()
 
     EventOn.mockImplementation((e, callback) => {
       if (callback) {
-        callback()
+        OnReadyCallback = callback
       }
     })
 
     synchronizeModifications.mockImplementation(() => {
+      console.log(onEventError, OnReadyCallback)
+
+      if (OnReadyCallback) {
+        OnReadyCallback(onEventError ? new Error() : null)
+      }
       return Promise.resolve()
     })
 
@@ -170,6 +179,13 @@ describe('Name of the group', () => {
       expect(authenticate).toBeCalledTimes(1)
       expect(unauthenticate).toBeCalledTimes(1)
     })
+
+    onEventError = true
+
+    rerender(
+      <FlagshipProvider {...props} envId={'new_env'}>
+         <div>children</div>
+      </FlagshipProvider>)
   }
   )
 })

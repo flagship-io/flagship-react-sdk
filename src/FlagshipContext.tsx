@@ -190,7 +190,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
 
     if (status === FlagshipStatus.STARTING && onInitStart) {
       onInitStart()
-    } else if (status === FlagshipStatus.READY || status === FlagshipStatus.READY_PANIC_ON) {
+    } else if (status === FlagshipStatus.READY_PANIC_ON || FlagshipStatus.READY) {
       if (onInitDone) {
         onInitDone()
       }
