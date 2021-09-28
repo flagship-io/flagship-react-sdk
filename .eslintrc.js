@@ -5,10 +5,10 @@ module.exports = {
     node: true
   },
   extends: [
-    'standard',
     'plugin:react/recommended',
     'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:@typescript-eslint/recommended'
+    'plugin:@typescript-eslint/recommended',
+    'standard'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
