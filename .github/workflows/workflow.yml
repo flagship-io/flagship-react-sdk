@@ -6,9 +6,9 @@ name: Code coverage
 # events but only for the master branch
 on:
     push:
-        branches: [master, new_sdk]
+        branches: [master, new_sdk, alpha/2.2.0-alpha.0]
     pull_request:
-        branches: [master]
+        branches: [master, alpha/2.2.0-alpha.0]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
