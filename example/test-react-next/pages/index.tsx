@@ -3,13 +3,13 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { useFlagship } from '@flagship.io/react-sdk'
 import styles from '../styles/Home.module.css'
+import { campaigns } from '../campaigns'
 
 let age = 1
 const Home: NextPage = ({data}) => {
 
   const fs = useFlagship({modifications:{requested:[{key:"btnColor", defaultValue:"white"}]}})
   
-  console.log('data',data);
   
 const click =()=>{
   age = age===1?1:2
@@ -89,10 +89,15 @@ export async function getServerSideProps() {
   const res = await fetch(`https://jsonplaceholder.typicode.com/todos/1`)
   const data = await res.json()
 
-  console.log('data server', data);
-  
 
   // Pass data to the page via props
-  return { props: { data } }
+  return { props: { campaigns , data, initialModifications: [{
+    key: 'btnColor',
+    campaignId: 'campa',
+    variationGroupId: '',
+    variationId: '',
+    isReference: true,
+    value: 'blue'
+  }]} }
 }
 export default Home
