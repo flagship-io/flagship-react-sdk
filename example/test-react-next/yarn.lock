@@ -80,10 +80,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flagship.io/js-sdk@^2.3.1-alpha.0":
-  version "2.3.1-alpha.0"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-2.3.1-alpha.0.tgz#be182726e009f14b12f4bd04cbe202de02f1f32e"
-  integrity sha512-BHYXwz3ep5se44scPrcmrKON7c7iiapTmNBWgB6HYHPOAfEu0gCYnkzUZJEJ9doeAPSWovHIMqm/x37Y/15fYg==
+"@flagship.io/js-sdk@^2.3.1-alpha.2":
+  version "2.3.1-alpha.2"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-2.3.1-alpha.2.tgz#2bf8a6db5b14c511053c3885537ce382f78b1eb5"
+  integrity sha512-b3t5woxFULWOvKZfhI0GNX66mCSYWm6JHBTe8sE4EsfRlEtGI4jHSzkNCti5K6shtHvaxgEHbZPJanNEGg9Djg==
   dependencies:
     abort-controller "^3.0.0"
     events "^3.3.0"
@@ -92,6 +92,11 @@
 "@flagship.io/react-sdk@link:../..":
   version "0.0.0"
   uid ""
+
+"@flagship.io/react-sdk@link:../../":
+  version "2.2.0-alpha.0"
+  dependencies:
+    "@flagship.io/js-sdk" "^2.3.1-alpha.2"
 
 "@hapi/accept@5.0.2":
   version "5.0.2"

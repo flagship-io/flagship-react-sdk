@@ -6,7 +6,7 @@ import styles from '../styles/Home.module.css'
 import { campaigns } from '../campaigns'
 
 let age = 1
-const Home: NextPage = ({data}) => {
+const Home: NextPage = () => {
 
   const fs = useFlagship({modifications:{requested:[{key:"btnColor", defaultValue:"white"}]}})
   
