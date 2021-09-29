@@ -73,7 +73,7 @@ interface FlagshipProviderProps extends IFlagshipConfig{
     }):void
     initialBucketing?:BucketingDTO
     initialCampaigns?: CampaignDTO[]
-    initialModifications?: Map<string, Modification>
+    initialModifications?: Map<string, Modification>|Modification[]
       /**
    * If true, it'll automatically call synchronizeModifications when the bucketing file has updated
    */
