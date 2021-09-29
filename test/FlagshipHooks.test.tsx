@@ -3,7 +3,7 @@ import { jest, expect, it, describe, beforeEach, afterEach } from '@jest/globals
 import * as FsHooks from '../src/FlagshipHooks'
 import { useFsModificationInfo, useFsModifications, useFsModification, useFsSynchronizeModifications } from '../src/FlagshipHooks'
 import { Mock } from 'jest-mock'
-import { HitType, LogLevel, Modification } from '@flagship.io/js-sdk'
+import { HitType, LogLevel } from '@flagship.io/js-sdk'
 
 describe('test FlagshipHooks', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -79,7 +79,7 @@ describe('test FlagshipHooks', () => {
 
     useContextMock.mockReturnValue({ state: { visitor } })
 
-    const expected = new Modification('key', 'campaignId', 'variationGroupId', 'variation', true, 'value')
+    const expected = { key: 'key', campaignId: 'campaignId', variationGroupId: 'variationGroupId', variation: 'variation', isReference: true, value: 'value' }
 
     visitor.getModificationInfoSync.mockReturnValue(expected)
 
