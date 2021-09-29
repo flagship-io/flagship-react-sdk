@@ -947,10 +947,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flagship.io/js-sdk@^2.3.1-alpha.2":
-  version "2.3.1-alpha.2"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-2.3.1-alpha.2.tgz#2bf8a6db5b14c511053c3885537ce382f78b1eb5"
-  integrity sha512-b3t5woxFULWOvKZfhI0GNX66mCSYWm6JHBTe8sE4EsfRlEtGI4jHSzkNCti5K6shtHvaxgEHbZPJanNEGg9Djg==
+"@flagship.io/js-sdk@^2.3.1-alpha.3":
+  version "2.3.1-alpha.3"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-2.3.1-alpha.3.tgz#4ab28fe64df263d0258fa183d7bcaf555effae7b"
+  integrity sha512-X+fl/wE1cN+jgR0h0HYLfTQ5fAIUcHndp3S1q/52b2OVnMEgTUmJgPrtRuvUaYGXxYIkg8fNRvObYiw0T/miDg==
   dependencies:
     abort-controller "^3.0.0"
     events "^3.3.0"

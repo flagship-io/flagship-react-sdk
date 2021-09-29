@@ -9,7 +9,7 @@ const common = require('./webpack.common.js')
 module.exports = merge(common(), {
   target: 'node',
   output: {
-    filename: 'index.node.js',
+    filename: 'index.js',
     library: {
       type: 'commonjs2'
     }
