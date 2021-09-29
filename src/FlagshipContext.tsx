@@ -202,7 +202,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
           visitorId: visitorData.id,
           context: visitorData.context,
           isAuthenticated: visitorData.isAuthenticated,
-          hasConsented: !!visitorData.hasConsented,
+          hasConsented: visitorData.hasConsented,
           initialCampaigns,
           initialModifications
         })
