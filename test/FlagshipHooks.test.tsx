@@ -46,7 +46,11 @@ describe('test FlagshipHooks', () => {
     useContextMock.mockReturnValue({ state: {} })
     const keys = [{ key: 'key', defaultValue: 'default' }, { key: 'key1', defaultValue: 'default1' }]
     const result = await useFsModifications(keys)
-    expect(result).toEqual(keys.map(item => item.defaultValue))
+    const flags:Record<string, unknown> = {}
+    keys.forEach(item => {
+      flags[item.key] = item.defaultValue
+    })
+    expect(result).toEqual(flags)
   })
 
   it('useFsModifications modifications ', async () => {
@@ -197,6 +201,7 @@ describe('test FlagshipHooks', () => {
       modificationsAsync: jest.fn(),
       modifications: jest.fn(),
       getModificationsSync: jest.fn(),
+      getModificationsArray: jest.fn(),
       getModificationInfo: jest.fn(),
       getModificationInfoSync: jest.fn(),
       getModificationSync: jest.fn(),

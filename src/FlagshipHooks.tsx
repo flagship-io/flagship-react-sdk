@@ -1,13 +1,13 @@
 import { useContext } from 'react'
 import { HitAbstract, IFlagshipConfig, IHit, Modification, modificationsRequested, primitive } from '@flagship.io/js-sdk'
-import { FlagshipContext } from './FlagshipContext'
+import { FlagshipContext, FsStatus } from './FlagshipContext'
 import { logError, logWarn } from './utils'
 
 /**
  * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
  */
 export const useFsModifications:{
-    <T>(params: modificationsRequested<T>[], activateAll?: boolean): Promise<T[]>
+    <T>(params: modificationsRequested<T>[], activateAll?: boolean): Promise<Record<string, T>>
 } = async (params, activateAll) => {
   return useFsModificationsSync(params, activateAll)
 }
@@ -15,9 +15,7 @@ export const useFsModifications:{
 /**
  * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
  */
-export const useFsModificationsSync:{
-    <T>(params: modificationsRequested<T>[], activateAll?: boolean): T[]
-} = (params, activateAll) => {
+export const useFsModificationsSync = <T extends unknown> (params: modificationsRequested<T>[], activateAll?: boolean):Record<string, T> => {
   const { state } = useContext(FlagshipContext)
   const { visitor, config } = state
   const functionName = 'useFsModifications'
@@ -28,9 +26,11 @@ export const useFsModificationsSync:{
 
   logWarn(config, noVisitorDefault, functionName)
 
-  return params.map(item => {
-    return item.defaultValue
+  const flags:Record<string, T> = {}
+  params.forEach(item => {
+    flags[item.key] = item.defaultValue
   })
+  return flags
 }
 
 /**
@@ -134,10 +134,11 @@ export type UseFlagshipParams<T> ={
   }
 }
 
-export type UseFlagshipOutput<S> = {
-  modifications: S[]
-  getModifications <T>(params: modificationsRequested<T>[], activateAll?: boolean): Promise<T[]>
-  getModificationsAsync<T>(params: modificationsRequested<T>[], activateAll?: boolean): T[]
+export type UseFlagshipOutput = {
+  modifications: Modification[]
+  status: FsStatus
+  getModifications <T>(params: modificationsRequested<T>[], activateAll?: boolean): Promise<Record<string, T>>
+  getModificationsSync<T>(params: modificationsRequested<T>[], activateAll?: boolean): Record<string, T>
   getModificationInfo (key: string) : Promise<Modification | null>
   getModificationInfoSync (key: string) : Modification | null
   synchronizeModifications(): Promise<void>
@@ -174,8 +175,7 @@ export type UseFlagshipOutput<S> = {
   };
 };
 
-export const useFlagship = <S extends unknown>(options?:UseFlagshipParams<S>):UseFlagshipOutput<S> => {
-  const { modifications: { requested, activateAll } } = options || { modifications: { requested: [], activateAll: false } }
+export const useFlagship = ():UseFlagshipOutput => {
   const { state } = useContext(FlagshipContext)
   const { visitor, config } = state
 
@@ -247,10 +247,11 @@ export const useFlagship = <S extends unknown>(options?:UseFlagshipParams<S>):Us
     clearContext: fsClearContext,
     authenticate: fsAuthenticate,
     unauthenticate: fsUnauthenticate,
+    status: state.status,
     synchronizeModifications: useFsSynchronizeModifications,
-    getModificationsAsync: useFsModificationsSync,
+    getModificationsSync: useFsModificationsSync,
     getModifications: useFsModifications,
-    modifications: useFsModificationsSync(requested, activateAll),
+    modifications: visitor?.getModificationsArray() || [],
     getModificationInfo: useFsModificationInfo,
     getModificationInfoSync: useFsModificationInfoSync,
     hit: {

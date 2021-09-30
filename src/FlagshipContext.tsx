@@ -5,7 +5,7 @@ import { logError } from './utils'
 
 export type primitive = string | number | boolean
 
-interface FsStatus{
+export interface FsStatus{
   /**
    * Boolean. When true, the SDK is still not ready to render your App otherwise it'll use default modifications.
    */
