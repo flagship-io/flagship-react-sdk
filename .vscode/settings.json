@@ -15,5 +15,6 @@
   },
   "[typescript]": {
     "editor.defaultFormatter": null
-  }
+  },
+  "liveServer.settings.port": 5501
 }

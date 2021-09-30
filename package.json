@@ -10,7 +10,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@flagship.io/js-sdk": "^2.3.1-alpha.3"
+    "@flagship.io/js-sdk": "^2.3.1-alpha.4"
   },
   "peerDependencies": {
     "react": "^16.8.0"
@@ -27,6 +27,9 @@
     "sdk"
   ],
   "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/preset-env": "^7.14.7",
+    "@babel/preset-typescript": "^7.14.5",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/react-hooks": "^7.0.1",
@@ -37,6 +40,7 @@
     "@types/react-dom": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.32.0",
+    "babel-loader": "^8.2.2",
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.24.2",
@@ -48,16 +52,12 @@
     "react-dom": "^17.0.2",
     "react-test-renderer": "^17.0.2",
     "ts-jest": "^27.0.3",
+    "ts-loader": "^9.2.3",
     "typescript": "^4.4.3",
     "webpack": "^5.44.0",
     "webpack-cli": "^4.7.2",
     "webpack-merge": "^5.8.0",
-    "webpack-node-externals": "^3.0.0",
-    "ts-loader": "^9.2.3",
-    "@babel/core": "^7.14.6",
-    "@babel/preset-env": "^7.14.7",
-    "@babel/preset-typescript": "^7.14.5",
-    "babel-loader": "^8.2.2"
+    "webpack-node-externals": "^3.0.0"
   },
   "scripts": {
     "dev": "tsc --watch",

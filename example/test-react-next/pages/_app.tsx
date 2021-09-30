@@ -38,7 +38,7 @@ const loadingComponent = ()=>{
 
 
 function MyApp({ Component, pageProps }: AppProps) {
-  console.log("pageProps", pageProps);
+  // console.log("pageProps", pageProps);
 
   const onClick=()=>{
     console.log("count",count);
@@ -47,7 +47,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   }
   const [visitorData,setVisitorData] = useState<IVisitorData>(initStat.visitorData)
   return (
-  <FlagshipProvider visitorData={visitorData} initialCampaigns={pageProps.campaigns} initialModifications={pageProps.initialModifications} fetchNow={false} pollingInterval={10} loadingComponent={loadingComponent()} envId={ENV_ID} timeout={5} apiKey={API_KEY} decisionMode={DecisionMode.BUCKETING} >
+  <FlagshipProvider visitorData={visitorData} initialCampaigns={pageProps.campaigns} initialModifications={pageProps.initialModifications} fetchNow={false} pollingInterval={10}  envId={ENV_ID} timeout={5} apiKey={API_KEY} >
      <Component {...pageProps} />
      <button style={{width:100, height:50}} value={"click me"} onClick={()=>{onClick()}}></button>
   </FlagshipProvider> )
