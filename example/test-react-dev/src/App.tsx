@@ -51,7 +51,7 @@ function App() {
     setVisitorData({...visitorData,id:'visitor_'+ count, isAuthenticated: !visitorData.isAuthenticated})
   }
   return(
-  <FlagshipProvider initialCampaigns={campaigns} visitorData={visitorData} pollingInterval={5} loadingComponent={loadingComponent()} envId={ENV_ID} timeout={5} apiKey={API_KEY} fetchNow={false} decisionMode={DecisionMode.DECISION_API}>
+  <FlagshipProvider initialCampaigns={campaigns} visitorData={visitorData} pollingInterval={5}  envId={ENV_ID} timeout={5} apiKey={API_KEY} fetchNow={false} decisionMode={DecisionMode.DECISION_API}>
     <Home />
     <button style={{width:100, height:50}} value={"click me"} onClick={()=>{onClick()}}></button>
   </FlagshipProvider>

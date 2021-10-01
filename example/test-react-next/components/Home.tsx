@@ -12,8 +12,9 @@ const fs = useFlagship()
   
 const {btnColor}= fs.getModificationsSync([{key:'btnColor', defaultValue:"white"}])
 
-console.log(btnColor);
+console.log(fs.modifications);
 
+console.log(btnColor);
 
 const click =()=>{
   age = age===1?1:2

@@ -25,7 +25,9 @@ export async function getServerSideProps() {
 
   await visitor?.synchronizeModifications()
 
+  const campaigns = await visitor?.getAllModifications()
+
   // Pass data to the page via props
-  return { props: { initialModifications: visitor?.getModificationsArray()||[] } }
+  return { props: { initialModifications: visitor?.getModificationsArray()||[], campaigns:campaigns?.campaigns } }
 }
 export default Index

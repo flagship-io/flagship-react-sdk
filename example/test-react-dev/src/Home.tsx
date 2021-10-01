@@ -1,11 +1,19 @@
 import React from 'react';
 import logo from './logo.svg';
-import {useFlagship} from "@flagship.io/react-sdk"
+import {useFlagship, useFsModificationsSync} from "@flagship.io/react-sdk"
 
 let age = 1
 const Home= React.memo(()=>{
   console.log('home');
-  const fs = useFlagship({modifications:{requested:[{key:"btnColor", defaultValue:"white"}]}} )
+  const fs = useFlagship()
+  const {btnColor} = useFsModificationsSync([{key:"btnColor", defaultValue:"white"}])
+
+  console.log(btnColor);
+
+  console.log(fs.modifications);
+  
+  console.log(fs.getModificationInfoSync("btnColor"));
+  
   
 const click =()=>{
   age = age===1?1:2
@@ -19,7 +27,7 @@ const click =()=>{
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
-        <p>{fs.modifications}</p>
+        <p>{btnColor}</p>
         <button style={{width:100, height:50}} value={"click me"} onClick={()=>{click()}}></button>
         <a
           className="App-link"
