@@ -10,11 +10,12 @@ const Home: NextPage = () => {
 
 const fs = useFlagship()
   
-const {btnColor}= fs.getModificationsSync([{key:'btnColor', defaultValue:"white"}])
+const {btnColor}= fs.getModificationsSync([{key:'btnColor', defaultValue:"white", activate: true}])
 
 console.log(fs.modifications);
 
 console.log(btnColor);
+
 
 const click =()=>{
   age = age===1?1:2
