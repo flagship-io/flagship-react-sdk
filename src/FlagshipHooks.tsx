@@ -170,6 +170,10 @@ export type UseFlagshipOutput = {
   getModificationInfo (key: string) : Promise<Modification | null>
   getModificationInfoSync (key: string) : Modification | null
   synchronizeModifications(): Promise<void>
+  activateModification:{
+    (keys: { key: string }[]): Promise<void>
+    (keys: string[]):Promise<void>
+}
   /**
  * Update the visitor context values, matching the given keys, used for targeting.
  * A new context value associated with this key will be created if there is no previous matching value.
@@ -281,6 +285,7 @@ export const useFlagship = ():UseFlagshipOutput => {
     authenticate: fsAuthenticate,
     unauthenticate: fsUnauthenticate,
     status: state.status,
+    activateModification: useFsActivate,
     synchronizeModifications: useFsSynchronizeModifications,
     getModificationsSync: useFsModificationsSync,
     getModifications: useFsModifications,
