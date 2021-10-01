@@ -297,12 +297,14 @@ describe('test FlagshipHooks', () => {
       clearContext: jest.fn(),
       authenticate: jest.fn(),
       unauthenticate: jest.fn(),
-      synchronizeModifications: jest.fn(),
+      synchronizeModifications: jest.fn<Promise<void>, []>(),
+      activateModifications: jest.fn<Promise<void>, []>(),
       modificationsAsync: jest.fn(),
       modifications: jest.fn(),
       getModificationsSync: jest.fn(),
+      getModifications: jest.fn<Promise<unknown>, []>(),
       getModificationsArray: jest.fn(),
-      getModificationInfo: jest.fn(),
+      getModificationInfo: jest.fn<Promise<unknown>, []>(),
       getModificationInfoSync: jest.fn(),
       getModificationSync: jest.fn(),
       sendHit: jest.fn(),
@@ -369,6 +371,42 @@ describe('test FlagshipHooks', () => {
     fs.unauthenticate()
 
     expect(visitor.unauthenticate).toBeCalledTimes(1)
+
+    visitor.activateModifications.mockResolvedValue()
+
+    fs.activateModification(['key']).then(() => {
+      expect(visitor.activateModifications).toBeCalledTimes(1)
+    }).catch(error => {
+      console.log(error)
+    })
+
+    visitor.synchronizeModifications.mockResolvedValue()
+
+    fs.synchronizeModifications().then(() => {
+      expect(visitor.synchronizeModifications).toBeCalledTimes(1)
+    }).catch(error => {
+      console.log(error)
+    })
+
+    visitor.getModificationsSync.mockReturnValue({})
+
+    const modification = fs.getModificationsSync([{ key: 'key', defaultValue: 'value' }])
+    expect(modification).toEqual({})
+    expect(visitor.getModificationsSync).toBeCalledTimes(1)
+
+    fs.getModifications([{ key: 'key', defaultValue: 'value' }]).then(value => {
+      expect(visitor.getModificationsSync).toBeCalledTimes(2)
+      expect(value).toEqual({})
+    })
+
+    visitor.getModificationInfoSync.mockReturnValue({})
+    fs.getModificationInfoSync('key')
+    expect(visitor.getModificationInfoSync).toBeCalledTimes(1)
+    expect(visitor.getModificationInfoSync).toBeCalledWith('key')
+
+    fs.getModificationInfo('key').then(() => {
+      expect(visitor.getModificationInfoSync).toBeCalledTimes(2)
+    })
 
     const expected = { key: 'key', campaignId: 'campaignId', variationGroupId: 'variationGroupId', variation: 'variation', isReference: true, value: 'value' }
     useContextMock.mockReturnValue({
