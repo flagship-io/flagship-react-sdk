@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-use-before-define
 import React, { useState, useEffect, ReactNode, createContext, Dispatch, SetStateAction } from 'react'
 import { BucketingDTO, CampaignDTO, Flagship, FlagshipStatus, IFlagshipConfig, Modification, Visitor } from '@flagship.io/js-sdk'
-import { logError } from './utils'
+import { getModificationsFromCampaigns, logError } from './utils'
 
 export type primitive = string | number | boolean
 
@@ -34,6 +34,8 @@ interface FsState{
   config?:IFlagshipConfig,
   modifications?:Map<string, Modification>,
   status:FsStatus
+  initialCampaigns?: CampaignDTO[]
+  initialModifications?: Map<string, Modification>|Modification[]
 }
 interface FsContext{
   state:FsState,
@@ -94,7 +96,16 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   onInitDone, onBucketingSuccess, onBucketingFail, loadingComponent, onBucketingUpdated, onUpdate, enableClientCache,
   initialBucketing, initialCampaigns, initialModifications, synchronizeOnBucketingUpdated
 }:FlagshipProviderProps) => {
-  const [state, setState] = useState<FsState>({ ...initStat })
+  let modifications = new Map<string, Modification>()
+  if (initialModifications) {
+    initialModifications.forEach(modification => {
+      modifications.set(modification.key, modification)
+    })
+  } else if (initialCampaigns) {
+    modifications = getModificationsFromCampaigns(initialCampaigns)
+  }
+
+  const [state, setState] = useState<FsState>({ ...initStat, modifications })
   const [lastModified, setLastModified] = useState<Date>()
 
   useEffect(() => {
@@ -132,6 +143,8 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     if (visitorData.id) {
       state.visitor.visitorId = visitorData.id
     }
+
+    state.visitor.synchronizeModifications()
   }
 
   function initializeState (param:{ fsVisitor: Visitor, isLoading:boolean, isSdkReady:boolean }) {
