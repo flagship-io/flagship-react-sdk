@@ -89,10 +89,12 @@
     events "^3.3.0"
     node-fetch "2.6.2"
 
-"@flagship.io/react-sdk@^2.2.0-alpha.4":
+"@flagship.io/react-sdk@link:../..":
+  version "0.0.0"
+  uid ""
+
+"@flagship.io/react-sdk@link:../../":
   version "2.2.0-alpha.4"
-  resolved "https://registry.yarnpkg.com/@flagship.io/react-sdk/-/react-sdk-2.2.0-alpha.4.tgz#bd1d02071cf02936c614d7ec039fa566471e3284"
-  integrity sha512-PeZ8cNmxAUxndGAeEFI7sqeCRRyFKF1uLpTsCUOrfA9TgnkGTovSWOfuybNwv4C4wloayt/j4CQQMccMz/ezGw==
   dependencies:
     "@flagship.io/js-sdk" "^2.3.1-alpha.4"
 
