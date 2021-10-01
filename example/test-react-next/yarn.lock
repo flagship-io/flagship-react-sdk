@@ -89,10 +89,10 @@
     events "^3.3.0"
     node-fetch "2.6.2"
 
-"@flagship.io/react-sdk@^2.2.0-alpha.4":
-  version "2.2.0-alpha.4"
-  resolved "https://registry.yarnpkg.com/@flagship.io/react-sdk/-/react-sdk-2.2.0-alpha.4.tgz#bd1d02071cf02936c614d7ec039fa566471e3284"
-  integrity sha512-PeZ8cNmxAUxndGAeEFI7sqeCRRyFKF1uLpTsCUOrfA9TgnkGTovSWOfuybNwv4C4wloayt/j4CQQMccMz/ezGw==
+"@flagship.io/react-sdk@^2.2.0-alpha.5":
+  version "2.2.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/@flagship.io/react-sdk/-/react-sdk-2.2.0-alpha.5.tgz#ae7d432bb8896a543a70f3763891b2ae99ba87a4"
+  integrity sha512-jXNLNtptLrNhMZcGiBcswn2OObA33Cuxi2W6O+ytw+JWhGpmnnlJ4PuvJgo1VJedeHjGP9h+nZoXqrHYnzpE2w==
   dependencies:
     "@flagship.io/js-sdk" "^2.3.1-alpha.4"
 

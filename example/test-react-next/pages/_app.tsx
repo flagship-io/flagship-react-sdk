@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
-import { DecisionMode, FlagshipProvider } from '@flagship.io/react-sdk'
+import {  FlagshipProvider } from '@flagship.io/react-sdk'
 import {ENV_ID, API_KEY} from '../config'
 import React, { Dispatch, SetStateAction, useState } from 'react'
 

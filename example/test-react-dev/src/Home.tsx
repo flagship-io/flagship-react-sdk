@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from './logo.svg';
-import {useFlagship, useFsModificationsSync} from "@flagship.io/react-sdk"
+import {useFlagship, useFsModificationsSync} from "../../../"
 
 let age = 1
 const Home= React.memo(()=>{
@@ -18,6 +18,10 @@ const Home= React.memo(()=>{
 const click =()=>{
   age = age===1?1:2
   fs.updateContext({age})
+  fs.synchronizeModifications()
+  fs.activateModification(["btnColor"])
+  console.log(fs.getModificationsSync([{key:"btnColor", defaultValue:"white"}]));
+  console.log(fs.getModificationInfoSync("btnColor"));
 }
   
   return (

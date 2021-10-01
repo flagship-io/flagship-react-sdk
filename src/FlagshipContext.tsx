@@ -29,7 +29,7 @@ export interface FsStatus{
    */
   firstInitSuccess?:string
 }
-interface FsState{
+export interface FsState{
   visitor?:Visitor,
   config?:IFlagshipConfig,
   modifications?:Map<string, Modification>,

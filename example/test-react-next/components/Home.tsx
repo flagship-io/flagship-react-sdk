@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import Head from "next/head";
 import React from "react";
-import { useFlagship } from "../../../dist";
+import { useFlagship } from "../../../";
 import styles from '../styles/Home.module.css'
 import Image from 'next/image'
 
@@ -10,7 +10,7 @@ const Home: NextPage = () => {
 
 const fs = useFlagship()
   
-const {btnColor}= fs.getModificationsSync([{key:'btnColor', defaultValue:"white", activate: true}])
+const {btnColor}= fs.getModificationsSync([{key:'btnColor', defaultValue:"white"}])
 
 console.log(fs.modifications);
 
@@ -20,6 +20,7 @@ console.log(btnColor);
 const click =()=>{
   age = age===1?1:2
   fs.updateContext({age})
+  fs.activateModification("btnColor")
 }
 
   return (

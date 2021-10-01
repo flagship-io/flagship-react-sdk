@@ -1,6 +1,6 @@
 import { useContext } from 'react'
-import { HitAbstract, IFlagshipConfig, IHit, Modification, modificationsRequested, primitive } from '@flagship.io/js-sdk'
-import { FlagshipContext, FsStatus } from './FlagshipContext'
+import { HitAbstract, IFlagshipConfig, IHit, Modification, modificationsRequested, primitive, Visitor } from '@flagship.io/js-sdk'
+import { FlagshipContext, FsState, FsStatus } from './FlagshipContext'
 import { logError, logWarn } from './utils'
 
 /**
@@ -18,14 +18,8 @@ const checkType = (value:unknown, defaultValue:unknown) => (
    Array.isArray(value) === Array.isArray(defaultValue)
 ) || (typeof value === typeof defaultValue)
 
-/**
- * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
- */
-export const useFsModificationsSync = <T extends unknown> (params: modificationsRequested<T>[], activateAll?: boolean):Record<string, T> => {
-  const { state } = useContext(FlagshipContext)
-  const { visitor, config } = state
-  const functionName = 'useFsModifications'
-
+const fsModificationsSync = <T extends unknown> (args:{functionName:string, params: modificationsRequested<T>[], activateAll?: boolean, state:FsState, visitor?:Visitor, config?:IFlagshipConfig}):Record<string, T> => {
+  const { visitor, params, activateAll, state, functionName, config } = args
   if (visitor) {
     return visitor.getModificationsSync(params, activateAll)
   }
@@ -51,6 +45,19 @@ export const useFsModificationsSync = <T extends unknown> (params: modifications
     flags[item.key] = item.defaultValue
   })
   return flags
+}
+
+/**
+ * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
+ */
+export const useFsModificationsSync = <T extends unknown> (params: modificationsRequested<T>[], activateAll?: boolean):Record<string, T> => {
+  const { state } = useContext(FlagshipContext)
+  const { visitor, config } = state
+  const functionName = 'useFsModifications'
+
+  return fsModificationsSync({
+    functionName, state, visitor, config, params, activateAll
+  })
 }
 
 /**
@@ -94,13 +101,8 @@ export const useFsModificationInfo = async (key: string):Promise<Modification | 
   return useFsModificationInfoSync(key)
 }
 
-/**
- * Get the campaign modification information value matching the given key.
- * @param {string} key key which identify the modification.
- */
-export const useFsModificationInfoSync:{(key: string):Modification | null} = (key: string) => {
-  const { state } = useContext(FlagshipContext)
-  const { visitor } = state
+const fsModificationInfoSync = (args:{key: string, state:FsState, visitor?:Visitor}) => {
+  const { key, visitor, state } = args
   if (visitor) {
     return visitor.getModificationInfoSync(key)
   }
@@ -112,12 +114,16 @@ export const useFsModificationInfoSync:{(key: string):Modification | null} = (ke
 }
 
 /**
- * This function calls the decision api and update all the campaigns modifications from the server according to the visitor context.
-*/
-export const useFsSynchronizeModifications = async ():Promise<void> => {
+ * Get the campaign modification information value matching the given key.
+ * @param {string} key key which identify the modification.
+ */
+export const useFsModificationInfoSync:{(key: string):Modification | null} = (key: string) => {
   const { state } = useContext(FlagshipContext)
-  const { visitor, config } = state
-  const functionName = 'useFsSynchronizeModifications'
+  const { visitor } = state
+  return fsModificationInfoSync({ key, state, visitor })
+}
+
+const fsSynchronizeModifications = async (functionName:string, visitor?:Visitor, config?:IFlagshipConfig):Promise<void> => {
   try {
     if (!visitor) {
       reportNoVisitor(config, functionName)
@@ -131,6 +137,27 @@ export const useFsSynchronizeModifications = async ():Promise<void> => {
 }
 
 /**
+ * This function calls the decision api and update all the campaigns modifications from the server according to the visitor context.
+*/
+export const useFsSynchronizeModifications = async ():Promise<void> => {
+  const { state } = useContext(FlagshipContext)
+  const { visitor, config } = state
+  const functionName = 'useFsSynchronizeModifications'
+  await fsSynchronizeModifications(functionName, visitor, config)
+}
+const fsActivate = async (params:{ key: string }[]|string[], functionName:string, visitor?:Visitor, config?:IFlagshipConfig) => {
+  try {
+    if (!visitor) {
+      logWarn(config, noVisitorMessage, functionName)
+      return
+    }
+    await visitor.activateModifications(params)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error:any) {
+    logWarn(config, error.message || error, functionName)
+  }
+}
+/**
  * Report this user has seen this modification. Report this user has seen these modifications.
  * @param params
  * @returns
@@ -143,16 +170,7 @@ export const useFsActivate:{
   const { visitor, config } = state
   const functionName = 'useFsModifications'
 
-  try {
-    if (!visitor) {
-      logWarn(config, noVisitorMessage, functionName)
-      return
-    }
-    await visitor.activateModifications(params)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error:any) {
-    logWarn(config, error.message || error, functionName)
-  }
+  await fsActivate(params, functionName, visitor, config)
 }
 
 export type UseFlagshipParams<T> ={
@@ -279,19 +297,53 @@ export const useFlagship = ():UseFlagshipOutput => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     modifications = Array.from(state.modifications, ([_key, item]) => item)
   }
+
+  const activateModification:{
+    (keys: { key: string }[]): Promise<void>
+    (keys: string[]):Promise<void>} = async (params) => {
+      const functionName = 'activateModification'
+      await fsActivate(params, functionName, visitor, config)
+    }
+  const synchronizeModifications = async () => {
+    const functionName = 'synchronizeModifications'
+    await fsSynchronizeModifications(functionName, visitor, config)
+  }
+
+  const getModificationsSync = <T extends unknown > (params: modificationsRequested<T>[], activateAll?: boolean) => {
+    const functionName = 'getModificationsSync'
+    return fsModificationsSync({
+      functionName, state, visitor, config, params, activateAll
+    })
+  }
+
+  const getModifications = async <T extends unknown > (params: modificationsRequested<T>[], activateAll?: boolean) => {
+    const functionName = 'getModifications'
+    return fsModificationsSync({
+      functionName, state, visitor, config, params, activateAll
+    })
+  }
+
+  const getModificationInfoSync:{(key: string):Modification | null} = (key: string) => {
+    return fsModificationInfoSync({ key, state, visitor })
+  }
+
+  const getModificationInfo:{(key: string): Promise<Modification | null>} = async (key: string) => {
+    return fsModificationInfoSync({ key, state, visitor })
+  }
+
   return {
     updateContext: fsUpdateContext,
     clearContext: fsClearContext,
     authenticate: fsAuthenticate,
     unauthenticate: fsUnauthenticate,
     status: state.status,
-    activateModification: useFsActivate,
-    synchronizeModifications: useFsSynchronizeModifications,
-    getModificationsSync: useFsModificationsSync,
-    getModifications: useFsModifications,
+    activateModification,
+    synchronizeModifications,
+    getModificationsSync,
+    getModifications,
     modifications: modifications || [],
-    getModificationInfo: useFsModificationInfo,
-    getModificationInfoSync: useFsModificationInfoSync,
+    getModificationInfo,
+    getModificationInfoSync,
     hit: {
       send: fsSendHit,
       sendMultiple: fsSendHits
