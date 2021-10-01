@@ -1,4 +1,4 @@
-import { IFlagshipConfig, LogLevel } from '@flagship.io/js-sdk'
+import { CampaignDTO, IFlagshipConfig, LogLevel, Modification } from '@flagship.io/js-sdk'
 
 export function logError (
   config: IFlagshipConfig|undefined,
@@ -39,4 +39,29 @@ export function logWarn (config: IFlagshipConfig|undefined, message: string, tag
     return
   }
   config.logManager.warning(message, tag)
+}
+
+export const getModificationsFromCampaigns = (campaigns: Array<CampaignDTO>):Map<string, Modification> => {
+  const modifications = new Map<string, Modification>()
+  if (!campaigns || !Array.isArray(campaigns)) {
+    return modifications
+  }
+  campaigns.forEach((campaign) => {
+    const object = campaign.variation.modifications.value
+    for (const key in object) {
+      const value = object[key]
+      modifications.set(
+        key,
+        {
+          key,
+          campaignId: campaign.id,
+          variationGroupId: campaign.variationGroupId,
+          variationId: campaign.variation.id,
+          isReference: campaign.variation.reference,
+          value
+        }
+      )
+    }
+  })
+  return modifications
 }

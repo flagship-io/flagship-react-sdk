@@ -1,8 +1,9 @@
-import { jest, expect, it, describe, beforeEach, afterEach } from '@jest/globals'
-import { logError, logInfo, logWarn } from '../src/utils'
+import { jest, expect, it, describe } from '@jest/globals'
+import { getModificationsFromCampaigns, logError, logInfo, logWarn } from '../src/utils'
 import { Mock } from 'jest-mock'
 import { IFlagshipLogManager } from '@flagship.io/js-sdk/dist/utils/FlagshipLogManager'
-import { DecisionApiConfig, DecisionMode, LogLevel } from '@flagship.io/js-sdk'
+import { DecisionApiConfig, LogLevel } from '@flagship.io/js-sdk'
+import { campaigns } from './campaigns'
 
 describe('test logError function', () => {
   const config = new DecisionApiConfig()
@@ -145,5 +146,21 @@ describe('test logWarn function', () => {
   it('test invalid config', () => {
     logWarn({} as DecisionApiConfig, messageAll, tag)
     expect(warnMethod).toBeCalledTimes(0)
+  })
+})
+
+describe('test getModificationsFromCampaigns', () => {
+  const getNull = ():any => null
+  it('should ', () => {
+    const modifications = getModificationsFromCampaigns(getNull())
+    expect(modifications).toBeInstanceOf(Map)
+    expect(modifications.size).toBe(0)
+  })
+  it('should ', () => {
+    const modifications = getModificationsFromCampaigns(campaigns)
+    expect(modifications).toBeInstanceOf(Map)
+    expect(modifications.size).toBe(6)
+    expect(modifications.get('btnColor')?.value).toEqual('blue')
+    expect(modifications.get('keyNumber')?.value).toEqual(558)
   })
 })

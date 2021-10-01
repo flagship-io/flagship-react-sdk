@@ -22,9 +22,28 @@ describe('test FlagshipHooks', () => {
   })
 
   it('useFsModifications return default ', async () => {
-    useContextMock.mockReturnValue({ state: {} })
+    useContextMock.mockReturnValue({
+      state: {
+        status: {
+          isSdkReady: true
+        }
+      }
+    })
     const result = await useFsModification({ key: 'key', defaultValue: 'default' })
     expect(result).toBe('default')
+  })
+
+  it('useFsModification with initialModification', async () => {
+    useContextMock.mockReturnValue({
+      state: {
+        status: {
+          isSdkReady: false
+        },
+        modifications: new Map([['key', { value: 'value' }]])
+      }
+    })
+    const result = await useFsModification({ key: 'key', defaultValue: 'default' })
+    expect(result).toBe('value')
   })
 
   it('useFsModification modifications ', async () => {
@@ -42,13 +61,69 @@ describe('test FlagshipHooks', () => {
     expect(visitor.getModificationSync).toBeCalledWith(key)
   })
 
-  it('useFsModifications return array of default ', async () => {
-    useContextMock.mockReturnValue({ state: {} })
+  it('useFsModifications return object of default ', async () => {
+    useContextMock.mockReturnValue({
+      state: {
+        status: {
+          isSdkReady: true
+        }
+      }
+    })
     const keys = [{ key: 'key', defaultValue: 'default' }, { key: 'key1', defaultValue: 'default1' }]
     const result = await useFsModifications(keys)
     const flags:Record<string, unknown> = {}
     keys.forEach(item => {
       flags[item.key] = item.defaultValue
+    })
+    expect(result).toEqual(flags)
+  })
+
+  it('useFsModifications return object of default with initialModifications ', async () => {
+    useContextMock.mockReturnValue({
+      state: {
+        status: {
+          isSdkReady: false
+        },
+        modifications: new Map([['key2', { key: 'key', value: 'value1' }], ['key3', { key: 'key1', value: 'value2' }]])
+      }
+    })
+    const keys = [{ key: 'key', defaultValue: 'default' }, { key: 'key1', defaultValue: 'default1' }]
+    const result = await useFsModifications(keys)
+    const flags:Record<string, unknown> = {}
+    keys.forEach(item => {
+      flags[item.key] = item.defaultValue
+    })
+    expect(result).toEqual(flags)
+  })
+
+  it('useFsModifications with initialModifications ', async () => {
+    const state = {
+      status: {
+        isSdkReady: false
+      },
+      modifications: new Map([
+        ['key', { key: 'key', value: 'value1' }],
+        ['key1', { key: 'key1', value: 'value2' }],
+        ['key2', { key: 'key2', value: { key: 2 } }],
+        ['key3', { key: 'key3', value: [2, 2, 2] }]
+      ])
+    }
+    useContextMock.mockReturnValue({
+      state
+    })
+
+    const keys = [
+      { key: 'key', defaultValue: 'default' },
+      { key: 'key1', defaultValue: 'default1' },
+      { key: 'key2', defaultValue: { key: 'a' } },
+      { key: 'key3', defaultValue: [1, 1, 1] }
+    ]
+
+    const result = await useFsModifications<string|number[]|Record<string, string>>(keys)
+
+    const flags:Record<string, unknown> = {}
+    state.modifications.forEach(item => {
+      flags[item.key] = item.value
     })
     expect(result).toEqual(flags)
   })
@@ -69,7 +144,13 @@ describe('test FlagshipHooks', () => {
   })
 
   it('useFsModificationInfo return null ', async () => {
-    useContextMock.mockReturnValue({ state: {} })
+    useContextMock.mockReturnValue({
+      state: {
+        status: {
+          isSdkReady: true
+        }
+      }
+    })
 
     const key = 'key'
     const result = await useFsModificationInfo(key)
@@ -92,6 +173,25 @@ describe('test FlagshipHooks', () => {
     expect(result).toEqual(expected)
     expect(visitor.getModificationInfoSync).toBeCalledTimes(1)
     expect(visitor.getModificationInfoSync).toBeCalledWith(key)
+  })
+
+  it('useFsModificationInfo return modification with initialModification ', async () => {
+    const expected = { key: 'key', campaignId: 'campaignId', variationGroupId: 'variationGroupId', variation: 'variation', isReference: true, value: 'value' }
+
+    useContextMock.mockReturnValue({
+      state: {
+        status: {
+          isSdkReady: false
+        },
+        modifications: new Map([
+          ['key', expected]
+        ])
+      }
+    })
+
+    const key = 'key'
+    const result = await useFsModificationInfo(key)
+    expect(result).toEqual(expected)
   })
 
   it('useFsSynchronizeModifications  ', async () => {
@@ -209,7 +309,14 @@ describe('test FlagshipHooks', () => {
       sendHits: jest.fn()
 
     }
-    useContextMock.mockReturnValue({ state: { config } })
+    useContextMock.mockReturnValue({
+      state: {
+        config,
+        status: {
+          isSdkReady: true
+        }
+      }
+    })
 
     let fs = FsHooks.useFlagship()
 
@@ -223,7 +330,16 @@ describe('test FlagshipHooks', () => {
     fs.unauthenticate()
     expect(config.logManager.error).toBeCalledTimes(6)
 
-    useContextMock.mockReturnValue({ state: { config, visitor } })
+    useContextMock.mockReturnValue({
+      state: {
+        config,
+        visitor,
+        status: {
+          isSdkReady: true
+        }
+      }
+
+    })
 
     fs = FsHooks.useFlagship()
 
@@ -253,5 +369,20 @@ describe('test FlagshipHooks', () => {
     fs.unauthenticate()
 
     expect(visitor.unauthenticate).toBeCalledTimes(1)
+
+    const expected = { key: 'key', campaignId: 'campaignId', variationGroupId: 'variationGroupId', variation: 'variation', isReference: true, value: 'value' }
+    useContextMock.mockReturnValue({
+      state: {
+        config,
+        status: {
+          isSdkReady: false
+        },
+        modifications: new Map([
+          ['key', expected]
+        ])
+      }
+    })
+    fs = FsHooks.useFlagship()
+    expect(fs.modifications).toEqual([expected])
   })
 })

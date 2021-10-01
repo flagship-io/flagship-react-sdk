@@ -12,6 +12,12 @@ export const useFsModifications:{
   return useFsModificationsSync(params, activateAll)
 }
 
+const checkType = (value:unknown, defaultValue:unknown) => (
+  typeof value === 'object' &&
+   typeof defaultValue === 'object' &&
+   Array.isArray(value) === Array.isArray(defaultValue)
+) || (typeof value === typeof defaultValue)
+
 /**
  * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
  */
@@ -24,9 +30,23 @@ export const useFsModificationsSync = <T extends unknown> (params: modifications
     return visitor.getModificationsSync(params, activateAll)
   }
 
-  logWarn(config, noVisitorDefault, functionName)
-
+  const check = !state.status.isSdkReady && !!state.modifications && state.modifications.size > 0
   const flags:Record<string, T> = {}
+
+  if (check) {
+    params.forEach(item => {
+      const modification = state.modifications?.get(item.key)
+
+      if (modification && checkType(modification?.value, item.defaultValue)) {
+        flags[item.key] = modification.value
+      } else {
+        flags[item.key] = item.defaultValue
+      }
+    })
+    return flags
+  }
+
+  logWarn(config, noVisitorDefault, functionName)
   params.forEach(item => {
     flags[item.key] = item.defaultValue
   })
@@ -56,8 +76,13 @@ export const useFsModificationSync:{
     return visitor.getModificationSync(params)
   }
 
-  logWarn(config, noVisitorDefault, functionName)
+  const modification = state.modifications?.get(params.key)
 
+  if (!state.status.isSdkReady && modification && checkType(modification?.value, params.defaultValue)) {
+    return modification.value
+  }
+
+  logWarn(config, noVisitorDefault, functionName)
   return params.defaultValue
 }
 
@@ -73,15 +98,18 @@ export const useFsModificationInfo = async (key: string):Promise<Modification | 
  * Get the campaign modification information value matching the given key.
  * @param {string} key key which identify the modification.
  */
-export const useFsModificationInfoSync:{
-    (key: string):Modification | null} = (key: string) => {
-      const { state } = useContext(FlagshipContext)
-      const { visitor } = state
-      if (visitor) {
-        return visitor.getModificationInfoSync(key)
-      }
-      return null
-    }
+export const useFsModificationInfoSync:{(key: string):Modification | null} = (key: string) => {
+  const { state } = useContext(FlagshipContext)
+  const { visitor } = state
+  if (visitor) {
+    return visitor.getModificationInfoSync(key)
+  }
+  const modification = state.modifications?.get(key)
+  if (!state.status.isSdkReady && modification) {
+    return modification
+  }
+  return null
+}
 
 /**
  * This function calls the decision api and update all the campaigns modifications from the server according to the visitor context.
@@ -242,6 +270,11 @@ export const useFlagship = ():UseFlagshipOutput => {
       return visitor.sendHits(hit)
     }
 
+  let modifications = visitor?.getModificationsArray()
+  if (!state.status.isSdkReady && state.modifications) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    modifications = Array.from(state.modifications, ([_key, item]) => item)
+  }
   return {
     updateContext: fsUpdateContext,
     clearContext: fsClearContext,
@@ -251,7 +284,7 @@ export const useFlagship = ():UseFlagshipOutput => {
     synchronizeModifications: useFsSynchronizeModifications,
     getModificationsSync: useFsModificationsSync,
     getModifications: useFsModifications,
-    modifications: visitor?.getModificationsArray() || [],
+    modifications: modifications || [],
     getModificationInfo: useFsModificationInfo,
     getModificationInfoSync: useFsModificationInfoSync,
     hit: {
