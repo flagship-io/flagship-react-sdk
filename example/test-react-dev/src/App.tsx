@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import './App.css';
-import { DecisionMode, FlagshipProvider} from "@flagship.io/react-sdk"
+import { DecisionMode, FlagshipProvider} from "../../../"
 import {ENV_ID, API_KEY} from './config'
 import Home from './Home';
 
@@ -40,9 +40,23 @@ const loadingComponent = ()=>{
 }
 function App() {
   const [visitorData,setVisitorData] = useState<IVisitorData>(initStat.visitorData)
+
+  useEffect(()=>{
+    let count = 1
+    const intervalID = setInterval(()=>{
+      count++
+      setVisitorData(state=>({
+        ...state,
+        id: `visitor_${count}`
+      }))
+    }, 5000)
+    return ()=>{
+      clearInterval(intervalID)
+    }
+  },[])
   
   useEffect(()=>{
-    console.log("visitorData",visitorData);
+    // console.log("visitorData",visitorData);
   },[visitorData])
 
   const onClick=()=>{

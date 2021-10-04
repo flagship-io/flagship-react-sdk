@@ -20,7 +20,6 @@ console.log(btnColor);
 const click =()=>{
   age = age===1?1:2
   fs.updateContext({age})
-  fs.activateModification("btnColor")
 }
 
   return (

@@ -4,23 +4,17 @@ import {useFlagship, useFsModificationsSync} from "../../../"
 
 let age = 1
 const Home= React.memo(()=>{
-  console.log('home');
   const fs = useFlagship()
   const {btnColor} = useFsModificationsSync([{key:"btnColor", defaultValue:"white"}])
 
-  console.log(btnColor);
-
-  console.log(fs.modifications);
-  
-  console.log(fs.getModificationInfoSync("btnColor"));
-  
+  console.log(fs.status);
   
 const click =()=>{
   age = age===1?1:2
   fs.updateContext({age})
-  fs.synchronizeModifications()
-  fs.activateModification(["btnColor"])
-  console.log(fs.getModificationsSync([{key:"btnColor", defaultValue:"white"}]));
+  // fs.synchronizeModifications()
+  // fs.activateModification(["btnColor"])
+  console.log(fs.getModificationsSync([{key:"btnColor", defaultValue:"white", activate:true}]));
   console.log(fs.getModificationInfoSync("btnColor"));
 }
   
