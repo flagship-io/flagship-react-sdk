@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-use-before-define
-import React, { useState, useEffect, ReactNode, createContext, Dispatch, SetStateAction } from 'react'
+import React, { useState, useEffect, ReactNode, createContext, Dispatch, SetStateAction, useRef } from 'react'
 import { BucketingDTO, CampaignDTO, Flagship, FlagshipStatus, IFlagshipConfig, Modification, Visitor } from '@flagship.io/js-sdk'
 import { getModificationsFromCampaigns, logError } from './utils'
 
@@ -107,6 +107,8 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
 
   const [state, setState] = useState<FsState>({ ...initStat, modifications })
   const [lastModified, setLastModified] = useState<Date>()
+  const stateRef = useRef<FsState>()
+  stateRef.current = state
 
   useEffect(() => {
     if (synchronizeOnBucketingUpdated) {
@@ -132,7 +134,9 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       state.visitor.updateContext(visitorData.context)
     }
 
-    state.visitor.setConsent(!!visitorData.hasConsented)
+    if (typeof visitorData.hasConsented === 'boolean') {
+      state.visitor.setConsent(visitorData.hasConsented)
+    }
 
     if (state.visitor.anonymousId && !visitorData.isAuthenticated) {
       state.visitor.unauthenticate()
@@ -208,8 +212,8 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
         onInitDone()
       }
 
-      if (state.visitor) {
-        state.visitor.synchronizeModifications()
+      if (stateRef.current?.visitor) {
+        stateRef.current?.visitor.synchronizeModifications()
       } else {
         const fsVisitor = Flagship.newVisitor({
           visitorId: visitorData.id,
