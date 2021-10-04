@@ -220,6 +220,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
           initialModifications
         })
 
+        fsVisitor?.removeAllListeners('ready')
         fsVisitor?.on('ready', error => {
           onVisitorReady(fsVisitor, error)
         })
