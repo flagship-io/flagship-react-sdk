@@ -1,12 +1,12 @@
 import React from 'react';
 import logo from './logo.svg';
-import {useFlagship, useFsModificationsSync} from "../../../"
+import {useFlagship, useFsModifications} from "@flagship.io/react-sdk"
 
 let age = 1
 const Home= React.memo(()=>{
   console.log('home');
   const fs = useFlagship()
-  const {btnColor} = useFsModificationsSync([{key:"btnColor", defaultValue:"white"}])
+  const {btnColor} = useFsModifications([{key:"btnColor", defaultValue:"white"}])
 
   console.log(btnColor);
 

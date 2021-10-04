@@ -21,23 +21,27 @@ const config = {
             loader: 'babel-loader',
             options: {
               targets: '> 0.5%, last 2 versions, ie >= 10, node >= 6',
-              assumptions: {
-                noDocumentAll: true,
-                noClassCalls: true,
-                constantSuper: true,
-                enumerableModuleMeta: true,
-                noNewArrows: true
-              },
               presets: [
+                '@babel/preset-typescript',
                 [
                   '@babel/preset-env',
                   {
                     useBuiltIns: 'usage',
-                    corejs: '3.18'
+                    corejs: {
+                      version: 3
+                    }
                   }
                 ],
-                ['@babel/preset-react'],
-                ['@babel/preset-typescript', { allowNamespaces: true }]
+                ['@babel/preset-react']
+              ],
+              plugins: [
+                '@babel/proposal-class-properties',
+                [
+                  'add-module-exports',
+                  {
+                    addDefaultProperty: true
+                  }
+                ]
               ]
             }
           }
