@@ -13,7 +13,8 @@
     "@flagship.io/js-sdk": "^2.3.1-alpha.4"
   },
   "peerDependencies": {
-    "react": "^16.8.0"
+    "react": "^16.8.0 || ^17.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0"
   },
   "homepage": "https://github.com/flagship-io/flagship-react-sdk",
   "repository": {
@@ -66,8 +67,8 @@
     "test": "jest",
     "lint": "eslint . --ext .tsx",
     "prebuild": "tsc --emitDeclarationOnly",
-    "build:prod": "rm -Rf dist && NODE_ENV=production npm run build",
-    "build": "rm -Rf dist && webpack"
+    "build:prod": "NODE_ENV=production npm run build",
+    "build": "webpack"
   },
   "eslintConfig": {
     "extends": [
