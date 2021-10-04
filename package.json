@@ -66,8 +66,8 @@
     "test": "jest",
     "lint": "eslint . --ext .tsx",
     "prebuild": "tsc --emitDeclarationOnly",
-    "build:prod": "rm -Rf dist && NODE_ENV=production npm run build",
-    "build": "rm -Rf dist && webpack"
+    "build:prod": "NODE_ENV=production npm run build",
+    "build": "webpack"
   },
   "eslintConfig": {
     "extends": [
