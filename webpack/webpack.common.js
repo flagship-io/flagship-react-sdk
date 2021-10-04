@@ -2,6 +2,8 @@
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const nodeExternals = require('webpack-node-externals')
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -27,12 +29,10 @@ const config = {
                   '@babel/preset-env',
                   {
                     useBuiltIns: 'usage',
-                    corejs: {
-                      version: 3
-                    }
+                    corejs: '3'
                   }
                 ],
-                ['@babel/preset-react']
+                '@babel/preset-react'
               ],
               plugins: [
                 '@babel/proposal-class-properties',
@@ -51,7 +51,13 @@ const config = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
-  }
+  },
+  optimization: {
+    minimize: isProduction
+  },
+  externals: [
+    nodeExternals({ allowlist: [/^core-js/, /^regenerator-runtime/, '@flagship.io/js-sdk'] })
+  ]
 }
 
 module.exports = () => {
