@@ -3,15 +3,6 @@ import { HitAbstract, IFlagshipConfig, IHit, Modification, modificationsRequeste
 import { FlagshipContext, FsState, FsStatus } from './FlagshipContext'
 import { logError, logWarn } from './utils'
 
-/**
- * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
- */
-export const useFsModifications:{
-    <T>(params: modificationsRequested<T>[], activateAll?: boolean): Promise<Record<string, T>>
-} = async (params, activateAll) => {
-  return useFsModificationsSync(params, activateAll)
-}
-
 const checkType = (value:unknown, defaultValue:unknown) => (
   typeof value === 'object' &&
    typeof defaultValue === 'object' &&
@@ -50,7 +41,7 @@ const fsModificationsSync = <T extends unknown> (args:{functionName:string, para
 /**
  * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
  */
-export const useFsModificationsSync = <T extends unknown> (params: modificationsRequested<T>[], activateAll?: boolean):Record<string, T> => {
+export const useFsModifications = <T extends unknown> (params: modificationsRequested<T>[], activateAll?: boolean):Record<string, T> => {
   const { state } = useContext(FlagshipContext)
   const { visitor, config } = state
   const functionName = 'useFsModifications'
@@ -64,15 +55,6 @@ export const useFsModificationsSync = <T extends unknown> (params: modifications
  * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
  */
 export const useFsModification:{
-  <T>(params: modificationsRequested<T>): Promise<T>
-} = async (params) => {
-  return useFsModificationSync(params)
-}
-
-/**
- * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
- */
-export const useFsModificationSync:{
   <T>(params: modificationsRequested<T>): T
 } = (params) => {
   const { state } = useContext(FlagshipContext)
@@ -93,14 +75,6 @@ export const useFsModificationSync:{
   return params.defaultValue
 }
 
-/**
- * Get the campaign modification information value matching the given key.
- * @param {string} key key which identify the modification.
- */
-export const useFsModificationInfo = async (key: string):Promise<Modification | null> => {
-  return useFsModificationInfoSync(key)
-}
-
 const fsModificationInfoSync = (args:{key: string, state:FsState, visitor?:Visitor}) => {
   const { key, visitor, state } = args
   if (visitor) {
@@ -117,7 +91,7 @@ const fsModificationInfoSync = (args:{key: string, state:FsState, visitor?:Visit
  * Get the campaign modification information value matching the given key.
  * @param {string} key key which identify the modification.
  */
-export const useFsModificationInfoSync:{(key: string):Modification | null} = (key: string) => {
+export const useFsModificationInfo:{(key: string):Modification | null} = (key: string) => {
   const { state } = useContext(FlagshipContext)
   const { visitor } = state
   return fsModificationInfoSync({ key, state, visitor })
