@@ -3,7 +3,8 @@
   "version": "2.2.0-alpha.6",
   "description": "Flagship REACT SDK",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
   "files": [
     "dist/*",
     "CONTRIBUTING.md",
@@ -28,6 +29,7 @@
     "sdk"
   ],
   "devDependencies": {
+    "@babel/cli": "^7.14.6",
     "@babel/core": "^7.14.6",
     "@babel/preset-env": "^7.14.7",
     "@babel/preset-react": "^7.14.5",
@@ -43,6 +45,7 @@
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.32.0",
     "babel-loader": "^8.2.2",
+    "babel-plugin-add-module-exports": "^1.0.4",
     "core-js": "^3.18.1",
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
@@ -54,6 +57,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-test-renderer": "^17.0.2",
+    "regenerator-runtime": "^0.13.9",
     "ts-jest": "^27.0.3",
     "ts-loader": "^9.2.3",
     "typescript": "^4.4.3",
@@ -66,9 +70,12 @@
     "dev": "tsc --watch",
     "test": "jest",
     "lint": "eslint . --ext .tsx",
-    "prebuild": "tsc --emitDeclarationOnly",
-    "build:prod": "NODE_ENV=production npm run build",
-    "build": "webpack"
+    "clean": "rm -rf dist && mkdir dist",
+    "build:es": "BABEL_ENV=es babel src --extensions '.ts,.tsx' --out-dir dist/es --copy-files",
+    "build:esm": "BABEL_ENV=esm babel src --extensions '.ts,.tsx' --out-dir dist/esm --copy-files",
+    "build:types": "tsc --noEmit false --declaration --emitDeclarationOnly --outDir dist/types",
+    "build:prod": "NODE_ENV=production webpack",
+    "build": "npm run clean && npm run build:es && npm run build:esm && npm run build:types && npm run build:prod"
   },
   "eslintConfig": {
     "extends": [

@@ -13,11 +13,5 @@ module.exports = merge(common(), {
     library: {
       type: 'commonjs2'
     }
-  },
-  optimization: {
-    minimize: process.env.NODE_ENV === 'production'
-  },
-  externals: [
-    nodeExternals()
-  ]
+  }
 })
