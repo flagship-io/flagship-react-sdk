@@ -62,7 +62,7 @@ function App() {
     setVisitorData({...visitorData,id:'visitor_'+ count, isAuthenticated: !visitorData.isAuthenticated})
   }
   return(
-  <FlagshipProvider  visitorData={visitorData} pollingInterval={5}  envId={ENV_ID} timeout={5} apiKey={API_KEY} fetchNow={true} >
+  <FlagshipProvider decisionApiUrl={"https://decision.flagship.io/v2/"}  visitorData={visitorData} pollingInterval={5}  envId={ENV_ID} timeout={5} apiKey={API_KEY} fetchNow={true} >
     <Home dynamicProp={0} />
     <button style={{width:100, height:50}} onClick={()=>{onClick()}}>click me</button>
   </FlagshipProvider>

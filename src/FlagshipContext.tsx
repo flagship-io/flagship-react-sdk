@@ -90,7 +90,7 @@ export const FlagshipContext = createContext<FsContext>({ state: { ...initStat }
 
 export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   children,
-  fetchNow, envId, apiKey, decisionMode,
+  fetchNow, envId, apiKey, decisionMode, decisionApiUrl,
   timeout, logLevel, statusChangedCallback,
   logManager, pollingInterval, visitorData, onInitStart,
   onInitDone, onBucketingSuccess, onBucketingFail, loadingComponent, onBucketingUpdated, onUpdate, enableClientCache,
@@ -258,6 +258,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       onBucketingFail,
       onBucketingSuccess,
       enableClientCache,
+      decisionApiUrl,
       onBucketingUpdated: onBucketingLastModified,
       initialBucketing
     })
