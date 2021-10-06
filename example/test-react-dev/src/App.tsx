@@ -40,16 +40,13 @@ const loadingComponent = ()=>{
 }
 function App() {
   const [visitorData,setVisitorData] = useState<IVisitorData>(initStat.visitorData)
-
+  const [dynamicProp, setDynamicProp] = useState(1);
   useEffect(()=>{
     let count = 1
     const intervalID = setInterval(()=>{
       count++
-      setVisitorData(state=>({
-        ...state,
-        id: `visitor_${count}`
-      }))
-    }, 5000)
+      setDynamicProp(Math.random());
+    }, 2000)
     return ()=>{
       clearInterval(intervalID)
     }
@@ -65,9 +62,9 @@ function App() {
     setVisitorData({...visitorData,id:'visitor_'+ count, isAuthenticated: !visitorData.isAuthenticated})
   }
   return(
-  <FlagshipProvider initialCampaigns={campaigns} visitorData={visitorData} pollingInterval={5}  envId={ENV_ID} timeout={5} apiKey={API_KEY} fetchNow={false} decisionMode={DecisionMode.DECISION_API}>
-    <Home />
-    <button style={{width:100, height:50}} value={"click me"} onClick={()=>{onClick()}}></button>
+  <FlagshipProvider  visitorData={visitorData} pollingInterval={5}  envId={ENV_ID} timeout={5} apiKey={API_KEY} fetchNow={true} >
+    <Home dynamicProp={0} />
+    <button style={{width:100, height:50}} onClick={()=>{onClick()}}>click me</button>
   </FlagshipProvider>
   )
 }

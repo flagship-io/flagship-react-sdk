@@ -1,9 +1,9 @@
 import React from 'react';
 import logo from './logo.svg';
-import {useFlagship, useFsModifications} from "@flagship.io/react-sdk"
+import {useFlagship, useFsModifications} from "../../../"
 
 let age = 1
-const Home= React.memo(()=>{
+const Home= (props:{dynamicProp:number})=>{
   const fs = useFlagship()
   const {btnColor} = useFsModifications([{key:"btnColor", defaultValue:"white"}])
 
@@ -12,8 +12,6 @@ const Home= React.memo(()=>{
 const click =()=>{
   age = age===1?1:2
   fs.updateContext({age})
-  // fs.synchronizeModifications()
-  // fs.activateModification(["btnColor"])
   console.log(fs.getModificationsSync([{key:"btnColor", defaultValue:"white", activate:true}]));
   console.log(fs.getModificationInfoSync("btnColor"));
 }
@@ -33,11 +31,11 @@ const click =()=>{
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          Learn React {props.dynamicProp}
         </a>
       </header>
     </div>
   );
-})
+}
 
 export default Home;
