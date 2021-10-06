@@ -175,7 +175,7 @@ describe('Name of the group', () => {
       expect(start).toBeCalledTimes(2)
       expect(start).toBeCalledWith('new_env_id', apiKey, expect.objectContaining({ decisionMode: DecisionMode.DECISION_API, onBucketingUpdated: expect.anything() }))
       expect(newVisitor).toBeCalledTimes(1)
-      expect(synchronizeModifications).toBeCalledTimes(6)
+      expect(synchronizeModifications).toBeCalledTimes(5)
       expect(authenticate).toBeCalledTimes(1)
       expect(unauthenticate).toBeCalledTimes(1)
     })
