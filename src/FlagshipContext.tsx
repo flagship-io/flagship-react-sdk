@@ -118,7 +118,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
 
   useEffect(() => {
     updateVisitor()
-  }, [visitorData])
+  }, [JSON.stringify(visitorData)])
 
   useEffect(() => {
     initSdk()
