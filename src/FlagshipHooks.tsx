@@ -157,10 +157,8 @@ export type UseFlagshipParams<T> ={
 export type UseFlagshipOutput = {
   modifications: Modification[]
   status: FsStatus
-  getModifications <T>(params: modificationsRequested<T>[], activateAll?: boolean): Promise<Record<string, T>>
-  getModificationsSync<T>(params: modificationsRequested<T>[], activateAll?: boolean): Record<string, T>
-  getModificationInfo (key: string) : Promise<Modification | null>
-  getModificationInfoSync (key: string) : Modification | null
+  getModifications<T>(params: modificationsRequested<T>[], activateAll?: boolean): Record<string, T>
+  getModificationInfo (key: string) : Modification | null
   synchronizeModifications(): Promise<void>
   activateModification:{
     (keys: { key: string }[]): Promise<void>
@@ -283,25 +281,14 @@ export const useFlagship = ():UseFlagshipOutput => {
     await fsSynchronizeModifications(functionName, visitor, config)
   }
 
-  const getModificationsSync = <T extends unknown > (params: modificationsRequested<T>[], activateAll?: boolean) => {
-    const functionName = 'getModificationsSync'
-    return fsModificationsSync({
-      functionName, state, visitor, config, params, activateAll
-    })
-  }
-
-  const getModifications = async <T extends unknown > (params: modificationsRequested<T>[], activateAll?: boolean) => {
+  const getModifications = <T extends unknown > (params: modificationsRequested<T>[], activateAll?: boolean) => {
     const functionName = 'getModifications'
     return fsModificationsSync({
       functionName, state, visitor, config, params, activateAll
     })
   }
 
-  const getModificationInfoSync:{(key: string):Modification | null} = (key: string) => {
-    return fsModificationInfoSync({ key, state, visitor })
-  }
-
-  const getModificationInfo:{(key: string): Promise<Modification | null>} = async (key: string) => {
+  const getModificationInfo:{(key: string): Modification | null} = (key: string) => {
     return fsModificationInfoSync({ key, state, visitor })
   }
 
@@ -313,11 +300,9 @@ export const useFlagship = ():UseFlagshipOutput => {
     status: state.status,
     activateModification,
     synchronizeModifications,
-    getModificationsSync,
     getModifications,
     modifications: modifications || [],
     getModificationInfo,
-    getModificationInfoSync,
     hit: {
       send: fsSendHit,
       sendMultiple: fsSendHits

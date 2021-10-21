@@ -3,7 +3,7 @@ import { jest, expect, it, describe, beforeEach, afterEach } from '@jest/globals
 import * as FsHooks from '../src/FlagshipHooks'
 import { useFsModificationInfo, useFsModifications, useFsModification, useFsSynchronizeModifications } from '../src/FlagshipHooks'
 import { Mock } from 'jest-mock'
-import { HitType, LogLevel } from '@flagship.io/js-sdk'
+import { HitType, LogLevel, HitShape } from '@flagship.io/js-sdk'
 
 describe('test FlagshipHooks', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -358,6 +358,17 @@ describe('test FlagshipHooks', () => {
     expect(visitor.sendHit).toBeCalledTimes(1)
     expect(visitor.sendHit).toBeCalledWith(hit)
 
+    const hitShape: HitShape = {
+      type: 'Event',
+      data: {
+        action: 'test',
+        category: 'Action Tracking'
+      }
+    }
+    await fs.hit.send(hitShape)
+    expect(visitor.sendHit).toBeCalledTimes(2)
+    expect(visitor.sendHit).toBeCalledWith(hitShape)
+
     await fs.hit.sendMultiple([hit])
     expect(visitor.sendHits).toBeCalledTimes(1)
     expect(visitor.sendHits).toBeCalledWith([hit])
@@ -390,23 +401,18 @@ describe('test FlagshipHooks', () => {
 
     visitor.getModificationsSync.mockReturnValue({})
 
-    const modification = fs.getModificationsSync([{ key: 'key', defaultValue: 'value' }])
+    const modification = fs.getModifications([{ key: 'key', defaultValue: 'value' }])
     expect(modification).toEqual({})
     expect(visitor.getModificationsSync).toBeCalledTimes(1)
 
-    fs.getModifications([{ key: 'key', defaultValue: 'value' }]).then(value => {
-      expect(visitor.getModificationsSync).toBeCalledTimes(2)
-      expect(value).toEqual({})
-    })
+    const value = fs.getModifications([{ key: 'key', defaultValue: 'value' }])
+    expect(visitor.getModificationsSync).toBeCalledTimes(2)
+    expect(value).toEqual({})
 
     visitor.getModificationInfoSync.mockReturnValue({})
-    fs.getModificationInfoSync('key')
+    fs.getModificationInfo('key')
     expect(visitor.getModificationInfoSync).toBeCalledTimes(1)
     expect(visitor.getModificationInfoSync).toBeCalledWith('key')
-
-    fs.getModificationInfo('key').then(() => {
-      expect(visitor.getModificationInfoSync).toBeCalledTimes(2)
-    })
 
     const expected = { key: 'key', campaignId: 'campaignId', variationGroupId: 'variationGroupId', variation: 'variation', isReference: true, value: 'value' }
     useContextMock.mockReturnValue({
