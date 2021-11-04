@@ -280,5 +280,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
 }
 
 FlagshipProvider.defaultProps = {
-  nodeEnv: 'production'
+  nodeEnv: 'production',
+  activateDeduplicationTime: 10,
+  hitDeduplicationTime: 10
 }

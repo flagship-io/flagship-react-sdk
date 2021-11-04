@@ -70,7 +70,7 @@ function App() {
   
   
   return(
-  <FlagshipProvider decisionApiUrl={"https://decision.flagship.io/v2/"} activateDeduplicationTime={20}   visitorData={visitorData} pollingInterval={5}  envId={ENV_ID} timeout={5} apiKey={API_KEY} fetchNow={true} >
+  <FlagshipProvider decisionApiUrl={"https://decision.flagship.io/v2/"}  visitorData={visitorData} pollingInterval={5}  envId={ENV_ID} timeout={5} apiKey={API_KEY} fetchNow={true} >
     <Home dynamicProp={dynamicProp} />
     <button style={{width:100, height:50}} onClick={()=>{onClick()}}>click me</button>
   </FlagshipProvider>
