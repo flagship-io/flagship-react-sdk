@@ -1,19 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import {useFlagship, useFsModifications} from "../../../"
 
 let age = 1
+let count = 0
 const Home= (props:{dynamicProp:number})=>{
-  const fs = useFlagship()
-  const {btnColor} = useFsModifications([{key:"btnColor", defaultValue:"white"}])
 
-  console.log(fs.status);
+  // const [dynamicProp, setDynamicProp] = useState(1);
+  // useEffect(()=>{
+  //   const intervalID = setInterval(()=>{
+  //     count +=2
+  //     setDynamicProp(Math.random());
+  //   }, 2000)
+  //   return ()=>{
+  //     clearInterval(intervalID)
+  //   }
+  // },[])
+
+  const fs = useFlagship()
+  const {btnColor} = useFsModifications([{key:"btnColor", defaultValue:"white", activate:true}])
+
+  setTimeout(() => {
+    console.log("render Home", count);
+  }, 1000);
   
 const click =()=>{
   age = age===1?1:2
   fs.updateContext({age})
-  console.log(fs.getModificationsSync([{key:"btnColor", defaultValue:"white", activate:true}]));
-  console.log(fs.getModificationInfoSync("btnColor"));
+  console.log(fs.getModifications([{key:"btnColor", defaultValue:"white", activate:true}]));
+  console.log(fs.getModificationInfo("btnColor"));
 }
   
   return (
@@ -31,7 +46,7 @@ const click =()=>{
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React {props.dynamicProp}
+          Learn React {props.dynamicProp} count {count}
         </a>
       </header>
     </div>
