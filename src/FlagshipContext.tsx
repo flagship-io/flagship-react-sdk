@@ -94,7 +94,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   timeout, logLevel, statusChangedCallback,
   logManager, pollingInterval, visitorData, onInitStart,
   onInitDone, onBucketingSuccess, onBucketingFail, loadingComponent, onBucketingUpdated, onUpdate, enableClientCache,
-  initialBucketing, initialCampaigns, initialModifications, synchronizeOnBucketingUpdated
+  initialBucketing, initialCampaigns, initialModifications, synchronizeOnBucketingUpdated, activateDeduplicationTime, hitDeduplicationTime
 }:FlagshipProviderProps) => {
   let modifications = new Map<string, Modification>()
   if (initialModifications) {
@@ -260,7 +260,9 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       enableClientCache,
       decisionApiUrl,
       onBucketingUpdated: onBucketingLastModified,
-      initialBucketing
+      initialBucketing,
+      activateDeduplicationTime,
+      hitDeduplicationTime
     })
   }
   const handleDisplay = (): React.ReactNode => {
