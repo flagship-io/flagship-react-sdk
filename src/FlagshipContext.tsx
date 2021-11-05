@@ -1,9 +1,7 @@
 // eslint-disable-next-line no-use-before-define
 import React, { useState, useEffect, ReactNode, createContext, Dispatch, SetStateAction, useRef } from 'react'
-import { BucketingDTO, CampaignDTO, Flagship, FlagshipStatus, IFlagshipConfig, Modification, Visitor } from '@flagship.io/js-sdk'
+import { BucketingDTO, CampaignDTO, Flagship, FlagshipStatus, IFlagshipConfig, Modification, primitive, Visitor } from '@flagship.io/js-sdk'
 import { getModificationsFromCampaigns, logError } from './utils'
-
-export type primitive = string | number | boolean
 
 export interface FsStatus{
   /**
