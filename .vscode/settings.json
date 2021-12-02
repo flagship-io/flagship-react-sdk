@@ -16,5 +16,11 @@
   "[typescript]": {
     "editor.defaultFormatter": null
   },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": null
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": null
+  },
   "liveServer.settings.port": 5501
 }

@@ -1,102 +1,144 @@
 // eslint-disable-next-line no-use-before-define
-import React, { useState, useEffect, ReactNode, createContext, Dispatch, SetStateAction, useRef } from 'react'
-import { BucketingDTO, CampaignDTO, Flagship, FlagshipStatus, IFlagshipConfig, Modification, primitive, Visitor } from '@flagship.io/js-sdk'
+import React, {
+  useState,
+  useEffect,
+  ReactNode,
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useRef
+} from 'react'
+import {
+  BucketingDTO,
+  CampaignDTO,
+  Flagship,
+  FlagshipStatus,
+  IFlagshipConfig,
+  Modification,
+  primitive,
+  Visitor
+} from '@flagship.io/js-sdk'
 import { getModificationsFromCampaigns, logError } from './utils'
 
-export interface FsStatus{
+export interface FsStatus {
   /**
    * Boolean. When true, the SDK is still not ready to render your App otherwise it'll use default modifications.
    */
-  isLoading:boolean,
+  isLoading: boolean;
   /**
    * Boolean. true after it has fully finished initialization tasks, false otherwise.
    */
-  isSdkReady: boolean,
+  isSdkReady: boolean;
 
-  lastModified?:Date
+  lastModified?: Date;
   /**
    * Boolean. When true the flagship visitor instance is truthy, false otherwise.
    */
-  isVisitorDefined?: boolean,
-   /**
+  isVisitorDefined?: boolean;
+  /**
    * String or null. The last update date occurred on the flagship visitor instance.
    */
-  lastRefresh?:string
+  lastRefresh?: string;
   /**
    * String or null. When null no initialization succeed yet. When string contains stringified date of last successful initialization.
    */
-  firstInitSuccess?:string
+  firstInitSuccess?: string;
 }
-export interface FsState{
-  visitor?:Visitor,
-  config?:IFlagshipConfig,
-  modifications?:Map<string, Modification>,
-  status:FsStatus
-  initialCampaigns?: CampaignDTO[]
-  initialModifications?: Map<string, Modification>|Modification[]
+export interface FsState {
+  visitor?: Visitor;
+  config?: IFlagshipConfig;
+  modifications?: Map<string, Modification>;
+  status: FsStatus;
+  initialCampaigns?: CampaignDTO[];
+  initialModifications?: Map<string, Modification> | Modification[];
 }
-interface FsContext{
-  state:FsState,
-  setState?:Dispatch<SetStateAction<FsState>>
+interface FsContext {
+  state: FsState;
+  setState?: Dispatch<SetStateAction<FsState>>;
 }
 
-interface FlagshipProviderProps extends IFlagshipConfig{
-    visitorData: {
-        id: string
-        context?: Record<string, primitive>
-        isAuthenticated?: boolean
-        hasConsented?:boolean
-    }
-    envId: string
-    apiKey: string
-    loadingComponent?: ReactNode
-    children?:ReactNode
-    /**
-     * If value is other than production , it will also display Debug logs.
-     */
-    nodeEnv?: string
-    /**
-     * Callback function called when the SDK starts initialization.
-     */
-    onInitStart?(): void
-    /**
-     * Callback function called when the SDK ends initialization.
-     */
-    onInitDone?(): void
-    /**
-     * Callback function called when the SDK is updated. For example, after a synchronize is triggered or visitor context has changed.
-     */
-    onUpdate?(params: {
-      fsModifications: Map<string, Modification>
-      config: IFlagshipConfig
-      status: FsStatus
-    }):void
-    initialBucketing?:BucketingDTO
-    initialCampaigns?: CampaignDTO[]
-    initialModifications?: Map<string, Modification>|Modification[]
-      /**
+interface FlagshipProviderProps extends IFlagshipConfig {
+  visitorData: {
+    id: string;
+    context?: Record<string, primitive>;
+    isAuthenticated?: boolean;
+    hasConsented?: boolean;
+  };
+  envId: string;
+  apiKey: string;
+  loadingComponent?: ReactNode;
+  children?: ReactNode;
+  /**
+   * If value is other than production , it will also display Debug logs.
+   */
+  nodeEnv?: string;
+  /**
+   * Callback function called when the SDK starts initialization.
+   */
+  onInitStart?(): void;
+  /**
+   * Callback function called when the SDK ends initialization.
+   */
+  onInitDone?(): void;
+  /**
+   * Callback function called when the SDK is updated. For example, after a synchronize is triggered or visitor context has changed.
+   */
+  onUpdate?(params: {
+    fsModifications: Map<string, Modification>;
+    config: IFlagshipConfig;
+    status: FsStatus;
+  }): void;
+  initialBucketing?: BucketingDTO;
+  initialCampaigns?: CampaignDTO[];
+  initialModifications?: Map<string, Modification> | Modification[];
+  /**
    * If true, it'll automatically call synchronizeModifications when the bucketing file has updated
    */
-  synchronizeOnBucketingUpdated?:boolean
+  synchronizeOnBucketingUpdated?: boolean;
 }
 
-const initStat:FsState = {
+const initStat: FsState = {
   status: { isLoading: true, isSdkReady: false }
 }
 
-export const FlagshipContext = createContext<FsContext>({ state: { ...initStat } })
+export const FlagshipContext = createContext<FsContext>({
+  state: { ...initStat }
+})
 
 export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   children,
-  fetchNow, envId, apiKey, decisionMode, decisionApiUrl,
-  timeout, logLevel, statusChangedCallback,
-  logManager, pollingInterval, visitorData, onInitStart,
-  onInitDone, onBucketingSuccess, onBucketingFail, loadingComponent, onBucketingUpdated, onUpdate, enableClientCache,
-  initialBucketing, initialCampaigns, initialModifications, synchronizeOnBucketingUpdated, activateDeduplicationTime, hitDeduplicationTime
-}:FlagshipProviderProps) => {
+  fetchNow,
+  envId,
+  apiKey,
+  decisionMode,
+  decisionApiUrl,
+  timeout,
+  logLevel,
+  statusChangedCallback,
+  logManager,
+  pollingInterval,
+  visitorData,
+  onInitStart,
+  onInitDone,
+  onBucketingSuccess,
+  onBucketingFail,
+  loadingComponent,
+  onBucketingUpdated,
+  onUpdate,
+  enableClientCache,
+  initialBucketing,
+  initialCampaigns,
+  initialModifications,
+  synchronizeOnBucketingUpdated,
+  activateDeduplicationTime,
+  hitDeduplicationTime,
+  visitorCacheImplementation,
+  hitCacheImplementation,
+  disableCache
+}: FlagshipProviderProps) => {
   let modifications = new Map<string, Modification>()
   if (initialModifications) {
-    initialModifications.forEach(modification => {
+    initialModifications.forEach((modification) => {
       modifications.set(modification.key, modification)
     })
   } else if (initialCampaigns) {
@@ -149,8 +191,12 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     state.visitor.synchronizeModifications()
   }
 
-  function initializeState (param:{ fsVisitor: Visitor, isLoading:boolean, isSdkReady:boolean }) {
-    const newStatus:FsStatus = {
+  function initializeState (param: {
+    fsVisitor: Visitor;
+    isLoading: boolean;
+    isSdkReady: boolean;
+  }) {
+    const newStatus: FsStatus = {
       isSdkReady: param.isSdkReady,
       isLoading: param.isLoading,
       isVisitorDefined: !!param.fsVisitor,
@@ -178,7 +224,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onVisitorReady = (fsVisitor:Visitor, error:any) => {
+  const onVisitorReady = (fsVisitor: Visitor, error: any) => {
     if (error) {
       logError(Flagship.getConfig(), error.message || error, 'onReady')
       return
@@ -198,14 +244,17 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       })
     }
   }
-  const statusChanged = (status:FlagshipStatus) => {
+  const statusChanged = (status: FlagshipStatus) => {
     if (statusChangedCallback) {
       statusChangedCallback(status)
     }
 
     if (status === FlagshipStatus.STARTING && onInitStart) {
       onInitStart()
-    } else if (status === FlagshipStatus.READY_PANIC_ON || status === FlagshipStatus.READY) {
+    } else if (
+      status === FlagshipStatus.READY_PANIC_ON ||
+      status === FlagshipStatus.READY
+    ) {
       if (onInitDone) {
         onInitDone()
       }
@@ -222,7 +271,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
           initialModifications
         })
 
-        fsVisitor?.on('ready', error => {
+        fsVisitor?.on('ready', (error) => {
           onVisitorReady(fsVisitor, error)
         })
 
@@ -237,7 +286,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     }
   }
 
-  const onBucketingLastModified = (lastUpdate:Date) => {
+  const onBucketingLastModified = (lastUpdate: Date) => {
     if (onBucketingUpdated) {
       onBucketingUpdated(lastUpdate)
     }
@@ -260,7 +309,10 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       onBucketingUpdated: onBucketingLastModified,
       initialBucketing,
       activateDeduplicationTime,
-      hitDeduplicationTime
+      hitDeduplicationTime,
+      visitorCacheImplementation,
+      hitCacheImplementation,
+      disableCache
     })
   }
   const handleDisplay = (): React.ReactNode => {
@@ -272,7 +324,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   }
   return (
     <FlagshipContext.Provider value={{ state, setState }}>
-        {handleDisplay()}
+      {handleDisplay()}
     </FlagshipContext.Provider>
   )
 }
