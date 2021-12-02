@@ -1,10 +1,9 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import './App.css';
-import { DecisionMode, FlagshipProvider} from "../../../"
+import { DecisionMode, FlagshipProvider} from "@flagship.io/react-sdk"
 import {ENV_ID, API_KEY} from './config'
 import Home from './Home';
 
-import {campaigns} from './campaigns'
 
 interface IVisitorData{
   id: string
@@ -43,16 +42,16 @@ let countRenderApp = 0
 function App() {
   const [visitorData,setVisitorData] = useState<IVisitorData>(initStat.visitorData)
   const [dynamicProp, setDynamicProp] = useState(0);
-  useEffect(()=>{
-    let count = 0
-    const intervalID = setInterval(()=>{
-      count+=5
-      setDynamicProp(count);
-    }, 5000)
-    return ()=>{
-      clearInterval(intervalID)
-    }
-  },[])
+  // useEffect(()=>{
+  //   let count = 0
+  //   const intervalID = setInterval(()=>{
+  //     count+=5
+  //     setDynamicProp(count);
+  //   }, 5000)
+  //   return ()=>{
+  //     clearInterval(intervalID)
+  //   }
+  // },[])
   
   useEffect(()=>{
     // console.log("visitorData",visitorData);
@@ -70,7 +69,7 @@ function App() {
   
   
   return(
-  <FlagshipProvider decisionApiUrl={"https://decision.flagship.io/v2/"}  visitorData={visitorData} pollingInterval={5}  envId={ENV_ID} timeout={5} apiKey={API_KEY} fetchNow={true} >
+  <FlagshipProvider decisionApiUrl={"https://decision.flagship.io/v2/"} decisionMode={DecisionMode.BUCKETING}  visitorData={visitorData} pollingInterval={5}  envId={ENV_ID} timeout={5} apiKey={API_KEY} fetchNow={true} >
     <Home dynamicProp={dynamicProp} />
     <button style={{width:100, height:50}} onClick={()=>{onClick()}}>click me</button>
   </FlagshipProvider>

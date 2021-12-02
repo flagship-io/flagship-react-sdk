@@ -1234,10 +1234,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flagship.io/js-sdk@^2.3.1-beta.7":
-  version "2.3.1-beta.7"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-2.3.1-beta.7.tgz#7e8ea6818926040e14642d9ad3368189d1ed7749"
-  integrity sha512-AFwKfbwjEDAIEFoy62iGFk5NV8gZtXiAy+i/ZYTk4/io0Jar+5/pY9q+8xiegW8O02KWA9WQl8YTdse0UpsCWA==
+"@flagship.io/js-sdk@^2.3.1-beta.8":
+  version "2.3.1-beta.8"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-2.3.1-beta.8.tgz#a65d4623e1e3786bce05b2000eed94329b7bed7f"
+  integrity sha512-imn5isr7ow18tpJqJB+4A3EgyLl/1Jbnxtx47lvuJG3mXf5MG7uO7YMsIzDfVapD5f7vCg36L435PD3BBmkLHA==
   dependencies:
     "@babel/runtime" "^7.15.4"
     abort-controller "^3.0.0"
@@ -1245,15 +1245,28 @@
     events "^3.3.0"
     node-fetch "2.6.2"
 
-"@flagship.io/react-sdk@link:../..":
+"@flagship.io/js-sdk@^2.3.1-beta.9":
+  version "2.3.1-beta.9"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-2.3.1-beta.9.tgz#6a2814dee6ecb376af892a70a123e04bcbebe8a0"
+  integrity sha512-bns3AbosFrK4vv25SkflrCvS7OZRWKkblZHhPqBoU4+JgswHFPjxNnWYe9BGUIhkPrhR4TCpbDHbosNrbeHpoQ==
+  dependencies:
+    "@babel/runtime" "^7.15.4"
+    abort-controller "^3.0.0"
+    core-js "^3.18.1"
+    events "^3.3.0"
+    node-fetch "2.6.2"
+
+"@flagship.io/react-sdk@^2.2.0-beta.5":
+  version "2.2.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@flagship.io/react-sdk/-/react-sdk-2.2.0-beta.5.tgz#bcc6cc9da49d07570a4012c6003efe57dcb00fc9"
+  integrity sha512-MWjrniWH5djzWLpEqLqzKcuqY82+muBPHLILVVP42ZlMecIXPnKIyDME1AOa/kcFAbd6sTT5oHc7BBNHZ51eIQ==
+  dependencies:
+    "@flagship.io/js-sdk" "^2.3.1-beta.8"
+    encoding "^0.1.13"
+
+"@flagship.io/react-sdk@link:../../.":
   version "0.0.0"
   uid ""
-
-"@flagship.io/react-sdk@link:../../":
-  version "2.2.0-beta.3"
-  dependencies:
-    "@flagship.io/js-sdk" "^2.3.1-beta.7"
-    encoding "^0.1.13"
 
 "@gar/promisify@^1.0.1":
   version "1.1.2"

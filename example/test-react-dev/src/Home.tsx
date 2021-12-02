@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
-import {useFlagship, useFsModifications} from "../../../"
+import {useFlagship, useFsModifications} from "@flagship.io/react-sdk"
 
 let age = 1
 let count = 0
