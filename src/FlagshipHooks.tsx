@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { HitAbstract, IFlagshipConfig, IHit, Modification, modificationsRequested, primitive, Visitor } from '@flagship.io/js-sdk'
+import { HitAbstract, HitShape, IFlagshipConfig, IHit, Modification, modificationsRequested, primitive, Visitor } from '@flagship.io/js-sdk'
 import { FlagshipContext, FsState, FsStatus } from './FlagshipContext'
 import { logError, logWarn } from './utils'
 
@@ -188,11 +188,15 @@ export type UseFlagshipOutput = {
   hit: {
       send:{
         (hit: HitAbstract): Promise<void>
-        (hit: HitAbstract | IHit): Promise<void>
+        (hit:IHit): Promise<void>
+        (hit:HitShape): Promise<void>
+        (hit: HitAbstract | IHit | HitShape): Promise<void>
       }
       sendMultiple:{
         (hit: HitAbstract[]): Promise<void>
         (hit: IHit[]): Promise<void>
+        (hit:HitShape[]): Promise<void>
+        (hit: HitAbstract[] | IHit[] | HitShape[]): Promise<void>
       }
   };
 };
@@ -242,7 +246,7 @@ export const useFlagship = ():UseFlagshipOutput => {
  * Send a Hit to Flagship servers for reporting.
  */
   const fsSendHit:{
-  (hit: HitAbstract | IHit): Promise<void>} = (hit) => {
+  (hit: HitAbstract | IHit|HitShape): Promise<void>} = (hit) => {
     const functionName = 'sendHit'
     if (!visitor) {
       logError(config, noVisitorMessage, functionName)
@@ -255,7 +259,7 @@ export const useFlagship = ():UseFlagshipOutput => {
  * Send a Hit to Flagship servers for reporting.
  */
   const fsSendHits:{
-    (hit: HitAbstract[]|IHit[]): Promise<void>} = (hit) => {
+    (hit: HitAbstract[]|IHit[]| HitShape[]): Promise<void>} = (hit) => {
       const functionName = 'sendHits'
       if (!visitor) {
         logError(config, noVisitorMessage, functionName)
