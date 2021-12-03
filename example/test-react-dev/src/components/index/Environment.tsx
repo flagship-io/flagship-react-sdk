@@ -1,5 +1,5 @@
 import { DecisionMode } from "@flagship.io/js-sdk";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { appContext } from "../../App";
 
 export default function Environment() {
@@ -14,6 +14,17 @@ export default function Environment() {
     pollingInterval: 2,
   });
 
+  useEffect(() => {
+    setLocalData((prev) => ({
+      ...prev,
+      envId: appState.envId,
+      apiKey: appState.apiKey,
+      timeout: appState.timeout,
+      decisionMode: appState.decisionMode,
+      pollingInterval: appState.pollingInterval,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const onEnvIDChange = (value: string) => {
     setLocalData((prev) => ({ ...prev, envId: value }));
   };
@@ -65,7 +76,7 @@ export default function Environment() {
           className="form-control"
           placeholder="Environment ID"
           required
-          defaultValue={appState.envId}
+          value={localData.envId}
           onChange={(e) => {
             onEnvIDChange(e.target.value);
           }}
@@ -80,7 +91,7 @@ export default function Environment() {
           type="text"
           className="form-control"
           placeholder="API Key"
-          defaultValue={appState.apiKey}
+          value={localData.apiKey}
           required
           onChange={(e) => {
             onApiKeyChange(e.target.value);
@@ -95,7 +106,7 @@ export default function Environment() {
           className="form-control"
           placeholder="Timeout"
           required
-          defaultValue={appState.timeout}
+          value={localData.timeout}
           onChange={(e) => {
             onTimeoutChange(e.target.value);
           }}
@@ -109,8 +120,8 @@ export default function Environment() {
           className="form-control"
           placeholder="Flagship Mode"
           required
-          defaultValue={
-            appState.decisionMode === DecisionMode.DECISION_API ? "1" : "2"
+          value={
+            localData.decisionMode === DecisionMode.DECISION_API ? "1" : "2"
           }
           onChange={(e) => {
             onDecisionModeChange(e.target.value);
@@ -128,7 +139,7 @@ export default function Environment() {
           className="form-control"
           placeholder="Polling interval"
           required
-          defaultValue={appState.pollingInterval}
+          value={localData.pollingInterval}
           onChange={(e) => {
             onPollingIntervalChange(e.target.value);
           }}

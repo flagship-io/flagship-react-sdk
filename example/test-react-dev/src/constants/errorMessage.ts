@@ -1,0 +1,1 @@
+export const ERROR_SDK_NOT_READY = "First, set your Flagship Environment ID & API Key"

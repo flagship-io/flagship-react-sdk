@@ -11,9 +11,11 @@ import { BrowserRouter } from "react-router-dom";
 import Header from "./components/layout/Header";
 import { featureFlagsAll } from "./constants/features";
 
-const initStat = {
+const initStat: AppState = {
   visitorData: {
     id: "",
+    context: {},
+    hasConsented: false,
   },
   envId: "",
   apiKey: "",
@@ -42,6 +44,7 @@ function App() {
         envId={appState.envId}
         timeout={appState.timeout}
         apiKey={appState.apiKey}
+        fetchNow={false}
         statusChangedCallback={(status) => {
           setAppState((prev) => ({
             ...prev,
