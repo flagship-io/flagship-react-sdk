@@ -1,22 +1,27 @@
 import React, { useState } from "react";
-import "./App.css";
-import { DecisionMode, FlagshipProvider } from "@flagship.io/react-sdk";
-import { ENV_ID, API_KEY } from "./config";
+import "./assets/scss/app.scss";
+import {
+  DecisionMode,
+  FlagshipProvider,
+  FlagshipStatus,
+} from "@flagship.io/react-sdk";
 import { AppContext, AppState } from "./@types/types";
-import { Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import Hits from "./pages/Hits";
-import Log from "./pages/Log";
+import AppRoutes from "./routes";
+import { BrowserRouter } from "react-router-dom";
+import Header from "./components/layout/Header";
+import { featureFlagsAll } from "./constants/features";
 
 const initStat = {
   visitorData: {
     id: "",
   },
-  envId: ENV_ID,
-  apiKey: API_KEY,
-  timeout: 5000,
-  pollingInterval: 1000,
+  envId: "",
+  apiKey: "",
+  timeout: 2,
+  pollingInterval: 2,
   decisionMode: DecisionMode.DECISION_API,
+  isSDKReady: false,
+  featureFlags: featureFlagsAll,
 };
 
 export const appContext = React.createContext<AppContext>({
@@ -37,12 +42,19 @@ function App() {
         envId={appState.envId}
         timeout={appState.timeout}
         apiKey={appState.apiKey}
+        statusChangedCallback={(status) => {
+          setAppState((prev) => ({
+            ...prev,
+            isSDKReady: status === FlagshipStatus.READY,
+          }));
+        }}
       >
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="hits" element={<Hits />} />
-          <Route path="*" element={<Log />} />
-        </Routes>
+        <BrowserRouter>
+          <Header technology={""} environment={""} branch={""} />
+          <div className={"container mt-5 mb-5"}>
+            <AppRoutes />
+          </div>
+        </BrowserRouter>
       </FlagshipProvider>
     </appContext.Provider>
   );
