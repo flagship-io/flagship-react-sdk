@@ -17,6 +17,7 @@ export interface IVisitorData {
     pollingInterval: number;
     decisionMode: DecisionMode;
     isSDKReady:boolean;
+    hasVisitor:boolean
     featureFlags: typeof featureFlagsAll;
   };
   

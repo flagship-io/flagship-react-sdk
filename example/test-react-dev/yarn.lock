@@ -1157,14 +1157,14 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.5", "@babel/runtime@^7.15.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.5", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
   version "7.15.4"
   resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.15.4.tgz"
   integrity sha512-99catp6bHCaxr4sJ/DbTGgHS4+Rs2RVd2g7iOap6SLGPDknRK9ztKNsE/Fg6QhSeh1FGE5f6gHGQmvvn3I3xhw==
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.7.6":
+"@babel/runtime@^7.15.4", "@babel/runtime@^7.7.6":
   version "7.16.3"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.16.3.tgz#b86f0db02a04187a3c17caa77de69840165d42d5"
   integrity sha512-WBwekcqacdY2e9AF/Q7WLFUWmdJGJTkbjqTjoMDgXkVZ3ZRUvOPsLb5KdwISoQVsbP+DQzVZW4Zhci0DvpbNTQ==
@@ -1241,10 +1241,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flagship.io/js-sdk@^2.3.1-beta.9":
-  version "2.3.1-beta.9"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-2.3.1-beta.9.tgz#6a2814dee6ecb376af892a70a123e04bcbebe8a0"
-  integrity sha512-bns3AbosFrK4vv25SkflrCvS7OZRWKkblZHhPqBoU4+JgswHFPjxNnWYe9BGUIhkPrhR4TCpbDHbosNrbeHpoQ==
+"@flagship.io/js-sdk@^2.3.1-beta.10":
+  version "2.3.1-beta.10"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-2.3.1-beta.10.tgz#6bd21f940adc9a47e8334ef117ac25311a379343"
+  integrity sha512-axoxuZk1K91mlTjBdfA037jT6vqW5yYc/yQu7taLTYQt7hH7KuJVeDoFhNBuC042tyPIh0Q9z8Uv/2H+zbR7hw==
   dependencies:
     "@babel/runtime" "^7.15.4"
     abort-controller "^3.0.0"
@@ -1252,12 +1252,10 @@
     events "^3.3.0"
     node-fetch "2.6.2"
 
-"@flagship.io/react-sdk@^2.2.0-beta.6":
+"@flagship.io/react-sdk@../../":
   version "2.2.0-beta.6"
-  resolved "https://registry.yarnpkg.com/@flagship.io/react-sdk/-/react-sdk-2.2.0-beta.6.tgz#4ab49bb960c2cfa7c521604810e9633f09a3114d"
-  integrity sha512-Nyy58Tf7UIp/b2m89NNkQmlvi202MVbrKDC6Hija94eFGZUkWGq3um9e5LfEQOr6AzSKpXHP7eAiSSBvg6clyg==
   dependencies:
-    "@flagship.io/js-sdk" "^2.3.1-beta.9"
+    "@flagship.io/js-sdk" "^2.3.1-beta.10"
     encoding "^0.1.13"
 
 "@gar/promisify@^1.0.1":
@@ -3711,9 +3709,9 @@ core-js@^2.4.0:
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
 core-js@^3.18.1:
-  version "3.18.2"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.18.2.tgz#63a551e8a29f305cd4123754846e65896619ba5b"
-  integrity sha512-zNhPOUoSgoizoSQFdX1MeZO16ORRb9FFQLts8gSYbZU5FcgXhp24iMWMxnOQo5uIaIG7/6FA/IqJPwev1o9ZXQ==
+  version "3.19.3"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.19.3.tgz#6df8142a996337503019ff3235a7022d7cdf4559"
+  integrity sha512-LeLBMgEGSsG7giquSzvgBrTS7V5UL6ks3eQlUSbN8dJStlLFiRzUm5iqsRyzUB8carhfKjkJ2vzKqE6z1Vga9g==
 
 core-js@^3.6.5:
   version "3.18.0"

@@ -37,7 +37,7 @@ module.exports = merge(common(), {
   ],
   externals: [
     nodeExternals({
-      allowlist: [/^core-js/, /^regenerator-runtime/, '@flagship.io/js-sdk', 'node-fetch', 'abort-controller', 'follow-redirects']
+      allowlist: [/^core-js/, /^regenerator-runtime/, '@flagship.io/js-sdk', 'abort-controller', 'follow-redirects']
     })
   ]
 })

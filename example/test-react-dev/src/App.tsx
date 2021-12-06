@@ -23,6 +23,7 @@ const initStat: AppState = {
   pollingInterval: 2,
   decisionMode: DecisionMode.DECISION_API,
   isSDKReady: false,
+  hasVisitor: false,
   featureFlags: featureFlagsAll,
 };
 
