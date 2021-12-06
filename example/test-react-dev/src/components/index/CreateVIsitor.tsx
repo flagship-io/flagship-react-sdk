@@ -1,4 +1,4 @@
-import { primitive, useFlagship } from "@flagship.io/react-sdk";
+import { primitive, useFlagship, Modification } from "@flagship.io/react-sdk";
 import { useContext, useEffect, useState } from "react";
 import { IVisitorData } from "../../@types/types";
 import { appContext } from "../../App";
@@ -15,13 +15,22 @@ const CreateVisitor = () => {
     hasConsented: false,
   });
   const [evalError, setEvalError] = useState<{ error?: unknown }>({});
+  const [flags, setFlags] = useState<Modification[]>([]);
 
   useEffect(() => {
+    
+    setFlags(fs.modifications);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(fs.modifications)]);
+  
+  useEffect(() => {
     setVisitorData({
-      ...appState.visitorData,
-      contextJSON: JSON.stringify(appState.visitorData.context),
+      id:fs.visitorId || "",
+      contextJSON: JSON.stringify(fs.context)|| "{}",
+      hasConsented: !!fs.hasConsented ,
     });
-  }, [appState.visitorData]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify({visitorId: fs.visitorId, context: fs.context,hasConsented: fs.hasConsented})]);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -48,7 +57,7 @@ const CreateVisitor = () => {
       setEvalError({ error: localError });
       return;
     }
-
+    setFlags([]);
     setAppState((prev) => ({
       ...prev,
       visitorData: {
@@ -57,6 +66,7 @@ const CreateVisitor = () => {
         context,
         hasConsented: visitorData.hasConsented,
       },
+      hasVisitor: true,
     }));
   };
   return (
@@ -120,9 +130,11 @@ const CreateVisitor = () => {
           {JSON.stringify(evalError.error)}
         </div>
       )}
-      <div className="alert alert-success" v-if="visitorOk">
-        Visitor ID and context set successfully
-      </div>
+      {flags.length > 0 && (
+        <div className="alert alert-success">
+          Visitor ID and context set successfully
+        </div>
+      )}
 
       <button type="submit" className="btn btn-primary">
         Submit
@@ -131,7 +143,7 @@ const CreateVisitor = () => {
         <br />
         <h2 className="mt-5">Visitor content:</h2>
       </div>
-      <pre className="mt-3">{JSON.stringify(fs.modifications, null, 4)}</pre>
+      <pre className="mt-3">{JSON.stringify(flags, null, 4)}</pre>
     </form>
   );
 };
