@@ -10,7 +10,9 @@ export default function FlagInfo() {
   const [flagInfoOk, setFlagInfoOk] = useState<{
     error?: unknown;
     value?: unknown;
-  }>({});
+  }>({
+    value:""
+  });
   const [flagName, setFlagName] = useState("");
   const { appState } = useContext(appContext);
 
@@ -28,7 +30,7 @@ export default function FlagInfo() {
       return;
     }
     const flagInfo = fs.getModificationInfo(flagName);
-
+    
     setFlagInfoOk({ value: flagInfo });
   };
 
@@ -58,7 +60,7 @@ export default function FlagInfo() {
         Submit
       </button>
 
-      {flagInfoOk.value && (
+      {(flagInfoOk.value || flagInfoOk.value==null) && (
         <div className="alert alert-success mt-3 mb-3">
           <pre>{JSON.stringify(flagInfoOk.value)}</pre>
         </div>

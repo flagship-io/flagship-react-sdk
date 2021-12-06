@@ -8,8 +8,8 @@ import {
 
 export default function FlagValue() {
   const [flagKey, setFlagKey] = useState<string>("");
-  const [flagDefaultValue, setFlagDefaultValue] = useState<string>("bool");
-  const [flagType, setFlagType] = useState<string>("");
+  const [flagDefaultValue, setFlagDefaultValue] = useState<string>("");
+  const [flagType, setFlagType] = useState<string>("bool");
   const [flagActivate, setFlagActivate] = useState<boolean>(false);
   const [flagOk, setFlagOk] = useState<{ value?: unknown; error: unknown }>({
     value: "",

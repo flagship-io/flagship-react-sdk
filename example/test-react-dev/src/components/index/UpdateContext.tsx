@@ -7,7 +7,7 @@ import {
 } from "../../constants/errorMessage";
 
 export default function UpdateContext() {
-  const [contextKey, setContextKey] = useState<string>("kkkk");
+  const [contextKey, setContextKey] = useState<string>("");
   const [contextValue, setContextValue] = useState<string>("");
   const [contextType, setContextType] = useState<string>("bool");
   const [newContext, setNewContext] = useState<Record<string, primitive>>();

@@ -19,6 +19,7 @@ export interface IVisitorData {
     isSDKReady:boolean;
     hasVisitor:boolean
     featureFlags: typeof featureFlagsAll;
+    logs:string
   };
   
   export type AppContext = {
