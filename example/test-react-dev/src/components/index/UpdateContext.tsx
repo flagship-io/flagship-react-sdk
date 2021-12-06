@@ -1,17 +1,32 @@
-import { primitive } from "@flagship.io/react-sdk";
+import { primitive, useFlagship } from "@flagship.io/react-sdk";
 import { useContext, useState } from "react";
 import { appContext } from "../../App";
+import {
+  ERROR_SDK_NOT_READY,
+  ERROR_VISITOR_NOT_SET,
+} from "../../constants/errorMessage";
 
 export default function UpdateContext() {
-  const [contextKey, setContextKey] = useState<string>("");
+  const [contextKey, setContextKey] = useState<string>("kkkk");
   const [contextValue, setContextValue] = useState<string>("");
   const [contextType, setContextType] = useState<string>("bool");
-  const { setAppState } = useContext(appContext);
-
+  const [newContext, setNewContext] = useState<Record<string, primitive>>();
   const [evalError, setEvalError] = useState<{ error?: unknown }>({});
+  const { appState } = useContext(appContext);
+  const fs = useFlagship();
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!appState.isSDKReady) {
+      setEvalError({ error: ERROR_SDK_NOT_READY });
+      return;
+    }
+
+    if (!appState.hasVisitor) {
+      setEvalError({ error: ERROR_VISITOR_NOT_SET });
+      return;
+    }
 
     let value: primitive;
 
@@ -44,16 +59,10 @@ export default function UpdateContext() {
         break;
     }
 
-    setAppState((prev) => ({
-      ...prev,
-      visitorData: {
-        ...prev.visitorData,
-        context: {
-          ...prev.visitorData.context,
-          [contextKey]: value,
-        },
-      },
-    }));
+    fs.updateContext({ [contextKey]: value });
+    fs.synchronizeModifications().then(() => {
+      setNewContext({ [contextKey]: value });
+    });
   };
   return (
     <>
@@ -70,6 +79,7 @@ export default function UpdateContext() {
               <label>Context key</label>
               <input
                 type="text"
+                required
                 className="form-control"
                 placeholder="Key"
                 value={contextKey}
@@ -82,6 +92,7 @@ export default function UpdateContext() {
             <div className="form-group">
               <label>Context type</label>
               <select
+                required
                 className="form-control"
                 placeholder="Type"
                 value={contextType}
@@ -120,12 +131,11 @@ export default function UpdateContext() {
           Submit
         </button>
 
-        <div
-          className="alert alert-success mt-3 mb-3"
-          v-if="updateContextOk && isUndefined(updateContextOk.error)"
-        >
-          {/* New context: {{ context }} */}
-        </div>
+        {newContext && (
+          <div className="alert alert-success mt-3 mb-3">
+            New context: {JSON.stringify(newContext)}
+          </div>
+        )}
       </form>
     </>
   );
