@@ -62,6 +62,9 @@ export default function UpdateContext() {
     fs.updateContext({ [contextKey]: value });
     fs.synchronizeModifications().then(() => {
       setNewContext({ [contextKey]: value });
+      setContextKey("")
+      setContextValue("")
+      setContextType("bool")
     });
   };
   return (
