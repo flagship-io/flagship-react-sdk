@@ -16,7 +16,7 @@
 
 [![Apache2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
-[![GitHub release](https://img.shields.io/github/v/release/abtasty/flagship-react-sdk.svg)](https://github.com/abtasty/flagship-react-sdk/releases)
+[![GitHub release](https://img.shields.io/github/v/release/flagship-io/flagship-react-sdk.svg)](https://github.com/abtasty/flagship-react-sdk/releases)
 
 </div>
 
@@ -36,8 +36,8 @@
 -   [Getting modifications](https://developers.flagship.io/docs/sdk/react/v2.0#getting-modifications)
 -   [Campaign synchronization](https://developers.flagship.io/docs/sdk/react/v2.0#campaign-synchronization)
 -   [Hit tracking](https://developers.flagship.io/docs/sdk/react/v2.0#hit-tracking)
--   [Release Notes](https://github.com/abtasty/flagship-react-sdk/blob/master/RELEASENOTES.md)
--   [Contributing](https://github.com/abtasty/flagship-react-sdk/blob/master/CONTRIBUTING.md)
+-   [Release Notes](https://github.com/flagship-io/flagship-react-sdk/blob/master/RELEASENOTES.md)
+-   [Contributing](https://github.com/flagship-io/flagship-react-sdk/blob/master/CONTRIBUTING.md)
 
 ## Examples
 
@@ -45,7 +45,7 @@ Following demos illustrate how the SDK is used in practice ☕
 
 -   With React (for developers):
 
-<a href="https://abtasty.github.io/flagship-react-sdk/">
+<a href="https://flagship-io.github.io/flagship-react-sdk/">
 <div style="max-width: 850px; margin: 0 auto;">
 
 ![react-dev-demo](./src/assets/gif/react-dev-demo.gif)
@@ -56,7 +56,7 @@ Following demos illustrate how the SDK is used in practice ☕
 
 [Readme 📖](examples/react-dev-demo/README.md)
 
-[Live Demo 🕹](https://abtasty.github.io/flagship-react-sdk/)
+[Live Demo 🕹](https://flagship-io.github.io/flagship-react-sdk/)
 
 </div>
 
@@ -110,7 +110,7 @@ Following demos illustrate how the SDK is used in practice ☕
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://www.domenge.fr/"><img src="https://avatars0.githubusercontent.com/u/15636263?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Emilien Domenge</b></sub></a><br /><a href="https://github.com/abtasty/flagship-react-sdk/commits?author=Emidomenge" title="Code">💻</a> <a href="https://github.com/abtasty/flagship-react-sdk/commits?author=Emidomenge" title="Documentation">📖</a> <a href="#example-Emidomenge" title="Examples">💡</a> <a href="#maintenance-Emidomenge" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://www.domenge.fr/"><img src="https://avatars0.githubusercontent.com/u/15636263?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Emilien Domenge</b></sub></a><br /><a href="https://github.com/flagship-io/flagship-react-sdk/commits?author=Emidomenge" title="Code">💻</a> <a href="https://github.com/flagship-io/flagship-react-sdk/commits?author=Emidomenge" title="Documentation">📖</a> <a href="#example-Emidomenge" title="Examples">💡</a> <a href="#maintenance-Emidomenge" title="Maintenance">🚧</a></td>
   </tr>
 </table>
 
@@ -121,4 +121,4 @@ Following demos illustrate how the SDK is used in practice ☕
 
 ## Licence
 
-[Apache License.](https://github.com/abtasty/flagship-react-sdk/blob/master/LICENSE)
+[Apache License.](https://github.com/flagship-io/flagship-react-sdk/blob/master/LICENSE)
