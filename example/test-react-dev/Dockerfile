@@ -1,7 +1,5 @@
 # build environment
 FROM node:14-alpine as builder_SDK
-ENV YARN_CACHE_FOLDER=/usr/local/yarn-cache
-VOLUME /usr/local/yarn-cache
 
 WORKDIR /build
 
@@ -12,8 +10,6 @@ RUN yarn build
 
 
 FROM node:14-alpine as build_qa
-ENV YARN_CACHE_FOLDER=/usr/local/yarn-cache
-VOLUME /usr/local/yarn-cache
 
 WORKDIR /app
 
@@ -34,6 +30,7 @@ RUN yarn build
 
 # production environment
 FROM nginx:stable-alpine
+COPY example/test-react-dev/nginx/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build_qa app/example/test-react-dev/build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
