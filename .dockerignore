@@ -1,0 +1,9 @@
+.git
+.gitignore
+**/**/node_modules
+coverage
+node_modules
+dist
+test
+**/test-react-next
+**/**/build

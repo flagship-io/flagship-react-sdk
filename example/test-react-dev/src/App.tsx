@@ -1,79 +1,131 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import './App.css';
-import { DecisionMode, FlagshipProvider} from "@flagship.io/react-sdk"
-import {ENV_ID, API_KEY} from './config'
-import Home from './Home';
+import React, { useState } from "react";
+import "./assets/scss/app.scss";
+import {
+  DecisionMode,
+  FlagshipProvider,
+  FlagshipStatus,
+  IFlagshipLogManager,
+  LogLevel,
+} from "@flagship.io/react-sdk";
+import { AppContext, AppState } from "./@types/types";
+import AppRoutes from "./routes";
+import { BrowserRouter } from "react-router-dom";
+import Header from "./components/layout/Header";
+import { featureFlagsAll } from "./constants/features";
 
 
-interface IVisitorData{
-  id: string
-  context?: {
-          age: number
+
+
+const initStat: AppState = {
+  visitorData: {
+    id: "",
+    context: {},
+    hasConsented: false,
   },
-  isAuthenticated: boolean
-}
+  envId: "",
+  apiKey: "",
+  timeout: 2,
+  pollingInterval: 2,
+  decisionMode: DecisionMode.DECISION_API,
+  isSDKReady: false,
+  hasVisitor: false,
+  featureFlags: featureFlagsAll,
+  logs:""
+};
 
-interface IAppContext {
-  visitorData: IVisitorData
-  setVisitorData: Dispatch<SetStateAction<IVisitorData>>;
-}
-const initStat = {
-  visitorData:{
-    id:"visitor_0",
-    context:{
-      age:20
-    },
-    isAuthenticated:false
+export const appContext = React.createContext<AppContext>({
+  appState: { ...initStat },
+  setAppState: () => {
+    //
   },
-  setVisitorData:()=>{}
+});
+
+export const globalLogs={
+  logs:""
 }
 
-export const appContext = React.createContext<IAppContext>(initStat)
-
-let count=0
-
-const loadingComponent = ()=>{
-  return <div>
-    Lorem ipsum dolor sit amet consectetur, adipisicing elit. At doloremque neque eveniet voluptatem dicta optio sint quam vero tempore! Tempora exercitationem recusandae numquam dicta illum quisquam non est distinctio ad!
-  </div>
-}
-
-let countRenderApp = 0
 function App() {
-  const [visitorData,setVisitorData] = useState<IVisitorData>(initStat.visitorData)
-  const [dynamicProp, setDynamicProp] = useState(0);
-  // useEffect(()=>{
-  //   let count = 0
-  //   const intervalID = setInterval(()=>{
-  //     count+=5
-  //     setDynamicProp(count);
-  //   }, 5000)
-  //   return ()=>{
-  //     clearInterval(intervalID)
-  //   }
-  // },[])
+  const [appState, setAppState] = useState<AppState>({ ...initStat });
+  const customLogManager:IFlagshipLogManager ={
+    emergency (message: string, tag: string): void {
+      this.log(LogLevel.EMERGENCY, message, tag)
+    },
   
-  useEffect(()=>{
-    // console.log("visitorData",visitorData);
-  },[visitorData])
-
-  const onClick=()=>{
-    count++
-    console.log("count",count);
-    setVisitorData({...visitorData,id:'visitor_'+ count, isAuthenticated: !visitorData.isAuthenticated})
-  }
-
-  setTimeout(() => {
-    console.log("render app", countRenderApp++);
-  }, 1000);
+    alert (message: string, tag: string): void {
+      this.log(LogLevel.ALERT, message, tag)
+    },
   
+    critical (message: string, tag: string): void {
+      this.log(LogLevel.CRITICAL, message, tag)
+    },
   
-  return(
-  <FlagshipProvider decisionApiUrl={"https://decision.flagship.io/v2/"} decisionMode={DecisionMode.BUCKETING}  visitorData={visitorData} pollingInterval={5}  envId={ENV_ID} timeout={5} apiKey={API_KEY} fetchNow={true} >
-    <Home dynamicProp={dynamicProp} />
-    <button style={{width:100, height:50}} onClick={()=>{onClick()}}>click me</button>
-  </FlagshipProvider>
-  )
+    error (message: string, tag: string): void {
+      this.log(LogLevel.ERROR, message, tag)
+    },
+  
+    warning (message: string, tag: string): void {
+      this.log(LogLevel.WARNING, message, tag)
+    },
+  
+    notice (message: string, tag: string): void {
+      this.log(LogLevel.NOTICE, message, tag)
+    },
+  
+    info (message: string, tag: string): void {
+      this.log(LogLevel.INFO, message, tag)
+    },
+  
+    debug (message: string, tag: string): void {
+      this.log(LogLevel.DEBUG, message, tag)
+    },
+    log: function (level: LogLevel, message: string, tag: string): void {
+      const now = new Date()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const getTwoDigit = (value: any) => {
+        return value.toString().length === 1 ? `0${value}` : value
+      }
+  
+      const out = `[${getTwoDigit(now.getFullYear())}-${
+        getTwoDigit(
+          now.getMonth()
+        )
+      }-${getTwoDigit(now.getDay())} ${
+        getTwoDigit(
+          now.getHours()
+        )
+      }:${getTwoDigit(now.getMinutes())}] [Flagship SDK] [${
+        LogLevel[level]
+      }] [${tag}] : ${message}`
+      globalLogs.logs += out + "\n"
+    }
+  } 
+  return (
+    <appContext.Provider value={{ appState, setAppState }}>
+      <FlagshipProvider
+        decisionMode={appState.decisionMode}
+        visitorData={appState.visitorData}
+        pollingInterval={appState.pollingInterval}
+        envId={appState.envId}
+        timeout={appState.timeout}
+        apiKey={appState.apiKey}
+        fetchNow={false}
+        logManager={customLogManager}
+        statusChangedCallback={(status) => {
+          setAppState((prev) => ({
+            ...prev,
+            isSDKReady: status === FlagshipStatus.READY,
+          }));
+        }}
+      >
+        <BrowserRouter>
+          <Header technology={""} environment={""} branch={""} />
+          <div className={"container mt-5 mb-5"}>
+            <AppRoutes />
+          </div>
+        </BrowserRouter>
+      </FlagshipProvider>
+    </appContext.Provider>
+  );
 }
 
 export default App;
