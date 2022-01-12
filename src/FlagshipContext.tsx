@@ -410,7 +410,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             state.log.warn(`useEffect triggered in a server environment, SDK stopped.`);
             return;
         }
-        let previousBucketing = null;
+        let previousBucketing: any = null;
 
         // STEP 1: First check if the isAuthenticated has changed (this step must be in this useEffect as it listen the visitorId as well)
         const isVisitorIdentityChanged = updateVisitorIfIdentityChanged();
