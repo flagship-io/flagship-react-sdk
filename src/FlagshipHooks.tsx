@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import {
   HitAbstract,
   HitShape,
+  IFlag,
   IFlagshipConfig,
   IHit,
   Modification,
@@ -11,6 +12,8 @@ import {
 } from '@flagship.io/js-sdk'
 import { FlagshipContext, FsState, FsStatus } from './FlagshipContext'
 import { logError, logWarn } from './utils'
+import { Flag } from './Flag'
+import { noVisitorDefault, noVisitorMessage } from './constants'
 
 const checkType = (value: unknown, defaultValue: unknown) =>
   (typeof value === 'object' &&
@@ -59,6 +62,7 @@ const fsModificationsSync = <T extends unknown>(args: {
 
 /**
  * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
+ * @deprecated use useFsGetFlag instead
  */
 export const useFsModifications = <T extends unknown>(
   params: modificationsRequested<T>[],
@@ -80,6 +84,7 @@ export const useFsModifications = <T extends unknown>(
 
 /**
  * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
+ * @deprecated use useFsGetFlag instead
  */
 export const useFsModification: {
   <T>(params: modificationsRequested<T>): T;
@@ -125,6 +130,7 @@ const fsModificationInfoSync = (args: {
 /**
  * Get the campaign modification information value matching the given key.
  * @param {string} key key which identify the modification.
+ * @deprecated use useFsGetFlag instead
  */
 export const useFsModificationInfo: { (key: string): Modification | null } = (
   key: string
@@ -153,6 +159,7 @@ const fsSynchronizeModifications = async (
 
 /**
  * This function calls the decision api and update all the campaigns modifications from the server according to the visitor context.
+ * @deprecated use useFetchFlags instead
  */
 export const useFsSynchronizeModifications = async (): Promise<void> => {
   const { state } = useContext(FlagshipContext)
@@ -177,6 +184,32 @@ const fsActivate = async (
     logWarn(config, error.message || error, functionName)
   }
 }
+
+/**
+ *
+ * @returns
+ */
+export const useFetchFlags = ():Promise<void> => {
+  const { state } = useContext(FlagshipContext)
+  const { visitor, config } = state
+  const functionName = 'useFetchFlags'
+  if (!visitor) {
+    logWarn(config, noVisitorMessage, functionName)
+    return Promise.resolve()
+  }
+  return visitor.fetchFlags()
+}
+
+export const useFsGetFlag = <T extends unknown>(key:string, defaultValue:T): IFlag<T> => {
+  const { state } = useContext(FlagshipContext)
+  const { visitor } = state
+  if (!visitor) {
+    return new Flag(defaultValue)
+  }
+
+  return visitor.getFlag(key, defaultValue)
+}
+
 /**
  * Report this user has seen this modification. Report this user has seen these modifications.
  * @param params
@@ -207,12 +240,31 @@ export type UseFlagshipOutput = {
   hasConsented?: boolean;
   modifications: Modification[];
   status: FsStatus;
+  /**
+   *
+   * @param params
+   * @param activateAll
+   * @deprecated use useFsGetFlag instead
+   */
   getModifications<T>(
     params: modificationsRequested<T>[],
     activateAll?: boolean
   ): Record<string, T>;
+
+  /**
+   *
+   * @param key
+   * @deprecated use useFsGetFlag instead
+   */
   getModificationInfo(key: string): Modification | null;
+
+  /**
+   * @deprecated use useFsFetchFlags instead
+   */
   synchronizeModifications(): Promise<void>;
+  /**
+   * @deprecated use useFsGetFlag instead
+   */
   activateModification: {
     (keys: { key: string }[]): Promise<void>;
     (keys: string[]): Promise<void>;
@@ -252,6 +304,8 @@ export type UseFlagshipOutput = {
       (hit: HitAbstract[] | IHit[] | HitShape[]): Promise<void>;
     };
   };
+  getFlag<T>(key: string, defaultValue: T): IFlag<T>;
+  fetchFlags: () => Promise<void>;
 };
 
 export const useFlagship = (): UseFlagshipOutput => {
@@ -362,6 +416,22 @@ export const useFlagship = (): UseFlagshipOutput => {
     return fsModificationInfoSync({ key, state, visitor })
   }
 
+  function getFlag<T> (key:string, defaultValue:T):IFlag<T> {
+    if (!visitor) {
+      logWarn(config, noVisitorMessage, 'getFlag')
+      return new Flag(defaultValue)
+    }
+    return visitor.getFlag(key, defaultValue)
+  }
+
+  function fetchFlags ():Promise<void> {
+    if (!visitor) {
+      logWarn(config, noVisitorMessage, 'fetchFlags')
+      return Promise.resolve()
+    }
+    return visitor?.fetchFlags()
+  }
+
   return {
     visitorId: visitor?.visitorId,
     anonymousId: visitor?.anonymousId,
@@ -380,14 +450,11 @@ export const useFlagship = (): UseFlagshipOutput => {
     hit: {
       send: fsSendHit,
       sendMultiple: fsSendHits
-    }
+    },
+    getFlag,
+    fetchFlags
   }
 }
-
-export const noVisitorMessage =
-  'sdk not correctly initialized... Make sure fsVisitor is ready.'
-export const noVisitorDefault =
-  'fsVisitor not initialized, returns default value'
 
 const reportNoVisitor = (
   config: IFlagshipConfig | undefined,

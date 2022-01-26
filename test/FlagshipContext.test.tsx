@@ -19,6 +19,7 @@ const unauthenticate = jest.fn()
 const authenticate:Mock<void, [string]> = jest.fn()
 const setConsent = jest.fn()
 const clearContext = jest.fn()
+const fetchFlags = jest.fn()
 
 let onEventError = false
 
@@ -60,9 +61,17 @@ jest.mock('@flagship.io/js-sdk', () => {
       return Promise.resolve()
     })
 
+    fetchFlags.mockImplementation(() => {
+      if (OnReadyCallback) {
+        OnReadyCallback(onEventError ? new Error() : null)
+      }
+      return Promise.resolve()
+    })
+
     const newVisitor = {
       anonymousId: '',
       synchronizeModifications,
+      fetchFlags,
       on: EventOn,
       modifications,
       updateContext,
@@ -79,7 +88,7 @@ jest.mock('@flagship.io/js-sdk', () => {
       newVisitor.anonymousId = ''
     })
 
-    newVisitor.synchronizeModifications()
+    newVisitor.fetchFlags()
     return newVisitor
   })
 
@@ -133,7 +142,7 @@ describe('Name of the group', () => {
         hasConsented: visitorData.hasConsented
       })
 
-      expect(synchronizeModifications).toBeCalledTimes(2)
+      expect(fetchFlags).toBeCalledTimes(2)
       expect(onBucketingUpdated).toBeCalledTimes(1)
       expect(statusChangedCallback).toBeCalledTimes(2)
       expect(onInitStart).toBeCalledTimes(1)
@@ -175,7 +184,7 @@ describe('Name of the group', () => {
       expect(start).toBeCalledTimes(2)
       expect(start).toBeCalledWith('new_env_id', apiKey, expect.objectContaining({ decisionMode: DecisionMode.DECISION_API, onBucketingUpdated: expect.anything() }))
       expect(newVisitor).toBeCalledTimes(1)
-      expect(synchronizeModifications).toBeCalledTimes(5)
+      expect(fetchFlags).toBeCalledTimes(5)
       expect(authenticate).toBeCalledTimes(1)
       expect(unauthenticate).toBeCalledTimes(1)
     })

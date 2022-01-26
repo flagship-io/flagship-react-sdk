@@ -4,6 +4,7 @@ import * as FsHooks from '../src/FlagshipHooks'
 import { useFsModificationInfo, useFsModifications, useFsModification, useFsSynchronizeModifications } from '../src/FlagshipHooks'
 import { Mock } from 'jest-mock'
 import { HitType, LogLevel, HitShape } from '@flagship.io/js-sdk'
+import { Flag } from '../src/Flag'
 
 describe('test FlagshipHooks', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,6 +20,53 @@ describe('test FlagshipHooks', () => {
   // Cleanup mock
   afterEach(() => {
     React.useContext = realUseContext
+  })
+
+  it('useFetchFlags test', async () => {
+    const visitor = {
+      getFlag: jest.fn()
+    }
+    const expected = {
+      value: () => true
+    }
+
+    visitor.getFlag.mockReturnValue(expected)
+    useContextMock.mockReturnValue({ state: { visitor } })
+
+    const key = 'key'
+    const defaultValue = 'default'
+    const result = FsHooks.useFsGetFlag(key, defaultValue)
+    expect(result).toEqual(expected)
+    expect(visitor.getFlag).toBeCalledTimes(1)
+    expect(visitor.getFlag).toBeCalledWith(key, defaultValue)
+  })
+
+  it('useFsGetFlag test', async () => {
+    const visitor = {
+      getFlag: jest.fn()
+    }
+    const expected = {
+      value: () => true
+    }
+
+    visitor.getFlag.mockReturnValue(expected)
+    useContextMock.mockReturnValue({ state: { visitor } })
+
+    const key = 'key'
+    const defaultValue = 'default'
+    const result = FsHooks.useFsGetFlag(key, defaultValue)
+    expect(result).toEqual(expected)
+    expect(visitor.getFlag).toBeCalledTimes(1)
+    expect(visitor.getFlag).toBeCalledWith(key, defaultValue)
+  })
+
+  it('useFsGetFlag test sdk not ready', async () => {
+    useContextMock.mockReturnValue({ state: { } })
+
+    const key = 'key'
+    const defaultValue = 'default'
+    const result = FsHooks.useFsGetFlag(key, defaultValue)
+    expect(result).toBeInstanceOf(Flag)
   })
 
   it('useFsModifications return default ', async () => {
