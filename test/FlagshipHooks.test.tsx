@@ -23,22 +23,30 @@ describe('test FlagshipHooks', () => {
   })
 
   it('useFetchFlags test', async () => {
+    const fetchFlags:Mock<Promise<void>, []> = jest.fn()
     const visitor = {
-      getFlag: jest.fn()
-    }
-    const expected = {
-      value: () => true
+      fetchFlags
     }
 
-    visitor.getFlag.mockReturnValue(expected)
+    visitor.fetchFlags.mockResolvedValue()
     useContextMock.mockReturnValue({ state: { visitor } })
 
-    const key = 'key'
-    const defaultValue = 'default'
-    const result = FsHooks.useFsGetFlag(key, defaultValue)
-    expect(result).toEqual(expected)
-    expect(visitor.getFlag).toBeCalledTimes(1)
-    expect(visitor.getFlag).toBeCalledWith(key, defaultValue)
+    await FsHooks.useFetchFlags()
+    expect(visitor.fetchFlags).toBeCalledTimes(1)
+  })
+
+  it('useFetchFlags test', async () => {
+    const config = {
+      logManager: {
+        warning: jest.fn()
+      },
+      logLevel: LogLevel.ALL
+    }
+
+    useContextMock.mockReturnValue({ state: { config } })
+
+    await FsHooks.useFetchFlags()
+    expect(config.logManager.warning).toBeCalledTimes(1)
   })
 
   it('useFsGetFlag test', async () => {
@@ -336,7 +344,8 @@ describe('test FlagshipHooks', () => {
   it('should ', async () => {
     const config = {
       logManager: {
-        error: jest.fn()
+        error: jest.fn(),
+        warning: jest.fn()
       },
       logLevel: LogLevel.ALL
     }
@@ -356,8 +365,9 @@ describe('test FlagshipHooks', () => {
       getModificationInfoSync: jest.fn(),
       getModificationSync: jest.fn(),
       sendHit: jest.fn(),
-      sendHits: jest.fn()
-
+      sendHits: jest.fn(),
+      getFlag: jest.fn(),
+      fetchFlags: jest.fn()
     }
     useContextMock.mockReturnValue({
       state: {
@@ -392,6 +402,16 @@ describe('test FlagshipHooks', () => {
     })
 
     fs = FsHooks.useFlagship()
+
+    const flagKey = 'key'
+    const flagDefaultValue = 'value'
+    fs.getFlag(flagKey, flagDefaultValue)
+
+    expect(visitor.getFlag).toBeCalledTimes(1)
+    expect(visitor.getFlag).toBeCalledWith(flagKey, flagDefaultValue)
+
+    fs.fetchFlags()
+    expect(visitor.fetchFlags).toBeCalledTimes(1)
 
     fs.updateContext(context)
 
@@ -476,5 +496,11 @@ describe('test FlagshipHooks', () => {
     })
     fs = FsHooks.useFlagship()
     expect(fs.modifications).toEqual([expected])
+
+    //
+    fs.getFlag(flagKey, flagDefaultValue)
+
+    fs.fetchFlags()
+    expect(config.logManager.warning).toBeCalledTimes(1)
   })
 })
