@@ -418,7 +418,6 @@ export const useFlagship = (): UseFlagshipOutput => {
 
   function getFlag<T> (key:string, defaultValue:T):IFlag<T> {
     if (!visitor) {
-      logWarn(config, noVisitorMessage, 'getFlag')
       return new Flag(defaultValue)
     }
     return visitor.getFlag(key, defaultValue)
