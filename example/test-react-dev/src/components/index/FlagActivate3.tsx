@@ -6,18 +6,16 @@ import {
 import { appContext } from "../../App";
 import { FlagData } from "../../pages/Home";
 
-
 export type Props = {
-  flagData?: FlagData
-}
+  flagData?: FlagData;
+};
 
-export default function FlagActivate({flagData}:Props) {
+export default function FlagActivate({ flagData }: Props) {
   const [activateOk, setActivateOk] = useState({ error: "", ok: false });
 
   const { appState } = useContext(appContext);
 
-  const onSubmit =async () => {
-   
+  const onSubmit = async () => {
     if (!appState.isSDKReady) {
       setActivateOk({ error: ERROR_SDK_NOT_READY, ok: false });
       return;
@@ -28,26 +26,25 @@ export default function FlagActivate({flagData}:Props) {
       return;
     }
     if (!flagData) {
-      return
+      return;
     }
     await flagData.flag?.userExposed();
     setActivateOk({ error: "", ok: true });
   };
 
   return (
-    <div >
+    <div>
+      {!!flagData && (
+        <div className="alert alert-info">
+          <div>key: {flagData.key}</div>
+          <div>defaultValue : {flagData.defaultValue}</div>
+        </div>
+      )}
+      {!flagData && (
+        <div className="alert alert-warning">Please set get Flag first</div>
+      )}
 
-    { !!flagData &&<div className="alert alert-info">
-      <div>key: { flagData.key }</div>
-      <div>defaultValue : { flagData.defaultValue }</div>
-    </div>}
-    { !flagData &&
-      <div  className="alert alert-warning">
-      Please set get Flag first
-    </div>
-    }
-
-{activateOk.error && (
+      {activateOk.error && (
         <div className="alert alert-warning mt-3 mb-3">
           {JSON.stringify(activateOk.error)}
         </div>

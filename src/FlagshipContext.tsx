@@ -90,7 +90,16 @@ interface FlagshipProviderProps extends IFlagshipConfig {
   }): void;
   initialBucketing?: BucketingDTO;
   initialCampaigns?: CampaignDTO[];
+  /**
+   * This is a set of flag data provided to avoid the SDK to have an empty cache during the first initialization.
+   * @deprecated use initialFlags instead
+   */
   initialModifications?: Map<string, FlagDTO> | FlagDTO[];
+
+  /**
+   * This is a set of flag data provided to avoid the SDK to have an empty cache during the first initialization.
+   */
+  initialFlags?: Map<string, FlagDTO>|FlagDTO[]
   /**
    * If true, it'll automatically call synchronizeModifications when the bucketing file has updated
    */
@@ -129,6 +138,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   initialBucketing,
   initialCampaigns,
   initialModifications,
+  initialFlags,
   synchronizeOnBucketingUpdated,
   activateDeduplicationTime,
   hitDeduplicationTime,
@@ -137,7 +147,11 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   disableCache
 }: FlagshipProviderProps) => {
   let modifications = new Map<string, FlagDTO>()
-  if (initialModifications) {
+  if (initialFlags) {
+    initialFlags.forEach((flag) => {
+      modifications.set(flag.key, flag)
+    })
+  } else if (initialModifications) {
     initialModifications.forEach((modification) => {
       modifications.set(modification.key, modification)
     })

@@ -6,17 +6,16 @@ import {
 } from "../../constants/errorMessage";
 import { FlagData } from "../../pages/Home";
 
-
 export type Props = {
-  flagData?: FlagData
-}
+  flagData?: FlagData;
+};
 
-export default function FlagInfo({ flagData }:Props) {
+export default function FlagInfo({ flagData }: Props) {
   const [flagInfoOk, setFlagInfoOk] = useState<{
     error?: unknown;
     value?: unknown;
   }>({
-    value:""
+    value: "",
   });
   const { appState } = useContext(appContext);
 
@@ -35,20 +34,19 @@ export default function FlagInfo({ flagData }:Props) {
     }
     const flagInfo = flagData.flag?.metadata;
     setFlagInfoOk({ value: flagInfo });
-    
   };
 
   return (
-    <div >
-      { !!flagData &&<div className="alert alert-info">
-      <div>key: { flagData.key }</div>
-      <div>defaultValue : { flagData.defaultValue }</div>
-    </div>}
-    { !flagData &&
-      <div  className="alert alert-warning">
-      Please set get Flag first
-    </div>
-    }
+    <div>
+      {!!flagData && (
+        <div className="alert alert-info">
+          <div>key: {flagData.key}</div>
+          <div>defaultValue : {flagData.defaultValue}</div>
+        </div>
+      )}
+      {!flagData && (
+        <div className="alert alert-warning">Please set get Flag first</div>
+      )}
 
       {flagInfoOk.error && (
         <div className="alert alert-warning mt-3 mb-3">
@@ -60,7 +58,7 @@ export default function FlagInfo({ flagData }:Props) {
         Submit
       </button>
 
-      {(flagInfoOk.value || flagInfoOk.value==null) && (
+      {(flagInfoOk.value || flagInfoOk.value == null) && (
         <div className="alert alert-success mt-3 mb-3">
           <pre>{JSON.stringify(flagInfoOk.value)}</pre>
         </div>
