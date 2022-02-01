@@ -6,7 +6,7 @@ export const V1 = {
   flagActivate: true,
   flagInfo: true,
   hits: true,
-  logs: true
+  logs: true,
 }
 
 export const V2 = {
@@ -17,7 +17,16 @@ export const V2 = {
 }
 
 export const V3 = {
-  consent: true
+  ...V1,
+  ...V2,
+  flagValue: false,
+  flagActivate: false,
+  flagInfo: false,
+  
+  consent: true,
+  flagValue3: true,
+  flagActivate3: true,
+  flagInfo3: true,
 }
 
 export const featureFlagsAll = {

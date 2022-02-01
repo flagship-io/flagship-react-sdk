@@ -11,7 +11,7 @@ import { AppContext, AppState } from "./@types/types";
 import AppRoutes from "./routes";
 import { BrowserRouter } from "react-router-dom";
 import Header from "./components/layout/Header";
-import { featureFlagsAll } from "./constants/features";
+import { V3 } from "./constants/features";
 
 
 
@@ -29,7 +29,7 @@ const initStat: AppState = {
   decisionMode: DecisionMode.DECISION_API,
   isSDKReady: false,
   hasVisitor: false,
-  featureFlags: featureFlagsAll,
+  featureFlags: V3,
   logs:""
 };
 
