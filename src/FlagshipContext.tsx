@@ -18,7 +18,7 @@ import {
   primitive,
   Visitor
 } from '@flagship.io/js-sdk'
-import { getModificationsFromCampaigns, logError } from './utils'
+import { getModificationsFromCampaigns, logError, uuidV4 } from './utils'
 
 export interface FsStatus {
   /**
@@ -58,20 +58,25 @@ interface FsContext {
 }
 
 interface FlagshipProviderProps extends IFlagshipConfig {
+  /**
+   * This is the data to identify the current visitor using your app
+   */
   visitorData: {
-    id: string;
+    id?: string;
     context?: Record<string, primitive>;
     isAuthenticated?: boolean;
     hasConsented?: boolean;
   };
   envId: string;
   apiKey: string;
+  /**
+   * This component will be rendered when Flagship is loading at first initialization only.
+   * By default, the value is undefined. It means it will display your app and it might
+   * display default modifications value for a very short moment.
+   */
   loadingComponent?: ReactNode;
   children?: ReactNode;
-  /**
-   * If value is other than production , it will also display Debug logs.
-   */
-  nodeEnv?: string;
+
   /**
    * Callback function called when the SDK starts initialization.
    */
@@ -88,6 +93,11 @@ interface FlagshipProviderProps extends IFlagshipConfig {
     config: IFlagshipConfig;
     status: FsStatus;
   }): void;
+  /**
+   * This is an object of the data received when fetching bucketing endpoint.
+   * Providing this prop will make bucketing ready to use and the first polling will immediatly check for an update.
+   * If the shape of an element is not correct, an error log will give the reason why.
+   */
   initialBucketing?: BucketingDTO;
   initialCampaigns?: CampaignDTO[];
   initialModifications?: Map<string, Modification> | Modification[];
@@ -181,7 +191,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     if (state.visitor.anonymousId && !visitorData.isAuthenticated) {
       state.visitor.unauthenticate()
     } else if (!state.visitor.anonymousId && visitorData.isAuthenticated) {
-      state.visitor.authenticate(visitorData.id)
+      state.visitor.authenticate(visitorData.id || uuidV4())
     }
 
     if (visitorData.id) {
@@ -317,7 +327,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   }
   const handleDisplay = (): React.ReactNode => {
     const isFirstInit = !state.visitor
-    if (state.status.isLoading && loadingComponent && isFirstInit) {
+    if (state.status.isLoading && loadingComponent && isFirstInit && fetchNow) {
       return <>{loadingComponent}</>
     }
     return <>{children}</>
@@ -330,7 +340,6 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
 }
 
 FlagshipProvider.defaultProps = {
-  nodeEnv: 'production',
   activateDeduplicationTime: 10,
   hitDeduplicationTime: 10
 }
