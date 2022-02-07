@@ -6,7 +6,7 @@ describe('test Flag', () => {
   const flag = new Flag(defaultValue)
 
   it('should ', () => {
-    expect(flag.value()).toBe(defaultValue)
+    expect(flag.getValue()).toBe(defaultValue)
     expect(flag.exists()).toBe(false)
     expect(flag.userExposed()).resolves.toBeUndefined()
     expect(flag.metadata).toEqual({

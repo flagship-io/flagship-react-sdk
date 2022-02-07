@@ -9,7 +9,7 @@ export class Flag<T> implements IFlag<T> {
       this._defaultValue = defaultValue
     }
 
-    value (): T {
+    getValue (): T {
       log(LogLevel.ERROR, noVisitorMessage, 'exists')
       return this._defaultValue
     }

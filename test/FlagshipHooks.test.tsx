@@ -1,7 +1,7 @@
 import React from 'react'
 import { jest, expect, it, describe, beforeEach, afterEach } from '@jest/globals'
 import * as FsHooks from '../src/FlagshipHooks'
-import { useFsModificationInfo, useFsModifications, useFsModification, useFsSynchronizeModifications } from '../src/FlagshipHooks'
+import { useFsModificationInfo, useFsModifications, useFsModification } from '../src/FlagshipHooks'
 import { Mock } from 'jest-mock'
 import { HitType, LogLevel, HitShape } from '@flagship.io/js-sdk'
 import { Flag } from '../src/Flag'
@@ -20,33 +20,6 @@ describe('test FlagshipHooks', () => {
   // Cleanup mock
   afterEach(() => {
     React.useContext = realUseContext
-  })
-
-  it('useFetchFlags test', async () => {
-    const fetchFlags:Mock<Promise<void>, []> = jest.fn()
-    const visitor = {
-      fetchFlags
-    }
-
-    visitor.fetchFlags.mockResolvedValue()
-    useContextMock.mockReturnValue({ state: { visitor } })
-
-    await FsHooks.useFetchFlags()
-    expect(visitor.fetchFlags).toBeCalledTimes(1)
-  })
-
-  it('useFetchFlags test', async () => {
-    const config = {
-      logManager: {
-        warning: jest.fn()
-      },
-      logLevel: LogLevel.ALL
-    }
-
-    useContextMock.mockReturnValue({ state: { config } })
-
-    await FsHooks.useFetchFlags()
-    expect(config.logManager.warning).toBeCalledTimes(1)
   })
 
   it('useFsGetFlag test', async () => {
@@ -250,42 +223,6 @@ describe('test FlagshipHooks', () => {
     expect(result).toEqual(expected)
   })
 
-  it('useFsSynchronizeModifications  ', async () => {
-    const visitor = {
-      synchronizeModifications: jest.fn<Promise<void>, void[]>()
-    }
-    visitor.synchronizeModifications.mockResolvedValue()
-    useContextMock.mockReturnValue({ state: { visitor } })
-    useFsSynchronizeModifications().then(() => {
-      expect(visitor.synchronizeModifications).toBeCalledTimes(1)
-    })
-  })
-
-  it('useFsSynchronizeModifications ', async () => {
-    const config = {
-      logManager: {
-        error: jest.fn()
-      },
-      logLevel: LogLevel.ERROR
-    }
-    const visitor = {
-      synchronizeModifications: jest.fn<Promise<void>, void[]>()
-    }
-    visitor.synchronizeModifications.mockRejectedValue('error')
-
-    useContextMock.mockReturnValue({ state: { visitor, config } })
-    await useFsSynchronizeModifications()
-
-    expect(visitor.synchronizeModifications).toBeCalledTimes(1)
-    expect(config.logManager.error).toBeCalledTimes(1)
-
-    useContextMock.mockReturnValue({ state: { config } })
-    useFsSynchronizeModifications()
-      .then(() => {
-        expect(config.logManager.error).toBeCalledTimes(2)
-      })
-  })
-
   it('useFsActivate ', async () => {
     const config = {
       logManager: {
@@ -367,7 +304,9 @@ describe('test FlagshipHooks', () => {
       sendHit: jest.fn(),
       sendHits: jest.fn(),
       getFlag: jest.fn(),
-      fetchFlags: jest.fn()
+      fetchFlags: jest.fn(),
+      getFlagsDataArray: jest.fn(),
+      setConsent: jest.fn()
     }
     useContextMock.mockReturnValue({
       state: {
@@ -420,6 +359,11 @@ describe('test FlagshipHooks', () => {
 
     fs.clearContext()
     expect(visitor.clearContext).toBeCalledTimes(2)
+
+    fs.setConsent(true)
+
+    expect(visitor.setConsent).toBeCalledTimes(1)
+    expect(visitor.setConsent).toBeCalledWith(true)
 
     const hit = { type: HitType.PAGE, documentLocation: 'home' }
     await fs.hit.send(hit)

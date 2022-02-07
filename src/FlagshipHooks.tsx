@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import {
+  FlagDTO,
   HitAbstract,
   HitShape,
   IFlag,
@@ -157,16 +158,6 @@ const fsSynchronizeModifications = async (
   }
 }
 
-/**
- * This function calls the decision api and update all the campaigns modifications from the server according to the visitor context.
- * @deprecated use useFetchFlags instead
- */
-export const useFsSynchronizeModifications = async (): Promise<void> => {
-  const { state } = useContext(FlagshipContext)
-  const { visitor, config } = state
-  const functionName = 'useFsSynchronizeModifications'
-  await fsSynchronizeModifications(functionName, visitor, config)
-}
 const fsActivate = async (
   params: { key: string }[] | string[],
   functionName: string,
@@ -186,20 +177,11 @@ const fsActivate = async (
 }
 
 /**
- *
+ * This hook returns a flag object by its key. If no flag match the given key an empty flag will be returned.
+ * @param key
+ * @param defaultValue
  * @returns
  */
-export const useFetchFlags = ():Promise<void> => {
-  const { state } = useContext(FlagshipContext)
-  const { visitor, config } = state
-  const functionName = 'useFetchFlags'
-  if (!visitor) {
-    logWarn(config, noVisitorMessage, functionName)
-    return Promise.resolve()
-  }
-  return visitor.fetchFlags()
-}
-
 export const useFsGetFlag = <T extends unknown>(key:string, defaultValue:T): IFlag<T> => {
   const { state } = useContext(FlagshipContext)
   const { visitor } = state
@@ -213,6 +195,7 @@ export const useFsGetFlag = <T extends unknown>(key:string, defaultValue:T): IFl
 /**
  * Report this user has seen this modification. Report this user has seen these modifications.
  * @param params
+ * @deprecated use useFsGetFlag instead
  * @returns
  */
 export const useFsActivate: {
@@ -238,7 +221,13 @@ export type UseFlagshipOutput = {
   anonymousId?: string | null;
   context?: Record<string, primitive>;
   hasConsented?: boolean;
+  /**
+   * Set if visitor has consented for protected data usage.
+   * @param hasConsented  True if the visitor has consented false otherwise.
+   */
+  setConsent: (hasConsented: boolean) => void;
   modifications: Modification[];
+  FlagsData: FlagDTO[];
   status: FsStatus;
   /**
    *
@@ -286,7 +275,7 @@ export type UseFlagshipOutput = {
    */
   authenticate(visitorId: string): void;
   /**
-   * This hook change authenticated Visitor to anonymous visitor
+   * This function change authenticated Visitor to anonymous visitor
    * @param visitorId
    */
   unauthenticate(): void;
@@ -304,6 +293,11 @@ export type UseFlagshipOutput = {
       (hit: HitAbstract[] | IHit[] | HitShape[]): Promise<void>;
     };
   };
+  /**
+   * Retrieve a Flag object by its key. If no flag match the given key an empty flag will be returned.
+   * @param key flag key
+   * @param defaultValue
+   */
   getFlag<T>(key: string, defaultValue: T): IFlag<T>;
   fetchFlags: () => Promise<void>;
 };
@@ -431,11 +425,20 @@ export const useFlagship = (): UseFlagshipOutput => {
     return visitor?.fetchFlags()
   }
 
+  function setConsent (hasConsented:boolean) : void {
+    if (!visitor) {
+      logWarn(config, noVisitorMessage, 'setConsent')
+      return
+    }
+    visitor.setConsent(hasConsented)
+  }
+
   return {
     visitorId: visitor?.visitorId,
     anonymousId: visitor?.anonymousId,
     context: { ...visitor?.context },
     hasConsented: visitor?.hasConsented,
+    setConsent,
     updateContext: fsUpdateContext,
     clearContext: fsClearContext,
     authenticate: fsAuthenticate,
@@ -445,6 +448,7 @@ export const useFlagship = (): UseFlagshipOutput => {
     synchronizeModifications,
     getModifications,
     modifications: modifications || [],
+    FlagsData: visitor?.getFlagsDataArray() || [],
     getModificationInfo,
     hit: {
       send: fsSendHit,

@@ -97,7 +97,7 @@ function FlagValue({setFlagData, flagData}: Props) {
       return;
     }
     const flag = fs.getFlag( flagKey, value);
-    const flagValue =flag.value(flagActivate)
+    const flagValue =flag.getValue(flagActivate)
     setFlagOk({ error: "", value: flagValue });
     setFlagData({
       key:flagKey, 
