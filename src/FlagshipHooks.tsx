@@ -182,7 +182,7 @@ const fsActivate = async (
  * @param defaultValue
  * @returns
  */
-export const useFsGetFlag = <T extends unknown>(key:string, defaultValue:T): IFlag<T> => {
+export const useFsFlag = <T extends unknown>(key:string, defaultValue:T): IFlag<T> => {
   const { state } = useContext(FlagshipContext)
   const { visitor } = state
   if (!visitor) {

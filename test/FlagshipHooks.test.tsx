@@ -35,7 +35,7 @@ describe('test FlagshipHooks', () => {
 
     const key = 'key'
     const defaultValue = 'default'
-    const result = FsHooks.useFsGetFlag(key, defaultValue)
+    const result = FsHooks.useFsFlag(key, defaultValue)
     expect(result).toEqual(expected)
     expect(visitor.getFlag).toBeCalledTimes(1)
     expect(visitor.getFlag).toBeCalledWith(key, defaultValue)
@@ -46,7 +46,7 @@ describe('test FlagshipHooks', () => {
 
     const key = 'key'
     const defaultValue = 'default'
-    const result = FsHooks.useFsGetFlag(key, defaultValue)
+    const result = FsHooks.useFsFlag(key, defaultValue)
     expect(result).toBeInstanceOf(Flag)
   })
 
