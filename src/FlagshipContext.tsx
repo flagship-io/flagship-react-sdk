@@ -292,7 +292,8 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
           isAuthenticated: visitorData.isAuthenticated,
           hasConsented: visitorData.hasConsented,
           initialCampaigns,
-          initialModifications: initialFlagsData || initialModifications
+          initialModifications,
+          initialFlagsData
         })
 
         fsVisitor?.on('ready', (error) => {
