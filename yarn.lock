@@ -1015,15 +1015,16 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flagship.io/js-sdk@^2.3.1-beta.10":
-  version "2.3.1-beta.10"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-2.3.1-beta.10.tgz#6bd21f940adc9a47e8334ef117ac25311a379343"
-  integrity sha512-axoxuZk1K91mlTjBdfA037jT6vqW5yYc/yQu7taLTYQt7hH7KuJVeDoFhNBuC042tyPIh0Q9z8Uv/2H+zbR7hw==
+"@flagship.io/js-sdk@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.0.tgz#53be83f941161fb2836100ea2ed620197d11f1bf"
+  integrity sha512-9TMGJZofLCs13zdNYXE6De5ifrscXHdk1/ZuV02ETnO7JufXsroHj+TYUUtD66uz4x3MDK1OvdgBEtI/HCdTFA==
   dependencies:
     "@babel/runtime" "^7.15.4"
     abort-controller "^3.0.0"
     core-js "^3.18.1"
     events "^3.3.0"
+    follow-redirects "^1.14.5"
     node-fetch "2.6.2"
 
 "@humanwhocodes/config-array@^0.5.0":
@@ -2931,6 +2932,11 @@ flatted@^3.1.0:
   version "3.2.2"
   resolved "https://registry.npmjs.org/flatted/-/flatted-3.2.2.tgz"
   integrity sha512-JaTY/wtrcSyvXJl4IMFHPKyFur1sE9AUqc0QnhOaJ0CxHtAoIV8pYDzeEfAaNEtGkOfq4gr3LBFmdXW5mOQFnA==
+
+follow-redirects@^1.14.5:
+  version "1.14.7"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.7.tgz#2004c02eb9436eee9a21446a6477debf17e81685"
+  integrity sha512-+hbxoLbFMbRKDwohX8GkTataGqO6Jb7jGwpAlwgy2bIz25XtRm7KEzJM76R1WiNT5SwZkX4Y75SwBolkpmE7iQ==
 
 form-data@^3.0.0:
   version "3.0.1"

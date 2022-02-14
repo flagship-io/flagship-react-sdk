@@ -11,10 +11,10 @@ import React, {
 import {
   BucketingDTO,
   CampaignDTO,
+  FlagDTO,
   Flagship,
   FlagshipStatus,
   IFlagshipConfig,
-  Modification,
   primitive,
   Visitor
 } from '@flagship.io/js-sdk'
@@ -47,10 +47,10 @@ export interface FsStatus {
 export interface FsState {
   visitor?: Visitor;
   config?: IFlagshipConfig;
-  modifications?: Map<string, Modification>;
+  modifications?: Map<string, FlagDTO>;
   status: FsStatus;
   initialCampaigns?: CampaignDTO[];
-  initialModifications?: Map<string, Modification> | Modification[];
+  initialModifications?: Map<string, FlagDTO> | FlagDTO[];
 }
 interface FsContext {
   state: FsState;
@@ -89,7 +89,7 @@ interface FlagshipProviderProps extends IFlagshipConfig {
    * Callback function called when the SDK is updated. For example, after a synchronize is triggered or visitor context has changed.
    */
   onUpdate?(params: {
-    fsModifications: Map<string, Modification>;
+    fsModifications: Map<string, FlagDTO>;
     config: IFlagshipConfig;
     status: FsStatus;
   }): void;
@@ -100,7 +100,16 @@ interface FlagshipProviderProps extends IFlagshipConfig {
    */
   initialBucketing?: BucketingDTO;
   initialCampaigns?: CampaignDTO[];
-  initialModifications?: Map<string, Modification> | Modification[];
+  /**
+   * This is a set of flag data provided to avoid the SDK to have an empty cache during the first initialization.
+   * @deprecated use initialFlagsData instead
+   */
+  initialModifications?: Map<string, FlagDTO> | FlagDTO[];
+
+  /**
+   * This is a set of flag data provided to avoid the SDK to have an empty cache during the first initialization.
+   */
+  initialFlagsData?: Map<string, FlagDTO>|FlagDTO[]
   /**
    * If true, it'll automatically call synchronizeModifications when the bucketing file has updated
    */
@@ -139,6 +148,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   initialBucketing,
   initialCampaigns,
   initialModifications,
+  initialFlagsData,
   synchronizeOnBucketingUpdated,
   activateDeduplicationTime,
   hitDeduplicationTime,
@@ -146,8 +156,12 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   hitCacheImplementation,
   disableCache
 }: FlagshipProviderProps) => {
-  let modifications = new Map<string, Modification>()
-  if (initialModifications) {
+  let modifications = new Map<string, FlagDTO>()
+  if (initialFlagsData && initialFlagsData.forEach) {
+    initialFlagsData.forEach((flag) => {
+      modifications.set(flag.key, flag)
+    })
+  } else if (initialModifications && initialModifications.forEach) {
     initialModifications.forEach((modification) => {
       modifications.set(modification.key, modification)
     })
@@ -162,7 +176,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
 
   useEffect(() => {
     if (synchronizeOnBucketingUpdated) {
-      state.visitor?.synchronizeModifications()
+      state.visitor?.fetchFlags()
     }
   }, [lastModified])
 
@@ -198,7 +212,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       state.visitor.visitorId = visitorData.id
     }
 
-    state.visitor.synchronizeModifications()
+    state.visitor.fetchFlags()
   }
 
   function initializeState (param: {
@@ -270,7 +284,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       }
 
       if (stateRef.current?.visitor) {
-        stateRef.current?.visitor.synchronizeModifications()
+        stateRef.current?.visitor.fetchFlags()
       } else {
         const fsVisitor = Flagship.newVisitor({
           visitorId: visitorData.id,
@@ -278,7 +292,8 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
           isAuthenticated: visitorData.isAuthenticated,
           hasConsented: visitorData.hasConsented,
           initialCampaigns,
-          initialModifications
+          initialModifications,
+          initialFlagsData
         })
 
         fsVisitor?.on('ready', (error) => {

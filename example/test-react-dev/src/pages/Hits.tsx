@@ -331,13 +331,12 @@ export default function Hits() {
       return;
     }
 
-    console.log(hit);
-
+    const hitData = hit;
+    if(screenWidth && screenHeight){
+      hitData.screenResolution = `${screenWidth}X${screenHeight}`
+    }
     fs.hit
-      .send({
-        ...hit,
-        screenResolution: `${screenWidth}X${screenHeight}`,
-      } as IHit)
+      .send(hitData)
       .then(() => {
         setHitOk({ error: "", ok: true });
       });

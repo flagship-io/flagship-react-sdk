@@ -1,7 +1,9 @@
 import { useContext } from 'react'
 import {
+  FlagDTO,
   HitAbstract,
   HitShape,
+  IFlag,
   IFlagshipConfig,
   IHit,
   Modification,
@@ -11,6 +13,8 @@ import {
 } from '@flagship.io/js-sdk'
 import { FlagshipContext, FsState, FsStatus } from './FlagshipContext'
 import { logError, logWarn } from './utils'
+import { Flag } from './Flag'
+import { noVisitorDefault, noVisitorMessage } from './constants'
 
 const checkType = (value: unknown, defaultValue: unknown) =>
   (typeof value === 'object' &&
@@ -59,6 +63,7 @@ const fsModificationsSync = <T extends unknown>(args: {
 
 /**
  * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
+ * @deprecated use useFsGetFlag instead
  */
 export const useFsModifications = <T extends unknown>(
   params: modificationsRequested<T>[],
@@ -80,6 +85,7 @@ export const useFsModifications = <T extends unknown>(
 
 /**
  * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
+ * @deprecated use useFsGetFlag instead
  */
 export const useFsModification: {
   <T>(params: modificationsRequested<T>): T;
@@ -125,6 +131,7 @@ const fsModificationInfoSync = (args: {
 /**
  * Get the campaign modification information value matching the given key.
  * @param {string} key key which identify the modification.
+ * @deprecated use useFsGetFlag instead
  */
 export const useFsModificationInfo: { (key: string): Modification | null } = (
   key: string
@@ -151,15 +158,6 @@ const fsSynchronizeModifications = async (
   }
 }
 
-/**
- * This function calls the decision api and update all the campaigns modifications from the server according to the visitor context.
- */
-export const useFsSynchronizeModifications = async (): Promise<void> => {
-  const { state } = useContext(FlagshipContext)
-  const { visitor, config } = state
-  const functionName = 'useFsSynchronizeModifications'
-  await fsSynchronizeModifications(functionName, visitor, config)
-}
 const fsActivate = async (
   params: { key: string }[] | string[],
   functionName: string,
@@ -177,9 +175,27 @@ const fsActivate = async (
     logWarn(config, error.message || error, functionName)
   }
 }
+
+/**
+ * This hook returns a flag object by its key. If no flag match the given key an empty flag will be returned.
+ * @param key
+ * @param defaultValue
+ * @returns
+ */
+export const useFsFlag = <T extends unknown>(key:string, defaultValue:T): IFlag<T> => {
+  const { state } = useContext(FlagshipContext)
+  const { visitor } = state
+  if (!visitor) {
+    return new Flag(defaultValue)
+  }
+
+  return visitor.getFlag(key, defaultValue)
+}
+
 /**
  * Report this user has seen this modification. Report this user has seen these modifications.
  * @param params
+ * @deprecated use useFsGetFlag instead
  * @returns
  */
 export const useFsActivate: {
@@ -205,14 +221,39 @@ export type UseFlagshipOutput = {
   anonymousId?: string | null;
   context?: Record<string, primitive>;
   hasConsented?: boolean;
+  /**
+   * Set if visitor has consented for protected data usage.
+   * @param hasConsented  True if the visitor has consented false otherwise.
+   */
+  setConsent: (hasConsented: boolean) => void;
   modifications: Modification[];
+  FlagsData: FlagDTO[];
   status: FsStatus;
+  /**
+   *
+   * @param params
+   * @param activateAll
+   * @deprecated use useFsGetFlag instead
+   */
   getModifications<T>(
     params: modificationsRequested<T>[],
     activateAll?: boolean
   ): Record<string, T>;
+
+  /**
+   *
+   * @param key
+   * @deprecated use useFsGetFlag instead
+   */
   getModificationInfo(key: string): Modification | null;
+
+  /**
+   * @deprecated use useFsFetchFlags instead
+   */
   synchronizeModifications(): Promise<void>;
+  /**
+   * @deprecated use useFsGetFlag instead
+   */
   activateModification: {
     (keys: { key: string }[]): Promise<void>;
     (keys: string[]): Promise<void>;
@@ -234,7 +275,7 @@ export type UseFlagshipOutput = {
    */
   authenticate(visitorId: string): void;
   /**
-   * This hook change authenticated Visitor to anonymous visitor
+   * This function change authenticated Visitor to anonymous visitor
    * @param visitorId
    */
   unauthenticate(): void;
@@ -252,6 +293,13 @@ export type UseFlagshipOutput = {
       (hit: HitAbstract[] | IHit[] | HitShape[]): Promise<void>;
     };
   };
+  /**
+   * Retrieve a Flag object by its key. If no flag match the given key an empty flag will be returned.
+   * @param key flag key
+   * @param defaultValue
+   */
+  getFlag<T>(key: string, defaultValue: T): IFlag<T>;
+  fetchFlags: () => Promise<void>;
 };
 
 export const useFlagship = (): UseFlagshipOutput => {
@@ -362,11 +410,35 @@ export const useFlagship = (): UseFlagshipOutput => {
     return fsModificationInfoSync({ key, state, visitor })
   }
 
+  function getFlag<T> (key:string, defaultValue:T):IFlag<T> {
+    if (!visitor) {
+      return new Flag(defaultValue)
+    }
+    return visitor.getFlag(key, defaultValue)
+  }
+
+  function fetchFlags ():Promise<void> {
+    if (!visitor) {
+      logWarn(config, noVisitorMessage, 'fetchFlags')
+      return Promise.resolve()
+    }
+    return visitor?.fetchFlags()
+  }
+
+  function setConsent (hasConsented:boolean) : void {
+    if (!visitor) {
+      logWarn(config, noVisitorMessage, 'setConsent')
+      return
+    }
+    visitor.setConsent(hasConsented)
+  }
+
   return {
     visitorId: visitor?.visitorId,
     anonymousId: visitor?.anonymousId,
     context: { ...visitor?.context },
     hasConsented: visitor?.hasConsented,
+    setConsent,
     updateContext: fsUpdateContext,
     clearContext: fsClearContext,
     authenticate: fsAuthenticate,
@@ -376,18 +448,16 @@ export const useFlagship = (): UseFlagshipOutput => {
     synchronizeModifications,
     getModifications,
     modifications: modifications || [],
+    FlagsData: visitor?.getFlagsDataArray() || [],
     getModificationInfo,
     hit: {
       send: fsSendHit,
       sendMultiple: fsSendHits
-    }
+    },
+    getFlag,
+    fetchFlags
   }
 }
-
-export const noVisitorMessage =
-  'sdk not correctly initialized... Make sure fsVisitor is ready.'
-export const noVisitorDefault =
-  'fsVisitor not initialized, returns default value'
 
 const reportNoVisitor = (
   config: IFlagshipConfig | undefined,
