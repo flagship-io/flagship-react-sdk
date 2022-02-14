@@ -1,5 +1,11 @@
 import { jest, expect, it, describe } from '@jest/globals'
-import { getModificationsFromCampaigns, logError, logInfo, logWarn } from '../src/utils'
+import {
+  getModificationsFromCampaigns,
+  logError,
+  logInfo,
+  logWarn,
+  uuidV4
+} from '../src/utils'
 import { Mock } from 'jest-mock'
 import { IFlagshipLogManager } from '@flagship.io/js-sdk/dist/utils/FlagshipLogManager'
 import { DecisionApiConfig, LogLevel } from '@flagship.io/js-sdk'
@@ -10,7 +16,7 @@ describe('test logError function', () => {
 
   const logManager = {} as IFlagshipLogManager
 
-  const errorMethod:Mock<void, []> = jest.fn()
+  const errorMethod: Mock<void, []> = jest.fn()
 
   logManager.error = errorMethod
 
@@ -58,7 +64,7 @@ describe('test logInfo function', () => {
 
   const logManager = {} as IFlagshipLogManager
 
-  const infoMethod:Mock<void, []> = jest.fn()
+  const infoMethod: Mock<void, []> = jest.fn()
 
   logManager.info = infoMethod
 
@@ -106,7 +112,7 @@ describe('test logWarn function', () => {
 
   const logManager = {} as IFlagshipLogManager
 
-  const warnMethod:Mock<void, []> = jest.fn()
+  const warnMethod: Mock<void, []> = jest.fn()
 
   logManager.warning = warnMethod
 
@@ -150,7 +156,7 @@ describe('test logWarn function', () => {
 })
 
 describe('test getModificationsFromCampaigns', () => {
-  const getNull = ():any => null
+  const getNull = (): any => null
   it('should ', () => {
     const modifications = getModificationsFromCampaigns(getNull())
     expect(modifications).toBeInstanceOf(Map)
@@ -162,5 +168,13 @@ describe('test getModificationsFromCampaigns', () => {
     expect(modifications.size).toBe(6)
     expect(modifications.get('btnColor')?.value).toEqual('blue')
     expect(modifications.get('keyNumber')?.value).toEqual(558)
+  })
+})
+
+describe('test uuidV4', () => {
+  it('should ', () => {
+    const id = uuidV4()
+    expect(id).toBeDefined()
+    expect(id.length).toBe(36)
   })
 })
