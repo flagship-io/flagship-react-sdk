@@ -7,8 +7,8 @@
 
 ## Docs
 
-- coming soon
+- [docs](https://docs.developers.flagship.io/docs/react-v3-0-x)
 
 ## Licence
 
-[Apache License.](https://github.com/abtasty/flagship-react-sdk/blob/master/LICENSE)
+[Apache License.](https://github.com/flagship-io/flagship-react-sdk/blob/master/LICENSE)
