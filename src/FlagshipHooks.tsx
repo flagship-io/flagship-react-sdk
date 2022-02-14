@@ -141,23 +141,6 @@ export const useFsModificationInfo: { (key: string): Modification | null } = (
   return fsModificationInfoSync({ key, state, visitor })
 }
 
-const fsSynchronizeModifications = async (
-  functionName: string,
-  visitor?: Visitor,
-  config?: IFlagshipConfig
-): Promise<void> => {
-  try {
-    if (!visitor) {
-      reportNoVisitor(config, functionName)
-      return
-    }
-    await visitor.synchronizeModifications()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    logError(config, error.message || error, functionName)
-  }
-}
-
 const fsActivate = async (
   params: { key: string }[] | string[],
   functionName: string,
@@ -182,7 +165,10 @@ const fsActivate = async (
  * @param defaultValue
  * @returns
  */
-export const useFsFlag = <T extends unknown>(key:string, defaultValue:T): IFlag<T> => {
+export const useFsFlag = <T extends unknown>(
+  key: string,
+  defaultValue: T
+): IFlag<T> => {
   const { state } = useContext(FlagshipContext)
   const { visitor } = state
   if (!visitor) {
@@ -385,8 +371,11 @@ export const useFlagship = (): UseFlagshipOutput => {
     await fsActivate(params, functionName, visitor, config)
   }
   const synchronizeModifications = async () => {
-    const functionName = 'synchronizeModifications'
-    await fsSynchronizeModifications(functionName, visitor, config)
+    if (!visitor) {
+      logWarn(config, noVisitorMessage, 'synchronizeModifications')
+      return
+    }
+    await visitor.synchronizeModifications()
   }
 
   const getModifications = <T extends unknown>(
@@ -410,22 +399,22 @@ export const useFlagship = (): UseFlagshipOutput => {
     return fsModificationInfoSync({ key, state, visitor })
   }
 
-  function getFlag<T> (key:string, defaultValue:T):IFlag<T> {
+  function getFlag<T> (key: string, defaultValue: T): IFlag<T> {
     if (!visitor) {
       return new Flag(defaultValue)
     }
     return visitor.getFlag(key, defaultValue)
   }
 
-  function fetchFlags ():Promise<void> {
+  function fetchFlags (): Promise<void> {
     if (!visitor) {
       logWarn(config, noVisitorMessage, 'fetchFlags')
       return Promise.resolve()
     }
-    return visitor?.fetchFlags()
+    return visitor.fetchFlags()
   }
 
-  function setConsent (hasConsented:boolean) : void {
+  function setConsent (hasConsented: boolean): void {
     if (!visitor) {
       logWarn(config, noVisitorMessage, 'setConsent')
       return
@@ -457,11 +446,4 @@ export const useFlagship = (): UseFlagshipOutput => {
     getFlag,
     fetchFlags
   }
-}
-
-const reportNoVisitor = (
-  config: IFlagshipConfig | undefined,
-  tag: string
-): void => {
-  logError(config, noVisitorMessage, tag)
 }

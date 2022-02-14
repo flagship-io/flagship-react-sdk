@@ -405,11 +405,9 @@ describe('test FlagshipHooks', () => {
 
     visitor.synchronizeModifications.mockResolvedValue()
 
-    fs.synchronizeModifications().then(() => {
-      expect(visitor.synchronizeModifications).toBeCalledTimes(1)
-    }).catch(error => {
-      console.log(error)
-    })
+    await fs.synchronizeModifications()
+
+    expect(visitor.synchronizeModifications).toBeCalledTimes(1)
 
     visitor.getModificationsSync.mockReturnValue({})
 
@@ -425,8 +423,18 @@ describe('test FlagshipHooks', () => {
     fs.getModificationInfo('key')
     expect(visitor.getModificationInfoSync).toBeCalledTimes(1)
     expect(visitor.getModificationInfoSync).toBeCalledWith('key')
+  })
 
+  it('test without visitor', () => {
+    const config = {
+      logManager: {
+        error: jest.fn(),
+        warning: jest.fn()
+      },
+      logLevel: LogLevel.ALL
+    }
     const expected = { key: 'key', campaignId: 'campaignId', variationGroupId: 'variationGroupId', variation: 'variation', isReference: true, value: 'value' }
+
     useContextMock.mockReturnValue({
       state: {
         config,
@@ -438,13 +446,26 @@ describe('test FlagshipHooks', () => {
         ])
       }
     })
-    fs = FsHooks.useFlagship()
+    const fs = FsHooks.useFlagship()
     expect(fs.modifications).toEqual([expected])
 
+    const flagKey = 'key'
+    const flagDefaultValue = 'value'
     //
-    fs.getFlag(flagKey, flagDefaultValue)
+    const flag = fs.getFlag(flagKey, flagDefaultValue)
+
+    expect(flag).toBeDefined()
+    expect(flag.getValue()).toEqual(flagDefaultValue)
 
     fs.fetchFlags()
     expect(config.logManager.warning).toBeCalledTimes(1)
+
+    fs.synchronizeModifications()
+
+    expect(config.logManager.warning).toBeCalledTimes(2)
+
+    fs.setConsent(true)
+
+    expect(config.logManager.warning).toBeCalledTimes(3)
   })
 })
