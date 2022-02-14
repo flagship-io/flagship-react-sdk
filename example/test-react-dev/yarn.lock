@@ -1164,7 +1164,14 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.15.4", "@babel/runtime@^7.7.6":
+"@babel/runtime@^7.15.4":
+  version "7.17.2"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.2.tgz#66f68591605e59da47523c631416b18508779941"
+  integrity sha512-hzeyJyMA1YGdJTuWU0e/j4wKXrU4OMFvY2MSlaI9B7VQb0r5cxTE3EAIS2Q7Tn2RIcDkRvTA/v2JsAEhxe99uw==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
+"@babel/runtime@^7.7.6":
   version "7.16.3"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.16.3.tgz#b86f0db02a04187a3c17caa77de69840165d42d5"
   integrity sha512-WBwekcqacdY2e9AF/Q7WLFUWmdJGJTkbjqTjoMDgXkVZ3ZRUvOPsLb5KdwISoQVsbP+DQzVZW4Zhci0DvpbNTQ==
@@ -1241,10 +1248,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flagship.io/js-sdk@^3.0.0-alpha.3":
-  version "3.0.0-alpha.3"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.0-alpha.3.tgz#8cd6d24381ea15a69557ff41e3a1bee43ae8a565"
-  integrity sha512-SOd1gjgkmFmHviWKlmWeohzOLvXA1/CV3YcNKBXsHm2xLjHwRhvy4vYFuU+MHj+RoS/Yu+NwXHTFQOdI3QhpEA==
+"@flagship.io/js-sdk@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.0.tgz#53be83f941161fb2836100ea2ed620197d11f1bf"
+  integrity sha512-9TMGJZofLCs13zdNYXE6De5ifrscXHdk1/ZuV02ETnO7JufXsroHj+TYUUtD66uz4x3MDK1OvdgBEtI/HCdTFA==
   dependencies:
     "@babel/runtime" "^7.15.4"
     abort-controller "^3.0.0"
@@ -1253,10 +1260,12 @@
     follow-redirects "^1.14.5"
     node-fetch "2.6.2"
 
-"@flagship.io/react-sdk@../../":
-  version "2.2.0-beta.6"
+"@flagship.io/react-sdk@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@flagship.io/react-sdk/-/react-sdk-3.0.0.tgz#0bb7710a4ce42b168fceea0093f8d3a0eb3363c4"
+  integrity sha512-b3kvbB4Qzr82Nl8Qo6YkS4j31rfXbHH8XmqStwdjnrLcCaIcysRvTEbkeRc13Ik23K64IpiV6IPa59YWg+BVpg==
   dependencies:
-    "@flagship.io/js-sdk" "^3.0.0-alpha.3"
+    "@flagship.io/js-sdk" "^3.0.0"
     encoding "^0.1.13"
 
 "@gar/promisify@^1.0.1":
@@ -3710,9 +3719,9 @@ core-js@^2.4.0:
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
 core-js@^3.18.1:
-  version "3.19.3"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.19.3.tgz#6df8142a996337503019ff3235a7022d7cdf4559"
-  integrity sha512-LeLBMgEGSsG7giquSzvgBrTS7V5UL6ks3eQlUSbN8dJStlLFiRzUm5iqsRyzUB8carhfKjkJ2vzKqE6z1Vga9g==
+  version "3.21.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.21.0.tgz#f479dbfc3dffb035a0827602dd056839a774aa71"
+  integrity sha512-YUdI3fFu4TF/2WykQ2xzSiTQdldLB4KVuL9WeAy5XONZYt5Cun/fpQvctoKbCgvPhmzADeesTk/j2Rdx77AcKQ==
 
 core-js@^3.6.5:
   version "3.18.0"
@@ -5278,9 +5287,9 @@ follow-redirects@^1.0.0:
   integrity sha512-zwGkiSXC1MUJG/qmeIFH2HBJx9u0V46QGUe3YR1fXG8bXQxq7fLj0RjLZQ5nubr9qNJUZrH+xUcwXEoXNpfS+g==
 
 follow-redirects@^1.14.5:
-  version "1.14.7"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.7.tgz#2004c02eb9436eee9a21446a6477debf17e81685"
-  integrity sha512-+hbxoLbFMbRKDwohX8GkTataGqO6Jb7jGwpAlwgy2bIz25XtRm7KEzJM76R1WiNT5SwZkX4Y75SwBolkpmE7iQ==
+  version "1.14.8"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.8.tgz#016996fb9a11a100566398b1c6839337d7bfa8fc"
+  integrity sha512-1x0S9UVJHsQprFcEC/qnNzBLcIxsjAV905f/UkQxbclCsoTWlacCNOpQa/anodLl2uaEKFhfWOvM2Qg77+15zA==
 
 for-in@^1.0.2:
   version "1.0.2"
@@ -9515,7 +9524,7 @@ regenerator-runtime@^0.11.0:
 
 regenerator-runtime@^0.13.4, regenerator-runtime@^0.13.7:
   version "0.13.9"
-  resolved "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.13.9.tgz"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.9.tgz#8925742a98ffd90814988d7566ad30ca3b263b52"
   integrity sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==
 
 regenerator-transform@^0.14.2:
