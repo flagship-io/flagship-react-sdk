@@ -2,7 +2,7 @@ name: NPM CD
 on:
   push:
     tags: 
-      - 2.2.0-alpha.*
+      - 3.*
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,6 +14,6 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: yarn install
       - run: yarn build
-      - run: npm publish --tag alpha
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
