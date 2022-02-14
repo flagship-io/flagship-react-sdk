@@ -1,0 +1,26 @@
+{
+  "eslint.validate": ["javascript", "typescript"],
+  "cSpell.words": [
+    "allowlist",
+    "rerender",
+    "sprintf",
+    "targetings",
+    "unauthenticate"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": null
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": null
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": null
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": null
+  },
+  "liveServer.settings.port": 5501
+}
