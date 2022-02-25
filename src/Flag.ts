@@ -5,27 +5,27 @@ import { log } from './utils'
 export class Flag<T> implements IFlag<T> {
     private _defaultValue:T
     constructor (defaultValue:T) {
-      log(LogLevel.ERROR, noVisitorMessage, 'GetFlag')
+      log(LogLevel.WARNING, noVisitorMessage, 'GetFlag')
       this._defaultValue = defaultValue
     }
 
     getValue (): T {
-      log(LogLevel.ERROR, noVisitorMessage, 'exists')
+      log(LogLevel.WARNING, noVisitorMessage, 'getValue')
       return this._defaultValue
     }
 
     exists ():boolean {
-      log(LogLevel.ERROR, noVisitorMessage, 'exists')
+      log(LogLevel.WARNING, noVisitorMessage, 'exists')
       return false
     }
 
     userExposed (): Promise<void> {
-      log(LogLevel.ERROR, noVisitorMessage, 'userExposed')
+      log(LogLevel.WARNING, noVisitorMessage, 'userExposed')
       return Promise.resolve()
     }
 
     get metadata ():IFlagMetadata {
-      log(LogLevel.ERROR, noVisitorMessage, 'metadata')
+      log(LogLevel.WARNING, noVisitorMessage, 'metadata')
       return new FlagMetadata({
         campaignId: '',
         campaignType: '',
