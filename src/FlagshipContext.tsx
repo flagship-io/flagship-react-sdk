@@ -52,6 +52,13 @@ export interface FsState {
   initialCampaigns?: CampaignDTO[];
   initialModifications?: Map<string, FlagDTO> | FlagDTO[];
 }
+
+export type visitorData ={
+  id?: string;
+  context?: Record<string, primitive>;
+  isAuthenticated?: boolean;
+  hasConsented?: boolean;
+}
 interface FsContext {
   state: FsState;
   setState?: Dispatch<SetStateAction<FsState>>;
@@ -61,12 +68,7 @@ interface FlagshipProviderProps extends IFlagshipConfig {
   /**
    * This is the data to identify the current visitor using your app
    */
-  visitorData: {
-    id?: string;
-    context?: Record<string, primitive>;
-    isAuthenticated?: boolean;
-    hasConsented?: boolean;
-  };
+  visitorData: visitorData|null;
   envId: string;
   apiKey: string;
   /**
@@ -190,25 +192,26 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
 
   const updateVisitor = () => {
     if (!state.visitor) {
+      createOrUpdateVisitor()
       return
     }
 
-    if (visitorData.context) {
+    if (visitorData?.context) {
       state.visitor.clearContext()
       state.visitor.updateContext(visitorData.context)
     }
 
-    if (typeof visitorData.hasConsented === 'boolean') {
+    if (typeof visitorData?.hasConsented === 'boolean') {
       state.visitor.setConsent(visitorData.hasConsented)
     }
 
-    if (state.visitor.anonymousId && !visitorData.isAuthenticated) {
+    if (state.visitor.anonymousId && !visitorData?.isAuthenticated) {
       state.visitor.unauthenticate()
-    } else if (!state.visitor.anonymousId && visitorData.isAuthenticated) {
+    } else if (!state.visitor.anonymousId && visitorData?.isAuthenticated) {
       state.visitor.authenticate(visitorData.id || uuidV4())
     }
 
-    if (visitorData.id) {
+    if (visitorData?.id) {
       state.visitor.visitorId = visitorData.id
     }
 
@@ -268,6 +271,38 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       })
     }
   }
+
+  const createOrUpdateVisitor = () => {
+    if (!visitorData) {
+      return
+    }
+
+    if (stateRef.current?.visitor) {
+      stateRef.current?.visitor.fetchFlags()
+    } else {
+      const fsVisitor = Flagship.newVisitor({
+        visitorId: visitorData.id,
+        context: visitorData.context,
+        isAuthenticated: visitorData.isAuthenticated,
+        hasConsented: visitorData.hasConsented,
+        initialCampaigns,
+        initialModifications,
+        initialFlagsData
+      })
+
+      fsVisitor?.on('ready', (error) => {
+        onVisitorReady(fsVisitor, error)
+      })
+
+      if (!fetchNow && fsVisitor) {
+        initializeState({
+          fsVisitor,
+          isSdkReady: true,
+          isLoading: false
+        })
+      }
+    }
+  }
   const statusChanged = (status: FlagshipStatus) => {
     if (statusChangedCallback) {
       statusChangedCallback(status)
@@ -283,31 +318,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
         onInitDone()
       }
 
-      if (stateRef.current?.visitor) {
-        stateRef.current?.visitor.fetchFlags()
-      } else {
-        const fsVisitor = Flagship.newVisitor({
-          visitorId: visitorData.id,
-          context: visitorData.context,
-          isAuthenticated: visitorData.isAuthenticated,
-          hasConsented: visitorData.hasConsented,
-          initialCampaigns,
-          initialModifications,
-          initialFlagsData
-        })
-
-        fsVisitor?.on('ready', (error) => {
-          onVisitorReady(fsVisitor, error)
-        })
-
-        if (!fetchNow && fsVisitor) {
-          initializeState({
-            fsVisitor,
-            isSdkReady: true,
-            isLoading: false
-          })
-        }
-      }
+      createOrUpdateVisitor()
     }
   }
 
