@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
-import {  FlagshipProvider } from '@flagship.io/react-sdk'
+import {  FlagshipProvider, DecisionMode } from '@flagship.io/react-sdk'
 import {ENV_ID, API_KEY} from '../config'
 import React, { Dispatch, SetStateAction, useState } from 'react'
 
@@ -31,9 +31,7 @@ let count=0
 
 
 const loadingComponent = ()=>{
-  return <div>
-    Lorem ipsum dolor sit amet consectetur, adipisicing elit. At doloremque neque eveniet voluptatem dicta optio sint quam vero tempore! Tempora exercitationem recusandae numquam dicta illum quisquam non est distinctio ad!
-  </div>
+  return <div className="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 }
 
 
@@ -45,16 +43,23 @@ function MyApp({ Component, pageProps }: AppProps) {
     setVisitorData({...visitorData,id:'visitor_'+ count })
     count++
   }
-  const [visitorData,setVisitorData] = useState<IVisitorData>(initStat.visitorData)
+  const [visitorData,setVisitorData] = useState<IVisitorData|null>(null)
   return (
+  <div>
   <FlagshipProvider 
+  decisionMode={ DecisionMode.BUCKETING }
   visitorData={visitorData} 
   initialCampaigns={pageProps.campaigns} 
   initialModifications={pageProps.initialModifications} 
-  fetchNow={false} pollingInterval={10}  envId={ENV_ID} timeout={5} apiKey={API_KEY} >
+  loadingComponent={loadingComponent()}
+  fetchNow={true} pollingInterval={10}  envId={ENV_ID} timeout={5} apiKey={API_KEY} >
      <Component {...pageProps} />
-     <button style={{width:100, height:50}} value={"click me"} onClick={()=>{onClick()}}></button>
-  </FlagshipProvider> )
+  </FlagshipProvider> 
+  <div>
+  <button style={{width:100, height:50}} value={"click me"} onClick={()=>{onClick()}}></button>
+  </div>
+  </div>
+  )
 }
 
 
