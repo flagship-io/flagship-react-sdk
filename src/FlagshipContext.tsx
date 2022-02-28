@@ -18,7 +18,7 @@ import {
   primitive,
   Visitor
 } from '@flagship.io/js-sdk'
-import { getModificationsFromCampaigns, logError, uuidV4 } from './utils'
+import { getModificationsFromCampaigns, logError, useNonInitialEffect, uuidV4 } from './utils'
 
 export interface FsStatus {
   /**
@@ -182,7 +182,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     }
   }, [lastModified])
 
-  useEffect(() => {
+  useNonInitialEffect(() => {
     updateVisitor()
   }, [JSON.stringify(visitorData)])
 
@@ -191,8 +191,12 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   }, [envId, apiKey, decisionMode])
 
   const updateVisitor = () => {
-    if (!state.visitor) {
+    if (!state.visitor && visitorData) {
       createOrUpdateVisitor()
+      return
+    }
+
+    if (!state.visitor) {
       return
     }
 
