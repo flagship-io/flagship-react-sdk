@@ -1260,13 +1260,15 @@
     follow-redirects "^1.14.5"
     node-fetch "2.6.2"
 
-"@flagship.io/react-sdk@^3.0.0":
+"@flagship.io/react-sdk@../..":
   version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@flagship.io/react-sdk/-/react-sdk-3.0.0.tgz#0bb7710a4ce42b168fceea0093f8d3a0eb3363c4"
-  integrity sha512-b3kvbB4Qzr82Nl8Qo6YkS4j31rfXbHH8XmqStwdjnrLcCaIcysRvTEbkeRc13Ik23K64IpiV6IPa59YWg+BVpg==
   dependencies:
     "@flagship.io/js-sdk" "^3.0.0"
     encoding "^0.1.13"
+
+"@flagship.io/react-sdk@link:../..":
+  version "0.0.0"
+  uid ""
 
 "@gar/promisify@^1.0.1":
   version "1.1.2"

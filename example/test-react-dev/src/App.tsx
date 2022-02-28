@@ -17,11 +17,7 @@ import { V3 } from "./constants/features";
 
 
 const initStat: AppState = {
-  visitorData: {
-    id: "",
-    context: {},
-    hasConsented: false,
-  },
+  visitorData: null,
   envId: "",
   apiKey: "",
   timeout: 2,
@@ -108,7 +104,6 @@ function App() {
         envId={appState.envId}
         timeout={appState.timeout}
         apiKey={appState.apiKey}
-        fetchNow={false}
         logManager={customLogManager}
         statusChangedCallback={(status) => {
           setAppState((prev) => ({

@@ -53,7 +53,7 @@ export interface FsState {
   initialModifications?: Map<string, FlagDTO> | FlagDTO[];
 }
 
-export type visitorData ={
+export type VisitorData ={
   id?: string;
   context?: Record<string, primitive>;
   isAuthenticated?: boolean;
@@ -68,7 +68,7 @@ interface FlagshipProviderProps extends IFlagshipConfig {
   /**
    * This is the data to identify the current visitor using your app
    */
-  visitorData: visitorData|null;
+  visitorData: VisitorData|null;
   envId: string;
   apiKey: string;
   /**

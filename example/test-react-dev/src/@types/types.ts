@@ -1,16 +1,11 @@
-import { primitive, DecisionMode } from "@flagship.io/js-sdk";
+import { primitive, DecisionMode, VisitorData } from "@flagship.io/react-sdk";
 import React, { Dispatch, SetStateAction } from "react";
 import { featureFlagsAll } from "../constants/features";
 
-export interface IVisitorData {
-    id: string;
-    context?: Record<string, primitive>;
-    isAuthenticated?: boolean;
-    hasConsented?: boolean;
-  }
+
   
   export type AppState = {
-    visitorData: IVisitorData;
+    visitorData: VisitorData|null;
     envId: string;
     apiKey: string;
     timeout: number;
