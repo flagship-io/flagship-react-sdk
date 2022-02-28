@@ -51,7 +51,6 @@ function MyApp({ Component, pageProps }: AppProps) {
   visitorData={visitorData} 
   initialCampaigns={pageProps.campaigns} 
   initialModifications={pageProps.initialModifications} 
-  loadingComponent={loadingComponent()}
   fetchNow={true} pollingInterval={10}  envId={ENV_ID} timeout={5} apiKey={API_KEY} >
      <Component {...pageProps} />
   </FlagshipProvider> 
