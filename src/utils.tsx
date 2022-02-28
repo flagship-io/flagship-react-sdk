@@ -1,4 +1,5 @@
 import { CampaignDTO, IFlagshipConfig, LogLevel, Modification } from '@flagship.io/js-sdk'
+import { EffectCallback, DependencyList, useEffect, useRef } from 'react'
 
 export function logError (
   config: IFlagshipConfig|undefined,
@@ -93,4 +94,23 @@ export function uuidV4 ():string {
     const value = char === 'x' ? rand : (rand & 0x3 | 0x8)
     return value.toString(16)
   })
+}
+
+export function useNonInitialEffect (effect: EffectCallback, deps?: DependencyList): void {
+  const initialRender = useRef(true)
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    let effectReturns: void | (() => void) = () => {}
+
+    if (initialRender.current) {
+      initialRender.current = false
+    } else {
+      effectReturns = effect()
+    }
+
+    if (effectReturns && typeof effectReturns === 'function') {
+      return effectReturns
+    }
+  }, deps)
 }
