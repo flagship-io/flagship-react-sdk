@@ -60,16 +60,9 @@ export const providerProps = {
 
 export const fetchedModifications = [
     {
-        id: 'bqjfstuirtfg01mctmn0',
-        variation: {
-            id: 'bqjfstuirtfg01mctmp0',
-            modifications: { type: 'JSON', value: { discount: '10%' } },
-            reference: false
-        },
-        variationGroupId: 'bqjfstuirtfg01mctmo0'
-    },
-    {
         id: 'bsq046crms2g1jsvtb20',
+        slug: null,
+        type: 'ab',
         variation: {
             id: 'bsq046crms2g1jsvtb40',
             modifications: {
@@ -91,5 +84,16 @@ export const fetchedModifications = [
             reference: false
         },
         variationGroupId: 'bsq046crms2g1jsvtb30'
+    },
+    {
+        id: 'bqjfstuirtfg01mctmn0',
+        slug: null,
+        type: 'perso',
+        variation: {
+            id: 'bqjfstuirtfg01mctmp0',
+            modifications: { type: 'JSON', value: { discount: '10%' } },
+            reference: false
+        },
+        variationGroupId: 'bqjfstuirtfg01mctmo0'
     }
 ];

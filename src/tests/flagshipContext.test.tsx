@@ -46,12 +46,14 @@ describe('fsContext provider', () => {
             </FlagshipProvider>
         );
         expect(container.querySelector('div')?.innerHTML).toEqual('Loading SDK');
-
-        await waitFor(() => {
-            if (!isReady) {
-                throw new Error('not ready');
-            }
-        });
+        await waitFor(
+            () => {
+                if (!isReady) {
+                    throw new Error('not ready');
+                }
+            },
+            { timeout: 2000 }
+        );
         expect(container.querySelector('div')?.innerHTML).toEqual('Hello');
         expect(isReady).toEqual(true);
     });
@@ -124,11 +126,14 @@ describe('fsContext provider', () => {
                 <div>Hello</div>
             </FlagshipProvider>
         );
-        await waitFor(() => {
-            if (!isReady) {
-                throw new Error('not ready');
-            }
-        });
+        await waitFor(
+            () => {
+                if (!isReady) {
+                    throw new Error('not ready');
+                }
+            },
+            { timeout: 2000 }
+        );
         expect(isCalled.onInitDone).toEqual(true);
         expect(isCalled.onInitStart).toEqual(true);
         expect(isCalled.onSavingModificationsInCache).toEqual(true);
@@ -355,11 +360,14 @@ describe('fsContext provider', () => {
                 <div>Hello I'm visible, even with safe mode</div>
             </FlagshipProvider>
         );
-        await waitFor(() => {
-            if (!isReady) {
-                throw new Error('not ready');
-            }
-        });
+        await waitFor(
+            () => {
+                if (!isReady) {
+                    throw new Error('not ready');
+                }
+            },
+            { timeout: 2000 }
+        );
         expect(container.querySelector('#flagshipSafeModeContainer')?.innerHTML).toEqual(
             "<div>Hello I'm visible, even with safe mode</div>"
         );

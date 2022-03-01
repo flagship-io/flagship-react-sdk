@@ -11,7 +11,7 @@
         "package.json"
     ],
     "scripts": {
-        "test": "jest --silent --verbose",
+        "test": "jest",
         "test:coverage": "jest --coverage --silent",
         "release": "npm run checkReleasePrerequisites && docker login https://docker.pkg.github.com && np",
         "version": "npm run build",
@@ -59,7 +59,7 @@
     ],
     "homepage": "https://github.com/abtasty/flagship-react-sdk#readme",
     "dependencies": {
-        "@flagship.io/js-sdk": "^2.2.9",
+        "@flagship.io/js-sdk": "^2.2.12",
         "@flagship.io/js-sdk-logs": "^0.1.3",
         "use-ssr": "^1.0.23"
     },
