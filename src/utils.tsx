@@ -2,11 +2,11 @@ import {
   CampaignDTO,
   IFlagshipConfig,
   LogLevel,
-  Modification,
-} from "@flagship.io/js-sdk";
-import { EffectCallback, DependencyList, useEffect, useRef } from "react";
+  Modification
+} from '@flagship.io/js-sdk'
+import { EffectCallback, DependencyList, useEffect, useRef } from 'react'
 
-export function logError(
+export function logError (
   config: IFlagshipConfig | undefined,
   message: string,
   tag: string
@@ -14,17 +14,17 @@ export function logError(
   if (
     !config ||
     !config.logManager ||
-    typeof config.logManager.error !== "function" ||
+    typeof config.logManager.error !== 'function' ||
     !config.logLevel ||
     config.logLevel < LogLevel.ERROR
   ) {
-    return;
+    return
   }
 
-  config.logManager.error(message, tag);
+  config.logManager.error(message, tag)
 }
 
-export function logInfo(
+export function logInfo (
   config: IFlagshipConfig | undefined,
   message: string,
   tag: string
@@ -32,16 +32,16 @@ export function logInfo(
   if (
     !config ||
     !config.logManager ||
-    typeof config.logManager.info !== "function" ||
+    typeof config.logManager.info !== 'function' ||
     !config.logLevel ||
     config.logLevel < LogLevel.INFO
   ) {
-    return;
+    return
   }
-  config.logManager.info(message, tag);
+  config.logManager.info(message, tag)
 }
 
-export function logWarn(
+export function logWarn (
   config: IFlagshipConfig | undefined,
   message: string,
   tag: string
@@ -49,79 +49,79 @@ export function logWarn(
   if (
     !config ||
     !config.logManager ||
-    typeof config.logManager.warning !== "function" ||
+    typeof config.logManager.warning !== 'function' ||
     !config.logLevel ||
     config.logLevel < LogLevel.WARNING
   ) {
-    return;
+    return
   }
-  config.logManager.warning(message, tag);
+  config.logManager.warning(message, tag)
 }
 
-export function log(level: LogLevel, message: string, tag: string): void {
-  const now = new Date();
+export function log (level: LogLevel, message: string, tag: string): void {
+  const now = new Date()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getTwoDigit = (value: any) => {
-    return value.toString().length === 1 ? `0${value}` : value;
-  };
+    return value.toString().length === 1 ? `0${value}` : value
+  }
 
   const out = `[${getTwoDigit(now.getFullYear())}-${getTwoDigit(
     now.getMonth()
   )}-${getTwoDigit(now.getDay())} ${getTwoDigit(now.getHours())}:${getTwoDigit(
     now.getMinutes()
-  )}] [Flagship SDK] [${LogLevel[level]}] [${tag}] : ${message}`;
-  console.log(out);
+  )}] [Flagship SDK] [${LogLevel[level]}] [${tag}] : ${message}`
+  console.log(out)
 }
 
 export const getModificationsFromCampaigns = (
   campaigns: Array<CampaignDTO>
 ): Map<string, Modification> => {
-  const modifications = new Map<string, Modification>();
+  const modifications = new Map<string, Modification>()
   if (!campaigns || !Array.isArray(campaigns)) {
-    return modifications;
+    return modifications
   }
   campaigns.forEach((campaign) => {
-    const object = campaign.variation.modifications.value;
+    const object = campaign.variation.modifications.value
     for (const key in object) {
-      const value = object[key];
+      const value = object[key]
       modifications.set(key, {
         key,
         campaignId: campaign.id,
         variationGroupId: campaign.variationGroupId,
         variationId: campaign.variation.id,
         isReference: campaign.variation.reference,
-        value,
-      });
+        value
+      })
     }
-  });
-  return modifications;
-};
-
-export function uuidV4(): string {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-    /[xy]/g,
-    function (char) {
-      const rand = (Math.random() * 16) | 0;
-      const value = char === "x" ? rand : (rand & 0x3) | 0x8;
-      return value.toString(16);
-    }
-  );
+  })
+  return modifications
 }
 
-export function useNonInitialEffect(
+export function uuidV4 (): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+    /[xy]/g,
+    function (char) {
+      const rand = (Math.random() * 16) | 0
+      const value = char === 'x' ? rand : (rand & 0x3) | 0x8
+      return value.toString(16)
+    }
+  )
+}
+
+export function useNonInitialEffect (
   effect: EffectCallback,
   deps?: DependencyList
 ): void {
-  const initialRender = useRef(true);
+  const initialRender = useRef(true)
 
   useEffect(() => {
     if (initialRender.current) {
-      initialRender.current = false;
-      return;
+      initialRender.current = false
+      return
     }
 
-    if (typeof effect === "function") {
-      return effect();
+    if (typeof effect === 'function') {
+      return effect()
     }
-  }, deps);
+  }, deps)
 }
