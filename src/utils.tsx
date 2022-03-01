@@ -1,116 +1,127 @@
-import { CampaignDTO, IFlagshipConfig, LogLevel, Modification } from '@flagship.io/js-sdk'
-import { EffectCallback, DependencyList, useEffect, useRef } from 'react'
+import {
+  CampaignDTO,
+  IFlagshipConfig,
+  LogLevel,
+  Modification,
+} from "@flagship.io/js-sdk";
+import { EffectCallback, DependencyList, useEffect, useRef } from "react";
 
-export function logError (
-  config: IFlagshipConfig|undefined,
+export function logError(
+  config: IFlagshipConfig | undefined,
   message: string,
   tag: string
-):void {
+): void {
   if (
     !config ||
-        !config.logManager ||
-        typeof config.logManager.error !== 'function' ||
-        !config.logLevel ||
-        config.logLevel < LogLevel.ERROR
+    !config.logManager ||
+    typeof config.logManager.error !== "function" ||
+    !config.logLevel ||
+    config.logLevel < LogLevel.ERROR
   ) {
-    return
+    return;
   }
 
-  config.logManager.error(message, tag)
+  config.logManager.error(message, tag);
 }
 
-export function logInfo (config: IFlagshipConfig|undefined, message: string, tag: string):void {
+export function logInfo(
+  config: IFlagshipConfig | undefined,
+  message: string,
+  tag: string
+): void {
   if (
     !config ||
-        !config.logManager ||
-        typeof config.logManager.info !== 'function' ||
-        !config.logLevel ||
-        config.logLevel < LogLevel.INFO
+    !config.logManager ||
+    typeof config.logManager.info !== "function" ||
+    !config.logLevel ||
+    config.logLevel < LogLevel.INFO
   ) {
-    return
+    return;
   }
-  config.logManager.info(message, tag)
+  config.logManager.info(message, tag);
 }
 
-export function logWarn (config: IFlagshipConfig|undefined, message: string, tag: string):void {
+export function logWarn(
+  config: IFlagshipConfig | undefined,
+  message: string,
+  tag: string
+): void {
   if (
-    !config || !config.logManager ||
-      typeof config.logManager.warning !== 'function' || !config.logLevel || config.logLevel < LogLevel.WARNING
+    !config ||
+    !config.logManager ||
+    typeof config.logManager.warning !== "function" ||
+    !config.logLevel ||
+    config.logLevel < LogLevel.WARNING
   ) {
-    return
+    return;
   }
-  config.logManager.warning(message, tag)
+  config.logManager.warning(message, tag);
 }
 
-export function log (level: LogLevel, message: string, tag: string): void {
-  const now = new Date()
+export function log(level: LogLevel, message: string, tag: string): void {
+  const now = new Date();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getTwoDigit = (value: any) => {
-    return value.toString().length === 1 ? `0${value}` : value
-  }
+    return value.toString().length === 1 ? `0${value}` : value;
+  };
 
-  const out = `[${getTwoDigit(now.getFullYear())}-${
-    getTwoDigit(
-      now.getMonth()
-    )
-  }-${getTwoDigit(now.getDay())} ${
-    getTwoDigit(
-      now.getHours()
-    )
-  }:${getTwoDigit(now.getMinutes())}] [Flagship SDK] [${
-    LogLevel[level]
-  }] [${tag}] : ${message}`
-  console.log(out)
+  const out = `[${getTwoDigit(now.getFullYear())}-${getTwoDigit(
+    now.getMonth()
+  )}-${getTwoDigit(now.getDay())} ${getTwoDigit(now.getHours())}:${getTwoDigit(
+    now.getMinutes()
+  )}] [Flagship SDK] [${LogLevel[level]}] [${tag}] : ${message}`;
+  console.log(out);
 }
 
-export const getModificationsFromCampaigns = (campaigns: Array<CampaignDTO>):Map<string, Modification> => {
-  const modifications = new Map<string, Modification>()
+export const getModificationsFromCampaigns = (
+  campaigns: Array<CampaignDTO>
+): Map<string, Modification> => {
+  const modifications = new Map<string, Modification>();
   if (!campaigns || !Array.isArray(campaigns)) {
-    return modifications
+    return modifications;
   }
   campaigns.forEach((campaign) => {
-    const object = campaign.variation.modifications.value
+    const object = campaign.variation.modifications.value;
     for (const key in object) {
-      const value = object[key]
-      modifications.set(
+      const value = object[key];
+      modifications.set(key, {
         key,
-        {
-          key,
-          campaignId: campaign.id,
-          variationGroupId: campaign.variationGroupId,
-          variationId: campaign.variation.id,
-          isReference: campaign.variation.reference,
-          value
-        }
-      )
+        campaignId: campaign.id,
+        variationGroupId: campaign.variationGroupId,
+        variationId: campaign.variation.id,
+        isReference: campaign.variation.reference,
+        value,
+      });
     }
-  })
-  return modifications
+  });
+  return modifications;
+};
+
+export function uuidV4(): string {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+    /[xy]/g,
+    function (char) {
+      const rand = (Math.random() * 16) | 0;
+      const value = char === "x" ? rand : (rand & 0x3) | 0x8;
+      return value.toString(16);
+    }
+  );
 }
 
-export function uuidV4 ():string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (char) {
-    const rand = Math.random() * 16 | 0
-    const value = char === 'x' ? rand : (rand & 0x3 | 0x8)
-    return value.toString(16)
-  })
-}
-
-export function useNonInitialEffect (effect: EffectCallback, deps?: DependencyList): void {
-  const initialRender = useRef(true)
+export function useNonInitialEffect(
+  effect: EffectCallback,
+  deps?: DependencyList
+): void {
+  const initialRender = useRef(true);
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    let effectReturns: void | (() => void) = () => {}
-
     if (initialRender.current) {
-      initialRender.current = false
-    } else {
-      effectReturns = effect()
+      initialRender.current = false;
+      return;
     }
 
-    if (effectReturns && typeof effectReturns === 'function') {
-      return effectReturns
+    if (typeof effect === "function") {
+      return effect();
     }
-  }, deps)
+  }, deps);
 }
