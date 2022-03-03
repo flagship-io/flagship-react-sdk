@@ -10,7 +10,7 @@ const Home: NextPage = () => {
 
 const fs = useFlagship()
   
-const btnColorFlag = fs.getFlag('btnColor',"white")
+const btnColorFlag = fs.getFlag('cache',0)
 
 console.log(fs.FlagsData);
 

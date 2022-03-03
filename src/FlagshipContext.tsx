@@ -200,6 +200,8 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       return
     }
 
+    console.log('visitorData', visitorData)
+
     if (visitorData?.context) {
       state.visitor.clearContext()
       state.visitor.updateContext(visitorData.context)

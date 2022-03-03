@@ -96,10 +96,10 @@
     events "^3.3.0"
     node-fetch "2.6.2"
 
-"@flagship.io/js-sdk@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.0.tgz#53be83f941161fb2836100ea2ed620197d11f1bf"
-  integrity sha512-9TMGJZofLCs13zdNYXE6De5ifrscXHdk1/ZuV02ETnO7JufXsroHj+TYUUtD66uz4x3MDK1OvdgBEtI/HCdTFA==
+"@flagship.io/js-sdk@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.2.tgz#e271910d2ff5d10e59e93c149952e4565ef82bac"
+  integrity sha512-XbTVt8yUbJodPwznAGrfFI9HVEND/IOeGiq4NprMqw2ZnM3ww3bgtShjE6lee0+bvPmMcVTF6twmj3DF3N4VKA==
   dependencies:
     "@babel/runtime" "^7.15.4"
     abort-controller "^3.0.0"
@@ -1995,6 +1995,10 @@ merge2@^1.3.0:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.4.1.tgz#4368892f885e907455a6fd7dc55c0c9d404990ae"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
+
+"merki230@link:../../../..":
+  version "0.0.0"
+  uid ""
 
 micromatch@^4.0.4:
   version "4.0.4"

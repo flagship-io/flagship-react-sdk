@@ -1,25 +1,20 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
-import {  FlagshipProvider, DecisionMode } from '@flagship.io/react-sdk'
+import {  FlagshipProvider, DecisionMode, VisitorData } from '@flagship.io/react-sdk'
 import {ENV_ID, API_KEY} from '../config'
 import React, { Dispatch, SetStateAction, useState } from 'react'
 
-interface IVisitorData{
-  id: string
-      context?: {
-          age: number
-  }
-}
 
 interface IAppContext {
-  visitorData: IVisitorData
-  setVisitorData: Dispatch<SetStateAction<IVisitorData>>;
+  visitorData: VisitorData
+  setVisitorData: Dispatch<SetStateAction<VisitorData>>;
 }
 const initStat = {
   visitorData:{
-    id:"visitor_1",
+    id:"",
     context:{
-      age:20
+      age:20,
+      cacheEnabled: true
     },
   },
   setVisitorData:()=>{}
@@ -40,10 +35,13 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const onClick=()=>{
     console.log("count",count);
-    setVisitorData({...visitorData,id:'visitor_'+ count })
+    setVisitorData(prev=> ({...prev,id:'today_my_visitor_'+ count, context:{
+      age:20,
+      cacheEnabled: true
+    } }))
     count++
   }
-  const [visitorData,setVisitorData] = useState<IVisitorData|null>(null)
+  const [visitorData,setVisitorData] = useState<VisitorData|null>(null)
   return (
   <div>
   <FlagshipProvider 
@@ -52,6 +50,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   initialCampaigns={pageProps.campaigns} 
   initialModifications={pageProps.initialModifications} 
   loadingComponent={loadingComponent()}
+  // disableCache={true}
   fetchNow={true} pollingInterval={10}  envId={ENV_ID} timeout={5} apiKey={API_KEY} >
      <Component {...pageProps} />
   </FlagshipProvider> 

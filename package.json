@@ -11,7 +11,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@flagship.io/js-sdk": "^3.0.1",
+    "@flagship.io/js-sdk": "^3.0.2",
     "encoding": "^0.1.13"
   },
   "peerDependencies": {
