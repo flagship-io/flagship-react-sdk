@@ -1015,10 +1015,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flagship.io/js-sdk@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.2.tgz#e271910d2ff5d10e59e93c149952e4565ef82bac"
-  integrity sha512-XbTVt8yUbJodPwznAGrfFI9HVEND/IOeGiq4NprMqw2ZnM3ww3bgtShjE6lee0+bvPmMcVTF6twmj3DF3N4VKA==
+"@flagship.io/js-sdk@^3.0.3":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.3.tgz#081e7233307d9dc9d6131a54e42d600bd999ef34"
+  integrity sha512-P3X6siy3u0hMfEHKovjLzuAkV1FDfE6P9ihxrHoQYeXDkX+4eQT+R0Ie4mquvTvafC1saIX1Tv50hoqPTbT1wQ==
   dependencies:
     "@babel/runtime" "^7.15.4"
     abort-controller "^3.0.0"
@@ -4073,10 +4073,6 @@ merge2@^1.3.0:
   version "1.4.1"
   resolved "https://registry.npmjs.org/merge2/-/merge2-1.4.1.tgz"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
-
-"merki230@link:../..":
-  version "0.0.0"
-  uid ""
 
 micromatch@^4.0.0, micromatch@^4.0.4:
   version "4.0.4"
