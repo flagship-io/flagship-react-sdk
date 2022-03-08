@@ -34,24 +34,37 @@ function MyApp({ Component, pageProps }: AppProps) {
   console.log("pageProps", pageProps);
 
   const onClick=()=>{
+    count++
     console.log("count",count);
+
+    if (count===5 || count===7) {
+      setVisitorData({})
+      return
+    }
+
     setVisitorData(prev=> ({...prev,id:'today_my_visitor_'+ count, context:{
       age:20,
       cacheEnabled: true
     } }))
-    count++
   }
-  const [visitorData,setVisitorData] = useState<VisitorData|null>(null)
+  const [visitorData,setVisitorData] = useState<VisitorData|null>({id:"visitor_1",
+  context:{
+    age:20,
+    cacheEnabled: true
+  }})
+
+  console.log("visitorData", visitorData);
+  
   return (
   <div>
   <FlagshipProvider 
-  decisionMode={ DecisionMode.BUCKETING }
+  // decisionMode={ DecisionMode.BUCKETING }
   visitorData={visitorData} 
   initialCampaigns={pageProps.campaigns} 
   initialModifications={pageProps.initialModifications} 
   loadingComponent={loadingComponent()}
   // disableCache={true}
-  fetchNow={true} pollingInterval={10}  envId={ENV_ID} timeout={5} apiKey={API_KEY} >
+  fetchNow={false} pollingInterval={10}  envId={ENV_ID} timeout={5} apiKey={API_KEY} >
      <Component {...pageProps} />
   </FlagshipProvider> 
   <div>
