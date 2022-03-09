@@ -158,8 +158,22 @@ describe('Name of the group', () => {
 
     await waitFor(() => {
       expect(start).toBeCalledTimes(1)
-      expect(authenticate).toBeCalledTimes(1)
-      expect(authenticate).toBeCalledWith(props.visitorData.id)
+
+      expect(newVisitor).toBeCalledTimes(2)
+
+      expect(newVisitor).toBeCalledWith({
+        visitorId: visitorData.id,
+        context: visitorData.context,
+        isAuthenticated: true,
+        hasConsented: visitorData.hasConsented
+      })
+
+      expect(fetchFlags).toBeCalledTimes(4)
+      expect(onBucketingUpdated).toBeCalledTimes(1)
+      expect(statusChangedCallback).toBeCalledTimes(2)
+      expect(onInitStart).toBeCalledTimes(1)
+      expect(onInitDone).toBeCalledTimes(1)
+      expect(onUpdate).toBeCalledTimes(3)
     })
 
     // Unauthenticate visitor
@@ -170,8 +184,14 @@ describe('Name of the group', () => {
 
     await waitFor(() => {
       expect(start).toBeCalledTimes(1)
-      expect(authenticate).toBeCalledTimes(1)
-      expect(unauthenticate).toBeCalledTimes(1)
+      expect(newVisitor).toBeCalledTimes(3)
+
+      expect(newVisitor).toBeCalledWith({
+        visitorId: visitorData.id,
+        context: visitorData.context,
+        isAuthenticated: false,
+        hasConsented: visitorData.hasConsented
+      })
     })
 
     // Update envId props
@@ -183,10 +203,8 @@ describe('Name of the group', () => {
     await waitFor(() => {
       expect(start).toBeCalledTimes(2)
       expect(start).toBeCalledWith('new_env_id', apiKey, expect.objectContaining({ decisionMode: DecisionMode.DECISION_API, onBucketingUpdated: expect.anything() }))
-      expect(newVisitor).toBeCalledTimes(1)
-      expect(fetchFlags).toBeCalledTimes(5)
-      expect(authenticate).toBeCalledTimes(1)
-      expect(unauthenticate).toBeCalledTimes(1)
+      expect(newVisitor).toBeCalledTimes(4)
+      expect(fetchFlags).toBeCalledTimes(7)
     })
 
     onEventError = true
@@ -195,6 +213,81 @@ describe('Name of the group', () => {
       <FlagshipProvider {...props} envId={'new_env'}>
          <div>children</div>
       </FlagshipProvider>)
+  }
+  )
+})
+
+describe('Test visitorData null', () => {
+  const visitorData = {
+    id: 'visitor_id',
+    context: {},
+    isAuthenticated: false,
+    hasConsented: true
+  }
+  const envId = 'EnvId'
+  const apiKey = 'apiKey'
+  const statusChangedCallback = jest.fn()
+  const onInitStart = jest.fn()
+  const onInitDone = jest.fn()
+  const onUpdate = jest.fn()
+  const onBucketingUpdated = jest.fn()
+
+  it('should ', async () => {
+    const props = {
+      envId,
+      apiKey,
+      decisionMode: DecisionMode.DECISION_API,
+      visitorData: null,
+      statusChangedCallback,
+      onInitStart,
+      onInitDone,
+      onUpdate,
+      onBucketingUpdated,
+      loadingComponent: <div></div>,
+      synchronizeOnBucketingUpdated: true
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { rerender } = render(
+            <FlagshipProvider {...props}>
+               <div>children</div>
+            </FlagshipProvider>)
+
+    await waitFor(() => {
+      expect(start).toBeCalledTimes(1)
+      expect(start).toBeCalledWith(envId, apiKey, expect.objectContaining({ decisionMode: DecisionMode.DECISION_API, onBucketingUpdated: expect.anything() }))
+      expect(newVisitor).toBeCalledTimes(0)
+
+      expect(fetchFlags).toBeCalledTimes(0)
+      expect(onBucketingUpdated).toBeCalledTimes(0)
+      expect(statusChangedCallback).toBeCalledTimes(2)
+      expect(onInitStart).toBeCalledTimes(1)
+      expect(onInitDone).toBeCalledTimes(1)
+      expect(onUpdate).toBeCalledTimes(0)
+    })
+
+    rerender(
+      <FlagshipProvider {...props} visitorData={visitorData}>
+         <div>children</div>
+      </FlagshipProvider>)
+
+    await waitFor(() => {
+      expect(start).toBeCalledTimes(1)
+      expect(start).toBeCalledWith(envId, apiKey, expect.objectContaining({ decisionMode: DecisionMode.DECISION_API, onBucketingUpdated: expect.anything() }))
+      expect(newVisitor).toBeCalledTimes(1)
+
+      expect(newVisitor).toBeCalledWith({
+        visitorId: visitorData.id,
+        context: visitorData.context,
+        isAuthenticated: visitorData.isAuthenticated,
+        hasConsented: visitorData.hasConsented
+      })
+
+      expect(fetchFlags).toBeCalledTimes(2)
+      expect(onBucketingUpdated).toBeCalledTimes(0)
+      expect(statusChangedCallback).toBeCalledTimes(2)
+      expect(onInitStart).toBeCalledTimes(1)
+      expect(onInitDone).toBeCalledTimes(1)
+    })
   }
   )
 })

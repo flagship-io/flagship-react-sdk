@@ -1,6 +1,5 @@
-import { primitive, useFlagship, Modification } from "@flagship.io/react-sdk";
+import { primitive, useFlagship, Modification, VisitorData } from "@flagship.io/react-sdk";
 import { useContext, useEffect, useState } from "react";
-import { IVisitorData } from "../../@types/types";
 import { appContext } from "../../App";
 import { ERROR_SDK_NOT_READY } from "../../constants/errorMessage";
 
@@ -8,7 +7,7 @@ const CreateVisitor = () => {
   const fs = useFlagship();
   const { appState, setAppState } = useContext(appContext);
   const [visitorData, setVisitorData] = useState<
-    IVisitorData & { contextJSON: string }
+    VisitorData & { contextJSON: string }
   >({
     id: "",
     contextJSON: "{}",

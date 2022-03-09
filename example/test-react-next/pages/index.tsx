@@ -13,7 +13,8 @@ export async function getServerSideProps() {
   const visitorData={
     id:"visitor_1",
     context:{
-      age:20
+      age:20,
+      cacheEnabled: true
     },
   }
 

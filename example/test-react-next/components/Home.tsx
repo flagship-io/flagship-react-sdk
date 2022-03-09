@@ -10,11 +10,11 @@ const Home: NextPage = () => {
 
 const fs = useFlagship()
   
-const {btnColor}= fs.getModificationsSync([{key:'btnColor', defaultValue:"white"}])
+const btnColorFlag = fs.getFlag('cache',0)
 
-console.log(fs.modifications);
+console.log(fs.FlagsData);
 
-console.log(btnColor);
+console.log(btnColorFlag);
 
 
 const click =()=>{
@@ -35,7 +35,7 @@ const click =()=>{
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
 
-        <p>{btnColor}</p>
+        <p>{btnColorFlag.getValue()}</p>
         <button style={{width:100, height:50}} value={"click me"} onClick={()=>{click()}}></button>
 
         <p className={styles.description}>
