@@ -16,7 +16,6 @@
         "release": "npm run checkReleasePrerequisites && docker login https://docker.pkg.github.com && np",
         "version": "npm run build",
         "checkReleasePrerequisites": "docker -v",
-        "publish": "npm run update:examples && npm run publish:reactDemoDev && npm run publish:reactDemoEcommerce && git add . && git commit -m\"Post publish update\" && git push",
         "publish:reactDemoDev": "cd ./examples/react-dev-demo && npm i && npm run deploy:github",
         "publish:reactDemoEcommerce": "cd ./examples/react-ecommerce-demo && npm run release:docker",
         "update:fsLog": "npm install @flagship.io/js-sdk-logs@latest --save",
