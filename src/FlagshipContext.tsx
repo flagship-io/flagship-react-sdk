@@ -292,7 +292,7 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
         // NOTE: whenever the visitor is updated or created and no matter (fetchNow/activateNow is true/false), it will ALWAYS emit "ready" event.
         const visitorInstance = newVisitorDetected
             ? fsSdk.newVisitor(id, context as FlagshipVisitorContext)
-            : (fsSdk as any).updateVisitor(state.fsVisitor, context);
+            : (fsSdk as any).updateVisitor(state.fsVisitor, { context });
         setState((s) => ({
             ...s,
             status: {
