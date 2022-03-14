@@ -1,6 +1,6 @@
 {
   "name": "@flagship.io/react-sdk",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Flagship REACT SDK",
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
