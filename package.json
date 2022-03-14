@@ -27,7 +27,7 @@
         "contributors:add": "all-contributors add",
         "contributors:generate": "all-contributors generate",
         "clean": "rm -rf ./node_modules/react && rm -rf ./node_modules/react-dom",
-        "build": "npm install @flagship.io/js-sdk@latest --save && rm -rf dist && tsc",
+        "build": "rm -rf dist && tsc",
         "build:skipUpdate": "rm -rf dist && tsc"
     },
     "repository": {
