@@ -373,6 +373,9 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
                 )
             );
         } else {
+            if (hasVisitorIdentityChange) {
+                fsVisitor.updateContext(context || {});
+            }
             if (isBeingAnonymous) {
                 // make sure the fsVisitor has an id to avoid the "no anonymous" error when unauthenticate.
                 if (!fsVisitor.anonymousId) {
@@ -384,7 +387,6 @@ export const FlagshipProvider: React.SFC<FlagshipProviderProps> = ({
             }
 
             if (hasVisitorIdentityChange) {
-                fsVisitor.updateContext(context || {});
                 updateVisitorAndStatus(fsVisitor, true);
             }
         }
