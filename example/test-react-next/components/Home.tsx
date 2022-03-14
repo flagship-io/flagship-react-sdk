@@ -2,25 +2,26 @@ import { NextPage } from "next";
 import Head from "next/head";
 import React from "react";
 import { useFlagship } from "../../../";
-import styles from '../styles/Home.module.css'
-import Image from 'next/image'
+import styles from "../styles/Home.module.css";
+import Image from "next/image";
+import { HitType } from "@flagship.io/js-sdk";
 
-let age = 1
+let age = 1;
 const Home: NextPage = () => {
+  const fs = useFlagship();
 
-const fs = useFlagship()
-  
-const btnColorFlag = fs.getFlag('cache',0)
+  const btnColorFlag = fs.getFlag("cache", 0);
 
-console.log(fs.FlagsData);
+  console.log(fs.FlagsData);
 
-console.log(btnColorFlag);
+  console.log(btnColorFlag);
 
-
-const click =()=>{
-  age = age===1?1:2
-  fs.updateContext({age})
-}
+  const click = () => {
+    fs.hit.sendMultiple([
+      { type: HitType.PAGE_VIEW, documentLocation: "home1" },
+      { type: HitType.SCREEN, documentLocation: "home2" },
+    ]);
+  };
 
   return (
     <div className={styles.container}>
@@ -36,10 +37,16 @@ const click =()=>{
         </h1>
 
         <p>{btnColorFlag.getValue()}</p>
-        <button style={{width:100, height:50}} value={"click me"} onClick={()=>{click()}}></button>
+        <button
+          style={{ width: 100, height: 50 }}
+          value={"click me"}
+          onClick={() => {
+            click();
+          }}
+        ></button>
 
         <p className={styles.description}>
-          Get started by editing{' '}
+          Get started by editing{" "}
           <code className={styles.code}>pages/index.js</code>
         </p>
 
@@ -80,14 +87,14 @@ const click =()=>{
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
+          Powered by{" "}
           <span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
         </a>
       </footer>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
