@@ -96,10 +96,10 @@
     events "^3.3.0"
     node-fetch "2.6.2"
 
-"@flagship.io/js-sdk@^3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.3.tgz#081e7233307d9dc9d6131a54e42d600bd999ef34"
-  integrity sha512-P3X6siy3u0hMfEHKovjLzuAkV1FDfE6P9ihxrHoQYeXDkX+4eQT+R0Ie4mquvTvafC1saIX1Tv50hoqPTbT1wQ==
+"@flagship.io/js-sdk@^3.0.4":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.4.tgz#37441cefbb8b31b4193fe1d12152f348d8513295"
+  integrity sha512-Huv8O7tv0vNVVeBBLoB4B5lOT5ipO8HieSrlBzNRA6OQGKBrIFjVmIdXdgfW50sg3+vr/XSO5uleUSKTbjwgZg==
   dependencies:
     "@babel/runtime" "^7.15.4"
     abort-controller "^3.0.0"
