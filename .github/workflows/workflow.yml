@@ -24,7 +24,8 @@ jobs:
               run: yarn install
             - name: Run tests
               run: yarn run test
-            - uses: codecov/codecov-action@v1
+            - name: Upload codecov report
+              uses: codecov/codecov-action@v2
               with:
                   #token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
                   file: ./coverage/clover.xml # optional
