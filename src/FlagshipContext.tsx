@@ -69,7 +69,7 @@ interface FsContext {
   setState?: Dispatch<SetStateAction<FsState>>;
 }
 
-interface FlagshipProviderProps extends IFlagshipConfig {
+export interface FlagshipProviderProps extends IFlagshipConfig {
   /**
    * This is the data to identify the current visitor using your app
    */
@@ -253,7 +253,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     if (!visitorData) {
       return;
     }
-  
+
     const fsVisitor = Flagship.newVisitor({
       visitorId: visitorData.id,
       context: visitorData.context,
@@ -286,10 +286,13 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
 
     if (status === FlagshipStatus.STARTING && onInitStart) {
       onInitStart();
-      return
-    } 
-    
-    if (status === FlagshipStatus.READY_PANIC_ON || status === FlagshipStatus.READY) {
+      return;
+    }
+
+    if (
+      status === FlagshipStatus.READY_PANIC_ON ||
+      status === FlagshipStatus.READY
+    ) {
       if (onInitDone) {
         onInitDone();
       }
