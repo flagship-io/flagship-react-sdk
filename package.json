@@ -1,8 +1,8 @@
 {
   "name": "@flagship.io/react-sdk",
-  "version": "3.0.3-alpha.3",
+  "version": "3.0.3-alpha.4",
   "description": "Flagship REACT SDK",
-  "main": "dist/es/index.js",
+  "main": "dist/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/types/index.d.ts",
   "files": [
@@ -12,7 +12,8 @@
   ],
   "dependencies": {
     "@flagship.io/js-sdk": "^3.0.5-alpha.0",
-    "encoding": "^0.1.13"
+    "encoding": "^0.1.13",
+    "core-js": "^3.18.1"
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0",
@@ -47,7 +48,6 @@
     "@typescript-eslint/parser": "^4.32.0",
     "babel-loader": "^8.2.2",
     "babel-plugin-add-module-exports": "^1.0.4",
-    "core-js": "^3.18.1",
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.24.2",
