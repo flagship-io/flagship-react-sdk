@@ -2,7 +2,7 @@ name: NPM CD
 on:
   push:
     tags: 
-      - "[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+"
+      - "2.[0-9]+.[0-9]+"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,7 +13,9 @@ jobs:
           node-version: '14.x'
           registry-url: 'https://registry.npmjs.org'
       - run: yarn install
+      - run: yarn test --coverage
+      - uses: codecov/codecov-action@v2
       - run: yarn build
-      - run: npm publish --tag beta
+      - run: npm publish --tag version.2
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -73,11 +73,10 @@
     "test": "jest",
     "lint": "eslint . --ext .tsx",
     "clean": "rm -rf dist && mkdir dist",
-    "build:es": "BABEL_ENV=es babel src --extensions '.ts,.tsx' --out-dir dist/es --copy-files",
     "build:esm": "BABEL_ENV=esm babel src --extensions '.ts,.tsx' --out-dir dist/esm --copy-files",
     "build:types": "tsc --noEmit false --declaration --emitDeclarationOnly --outDir dist/types",
     "build:prod": "NODE_ENV=production webpack",
-    "build": "npm run clean && npm run build:es && npm run build:esm && npm run build:types && npm run build:prod"
+    "build": "npm run clean && npm run build:esm && npm run build:types && npm run build:prod"
   },
   "eslintConfig": {
     "extends": [
