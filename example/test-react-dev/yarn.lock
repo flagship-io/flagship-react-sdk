@@ -1248,10 +1248,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flagship.io/js-sdk@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.1.tgz#07026edd4b1f33acde3b7885a41578f12b9bbad9"
-  integrity sha512-sOuCsuXRDx/yeeWX/5idJOc7gY0rRhzq3IdTg2tKTV5wOuhD10n9uugeIaLDPGN00zekX63ZrP1gorhPpvv9vg==
+"@flagship.io/js-sdk@^3.0.4":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.4.tgz#37441cefbb8b31b4193fe1d12152f348d8513295"
+  integrity sha512-Huv8O7tv0vNVVeBBLoB4B5lOT5ipO8HieSrlBzNRA6OQGKBrIFjVmIdXdgfW50sg3+vr/XSO5uleUSKTbjwgZg==
   dependencies:
     "@babel/runtime" "^7.15.4"
     abort-controller "^3.0.0"
@@ -1260,15 +1260,11 @@
     follow-redirects "^1.14.5"
     node-fetch "2.6.2"
 
-"@flagship.io/react-sdk@../..":
-  version "3.0.0"
-  dependencies:
-    "@flagship.io/js-sdk" "^3.0.1"
-    encoding "^0.1.13"
-
 "@flagship.io/react-sdk@link:../..":
-  version "0.0.0"
-  uid ""
+  version "3.0.2"
+  dependencies:
+    "@flagship.io/js-sdk" "^3.0.4"
+    encoding "^0.1.13"
 
 "@gar/promisify@^1.0.1":
   version "1.1.2"
@@ -7483,9 +7479,9 @@ minimatch@3.0.4, minimatch@^3.0.4:
     brace-expansion "^1.1.7"
 
 minimist@^1.1.1, minimist@^1.2.0, minimist@^1.2.5:
-  version "1.2.5"
-  resolved "https://registry.npmjs.org/minimist/-/minimist-1.2.5.tgz"
-  integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.6.tgz#8637a5b759ea0d6e98702cfb3a9283323c93af44"
+  integrity sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==
 
 minipass-collect@^1.0.2:
   version "1.0.2"
