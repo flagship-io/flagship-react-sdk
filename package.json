@@ -11,13 +11,13 @@
     "README.md"
   ],
   "dependencies": {
-    "@flagship.io/js-sdk": "^3.0.5-alpha.0",
-    "encoding": "^0.1.13",
-    "core-js": "^3.18.1"
+    "@flagship.io/js-sdk": "^3.0.5",
+    "core-js": "^3.18.1",
+    "encoding": "^0.1.13"
   },
   "peerDependencies": {
-    "react": "^16.8.0 || ^17.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0"
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
   },
   "homepage": "https://github.com/flagship-io/flagship-react-sdk",
   "repository": {
