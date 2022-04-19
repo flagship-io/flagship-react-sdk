@@ -96,10 +96,10 @@
     events "^3.3.0"
     node-fetch "2.6.2"
 
-"@flagship.io/js-sdk@^3.0.4":
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.4.tgz#37441cefbb8b31b4193fe1d12152f348d8513295"
-  integrity sha512-Huv8O7tv0vNVVeBBLoB4B5lOT5ipO8HieSrlBzNRA6OQGKBrIFjVmIdXdgfW50sg3+vr/XSO5uleUSKTbjwgZg==
+"@flagship.io/js-sdk@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.5.tgz#8ebf2533c51c99a79fae3d91eaf33752ea643b47"
+  integrity sha512-KUxG/dKY10JEUsz1Mx1jkicXsgIq9h+WWE9B7ImkNStoghMl6wbFpPMvUuv/2WZD/YXotTYGNFkB+QAwgS9syg==
   dependencies:
     "@babel/runtime" "^7.15.4"
     abort-controller "^3.0.0"
@@ -109,8 +109,11 @@
     node-fetch "2.6.2"
 
 "@flagship.io/react-sdk@link:../..":
-  version "0.0.0"
-  uid ""
+  version "3.0.3"
+  dependencies:
+    "@flagship.io/js-sdk" "^3.0.5"
+    core-js "^3.18.1"
+    encoding "^0.1.13"
 
 "@hapi/accept@5.0.2":
   version "5.0.2"
@@ -2050,9 +2053,9 @@ ms@^2.1.1:
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
 nanoid@^3.1.23:
-  version "3.1.28"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.28.tgz#3c01bac14cb6c5680569014cc65a2f26424c6bd4"
-  integrity sha512-gSu9VZ2HtmoKYe/lmyPFES5nknFrHa+/DT9muUFWFMi6Jh9E1I7bkvlQ8xxf1Kos9pi9o8lBnIOkatMhKX/YUw==
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.3.tgz#fd8e8b7aa761fe807dba2d1b98fb7241bb724a25"
+  integrity sha512-p1sjXuopFs0xg+fPASzQ28agW1oHD7xDsd9Xkf3T15H3c/cifrFHVwrh74PdoklAPi+i7MdRsE47vm2r6JoB+w==
 
 native-url@0.3.4:
   version "0.3.4"
