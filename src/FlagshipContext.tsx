@@ -69,7 +69,7 @@ interface FsContext {
   setState?: Dispatch<SetStateAction<FsState>>;
 }
 
-interface FlagshipProviderProps extends IFlagshipConfig {
+export interface FlagshipProviderProps extends IFlagshipConfig {
   /**
    * This is the data to identify the current visitor using your app
    */
@@ -120,7 +120,7 @@ interface FlagshipProviderProps extends IFlagshipConfig {
   /**
    * If true, it'll automatically call synchronizeModifications when the bucketing file has updated
    */
-  synchronizeOnBucketingUpdated?: boolean;
+  fetchFlagsOnBucketingUpdated?: boolean;
 }
 
 const initStat: FsState = {
@@ -156,7 +156,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   initialCampaigns,
   initialModifications,
   initialFlagsData,
-  synchronizeOnBucketingUpdated,
+  fetchFlagsOnBucketingUpdated,
   activateDeduplicationTime,
   hitDeduplicationTime,
   visitorCacheImplementation,
@@ -182,7 +182,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   stateRef.current = state;
 
   useNonInitialEffect(() => {
-    if (synchronizeOnBucketingUpdated) {
+    if (fetchFlagsOnBucketingUpdated) {
       state.visitor?.fetchFlags();
     }
   }, [lastModified]);
@@ -253,7 +253,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     if (!visitorData) {
       return;
     }
-  
+
     const fsVisitor = Flagship.newVisitor({
       visitorId: visitorData.id,
       context: visitorData.context,
@@ -286,10 +286,13 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
 
     if (status === FlagshipStatus.STARTING && onInitStart) {
       onInitStart();
-      return
-    } 
-    
-    if (status === FlagshipStatus.READY_PANIC_ON || status === FlagshipStatus.READY) {
+      return;
+    }
+
+    if (
+      status === FlagshipStatus.READY_PANIC_ON ||
+      status === FlagshipStatus.READY
+    ) {
       if (onInitDone) {
         onInitDone();
       }
@@ -343,6 +346,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
 };
 
 FlagshipProvider.defaultProps = {
-  activateDeduplicationTime: 10,
-  hitDeduplicationTime: 10,
+  activateDeduplicationTime: 2,
+  hitDeduplicationTime: 2,
+  fetchNow: true,
 };

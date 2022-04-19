@@ -1,6 +1,6 @@
 {
   "name": "@flagship.io/react-sdk",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Flagship REACT SDK",
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
@@ -11,12 +11,13 @@
     "README.md"
   ],
   "dependencies": {
-    "@flagship.io/js-sdk": "^3.0.4",
+    "@flagship.io/js-sdk": "^3.0.5",
+    "core-js": "^3.18.1",
     "encoding": "^0.1.13"
   },
   "peerDependencies": {
-    "react": "^16.8.0 || ^17.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0"
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
   },
   "homepage": "https://github.com/flagship-io/flagship-react-sdk",
   "repository": {
@@ -47,7 +48,6 @@
     "@typescript-eslint/parser": "^4.32.0",
     "babel-loader": "^8.2.2",
     "babel-plugin-add-module-exports": "^1.0.4",
-    "core-js": "^3.18.1",
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.24.2",
@@ -73,11 +73,10 @@
     "test": "jest",
     "lint": "eslint . --ext .tsx",
     "clean": "rm -rf dist && mkdir dist",
-    "build:es": "BABEL_ENV=es babel src --extensions '.ts,.tsx' --out-dir dist/es --copy-files",
     "build:esm": "BABEL_ENV=esm babel src --extensions '.ts,.tsx' --out-dir dist/esm --copy-files",
     "build:types": "tsc --noEmit false --declaration --emitDeclarationOnly --outDir dist/types",
     "build:prod": "NODE_ENV=production webpack",
-    "build": "npm run clean && npm run build:es && npm run build:esm && npm run build:types && npm run build:prod"
+    "build": "npm run clean && npm run build:esm && npm run build:types && npm run build:prod"
   },
   "eslintConfig": {
     "extends": [
