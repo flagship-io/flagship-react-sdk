@@ -1,31 +1,31 @@
-import { FlagMetadata, IFlag, IFlagMetadata, LogLevel } from '@flagship.io/js-sdk'
+import Flagship, { FlagMetadata, IFlag, IFlagMetadata, LogLevel } from '@flagship.io/js-sdk'
 import { noVisitorMessage } from './constants'
-import { log } from './utils'
+import { logWarn } from './utils'
 
 export class Flag<T> implements IFlag<T> {
     private _defaultValue:T
     constructor (defaultValue:T) {
-      log(LogLevel.WARNING, noVisitorMessage, 'GetFlag')
+      logWarn(Flagship.getConfig(), noVisitorMessage, 'GetFlag')
       this._defaultValue = defaultValue
     }
 
     getValue (): T {
-      log(LogLevel.WARNING, noVisitorMessage, 'getValue')
+      logWarn(Flagship.getConfig(), noVisitorMessage, 'getValue')
       return this._defaultValue
     }
 
     exists ():boolean {
-      log(LogLevel.WARNING, noVisitorMessage, 'exists')
+      logWarn(Flagship.getConfig(), noVisitorMessage, 'exists')
       return false
     }
 
     userExposed (): Promise<void> {
-      log(LogLevel.WARNING, noVisitorMessage, 'userExposed')
+      logWarn(Flagship.getConfig(), noVisitorMessage, 'userExposed')
       return Promise.resolve()
     }
 
     get metadata ():IFlagMetadata {
-      log(LogLevel.WARNING, noVisitorMessage, 'metadata')
+      logWarn(Flagship.getConfig(), noVisitorMessage, 'metadata')
       return new FlagMetadata({
         campaignId: '',
         campaignType: '',
