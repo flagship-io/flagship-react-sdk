@@ -58,20 +58,6 @@ export function logWarn (
   config.logManager.warning(message, tag)
 }
 
-export function log (level: LogLevel, message: string, tag: string): void {
-  const now = new Date()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const getTwoDigit = (value: any) => {
-    return value.toString().length === 1 ? `0${value}` : value
-  }
-
-  const out = `[${getTwoDigit(now.getFullYear())}-${getTwoDigit(
-    now.getMonth()
-  )}-${getTwoDigit(now.getDay())} ${getTwoDigit(now.getHours())}:${getTwoDigit(
-    now.getMinutes()
-  )}] [Flagship SDK] [${LogLevel[level]}] [${tag}] : ${message}`
-  console.log(out)
-}
 
 export const getModificationsFromCampaigns = (
   campaigns: Array<CampaignDTO>
