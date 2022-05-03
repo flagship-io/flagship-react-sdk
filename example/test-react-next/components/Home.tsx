@@ -10,7 +10,7 @@ let age = 1;
 const Home: NextPage = () => {
   const fs = useFlagship();
 
-  const btnColorFlag = fs.getFlag("cache", 0);
+  const btnColorFlag = fs.getFlag("cache", null);
 
   console.log(fs.FlagsData);
 
