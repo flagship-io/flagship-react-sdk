@@ -14,7 +14,8 @@ describe('test Flag', () => {
       campaignType: '',
       isReference: false,
       variationGroupId: '',
-      variationId: ''
+      variationId: '',
+      slug:null
     })
   })
 })

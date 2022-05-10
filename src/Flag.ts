@@ -26,12 +26,6 @@ export class Flag<T> implements IFlag<T> {
 
     get metadata ():IFlagMetadata {
       logWarn(Flagship.getConfig(), noVisitorMessage, 'metadata')
-      return new FlagMetadata({
-        campaignId: '',
-        campaignType: '',
-        isReference: false,
-        variationGroupId: '',
-        variationId: ''
-      })
+      return FlagMetadata.Empty()
     }
 }
