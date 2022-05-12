@@ -1,31 +1,80 @@
-import Flagship, { FlagMetadata, IFlag, IFlagMetadata, LogLevel } from '@flagship.io/js-sdk'
-import { noVisitorMessage } from './constants'
-import { logWarn } from './utils'
+import Flagship, { FlagDTO, FlagMetadata, IFlag, IFlagMetadata, LogLevel } from '@flagship.io/js-sdk'
+import { GET_FLAG_CAST_ERROR, GET_METADATA_CAST_ERROR, noVisitorMessage } from './constants'
+import { hasSameType, logInfo, logWarn, sprintf } from './utils'
 
 export class Flag<T> implements IFlag<T> {
-    private _defaultValue:T
-    constructor (defaultValue:T) {
-      logWarn(Flagship.getConfig(), noVisitorMessage, 'GetFlag')
-      this._defaultValue = defaultValue
+    private defaultValue:T
+    private flagsData: Map<string, FlagDTO> | undefined
+    private key: string
+    private flag?: FlagDTO
+    constructor (defaultValue:T, key: string, flagsData: Map<string, FlagDTO> | undefined) {
+      if (!flagsData) {
+        logWarn(Flagship.getConfig(), noVisitorMessage, 'GetFlag')
+      }
+      this.defaultValue = defaultValue
+      this.key = key
+      this.flag = flagsData?.get(key)
+    }
+
+    private NotSameType(){
+      return this.defaultValue !== null && this.defaultValue !== undefined && !hasSameType(this.flag?.value, this.defaultValue)
     }
 
     getValue (): T {
-      logWarn(Flagship.getConfig(), noVisitorMessage, 'getValue')
-      return this._defaultValue
+      if (!this.flag) {
+        logWarn(Flagship.getConfig(), noVisitorMessage, 'getValue')
+        return this.defaultValue
+      }
+
+      if (this.NotSameType()) {
+        logInfo(
+          Flagship.getConfig(),
+          sprintf(GET_FLAG_CAST_ERROR, this.key),
+          "getValue"
+        )
+        return this.defaultValue
+      }
+      return this.flag.value
     }
 
     exists ():boolean {
-      logWarn(Flagship.getConfig(), noVisitorMessage, 'exists')
-      return false
+      if (!this.flag) {
+        logWarn(Flagship.getConfig(), noVisitorMessage, 'exists')
+        return false
+      }
+      return !!(this.flag?.campaignId && this.flag.variationId && this.flag.variationGroupId)
     }
 
     userExposed (): Promise<void> {
-      logWarn(Flagship.getConfig(), noVisitorMessage, 'userExposed')
+      if (!this.flag) {
+        logWarn(Flagship.getConfig(), noVisitorMessage, 'userExposed')
+      }
+      
       return Promise.resolve()
     }
 
     get metadata ():IFlagMetadata {
-      logWarn(Flagship.getConfig(), noVisitorMessage, 'metadata')
+      const functionName = 'metadata'
+      if (!this.flag) {
+        logWarn(Flagship.getConfig(), noVisitorMessage, functionName)
       return FlagMetadata.Empty()
+      }
+      if (this.NotSameType()) {
+        logInfo(
+          Flagship.getConfig(),
+          sprintf(GET_METADATA_CAST_ERROR, this.key),
+          functionName
+        )
+        return FlagMetadata.Empty()
+      }
+
+      return new FlagMetadata({
+        campaignId: this.flag?.campaignId || '',
+        variationGroupId: this.flag?.variationGroupId || '',
+        variationId: this.flag?.variationId || '',
+        isReference: !!this.flag?.isReference,
+        campaignType: this.flag?.campaignType || '',
+        slug: this.flag?.slug
+      })
     }
 }

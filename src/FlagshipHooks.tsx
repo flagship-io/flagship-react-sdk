@@ -171,8 +171,9 @@ export const useFsFlag = <T extends unknown>(
 ): IFlag<T> => {
   const { state } = useContext(FlagshipContext)
   const { visitor } = state
+  
   if (!visitor) {
-    return new Flag(defaultValue)
+    return new Flag(defaultValue, key, state.modifications)
   }
 
   return visitor.getFlag(key, defaultValue)
@@ -401,7 +402,7 @@ export const useFlagship = (): UseFlagshipOutput => {
 
   function getFlag<T> (key: string, defaultValue: T): IFlag<T> {
     if (!visitor) {
-      return new Flag(defaultValue)
+      return new Flag(defaultValue, key, state.modifications)
     }
     return visitor.getFlag(key, defaultValue)
   }
