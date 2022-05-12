@@ -162,6 +162,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   visitorCacheImplementation,
   hitCacheImplementation,
   disableCache,
+  language,
 }: FlagshipProviderProps) => {
   let modifications = new Map<string, FlagDTO>();
   if (initialFlagsData && initialFlagsData.forEach) {
@@ -284,20 +285,24 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       statusChangedCallback(status);
     }
 
-    if (status === FlagshipStatus.STARTING && onInitStart) {
-      onInitStart();
-      return;
-    }
+    switch (status) {
+      case FlagshipStatus.STARTING:
+        if (status === FlagshipStatus.STARTING && onInitStart) {
+          onInitStart();
+        }
+        break;
+      case FlagshipStatus.READY_PANIC_ON:
+      case FlagshipStatus.READY:
+        if (onInitDone) {
+          onInitDone();
+        }
 
-    if (
-      status === FlagshipStatus.READY_PANIC_ON ||
-      status === FlagshipStatus.READY
-    ) {
-      if (onInitDone) {
-        onInitDone();
-      }
+        createVisitor();
 
-      createVisitor();
+        break;
+      case FlagshipStatus.NOT_INITIALIZED:
+        setState((prev) => ({ ...prev, config: Flagship.getConfig() }));
+        break;
     }
   };
 
@@ -328,7 +333,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       visitorCacheImplementation,
       hitCacheImplementation,
       disableCache,
-      language: 1,
+      language,
     });
   };
   const handleDisplay = (): React.ReactNode => {
@@ -349,4 +354,5 @@ FlagshipProvider.defaultProps = {
   activateDeduplicationTime: 2,
   hitDeduplicationTime: 2,
   fetchNow: true,
+  language: 1,
 };

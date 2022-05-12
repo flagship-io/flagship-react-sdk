@@ -1,6 +1,6 @@
 {
   "name": "@flagship.io/react-sdk",
-  "version": "3.0.3",
+  "version": "3.0.4-alpha.4",
   "description": "Flagship REACT SDK",
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
@@ -11,7 +11,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@flagship.io/js-sdk": "^3.0.5",
+    "@flagship.io/js-sdk": "^3.0.7",
     "core-js": "^3.18.1",
     "encoding": "^0.1.13"
   },

@@ -58,20 +58,6 @@ export function logWarn (
   config.logManager.warning(message, tag)
 }
 
-export function log (level: LogLevel, message: string, tag: string): void {
-  const now = new Date()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const getTwoDigit = (value: any) => {
-    return value.toString().length === 1 ? `0${value}` : value
-  }
-
-  const out = `[${getTwoDigit(now.getFullYear())}-${getTwoDigit(
-    now.getMonth()
-  )}-${getTwoDigit(now.getDay())} ${getTwoDigit(now.getHours())}:${getTwoDigit(
-    now.getMinutes()
-  )}] [Flagship SDK] [${LogLevel[level]}] [${tag}] : ${message}`
-  console.log(out)
-}
 
 export const getModificationsFromCampaigns = (
   campaigns: Array<CampaignDTO>
@@ -124,4 +110,25 @@ export function useNonInitialEffect (
       return effect()
     }
   }, deps)
+}
+
+export function hasSameType (flagValue:unknown, defaultValue:unknown):boolean {
+  if (typeof flagValue !== typeof defaultValue) {
+    return false
+  }
+  if (typeof flagValue === 'object' && typeof defaultValue === 'object' &&
+  Array.isArray(flagValue) !== Array.isArray(defaultValue)
+  ) {
+    return false
+  }
+  return true
+}
+
+export function sprintf (format: string, ...value: any[]): string {
+  let formatted = format
+  for (let i = 0; i < value.length; i++) {
+    const element = value[i]
+    formatted = formatted.replace(new RegExp(`\\{${i}\\}`, 'g'), element)
+  }
+  return formatted
 }
