@@ -111,3 +111,24 @@ export function useNonInitialEffect (
     }
   }, deps)
 }
+
+export function hasSameType (flagValue:unknown, defaultValue:unknown):boolean {
+  if (typeof flagValue !== typeof defaultValue) {
+    return false
+  }
+  if (typeof flagValue === 'object' && typeof defaultValue === 'object' &&
+  Array.isArray(flagValue) !== Array.isArray(defaultValue)
+  ) {
+    return false
+  }
+  return true
+}
+
+export function sprintf (format: string, ...value: any[]): string {
+  let formatted = format
+  for (let i = 0; i < value.length; i++) {
+    const element = value[i]
+    formatted = formatted.replace(new RegExp(`\\{${i}\\}`, 'g'), element)
+  }
+  return formatted
+}

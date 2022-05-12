@@ -1,9 +1,11 @@
 import { jest, expect, it, describe } from '@jest/globals'
 import {
   getModificationsFromCampaigns,
+  hasSameType,
   logError,
   logInfo,
   logWarn,
+  sprintf,
   uuidV4
 } from '../src/utils'
 import { Mock } from 'jest-mock'
@@ -176,5 +178,34 @@ describe('test uuidV4', () => {
     const id = uuidV4()
     expect(id).toBeDefined()
     expect(id.length).toBe(36)
+  })
+})
+
+
+describe('test sprintf function', () => {
+  it('should ', () => {
+    const textToTest = 'My name is {0} {1}'
+    const output = sprintf(textToTest, 'merveille', 'kitoko')
+    expect(output).toBe('My name is merveille kitoko')
+  })
+})
+
+describe('test hasSameType function', () => {
+  it('should ', () => {
+    
+    let output = hasSameType("value1", "value2")
+    expect(output).toBeTruthy()
+
+    output = hasSameType(1, "value2")
+    expect(output).toBeFalsy()
+
+    output = hasSameType([1,2], [1,5])
+    expect(output).toBeTruthy()
+
+    output = hasSameType({}, {key:"value"})
+    expect(output).toBeTruthy()
+
+    output = hasSameType([1,2], {})
+    expect(output).toBeFalsy()
   })
 })
