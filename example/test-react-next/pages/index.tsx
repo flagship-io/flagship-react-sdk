@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import Flagship from '@flagship.io/js-sdk'
+import {Flagship} from '@flagship.io/react-sdk'
 import { ENV_ID, API_KEY } from '../config'
 import Home from '../components/Home'
 
@@ -11,7 +11,7 @@ return<Home/>
 export async function getServerSideProps() {
   
   const visitorData={
-    id:"visitor_1",
+    id:"my_visitor_id_1",
     context:{
       age:20,
       cacheEnabled: true
@@ -24,11 +24,9 @@ export async function getServerSideProps() {
 
   const visitor= flagship?.newVisitor({visitorId: visitorData.id, context: visitorData.context,})
 
-  await visitor?.synchronizeModifications()
-
-  const campaigns = await visitor?.getAllModifications()
+  await visitor?.fetchFlags()
 
   // Pass data to the page via props
-  return { props: { initialModifications: visitor?.getModificationsArray()||[], campaigns:campaigns?.campaigns } }
+  return { props: { initialFlagsData: visitor?.getFlagsDataArray(), visitorData} }
 }
 export default Index

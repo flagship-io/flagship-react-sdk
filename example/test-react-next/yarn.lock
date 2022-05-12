@@ -87,19 +87,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flagship.io/js-sdk@^2.3.1-alpha.3":
-  version "2.3.1-alpha.4"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-2.3.1-alpha.4.tgz#ddd2cfc42a5bcb1ca9f9bdb39e4ce51fc352926a"
-  integrity sha512-fYs+SwEeqDWKB8fk36SPutr2UNXjgKmx8g8PBpUnUWFHl6MehfiWsb3bavyWiqKlalujB+DtaB/v5OufrR75BQ==
-  dependencies:
-    abort-controller "^3.0.0"
-    events "^3.3.0"
-    node-fetch "2.6.2"
-
-"@flagship.io/js-sdk@^3.0.7-alpha.1":
-  version "3.0.7-alpha.1"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.7-alpha.1.tgz#7f3a7bbf57dfb9f7edfb037424d2ab2c253be6ae"
-  integrity sha512-+4QuNX9qPMmmPFqiLZQ3bRRGKrNe4NhH2j6jEh0e/p8JxF1708Wc25J3GJGc98O4IbMaVS4bD4w4SIB1bz5LZg==
+"@flagship.io/js-sdk@^3.0.7":
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.7.tgz#7709d25e933568aed4488f6c47fa0e7fe2b7fcaa"
+  integrity sha512-nzPPTUNndO6akRGJjKTDcGKz3hHwo7P9tPX+qnGMU1FTjDdx6kzRoV3tLnzf8+2fFY5ZL7cdIz6lxlzFwG2gsg==
   dependencies:
     "@babel/runtime" "^7.15.4"
     abort-controller "^3.0.0"
