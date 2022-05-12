@@ -1,10 +1,7 @@
 import { NextPage } from "next";
-import Head from "next/head";
 import React from "react";
-import { useFlagship, useFsFlag } from "../../../";
+import { useFlagship, useFsFlag, HitType } from "@flagship.io/react-sdk";
 import styles from "../styles/Home.module.css";
-import Image from "next/image";
-import { HitType } from "@flagship.io/js-sdk";
 import { useContext } from "react";
 import { appContext } from "../pages/_app";
 

@@ -2,7 +2,6 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import {
   FlagshipProvider,
-  DecisionMode,
   VisitorData,
 } from "@flagship.io/react-sdk";
 import { ENV_ID, API_KEY } from "../config";
