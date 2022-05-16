@@ -214,7 +214,7 @@ export type UseFlagshipOutput = {
    */
   setConsent: (hasConsented: boolean) => void;
   modifications: Modification[];
-  FlagsData: FlagDTO[];
+  flagsData: FlagDTO[];
   status: FsStatus;
   /**
    *
@@ -438,7 +438,7 @@ export const useFlagship = (): UseFlagshipOutput => {
     synchronizeModifications,
     getModifications,
     modifications: modifications || [],
-    FlagsData: visitor?.getFlagsDataArray() || [],
+    flagsData: visitor?.getFlagsDataArray() || [],
     getModificationInfo,
     hit: {
       send: fsSendHit,
