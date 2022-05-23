@@ -63,7 +63,7 @@ const fsModificationsSync = <T extends unknown>(args: {
 
 /**
  * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
- * @deprecated use useFsGetFlag instead
+ * @deprecated use useFsFlag instead
  */
 export const useFsModifications = <T extends unknown>(
   params: modificationsRequested<T>[],
@@ -85,7 +85,7 @@ export const useFsModifications = <T extends unknown>(
 
 /**
  * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
- * @deprecated use useFsGetFlag instead
+ * @deprecated use useFsFlag instead
  */
 export const useFsModification: {
   <T>(params: modificationsRequested<T>): T;
@@ -131,7 +131,7 @@ const fsModificationInfoSync = (args: {
 /**
  * Get the campaign modification information value matching the given key.
  * @param {string} key key which identify the modification.
- * @deprecated use useFsGetFlag instead
+ * @deprecated use useFsFlag instead
  */
 export const useFsModificationInfo: { (key: string): Modification | null } = (
   key: string
@@ -182,7 +182,7 @@ export const useFsFlag = <T extends unknown>(
 /**
  * Report this user has seen this modification. Report this user has seen these modifications.
  * @param params
- * @deprecated use useFsGetFlag instead
+ * @deprecated use useFsFlag instead
  * @returns
  */
 export const useFsActivate: {
@@ -220,7 +220,7 @@ export type UseFlagshipOutput = {
    *
    * @param params
    * @param activateAll
-   * @deprecated use useFsGetFlag instead
+   * @deprecated use getFlag instead
    */
   getModifications<T>(
     params: modificationsRequested<T>[],
@@ -230,16 +230,16 @@ export type UseFlagshipOutput = {
   /**
    *
    * @param key
-   * @deprecated use useFsGetFlag instead
+   * @deprecated use getFlag instead
    */
   getModificationInfo(key: string): Modification | null;
 
   /**
-   * @deprecated use useFsFetchFlags instead
+   * @deprecated use fetchFlags instead
    */
   synchronizeModifications(): Promise<void>;
   /**
-   * @deprecated use useFsGetFlag instead
+   * @deprecated use getFlag instead
    */
   activateModification: {
     (keys: { key: string }[]): Promise<void>;
