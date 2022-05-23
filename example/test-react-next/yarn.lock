@@ -99,10 +99,10 @@
     follow-redirects "^1.14.5"
     node-fetch "2.6.2"
 
-"@flagship.io/react-sdk@^3.0.4":
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/@flagship.io/react-sdk/-/react-sdk-3.0.4.tgz#a72ac8a70f5bf8725889d96aa7085d882089605b"
-  integrity sha512-IOTT0MAbi4uBTUw8GIcqXrMBBnJpiZpO+T1mSdTXfaWgvSWo9LAFqClJy5fMjfOMfMuN9+X0KrZ1IikmZmjDOQ==
+"@flagship.io/react-sdk@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@flagship.io/react-sdk/-/react-sdk-3.0.5.tgz#2900bc181a4e2e9cac8c157ba70b260732c558d0"
+  integrity sha512-Ar0u7m2Ih7gBcZUqV4F4e/ueFDDl7rjbO3+hiasG6aNQsObt4jVuIhmmmUShZj5SinZMbZx0Q9lZNYGWp9ujvA==
   dependencies:
     "@flagship.io/js-sdk" "^3.0.7"
     core-js "^3.18.1"
