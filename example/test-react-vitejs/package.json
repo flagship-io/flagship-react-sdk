@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@flagship.io/react-sdk": "^3.0.5",
+    "@flagship.io/react-sdk": "^3.0.6-alpha.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },

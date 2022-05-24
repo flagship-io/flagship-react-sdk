@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@flagship.io/react-sdk": "^3.0.5",
+    "@flagship.io/react-sdk": "^3.0.6-alpha.0",
     "next": "11.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2"
