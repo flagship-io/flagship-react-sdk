@@ -87,10 +87,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flagship.io/js-sdk@^3.0.7":
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.7.tgz#7709d25e933568aed4488f6c47fa0e7fe2b7fcaa"
-  integrity sha512-nzPPTUNndO6akRGJjKTDcGKz3hHwo7P9tPX+qnGMU1FTjDdx6kzRoV3tLnzf8+2fFY5ZL7cdIz6lxlzFwG2gsg==
+"@flagship.io/js-sdk@^3.0.8-alpha.0":
+  version "3.0.8-alpha.0"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.0.8-alpha.0.tgz#b5889cf4b89670b641cb3e059677b0f56512d008"
+  integrity sha512-smyQjVq0CTqpMKf52nj5nkIbfT9AeW6Fi/H34CT+YpOKY+RrDc/KlwQrwP0OHGpRbIouoNEXoR6Sxouuax0NMA==
   dependencies:
     "@babel/runtime" "^7.15.4"
     abort-controller "^3.0.0"
@@ -99,12 +99,12 @@
     follow-redirects "^1.14.5"
     node-fetch "2.6.2"
 
-"@flagship.io/react-sdk@^3.0.5":
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/@flagship.io/react-sdk/-/react-sdk-3.0.5.tgz#2900bc181a4e2e9cac8c157ba70b260732c558d0"
-  integrity sha512-Ar0u7m2Ih7gBcZUqV4F4e/ueFDDl7rjbO3+hiasG6aNQsObt4jVuIhmmmUShZj5SinZMbZx0Q9lZNYGWp9ujvA==
+"@flagship.io/react-sdk@^3.0.6-alpha.0":
+  version "3.0.6-alpha.0"
+  resolved "https://registry.yarnpkg.com/@flagship.io/react-sdk/-/react-sdk-3.0.6-alpha.0.tgz#185cb2f2a1cdebcb64af240411061b687ae6539d"
+  integrity sha512-nilsG88CVPQXTmZmpnnw1pyngf8aduordEBcsE/gcK0901Y/hLtCZQzhmZkxNpX36wvHqW09vU6yTxtndEernw==
   dependencies:
-    "@flagship.io/js-sdk" "^3.0.7"
+    "@flagship.io/js-sdk" "^3.0.8-alpha.0"
     core-js "^3.18.1"
     encoding "^0.1.13"
 

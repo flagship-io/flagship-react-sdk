@@ -1,4 +1,4 @@
-import { VisitorData, FlagshipProvider } from '@flagship.io/react-sdk';
+import { VisitorData, FlagshipProvider, DecisionMode } from '@flagship.io/react-sdk';
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import { ENV_ID, API_KEY } from '../config';
@@ -25,7 +25,7 @@ const Main = ()=>{
         value={{visitorData, setVisitorData }}
       >
       <FlagshipProvider
-        // decisionMode={ DecisionMode.BUCKETING }
+        decisionMode={ DecisionMode.BUCKETING }
         visitorData={visitorData}
         // fetchNow={false}
         envId={ENV_ID}

@@ -1,17 +1,17 @@
 {
   "name": "@flagship.io/react-sdk",
-  "version": "3.0.5",
+  "version": "3.0.6-alpha.0",
   "description": "Flagship REACT SDK",
-  "main": "dist/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/types/index.d.ts",
+  "main": "dist/index.node.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/**/*",
     "CONTRIBUTING.md",
     "README.md"
   ],
   "dependencies": {
-    "@flagship.io/js-sdk": "^3.0.7",
+    "@flagship.io/js-sdk": "^3.0.8-alpha.0",
     "core-js": "^3.18.1",
     "encoding": "^0.1.13"
   },
@@ -74,9 +74,10 @@
     "lint": "eslint . --ext .tsx",
     "clean": "rm -rf dist && mkdir dist",
     "build:esm": "BABEL_ENV=esm babel src --extensions '.ts,.tsx' --out-dir dist/esm --copy-files",
-    "build:types": "tsc --noEmit false --declaration --emitDeclarationOnly --outDir dist/types",
-    "build:prod": "NODE_ENV=production webpack",
-    "build": "npm run clean && npm run build:esm && npm run build:types && npm run build:prod"
+    "build:types": "tsc",
+    "build:prod": "NODE_ENV=production npm run build",
+    "prebuild": "npm run clean && tsc",
+    "build": "webpack"
   },
   "eslintConfig": {
     "extends": [

@@ -1,4 +1,3 @@
-import React from "react";
 import { useFlagship, useFsFlag, HitType, DEVICE_LOCALE } from "@flagship.io/react-sdk";
 import styles from "./styles/Home.module.css";
 import { useContext } from "react";
@@ -8,7 +7,6 @@ import { appContext } from "./main";
 let count = 0
 const Home = () => {
 
-  console.log('render home', count++);
   
   const context = useContext(appContext)
   const fs = useFlagship();
@@ -42,10 +40,10 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
-     
+
 
       <main className={styles.main}>
-      
+      <h1>ViteJS</h1>
       <div>
         <button
           style={{ width: 100, height: 50 }}
