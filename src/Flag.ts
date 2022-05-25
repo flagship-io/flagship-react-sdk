@@ -42,7 +42,7 @@ export class Flag<T> implements IFlag<T> {
         logWarn(Flagship.getConfig(), noVisitorMessage, 'exists')
         return false
       }
-      return !!(this.flag?.campaignId && this.flag.variationId && this.flag.variationGroupId)
+      return !!(this.flag.campaignId && this.flag.variationId && this.flag.variationGroupId)
     }
 
     userExposed (): Promise<void> {
@@ -69,12 +69,12 @@ export class Flag<T> implements IFlag<T> {
       }
 
       return new FlagMetadata({
-        campaignId: this.flag?.campaignId || '',
-        variationGroupId: this.flag?.variationGroupId || '',
-        variationId: this.flag?.variationId || '',
-        isReference: !!this.flag?.isReference,
-        campaignType: this.flag?.campaignType || '',
-        slug: this.flag?.slug
+        campaignId: this.flag.campaignId,
+        variationGroupId: this.flag.variationGroupId,
+        variationId: this.flag.variationId,
+        isReference: !!this.flag.isReference,
+        campaignType: this.flag.campaignType as string,
+        slug: this.flag.slug
       })
     }
 }
