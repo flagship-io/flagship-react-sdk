@@ -1,3 +1,5 @@
+[![Code coverage](https://github.com/flagship-io/flagship-react-sdk/actions/workflows/workflow.yml/badge.svg)](https://github.com/flagship-io/flagship-react-sdk/actions/workflows/workflow.yml) [![npm version](https://badge.fury.io/js/@flagship.io%2Freact-sdk.svg)](https://badge.fury.io/js/@flagship.io%2Freact-sdk)
+
 ## About Flagship
 
 ​
