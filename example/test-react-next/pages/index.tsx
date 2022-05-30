@@ -1,32 +1,37 @@
-import type { NextPage } from 'next'
-import {Flagship} from '@flagship.io/react-sdk'
-import { ENV_ID, API_KEY } from '../config'
-import Home from '../components/Home'
+import { HitType, useFlagship, useFsFlag } from "@flagship.io/react-sdk";
+import type { NextPage } from "next";
+import styles from "../styles/Home.module.css";
 
 const Index: NextPage = () => {
-return<Home/>
-}
+  const fs = useFlagship();
 
-// This gets called on every request
-export async function getServerSideProps() {
-  
-  const visitorData={
-    id:"my_visitor_id_1",
-    context:{
-      age:20,
-      cacheEnabled: true
-    },
-  }
+  const btnColorFlag = useFsFlag("js-qa-app", "default");
 
-  const flagship= Flagship.start(ENV_ID, API_KEY,{
-    fetchNow:false
-  })
+  const onSendHitClick = () => {
+    fs.hit.sendMultiple([
+      { type: HitType.PAGE_VIEW, documentLocation: "abtastylab" },
+      { type: HitType.SCREEN, documentLocation: "abtastylab" },
+    ]);
+  };
 
-  const visitor= flagship?.newVisitor({visitorId: visitorData.id, context: visitorData.context,})
+  return (
+    <div className={styles.container}>
+      <main className={styles.main}>
+        <p>flag key: js-qa-app</p>
+        <p>value: {btnColorFlag.getValue()}</p>
 
-  await visitor?.fetchFlags()
+        <button
+          style={{ width: 100, height: 50 }}
+          onClick={() => {
+            onSendHitClick();
+          }}
+        >
+          {" "}
+          Send hits
+        </button>
+      </main>
+    </div>
+  );
+};
 
-  // Pass data to the page via props
-  return { props: { initialFlagsData: visitor?.getFlagsDataArray(), visitorData} }
-}
-export default Index
+export default Index;
