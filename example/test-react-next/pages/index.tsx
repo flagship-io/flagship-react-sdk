@@ -5,7 +5,7 @@ import styles from "../styles/Home.module.css";
 const Index: NextPage = () => {
   const fs = useFlagship();
 
-  const btnColorFlag = useFsFlag("js-qa-app", "default");
+  const btnColorFlag = useFsFlag("my_flag_key", "default-value");
 
   const onSendHitClick = () => {
     fs.hit.sendMultiple([
@@ -17,7 +17,7 @@ const Index: NextPage = () => {
   return (
     <div className={styles.container}>
       <main className={styles.main}>
-        <p>flag key: js-qa-app</p>
+        <p>flag key: my_flag_key</p>
         <p>value: {btnColorFlag.getValue()}</p>
 
         <button
