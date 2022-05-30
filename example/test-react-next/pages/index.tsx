@@ -17,6 +17,7 @@ const Index: NextPage = () => {
   return (
     <div className={styles.container}>
       <main className={styles.main}>
+        <h1>Avoid flickering with NextJs SSR</h1>
         <p>flag key: my_flag_key</p>
         <p>value: {btnColorFlag.getValue()}</p>
 
