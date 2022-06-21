@@ -6,8 +6,8 @@ import React, {
   createContext,
   Dispatch,
   SetStateAction,
-  useRef,
-} from "react";
+  useRef
+} from 'react'
 import {
   BucketingDTO,
   CampaignDTO,
@@ -16,14 +16,13 @@ import {
   FlagshipStatus,
   IFlagshipConfig,
   primitive,
-  Visitor,
-} from "@flagship.io/js-sdk";
+  Visitor
+} from '@flagship.io/js-sdk'
 import {
   getModificationsFromCampaigns,
   logError,
-  useNonInitialEffect,
-  uuidV4,
-} from "./utils";
+  useNonInitialEffect
+} from './utils'
 
 export interface FsStatus {
   /**
@@ -124,12 +123,12 @@ export interface FlagshipProviderProps extends IFlagshipConfig {
 }
 
 const initStat: FsState = {
-  status: { isLoading: true, isSdkReady: false },
-};
+  status: { isLoading: true, isSdkReady: false }
+}
 
 export const FlagshipContext = createContext<FsContext>({
-  state: { ...initStat },
-});
+  state: { ...initStat }
+})
 
 export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   children,
@@ -162,41 +161,41 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   visitorCacheImplementation,
   hitCacheImplementation,
   disableCache,
-  language,
+  language
 }: FlagshipProviderProps) => {
-  let modifications = new Map<string, FlagDTO>();
+  let modifications = new Map<string, FlagDTO>()
   if (initialFlagsData && initialFlagsData.forEach) {
     initialFlagsData.forEach((flag) => {
-      modifications.set(flag.key, flag);
-    });
+      modifications.set(flag.key, flag)
+    })
   } else if (initialModifications && initialModifications.forEach) {
     initialModifications.forEach((modification) => {
-      modifications.set(modification.key, modification);
-    });
+      modifications.set(modification.key, modification)
+    })
   } else if (initialCampaigns) {
-    modifications = getModificationsFromCampaigns(initialCampaigns);
+    modifications = getModificationsFromCampaigns(initialCampaigns)
   }
 
-  const [state, setState] = useState<FsState>({ ...initStat, modifications });
-  const [lastModified, setLastModified] = useState<Date>();
-  const stateRef = useRef<FsState>();
-  stateRef.current = state;
+  const [state, setState] = useState<FsState>({ ...initStat, modifications })
+  const [lastModified, setLastModified] = useState<Date>()
+  const stateRef = useRef<FsState>()
+  stateRef.current = state
 
   useNonInitialEffect(() => {
     if (fetchFlagsOnBucketingUpdated) {
-      state.visitor?.fetchFlags();
+      state.visitor?.fetchFlags()
     }
-  }, [lastModified]);
+  }, [lastModified])
 
   useNonInitialEffect(() => {
-    createVisitor(true);
-  }, [JSON.stringify(visitorData)]);
+    createVisitor(true)
+  }, [JSON.stringify(visitorData)])
 
   useEffect(() => {
-    initSdk();
-  }, [envId, apiKey, decisionMode]);
+    initSdk()
+  }, [envId, apiKey, decisionMode])
 
-  function initializeState(param: {
+  function initializeState (param: {
     fsVisitor: Visitor;
     isLoading: boolean;
     isSdkReady: boolean;
@@ -205,12 +204,12 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       isSdkReady: param.isSdkReady,
       isLoading: param.isLoading,
       isVisitorDefined: !!param.fsVisitor,
-      lastRefresh: new Date().toISOString(),
-    };
+      lastRefresh: new Date().toISOString()
+    }
 
     setState((currentState) => {
       if (!currentState.status.firstInitSuccess) {
-        newStatus.firstInitSuccess = new Date().toISOString();
+        newStatus.firstInitSuccess = new Date().toISOString()
       }
 
       return {
@@ -220,39 +219,39 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
         config: Flagship.getConfig(),
         status: {
           ...currentState.status,
-          ...newStatus,
-        },
-      };
-    });
+          ...newStatus
+        }
+      }
+    })
 
-    return newStatus;
+    return newStatus
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onVisitorReady = (fsVisitor: Visitor, error: any) => {
     if (error) {
-      logError(Flagship.getConfig(), error.message || error, "onReady");
-      return;
+      logError(Flagship.getConfig(), error.message || error, 'onReady')
+      return
     }
 
     const newStatus = initializeState({
       fsVisitor,
       isSdkReady: true,
-      isLoading: false,
-    });
+      isLoading: false
+    })
 
     if (onUpdate) {
       onUpdate({
         fsModifications: fsVisitor.modifications,
         config: Flagship.getConfig(),
-        status: newStatus,
-      });
+        status: newStatus
+      })
     }
-  };
+  }
 
   const createVisitor = (fetchFlags = false) => {
     if (!visitorData) {
-      return;
+      return
     }
 
     const fsVisitor = Flagship.newVisitor({
@@ -262,56 +261,56 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       hasConsented: visitorData.hasConsented,
       initialCampaigns,
       initialModifications,
-      initialFlagsData,
-    });
+      initialFlagsData
+    })
 
-    fsVisitor?.on("ready", (error) => {
-      onVisitorReady(fsVisitor, error);
-    });
+    fsVisitor?.on('ready', (error) => {
+      onVisitorReady(fsVisitor, error)
+    })
 
     if (!fetchNow && fsVisitor && !fetchFlags) {
       initializeState({
         fsVisitor,
         isSdkReady: true,
-        isLoading: false,
-      });
+        isLoading: false
+      })
     }
     if (fetchFlags && !fetchNow) {
-      fsVisitor?.fetchFlags();
+      fsVisitor?.fetchFlags()
     }
-  };
+  }
   const statusChanged = (status: FlagshipStatus) => {
     if (statusChangedCallback) {
-      statusChangedCallback(status);
+      statusChangedCallback(status)
     }
 
     switch (status) {
       case FlagshipStatus.STARTING:
         if (status === FlagshipStatus.STARTING && onInitStart) {
-          onInitStart();
+          onInitStart()
         }
-        break;
+        break
       case FlagshipStatus.READY_PANIC_ON:
       case FlagshipStatus.READY:
         if (onInitDone) {
-          onInitDone();
+          onInitDone()
         }
 
-        createVisitor();
+        createVisitor()
 
-        break;
+        break
       case FlagshipStatus.NOT_INITIALIZED:
-        setState((prev) => ({ ...prev, config: Flagship.getConfig() }));
-        break;
+        setState((prev) => ({ ...prev, config: Flagship.getConfig() }))
+        break
     }
-  };
+  }
 
   const onBucketingLastModified = (lastUpdate: Date) => {
     if (onBucketingUpdated) {
-      onBucketingUpdated(lastUpdate);
+      onBucketingUpdated(lastUpdate)
     }
-    setLastModified(lastUpdate);
-  };
+    setLastModified(lastUpdate)
+  }
 
   const initSdk = () => {
     Flagship.start(envId, apiKey, {
@@ -333,26 +332,26 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       visitorCacheImplementation,
       hitCacheImplementation,
       disableCache,
-      language,
-    });
-  };
+      language
+    })
+  }
   const handleDisplay = (): React.ReactNode => {
-    const isFirstInit = !state.visitor;
+    const isFirstInit = !state.visitor
     if (state.status.isLoading && loadingComponent && isFirstInit && fetchNow) {
-      return <>{loadingComponent}</>;
+      return <>{loadingComponent}</>
     }
-    return <>{children}</>;
-  };
+    return <>{children}</>
+  }
   return (
     <FlagshipContext.Provider value={{ state, setState }}>
       {handleDisplay()}
     </FlagshipContext.Provider>
-  );
-};
+  )
+}
 
 FlagshipProvider.defaultProps = {
   activateDeduplicationTime: 2,
   hitDeduplicationTime: 2,
   fetchNow: true,
-  language: 1,
-};
+  language: 1
+}

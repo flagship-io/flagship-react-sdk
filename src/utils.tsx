@@ -58,7 +58,6 @@ export function logWarn (
   config.logManager.warning(message, tag)
 }
 
-
 export const getModificationsFromCampaigns = (
   campaigns: Array<CampaignDTO>
 ): Map<string, Modification> => {
@@ -124,6 +123,7 @@ export function hasSameType (flagValue:unknown, defaultValue:unknown):boolean {
   return true
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function sprintf (format: string, ...value: any[]): string {
   let formatted = format
   for (let i = 0; i < value.length; i++) {

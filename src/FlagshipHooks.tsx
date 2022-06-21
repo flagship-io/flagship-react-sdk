@@ -171,7 +171,7 @@ export const useFsFlag = <T extends unknown>(
 ): IFlag<T> => {
   const { state } = useContext(FlagshipContext)
   const { visitor } = state
-  
+
   if (!visitor) {
     return new Flag(defaultValue, key, state.modifications)
   }

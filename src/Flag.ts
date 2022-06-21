@@ -1,4 +1,4 @@
-import Flagship, { FlagDTO, FlagMetadata, IFlag, IFlagMetadata, LogLevel } from '@flagship.io/js-sdk'
+import Flagship, { FlagDTO, FlagMetadata, IFlag, IFlagMetadata } from '@flagship.io/js-sdk'
 import { GET_FLAG_CAST_ERROR, GET_METADATA_CAST_ERROR, noVisitorMessage } from './constants'
 import { hasSameType, logInfo, logWarn, sprintf } from './utils'
 
@@ -16,7 +16,7 @@ export class Flag<T> implements IFlag<T> {
       this.flag = flagsData?.get(key)
     }
 
-    private NotSameType(){
+    private NotSameType () {
       return this.defaultValue !== null && this.defaultValue !== undefined && !hasSameType(this.flag?.value, this.defaultValue)
     }
 
@@ -30,7 +30,7 @@ export class Flag<T> implements IFlag<T> {
         logInfo(
           Flagship.getConfig(),
           sprintf(GET_FLAG_CAST_ERROR, this.key),
-          "getValue"
+          'getValue'
         )
         return this.defaultValue
       }
@@ -49,7 +49,7 @@ export class Flag<T> implements IFlag<T> {
       if (!this.flag) {
         logWarn(Flagship.getConfig(), noVisitorMessage, 'userExposed')
       }
-      
+
       return Promise.resolve()
     }
 
@@ -57,7 +57,7 @@ export class Flag<T> implements IFlag<T> {
       const functionName = 'metadata'
       if (!this.flag) {
         logWarn(Flagship.getConfig(), noVisitorMessage, functionName)
-      return FlagMetadata.Empty()
+        return FlagMetadata.Empty()
       }
       if (this.NotSameType()) {
         logInfo(
