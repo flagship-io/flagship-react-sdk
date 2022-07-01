@@ -4,11 +4,11 @@
     "noImplicitAny": true,
     "esModuleInterop": true,
     "strict": true,
-    "module": "ESNext",
+    "module": "ES6",
     "declaration": true,
-    "lib": ["esnext", "dom"],
+    "lib": ["ES6", "dom"],
     "moduleResolution": "Node",
-    "target": "es5",
+    "target": "ES6",
     "jsx": "react"
   },
   "include": ["src/**/*"]
