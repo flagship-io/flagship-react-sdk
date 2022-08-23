@@ -136,32 +136,18 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   envId,
   apiKey,
   decisionMode,
-  decisionApiUrl,
-  timeout,
-  logLevel,
-  statusChangedCallback,
-  logManager,
-  pollingInterval,
   visitorData,
   onInitStart,
   onInitDone,
-  onBucketingSuccess,
-  onBucketingFail,
   loadingComponent,
+  statusChangedCallback,
   onBucketingUpdated,
   onUpdate,
-  enableClientCache,
-  initialBucketing,
   initialCampaigns,
   initialModifications,
   initialFlagsData,
   fetchFlagsOnBucketingUpdated,
-  activateDeduplicationTime,
-  hitDeduplicationTime,
-  visitorCacheImplementation,
-  hitCacheImplementation,
-  disableCache,
-  language
+  ...props
 }: FlagshipProviderProps) => {
   let modifications = new Map<string, FlagDTO>()
   if (initialFlagsData && initialFlagsData.forEach) {
@@ -316,23 +302,9 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     Flagship.start(envId, apiKey, {
       decisionMode,
       fetchNow,
-      timeout,
-      logLevel,
       statusChangedCallback: statusChanged,
-      logManager,
-      pollingInterval,
-      onBucketingFail,
-      onBucketingSuccess,
-      enableClientCache,
-      decisionApiUrl,
       onBucketingUpdated: onBucketingLastModified,
-      initialBucketing,
-      activateDeduplicationTime,
-      hitDeduplicationTime,
-      visitorCacheImplementation,
-      hitCacheImplementation,
-      disableCache,
-      language
+      ...props
     })
   }
   const handleDisplay = (): React.ReactNode => {
