@@ -14,6 +14,43 @@ module.exports = merge(common(), {
       type: 'commonjs2'
     }
   },
+  module: {
+    rules: [
+      {
+        test: /\.(js|ts|tsx|jsx)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              targets: 'node >= 10',
+              presets: [
+                '@babel/preset-typescript',
+                [
+                  '@babel/preset-env',
+                  {
+                    useBuiltIns: 'usage',
+                    corejs: '3',
+                    modules: 'commonjs'
+                  }
+                ],
+                '@babel/preset-react'
+              ],
+              plugins: [
+                '@babel/proposal-class-properties',
+                [
+                  'add-module-exports',
+                  {
+                    addDefaultProperty: true
+                  }
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
   externals: [
     nodeExternals()
   ]
