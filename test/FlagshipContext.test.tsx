@@ -4,7 +4,7 @@ import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import { FlagshipProvider } from '../src/FlagshipContext'
 import { SpyInstance, Mock } from 'jest-mock'
-
+import { useFlagship } from '../src/FlagshipHooks'
 import Flagship, { DecisionMode, Modification } from '@flagship.io/js-sdk'
 
 function sleep (ms: number): Promise<unknown> {
@@ -37,7 +37,8 @@ jest.mock('@flagship.io/js-sdk', () => {
   let fistStart = true
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mockStart.mockImplementation(
-    (apiKey, envId, { onBucketingUpdated, statusChangedCallback }: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (_apiKey, _envId, { onBucketingUpdated, statusChangedCallback }: any) => {
       statusChangedCallback(1)
       statusChangedCallback(4)
       if (fistStart) {
@@ -54,7 +55,7 @@ jest.mock('@flagship.io/js-sdk', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const EventOn: Mock<void, [string, (error?: any) => void]> = jest.fn()
 
-    EventOn.mockImplementation((e, callback) => {
+    EventOn.mockImplementation((_e, callback) => {
       if (callback) {
         OnReadyCallback = callback
       }
@@ -333,6 +334,211 @@ describe('Test visitorData null', () => {
       expect(statusChangedCallback).toBeCalledTimes(2)
       expect(onInitStart).toBeCalledTimes(1)
       expect(onInitDone).toBeCalledTimes(1)
+    })
+  })
+})
+
+describe('Test initial data', () => {
+  const visitorData = {
+    id: 'visitor_id',
+    context: {},
+    isAuthenticated: false,
+    hasConsented: true
+  }
+  const envId = 'EnvId'
+  const apiKey = 'apiKey'
+
+  const ChildComponent = () => {
+    const fs = useFlagship()
+    return <div>{fs.modifications.map(item => (<div data-testid={item.key} key={item.key}>{item.value}</div>))}</div>
+  }
+
+  it('test initialFlagsData ', async () => {
+    const props = {
+      envId,
+      apiKey,
+      decisionMode: DecisionMode.DECISION_API,
+      visitorData,
+      initialFlagsData: [
+        {
+          key: 'key1',
+          campaignId: 'campaignId1',
+          variationGroupId: 'variationGroupId2',
+          variationId: 'variationId3',
+          isReference: false,
+          campaignType: 'ab',
+          value: 'flagValue1'
+
+        },
+        {
+          key: 'key2',
+          campaignId: 'campaignId2',
+          variationGroupId: 'variationGroupId2',
+          variationId: 'variationId3',
+          isReference: false,
+          campaignType: 'ab',
+          value: 'flagValue2'
+
+        }
+      ]
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { getByTestId } = render(
+      <FlagshipProvider {...props}>
+        <ChildComponent/>
+      </FlagshipProvider>
+    )
+
+    await waitFor(() => {
+      expect(mockStart).toBeCalledTimes(1)
+      expect(mockStart).toBeCalledWith(
+        envId,
+        apiKey,
+        expect.objectContaining({
+          decisionMode: DecisionMode.DECISION_API
+        })
+      )
+      expect(newVisitor).toBeCalledTimes(1)
+      expect(newVisitor).toBeCalledWith(expect.objectContaining({
+        initialFlagsData: props.initialFlagsData
+      }))
+
+      expect(getByTestId('key1').textContent).toBe('flagValue1')
+      expect(getByTestId('key2').textContent).toBe('flagValue2')
+    })
+  })
+
+  it('test initialModifications ', async () => {
+    const props = {
+      envId,
+      apiKey,
+      decisionMode: DecisionMode.DECISION_API,
+      visitorData,
+      initialModifications: [
+        {
+          key: 'key1',
+          campaignId: 'campaignId1',
+          variationGroupId: 'variationGroupId2',
+          variationId: 'variationId3',
+          isReference: false,
+          campaignType: 'ab',
+          value: 'flagValue1'
+
+        },
+        {
+          key: 'key2',
+          campaignId: 'campaignId2',
+          variationGroupId: 'variationGroupId2',
+          variationId: 'variationId3',
+          isReference: false,
+          campaignType: 'ab',
+          value: 'flagValue2'
+
+        }
+      ]
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { getByTestId } = render(
+      <FlagshipProvider {...props}>
+        <ChildComponent/>
+      </FlagshipProvider>
+    )
+
+    await waitFor(() => {
+      expect(mockStart).toBeCalledTimes(1)
+      expect(mockStart).toBeCalledWith(
+        envId,
+        apiKey,
+        expect.objectContaining({
+          decisionMode: DecisionMode.DECISION_API
+        })
+      )
+      expect(newVisitor).toBeCalledTimes(1)
+      expect(newVisitor).toBeCalledWith(expect.objectContaining({
+        initialModifications: props.initialModifications
+      }))
+      expect(getByTestId('key1').textContent).toBe('flagValue1')
+      expect(getByTestId('key2').textContent).toBe('flagValue2')
+    })
+  })
+
+  it('test initialCampaigns ', async () => {
+    const props = {
+      envId,
+      apiKey,
+      decisionMode: DecisionMode.DECISION_API,
+      visitorData,
+      initialCampaigns: [
+        {
+          id: 'c1ndsu87m030114t8uu0',
+          variationGroupId: 'c1ndta129mp0114nbtn0',
+          variation: {
+            id: 'c1ndta129mp0114nbtng',
+            modifications: {
+              type: 'FLAG',
+              value: {
+                background: 'rouge bordeau',
+                btnColor: 'blue',
+                keyBoolean: false,
+                keyNumber: 558
+              }
+            },
+            reference: false
+          }
+        }
+      ]
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { getByTestId } = render(
+      <FlagshipProvider {...props}>
+        <ChildComponent/>
+      </FlagshipProvider>
+    )
+
+    await waitFor(() => {
+      expect(newVisitor).toBeCalledTimes(1)
+      expect(newVisitor).toBeCalledWith(expect.objectContaining({
+        initialCampaigns: props.initialCampaigns
+      }))
+
+      expect(getByTestId('btnColor').textContent).toBe('blue')
+    })
+  })
+
+  it('test initialCampaigns ', async () => {
+    const ChildComponent = () => {
+      const fs = useFlagship()
+      return <div>
+        <div data-testid="status">{String(fs.status.isSdkReady)}</div>
+        <div data-testid="isLoading">{String(fs.status.isLoading)}</div>
+      </div>
+    }
+
+    mockStart.mockImplementationOnce(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (_apiKey, _envId, { statusChangedCallback }: any) => {
+        statusChangedCallback(0)
+      }
+    )
+
+    const props = {
+      envId,
+      apiKey,
+      decisionMode: DecisionMode.DECISION_API,
+      visitorData
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { getByTestId } = render(
+      <FlagshipProvider {...props}>
+        <ChildComponent/>
+      </FlagshipProvider>
+    )
+
+    await waitFor(() => {
+      expect(newVisitor).toBeCalledTimes(0)
+      expect(getByTestId('status').textContent).toEqual('false')
+      expect(getByTestId('isLoading').textContent).toEqual('false')
     })
   })
 })
