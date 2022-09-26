@@ -286,7 +286,14 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
 
         break
       case FlagshipStatus.NOT_INITIALIZED:
-        setState((prev) => ({ ...prev, config: Flagship.getConfig() }))
+        setState((prev) => ({
+          ...prev,
+          status: {
+            ...prev.status,
+            isLoading: false
+          },
+          config: Flagship.getConfig()
+        }))
         break
     }
   }

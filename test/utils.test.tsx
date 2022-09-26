@@ -158,6 +158,7 @@ describe('test logWarn function', () => {
 })
 
 describe('test getModificationsFromCampaigns', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getNull = (): any => null
   it('should ', () => {
     const modifications = getModificationsFromCampaigns(getNull())
@@ -181,7 +182,6 @@ describe('test uuidV4', () => {
   })
 })
 
-
 describe('test sprintf function', () => {
   it('should ', () => {
     const textToTest = 'My name is {0} {1}'
@@ -192,20 +192,19 @@ describe('test sprintf function', () => {
 
 describe('test hasSameType function', () => {
   it('should ', () => {
-    
-    let output = hasSameType("value1", "value2")
+    let output = hasSameType('value1', 'value2')
     expect(output).toBeTruthy()
 
-    output = hasSameType(1, "value2")
+    output = hasSameType(1, 'value2')
     expect(output).toBeFalsy()
 
-    output = hasSameType([1,2], [1,5])
+    output = hasSameType([1, 2], [1, 5])
     expect(output).toBeTruthy()
 
-    output = hasSameType({}, {key:"value"})
+    output = hasSameType({}, { key: 'value' })
     expect(output).toBeTruthy()
 
-    output = hasSameType([1,2], {})
+    output = hasSameType([1, 2], {})
     expect(output).toBeFalsy()
   })
 })

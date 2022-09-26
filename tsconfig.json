@@ -11,5 +11,5 @@
     "target": "ES6",
     "jsx": "react"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "setupTests.ts"]
 }
