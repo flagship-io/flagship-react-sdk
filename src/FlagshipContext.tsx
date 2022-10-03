@@ -23,6 +23,7 @@ import {
   logError,
   useNonInitialEffect
 } from './utils'
+import { version as SDK_VERSION } from './sdkVersion'
 
 export interface FsStatus {
   /**
@@ -332,5 +333,6 @@ FlagshipProvider.defaultProps = {
   activateDeduplicationTime: 2,
   hitDeduplicationTime: 2,
   fetchNow: true,
-  language: 1
+  language: 1,
+  sdkVersion: SDK_VERSION
 }
