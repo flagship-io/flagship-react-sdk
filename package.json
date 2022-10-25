@@ -13,7 +13,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@flagship.io/js-sdk": "^3.0.14",
+    "@flagship.io/js-sdk": "^3.0.15",
     "core-js": "^3.24.1",
     "encoding": "^0.1.13"
   },
