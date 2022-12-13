@@ -330,7 +330,6 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
 }
 
 FlagshipProvider.defaultProps = {
-  activateDeduplicationTime: 2,
   hitDeduplicationTime: 2,
   fetchNow: true,
   language: 1,

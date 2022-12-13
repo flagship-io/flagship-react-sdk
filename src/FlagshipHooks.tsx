@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import {
+import Flagship, {
   FlagDTO,
   HitAbstract,
   HitShape,
@@ -286,7 +286,17 @@ export type UseFlagshipOutput = {
    * @param defaultValue
    */
   getFlag<T>(key: string, defaultValue: T): IFlag<T>;
+  /**
+   * In DecisionApi Mode this function calls the Flagship Decision API to run campaign assignments according to the current user context and retrieve applicable flags.
+   *
+   * In bucketing Mode, it checks bucketing file, validates campaigns targeting the visitor, assigns a variation and retrieve applicable flags.
+   */
   fetchFlags: () => Promise<void>;
+
+  /**
+   * When called, it will batch and send all hits that are in the pool before the application is closed
+   */
+  close():Promise<void>
 };
 
 export const useFlagship = (): UseFlagshipOutput => {
@@ -423,6 +433,10 @@ export const useFlagship = (): UseFlagshipOutput => {
     visitor.setConsent(hasConsented)
   }
 
+  async function close ():Promise<void> {
+    await Flagship.close()
+  }
+
   return {
     visitorId: visitor?.visitorId,
     anonymousId: visitor?.anonymousId,
@@ -445,6 +459,7 @@ export const useFlagship = (): UseFlagshipOutput => {
       sendMultiple: fsSendHits
     },
     getFlag,
-    fetchFlags
+    fetchFlags,
+    close
   }
 }
