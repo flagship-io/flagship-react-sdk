@@ -1,15 +1,14 @@
-import "../styles/globals.css";
-import type { AppContext, AppProps } from "next/app";
-import { Flagship, FlagshipProvider } from "@flagship.io/react-sdk";
-import { ENV_ID, API_KEY } from "../config";
-import React from "react";
-import App from "next/app";
+import '../styles/globals.css'
+import type { AppContext, AppProps } from 'next/app'
+import { Flagship, FlagshipProvider } from '@flagship.io/react-sdk'
+import { ENV_ID, API_KEY } from '../config'
+import App from 'next/app'
 
-function MyApp({
+function MyApp ({
   Component,
   pageProps,
   initialFlagsData,
-  initialVisitorData,
+  initialVisitorData
 }: AppProps) {
   return (
     <FlagshipProvider
@@ -22,39 +21,39 @@ function MyApp({
     >
       <Component {...pageProps} />
     </FlagshipProvider>
-  );
+  )
 }
 
 MyApp.getInitialProps = async (appContext: AppContext) => {
-  const appProps = await App.getInitialProps(appContext);
+  const appProps = await App.getInitialProps(appContext)
 
-  //Start the Flagship SDK
+  // Start the Flagship SDK
   const flagship = Flagship.start(ENV_ID, API_KEY, {
-    fetchNow: false,
-  });
+    fetchNow: false
+  })
 
   const initialVisitorData = {
-    id: "my_visitor_id",
+    id: 'my_visitor_id',
     context: {
-      any: "value",
-    },
-  };
+      any: 'value'
+    }
+  }
 
   // Create a new visitor
   const visitor = flagship?.newVisitor({
     visitorId: initialVisitorData.id,
-    context: initialVisitorData.context,
-  });
+    context: initialVisitorData.context
+  })
 
-  //Fetch flags
-  await visitor?.fetchFlags();
+  // Fetch flags
+  await visitor?.fetchFlags()
 
   // Pass data to the page via props
   return {
     ...appProps,
     initialFlagsData: visitor?.getFlagsDataArray(),
-    initialVisitorData,
-  };
-};
+    initialVisitorData
+  }
+}
 
-export default MyApp;
+export default MyApp

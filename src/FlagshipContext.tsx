@@ -1,3 +1,5 @@
+'use client'
+
 // eslint-disable-next-line no-use-before-define
 import React, {
   useState,
@@ -133,7 +135,6 @@ export const FlagshipContext = createContext<FsContext>({
 
 export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   children,
-  fetchNow,
   envId,
   apiKey,
   decisionMode,
@@ -148,6 +149,10 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   initialModifications,
   initialFlagsData,
   fetchFlagsOnBucketingUpdated,
+  hitDeduplicationTime = 2,
+  fetchNow = true,
+  language = 1,
+  sdkVersion = SDK_VERSION,
   ...props
 }: FlagshipProviderProps) => {
   let modifications = new Map<string, FlagDTO>()
@@ -312,6 +317,9 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       fetchNow,
       statusChangedCallback: statusChanged,
       onBucketingUpdated: onBucketingLastModified,
+      hitDeduplicationTime,
+      language,
+      sdkVersion,
       ...props
     })
   }
@@ -327,11 +335,4 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       {handleDisplay()}
     </FlagshipContext.Provider>
   )
-}
-
-FlagshipProvider.defaultProps = {
-  hitDeduplicationTime: 2,
-  fetchNow: true,
-  language: 1,
-  sdkVersion: SDK_VERSION
 }
