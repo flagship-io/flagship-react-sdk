@@ -1,6 +1,6 @@
 {
   "name": "@flagship.io/react-sdk",
-  "version": "3.1.0",
+  "version": "3.1.1-alpha.1",
   "license": "Apache-2.0",
   "description": "Flagship REACT SDK",
   "main": "dist/index.node.js",
@@ -12,8 +12,14 @@
     "CONTRIBUTING.md",
     "README.md"
   ],
+  "exports": {
+    "types": "./dist/src/index.d.ts",
+    "import": "./dist/src/index.js",
+    "require": "./dist/index.node.js",
+    "react-native": "./dist/src/index.js"
+  },
   "dependencies": {
-    "@flagship.io/js-sdk": "^3.1.0",
+    "@flagship.io/js-sdk": "^3.1.1-alpha.6",
     "core-js": "^3.24.1",
     "encoding": "^0.1.13"
   },
