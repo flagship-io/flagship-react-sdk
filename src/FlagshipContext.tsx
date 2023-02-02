@@ -11,6 +11,7 @@ import React, {
 import {
   BucketingDTO,
   CampaignDTO,
+  DecisionMode,
   FlagDTO,
   Flagship,
   FlagshipStatus,
@@ -136,7 +137,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   fetchNow,
   envId,
   apiKey,
-  decisionMode,
+  decisionMode = DecisionMode.DECISION_API,
   visitorData,
   onInitStart,
   onInitDone,
