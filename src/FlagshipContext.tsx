@@ -134,7 +134,6 @@ export const FlagshipContext = createContext<FsContext>({
 
 export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   children,
-  fetchNow,
   envId,
   apiKey,
   decisionMode = DecisionMode.DECISION_API,
@@ -149,6 +148,10 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   initialModifications,
   initialFlagsData,
   fetchFlagsOnBucketingUpdated,
+  hitDeduplicationTime = 2,
+  fetchNow = true,
+  language = 1,
+  sdkVersion = SDK_VERSION,
   ...props
 }: FlagshipProviderProps) => {
   let modifications = new Map<string, FlagDTO>()
@@ -309,10 +312,14 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
 
   const initSdk = () => {
     Flagship.start(envId, apiKey, {
-      decisionMode,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decisionMode: decisionMode as any,
       fetchNow,
       statusChangedCallback: statusChanged,
       onBucketingUpdated: onBucketingLastModified,
+      hitDeduplicationTime,
+      language,
+      sdkVersion,
       ...props
     })
   }
