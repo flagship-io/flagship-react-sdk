@@ -1022,10 +1022,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flagship.io/js-sdk@^3.1.1":
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.1.1.tgz#07ccf29154d6c1bb18d9ec87d569da5693d4ad9f"
-  integrity sha512-g8sty5hmwkfqd//8tq90vL5kOjPkCnJpjLVti7joSMOyctL6j9KXhOTA2gfHqwqm79vCwRdBEcrS422kqoNnXg==
+"@flagship.io/js-sdk@^3.1.2-alpha.0":
+  version "3.1.2-alpha.0"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.1.2-alpha.0.tgz#142e76407d585c030766749a3a96f3049832550a"
+  integrity sha512-A5AVKBjLO7Jg0n2G+Pz8u5rDoeAS9I7KDqtrlB4MgyWsdjTeoyujUjkjNp/5Z4brkH0pmY7rJzen8Ko5zNZInA==
   dependencies:
     "@babel/runtime" "^7.18.9"
     abort-controller "^3.0.0"
