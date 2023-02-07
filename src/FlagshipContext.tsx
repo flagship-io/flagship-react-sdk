@@ -11,6 +11,7 @@ import React, {
 import {
   BucketingDTO,
   CampaignDTO,
+  DecisionMode,
   FlagDTO,
   Flagship,
   FlagshipStatus,
@@ -133,10 +134,9 @@ export const FlagshipContext = createContext<FsContext>({
 
 export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   children,
-  fetchNow,
   envId,
   apiKey,
-  decisionMode,
+  decisionMode = DecisionMode.DECISION_API,
   visitorData,
   onInitStart,
   onInitDone,
@@ -148,6 +148,10 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   initialModifications,
   initialFlagsData,
   fetchFlagsOnBucketingUpdated,
+  hitDeduplicationTime = 2,
+  fetchNow = true,
+  language = 1,
+  sdkVersion = SDK_VERSION,
   ...props
 }: FlagshipProviderProps) => {
   let modifications = new Map<string, FlagDTO>()
@@ -308,10 +312,14 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
 
   const initSdk = () => {
     Flagship.start(envId, apiKey, {
-      decisionMode,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decisionMode: decisionMode as any,
       fetchNow,
       statusChangedCallback: statusChanged,
       onBucketingUpdated: onBucketingLastModified,
+      hitDeduplicationTime,
+      language,
+      sdkVersion,
       ...props
     })
   }
