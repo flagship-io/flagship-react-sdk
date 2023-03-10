@@ -53,6 +53,14 @@ export class Flag<T> implements IFlag<T> {
       return Promise.resolve()
     }
 
+    visitorExposed () : Promise<void> {
+      if (!this.flag) {
+        logWarn(Flagship.getConfig(), noVisitorMessage, 'visitorExposed')
+      }
+
+      return Promise.resolve()
+    }
+
     get metadata ():IFlagMetadata {
       const functionName = 'metadata'
       if (!this.flag) {
