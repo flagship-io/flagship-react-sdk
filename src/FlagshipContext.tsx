@@ -179,7 +179,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   }, [lastModified])
 
   useNonInitialEffect(() => {
-    createVisitor(true)
+    updateVisitor()
   }, [JSON.stringify(visitorData)])
 
   useEffect(() => {
@@ -240,11 +240,32 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     }
   }
 
-  const createVisitor = (fetchFlags = false) => {
+  function updateVisitor () {
     if (!visitorData) {
       return
     }
+    if (!state.visitor) {
+      createVisitor()
+      return
+    }
 
+    if (visitorData.hasConsented !== state.visitor.hasConsented) {
+      state.visitor.setConsent(visitorData.hasConsented as boolean)
+    }
+    if (visitorData.context !== state.visitor.context) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      state.visitor.updateContext(visitorData.context as any)
+    }
+    if (!state.visitor.anonymousId && visitorData.isAuthenticated) {
+      state.visitor.authenticate(visitorData.id as string)
+    }
+    state.visitor.fetchFlags()
+  }
+
+  const createVisitor = () => {
+    if (!visitorData) {
+      return
+    }
     const fsVisitor = Flagship.newVisitor({
       visitorId: visitorData.id,
       context: visitorData.context,
@@ -259,15 +280,12 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       onVisitorReady(fsVisitor, error)
     })
 
-    if (!fetchNow && fsVisitor && !fetchFlags) {
+    if (!fetchNow) {
       initializeState({
         fsVisitor,
         isSdkReady: true,
         isLoading: false
       })
-    }
-    if (fetchFlags && !fetchNow) {
-      fsVisitor?.fetchFlags()
     }
   }
   const statusChanged = (status: FlagshipStatus) => {
