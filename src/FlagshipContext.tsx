@@ -252,12 +252,14 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     if (visitorData.hasConsented !== state.visitor.hasConsented) {
       state.visitor.setConsent(visitorData.hasConsented as boolean)
     }
-    if (visitorData.context !== state.visitor.context) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      state.visitor.updateContext(visitorData.context as any)
-    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    state.visitor.updateContext(visitorData.context as any)
+
     if (!state.visitor.anonymousId && visitorData.isAuthenticated) {
       state.visitor.authenticate(visitorData.id as string)
+    }
+    if (state.visitor.anonymousId && !visitorData.isAuthenticated) {
+      state.visitor.unauthenticate()
     }
     state.visitor.fetchFlags()
   }
