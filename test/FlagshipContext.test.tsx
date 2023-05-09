@@ -3,7 +3,7 @@ import { jest, expect, it, describe } from '@jest/globals'
 import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import { FlagshipProvider } from '../src/FlagshipContext'
-import { SpyInstance, Mock } from 'jest-mock'
+import { SpyInstance } from 'jest-mock'
 import { useFlagship } from '../src/FlagshipHooks'
 import Flagship, { DecisionMode, Modification } from '@flagship.io/js-sdk'
 
@@ -12,15 +12,13 @@ function sleep (ms: number): Promise<unknown> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockStart = Flagship.start as unknown as SpyInstance<any, unknown[]>
+const mockStart = Flagship.start as unknown as SpyInstance<typeof Flagship.start>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const newVisitor = Flagship.newVisitor as unknown as SpyInstance<any, unknown[]>
+const newVisitor = Flagship.newVisitor as unknown as SpyInstance<typeof Flagship.newVisitor>
 const modifications = new Map<string, Modification>()
-
-const synchronizeModifications = jest.fn()
 const updateContext = jest.fn()
 const unauthenticate = jest.fn()
-const authenticate: Mock<void, [string]> = jest.fn()
+const authenticate = jest.fn<(params: string)=>void>()
 const setConsent = jest.fn()
 const clearContext = jest.fn()
 const fetchFlags = jest.fn()
@@ -53,7 +51,7 @@ jest.mock('@flagship.io/js-sdk', () => {
 
   newVisitor.mockImplementation(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const EventOn: Mock<void, [string, (error?: any) => void]> = jest.fn()
+    const EventOn = jest.fn<(e:string, callback:(error?: any) => void)=>void>()
 
     EventOn.mockImplementation((_e, callback) => {
       if (callback) {
@@ -61,23 +59,17 @@ jest.mock('@flagship.io/js-sdk', () => {
       }
     })
 
-    synchronizeModifications.mockImplementation(async () => {
-      await sleep(500)
-      if (OnReadyCallback) {
-        OnReadyCallback(onEventError ? new Error() : null)
-      }
-    })
-
     fetchFlags.mockImplementation(async () => {
       await sleep(500)
       if (OnReadyCallback) {
+        console.log('onEventError', onEventError)
+
         OnReadyCallback(onEventError ? new Error() : null)
       }
     })
 
     const newVisitor = {
       anonymousId: '',
-      synchronizeModifications,
       fetchFlags,
       on: EventOn,
       modifications,
@@ -116,21 +108,22 @@ describe('Name of the group', () => {
   const onInitDone = jest.fn()
   const onUpdate = jest.fn()
   const onBucketingUpdated = jest.fn()
+  const props = {
+    envId,
+    apiKey,
+    decisionMode: DecisionMode.DECISION_API,
+    visitorData,
+    statusChangedCallback,
+    onInitStart,
+    onInitDone,
+    onUpdate,
+    fetchNow: true,
+    onBucketingUpdated,
+    loadingComponent: <div></div>,
+    fetchFlagsOnBucketingUpdated: true
+  }
 
   it('should ', async () => {
-    const props = {
-      envId,
-      apiKey,
-      decisionMode: DecisionMode.DECISION_API,
-      visitorData,
-      statusChangedCallback,
-      onInitStart,
-      onInitDone,
-      onUpdate,
-      onBucketingUpdated,
-      loadingComponent: <div></div>,
-      fetchFlagsOnBucketingUpdated: true
-    }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { rerender } = render(
       <FlagshipProvider {...props}>
@@ -177,16 +170,7 @@ describe('Name of the group', () => {
 
     await waitFor(() => {
       expect(mockStart).toBeCalledTimes(1)
-
-      expect(newVisitor).toBeCalledTimes(2)
-
-      expect(newVisitor).toBeCalledWith({
-        visitorId: visitorData.id,
-        context: visitorData.context,
-        isAuthenticated: true,
-        hasConsented: visitorData.hasConsented
-      })
-
+      expect(authenticate).toBeCalledTimes(1)
       expect(fetchFlags).toBeCalledTimes(2)
       expect(onBucketingUpdated).toBeCalledTimes(1)
       expect(statusChangedCallback).toBeCalledTimes(2)
@@ -207,18 +191,29 @@ describe('Name of the group', () => {
 
     await waitFor(() => {
       expect(mockStart).toBeCalledTimes(1)
-      expect(newVisitor).toBeCalledTimes(3)
+      expect(unauthenticate).toBeCalledTimes(1)
+      expect(newVisitor).toBeCalledTimes(1)
+      expect(fetchFlags).toBeCalledTimes(3)
+    })
 
-      expect(newVisitor).toBeCalledWith({
-        visitorId: visitorData.id,
-        context: visitorData.context,
-        isAuthenticated: false,
-        hasConsented: visitorData.hasConsented
-      })
+    rerender(
+      <FlagshipProvider
+        {...props}
+        visitorData={null}
+      >
+        <div>children</div>
+      </FlagshipProvider>
+    )
+
+    await waitFor(() => {
+      expect(mockStart).toBeCalledTimes(1)
+      expect(unauthenticate).toBeCalledTimes(1)
+      expect(newVisitor).toBeCalledTimes(1)
+      expect(fetchFlags).toBeCalledTimes(3)
     })
 
     // Update envId props
-    rerender(
+    render(
       <FlagshipProvider {...props} envId={'new_env_id'}>
         <div>children</div>
       </FlagshipProvider>
@@ -234,17 +229,39 @@ describe('Name of the group', () => {
           onBucketingUpdated: expect.anything()
         })
       )
-      expect(newVisitor).toBeCalledTimes(4)
+      expect(newVisitor).toBeCalledTimes(2)
       expect(fetchFlags).toBeCalledTimes(4)
     })
 
     onEventError = true
 
-    rerender(
+    render(
       <FlagshipProvider {...props} envId={'new_env'}>
         <div>children</div>
       </FlagshipProvider>
     )
+  })
+
+  it('Test fetchNow false', async () => {
+    // Update envId props
+    render(
+      <FlagshipProvider {...props} fetchNow={false} envId={'new_env_id'}>
+        <div>children</div>
+      </FlagshipProvider>
+    )
+
+    await waitFor(() => {
+      expect(mockStart).toBeCalledTimes(1)
+      expect(mockStart).toBeCalledWith(
+        'new_env_id',
+        apiKey,
+        expect.objectContaining({
+          decisionMode: DecisionMode.DECISION_API,
+          onBucketingUpdated: expect.anything()
+        })
+      )
+      expect(newVisitor).toBeCalledTimes(1)
+    })
   })
 })
 
@@ -518,6 +535,8 @@ describe('Test initial data', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (_apiKey, _envId, { statusChangedCallback }: any) => {
         statusChangedCallback(0)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return {} as any
       }
     )
 
