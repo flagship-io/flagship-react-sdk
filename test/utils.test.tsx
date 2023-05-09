@@ -8,7 +8,6 @@ import {
   sprintf,
   uuidV4
 } from '../src/utils'
-import { Mock } from 'jest-mock'
 import { IFlagshipLogManager } from '@flagship.io/js-sdk/dist/utils/FlagshipLogManager'
 import { DecisionApiConfig, LogLevel } from '@flagship.io/js-sdk'
 import { campaigns } from './campaigns'
@@ -18,7 +17,7 @@ describe('test logError function', () => {
 
   const logManager = {} as IFlagshipLogManager
 
-  const errorMethod: Mock<void, []> = jest.fn()
+  const errorMethod = jest.fn<()=>void>()
 
   logManager.error = errorMethod
 
@@ -66,7 +65,7 @@ describe('test logInfo function', () => {
 
   const logManager = {} as IFlagshipLogManager
 
-  const infoMethod: Mock<void, []> = jest.fn()
+  const infoMethod = jest.fn<()=>void>()
 
   logManager.info = infoMethod
 
@@ -114,7 +113,7 @@ describe('test logWarn function', () => {
 
   const logManager = {} as IFlagshipLogManager
 
-  const warnMethod: Mock<void, []> = jest.fn()
+  const warnMethod = jest.fn<()=>void>()
 
   logManager.warning = warnMethod
 

@@ -10,7 +10,7 @@ describe('test FlagshipHooks', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let realUseContext:<T>(context: React.Context<T>)=> any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let useContextMock:Mock<any, [context: React.Context<any>]>
+  let useContextMock:Mock<(context: React.Context<any>)=> any>
   // Setup mock
   beforeEach(() => {
     realUseContext = React.useContext
@@ -246,7 +246,7 @@ describe('test FlagshipHooks', () => {
       logLevel: LogLevel.ALL
     }
     const visitor = {
-      activateModifications: jest.fn<Promise<void>, void[]>()
+      activateModifications: jest.fn<(params: string[])=>Promise<void>>()
     }
     visitor.activateModifications.mockResolvedValue()
     useContextMock.mockReturnValue({ state: { config, visitor } })
@@ -266,7 +266,7 @@ describe('test FlagshipHooks', () => {
       logLevel: LogLevel.ALL
     }
     const visitor = {
-      activateModifications: jest.fn<Promise<void>, void[]>()
+      activateModifications: jest.fn<(params: string[])=>Promise<void>>()
     }
 
     const error = 'error'
@@ -291,14 +291,14 @@ describe('test FlagshipHooks', () => {
       clearContext: jest.fn(),
       authenticate: jest.fn(),
       unauthenticate: jest.fn(),
-      synchronizeModifications: jest.fn<Promise<void>, []>(),
-      activateModifications: jest.fn<Promise<void>, []>(),
+      synchronizeModifications: jest.fn<()=>Promise<void>>(),
+      activateModifications: jest.fn<()=>Promise<void>>(),
       modificationsAsync: jest.fn(),
       modifications: jest.fn(),
       getModificationsSync: jest.fn(),
-      getModifications: jest.fn<Promise<unknown>, []>(),
+      getModifications: jest.fn<()=>Promise<void>>(),
       getModificationsArray: jest.fn(),
-      getModificationInfo: jest.fn<Promise<unknown>, []>(),
+      getModificationInfo: jest.fn<()=>Promise<void>>(),
       getModificationInfoSync: jest.fn(),
       getModificationSync: jest.fn(),
       sendHit: jest.fn(),

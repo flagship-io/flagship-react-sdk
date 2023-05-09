@@ -3,7 +3,7 @@ import { jest, expect, it, describe } from '@jest/globals'
 import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import { FlagshipProvider } from '../src/FlagshipContext'
-import { SpyInstance, Mock } from 'jest-mock'
+import { SpyInstance } from 'jest-mock'
 import { useFlagship } from '../src/FlagshipHooks'
 import Flagship, { DecisionMode, Modification } from '@flagship.io/js-sdk'
 
@@ -12,13 +12,13 @@ function sleep (ms: number): Promise<unknown> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockStart = Flagship.start as unknown as SpyInstance<any, unknown[]>
+const mockStart = Flagship.start as unknown as SpyInstance<typeof Flagship.start>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const newVisitor = Flagship.newVisitor as unknown as SpyInstance<any, unknown[]>
+const newVisitor = Flagship.newVisitor as unknown as SpyInstance<typeof Flagship.newVisitor>
 const modifications = new Map<string, Modification>()
 const updateContext = jest.fn()
 const unauthenticate = jest.fn()
-const authenticate: Mock<void, [string]> = jest.fn()
+const authenticate = jest.fn<(params: string)=>void>()
 const setConsent = jest.fn()
 const clearContext = jest.fn()
 const fetchFlags = jest.fn()
@@ -51,7 +51,7 @@ jest.mock('@flagship.io/js-sdk', () => {
 
   newVisitor.mockImplementation(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const EventOn: Mock<void, [string, (error?: any) => void]> = jest.fn()
+    const EventOn = jest.fn<(e:string, callback:(error?: any) => void)=>void>()
 
     EventOn.mockImplementation((_e, callback) => {
       if (callback) {
@@ -535,6 +535,8 @@ describe('Test initial data', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (_apiKey, _envId, { statusChangedCallback }: any) => {
         statusChangedCallback(0)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return {} as any
       }
     )
 
