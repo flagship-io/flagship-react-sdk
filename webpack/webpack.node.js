@@ -23,15 +23,15 @@ module.exports = merge(common(), {
           {
             loader: 'babel-loader',
             options: {
-              targets: 'node >= 10',
               presets: [
                 '@babel/preset-typescript',
                 [
                   '@babel/preset-env',
                   {
+                    targets: { node: 12 },
+                    modules: false,
                     useBuiltIns: 'usage',
-                    corejs: '3',
-                    modules: 'commonjs'
+                    corejs: 3
                   }
                 ],
                 '@babel/preset-react'
@@ -52,6 +52,11 @@ module.exports = merge(common(), {
     ]
   },
   externals: [
-    nodeExternals()
+    nodeExternals({
+      allowlist: [
+        /core-js\/modules\/es/,
+        /@babel\/runtime/
+      ]
+    })
   ]
 })
