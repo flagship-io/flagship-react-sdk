@@ -244,13 +244,14 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     if (!visitorData) {
       return
     }
-    if (!state.visitor) {
+
+    if (!state.visitor || (state.visitor.visitorId !== visitorData.id && (!visitorData.isAuthenticated || (visitorData.isAuthenticated && state.visitor.anonymousId)))) {
       createVisitor()
       return
     }
 
     if (visitorData.hasConsented !== state.visitor.hasConsented) {
-      state.visitor.setConsent(visitorData.hasConsented as boolean)
+      state.visitor.setConsent(visitorData.hasConsented ?? true)
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     state.visitor.updateContext(visitorData.context as any)

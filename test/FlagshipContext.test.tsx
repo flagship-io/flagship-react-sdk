@@ -49,7 +49,8 @@ jest.mock('@flagship.io/js-sdk', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let OnReadyCallback: (error?: any) => void
 
-  newVisitor.mockImplementation(() => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  newVisitor.mockImplementation(({ visitorId }:any) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const EventOn = jest.fn<(e:string, callback:(error?: any) => void)=>void>()
 
@@ -69,6 +70,7 @@ jest.mock('@flagship.io/js-sdk', () => {
     })
 
     const newVisitor = {
+      visitorId,
       anonymousId: '',
       fetchFlags,
       on: EventOn,
@@ -94,7 +96,7 @@ jest.mock('@flagship.io/js-sdk', () => {
   return flagship
 })
 
-describe('Name of the group', () => {
+describe('FlagshipProvide test', () => {
   const visitorData = {
     id: 'visitor_id',
     context: {},
@@ -179,6 +181,26 @@ describe('Name of the group', () => {
       // expect(onUpdate).toBeCalledTimes(2);
     })
 
+    rerender(
+      <FlagshipProvider
+        {...props}
+        visitorData={{ ...props.visitorData, id: 'visitor_2', isAuthenticated: true }}
+      >
+        <div>children</div>
+      </FlagshipProvider>
+    )
+
+    await waitFor(() => {
+      expect(mockStart).toBeCalledTimes(1)
+      expect(authenticate).toBeCalledTimes(1)
+      expect(fetchFlags).toBeCalledTimes(3)
+      expect(onBucketingUpdated).toBeCalledTimes(1)
+      expect(statusChangedCallback).toBeCalledTimes(2)
+      expect(onInitStart).toBeCalledTimes(1)
+      expect(onInitDone).toBeCalledTimes(1)
+      expect(newVisitor).toBeCalledTimes(2)
+    })
+
     // Unauthenticate visitor
     rerender(
       <FlagshipProvider
@@ -192,8 +214,25 @@ describe('Name of the group', () => {
     await waitFor(() => {
       expect(mockStart).toBeCalledTimes(1)
       expect(unauthenticate).toBeCalledTimes(1)
-      expect(newVisitor).toBeCalledTimes(1)
-      expect(fetchFlags).toBeCalledTimes(3)
+      expect(newVisitor).toBeCalledTimes(2)
+      expect(fetchFlags).toBeCalledTimes(4)
+    })
+
+    // Unauthenticate visitor
+    rerender(
+          <FlagshipProvider
+            {...props}
+            visitorData={{ ...props.visitorData, id: 'visitorId_4', isAuthenticated: false }}
+          >
+            <div>children</div>
+          </FlagshipProvider>
+    )
+
+    await waitFor(() => {
+      expect(mockStart).toBeCalledTimes(1)
+      expect(unauthenticate).toBeCalledTimes(1)
+      expect(newVisitor).toBeCalledTimes(3)
+      expect(fetchFlags).toBeCalledTimes(5)
     })
 
     rerender(
@@ -208,8 +247,8 @@ describe('Name of the group', () => {
     await waitFor(() => {
       expect(mockStart).toBeCalledTimes(1)
       expect(unauthenticate).toBeCalledTimes(1)
-      expect(newVisitor).toBeCalledTimes(1)
-      expect(fetchFlags).toBeCalledTimes(3)
+      expect(newVisitor).toBeCalledTimes(3)
+      expect(fetchFlags).toBeCalledTimes(5)
     })
 
     // Update envId props
@@ -229,8 +268,8 @@ describe('Name of the group', () => {
           onBucketingUpdated: expect.anything()
         })
       )
-      expect(newVisitor).toBeCalledTimes(2)
-      expect(fetchFlags).toBeCalledTimes(4)
+      expect(newVisitor).toBeCalledTimes(4)
+      expect(fetchFlags).toBeCalledTimes(6)
     })
 
     onEventError = true

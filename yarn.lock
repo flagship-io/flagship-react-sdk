@@ -1216,10 +1216,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flagship.io/js-sdk@^3.2.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.2.1.tgz#2fbd2858e1c12f8d7c8d0c92a4a49dc88c971fa5"
-  integrity sha512-VVsGiwSsPs6Lqkc+3T1vSEQkcn8oEVrDs8UrvWVQiLiNGbY/Uf52Hbq4UdJy9XAIHz1DObE11Iks0AweC9Jf4g==
+"@flagship.io/js-sdk@^3.2.3":
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.2.3.tgz#bec55fd40c30ed04026e361d189f791be0229b1e"
+  integrity sha512-+6vAuXiCf7LzNLs00EHcro8Qk/0iCol7WzPmE+jQqKJQogS5XYSdy2/pa3LViztIEVkPgXKryJMgOoNAFgrZrg==
   dependencies:
     events "^3.3.0"
     follow-redirects "^1.15.2"
@@ -2587,11 +2587,6 @@ core-js-pure@^3.16.0:
   version "3.18.1"
   resolved "https://registry.npmjs.org/core-js-pure/-/core-js-pure-3.18.1.tgz"
   integrity sha512-kmW/k8MaSuqpvA1xm2l3TVlBuvW+XBkcaOroFUpO3D4lsTGQWBTb/tBDCf/PNkkPLrwgrkQRIYNPB0CeqGJWGQ==
-
-core-js@^3.24.1:
-  version "3.24.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.24.1.tgz#cf7724d41724154010a6576b7b57d94c5d66e64f"
-  integrity sha512-0QTBSYSUZ6Gq21utGzkfITDylE8jWC9Ne1D2MrhvlsZBI1x39OdDIVbzSqtgMndIy6BlHxBXpMGqzZmnztg2rg==
 
 cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   version "7.0.3"
