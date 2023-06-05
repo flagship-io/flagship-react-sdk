@@ -1226,6 +1226,14 @@
     node-abort-controller "^3.1.1"
     node-fetch "^2.6.7"
 
+"@flagship.io/react-sdk@^3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@flagship.io/react-sdk/-/react-sdk-3.2.1.tgz#d0c410e93fadafb1c8323409f1bd8535370f0fef"
+  integrity sha512-Bewb49T/lCUiA0v3x+A23RWCRXspkAs8+f/uWYuXJxzEY2I7dsuI79QX36T1OyiXIjg0KDAoK1U4O35Mmv4GUg==
+  dependencies:
+    "@flagship.io/js-sdk" "^3.2.3"
+    encoding "^0.1.13"
+
 "@humanwhocodes/config-array@^0.5.0":
   version "0.5.0"
   resolved "https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.5.0.tgz"
