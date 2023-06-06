@@ -1216,23 +1216,15 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flagship.io/js-sdk@^3.2.3":
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.2.3.tgz#bec55fd40c30ed04026e361d189f791be0229b1e"
-  integrity sha512-+6vAuXiCf7LzNLs00EHcro8Qk/0iCol7WzPmE+jQqKJQogS5XYSdy2/pa3LViztIEVkPgXKryJMgOoNAFgrZrg==
+"@flagship.io/js-sdk@^3.2.4-alpha.0":
+  version "3.2.4-alpha.0"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.2.4-alpha.0.tgz#8a5d86a7f267eb95a3fe674dec3699011ba85ba2"
+  integrity sha512-5TPZIjm7zwcAmuULTUsj37kMB4wuVIcOWV0wgx2KHF8O3o4jPVfC5o28sTAlkmZo9W1+eqZUrlWJIlIb4MbkQg==
   dependencies:
     events "^3.3.0"
     follow-redirects "^1.15.2"
     node-abort-controller "^3.1.1"
     node-fetch "^2.6.7"
-
-"@flagship.io/react-sdk@^3.2.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@flagship.io/react-sdk/-/react-sdk-3.2.1.tgz#d0c410e93fadafb1c8323409f1bd8535370f0fef"
-  integrity sha512-Bewb49T/lCUiA0v3x+A23RWCRXspkAs8+f/uWYuXJxzEY2I7dsuI79QX36T1OyiXIjg0KDAoK1U4O35Mmv4GUg==
-  dependencies:
-    "@flagship.io/js-sdk" "^3.2.3"
-    encoding "^0.1.13"
 
 "@humanwhocodes/config-array@^0.5.0":
   version "0.5.0"
