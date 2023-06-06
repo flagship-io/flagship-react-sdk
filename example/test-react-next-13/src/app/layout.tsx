@@ -1,6 +1,6 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
-import { FlagshipProvider } from '@flagship.io/react-sdk'
+import FlagshipProvider from '@flagship.io/react-sdk'
 import React, { JSX } from 'react'
 import { ENV_ID, API_KEY } from '../config.js'
 const inter = Inter({ subsets: ['latin'] })

@@ -51,9 +51,13 @@
     node-abort-controller "^3.1.1"
     node-fetch "^2.6.7"
 
-"@flagship.io/react-sdk@link:../..":
-  version "0.0.0"
-  uid ""
+"@flagship.io/react-sdk@^3.2.2-alpha.0":
+  version "3.2.2-alpha.0"
+  resolved "https://registry.yarnpkg.com/@flagship.io/react-sdk/-/react-sdk-3.2.2-alpha.0.tgz#cb7461982a711272d304c397d1ded145e578c40b"
+  integrity sha512-13GgiZW80E7tnFkvTwHqJR+lOq2Z2Xk2vRFQtgIKrLVn1OZyyjXFtz1P/dVJfnY1lh/jabK7lzm5o+nEs52jfQ==
+  dependencies:
+    "@flagship.io/js-sdk" "^3.2.4-alpha.0"
+    encoding "^0.1.13"
 
 "@humanwhocodes/config-array@^0.11.10":
   version "0.11.10"
