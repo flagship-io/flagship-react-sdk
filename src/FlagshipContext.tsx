@@ -1,3 +1,4 @@
+'use client'
 // eslint-disable-next-line no-use-before-define
 import React, {
   useState,
@@ -356,11 +357,4 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       {handleDisplay()}
     </FlagshipContext.Provider>
   )
-}
-
-FlagshipProvider.defaultProps = {
-  hitDeduplicationTime: 2,
-  fetchNow: true,
-  language: 1,
-  sdkVersion: SDK_VERSION
 }

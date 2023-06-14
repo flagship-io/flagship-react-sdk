@@ -1,7 +1,7 @@
 {
   "name": "@flagship.io/react-sdk",
   "sideEffects": false,
-  "version": "3.2.1",
+  "version": "3.2.2",
   "license": "Apache-2.0",
   "description": "Flagship REACT SDK",
   "main": "dist/index.node.js",
@@ -20,8 +20,7 @@
     "react-native": "./dist/src/index.js"
   },
   "dependencies": {
-    "@flagship.io/js-sdk": "^3.2.3",
-    "@flagship.io/react-sdk": "^3.2.1",
+    "@flagship.io/js-sdk": "^3.2.4",
     "encoding": "^0.1.13"
   },
   "peerDependencies": {
