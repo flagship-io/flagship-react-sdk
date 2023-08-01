@@ -123,6 +123,13 @@ export interface FlagshipProviderProps extends IFlagshipConfig {
    * If true, it'll automatically call synchronizeModifications when the bucketing file has updated
    */
   fetchFlagsOnBucketingUpdated?: boolean;
+
+  /**
+   *
+   */
+  enableQAMode?: boolean
+
+  qaModule?: ()=> JSX.Element|null
 }
 
 const initStat: FsState = {
@@ -153,6 +160,8 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   fetchNow = true,
   language = 1,
   sdkVersion = SDK_VERSION,
+  enableQAMode = false,
+  qaModule: QaModule = undefined,
   ...props
 }: FlagshipProviderProps) => {
   let modifications = new Map<string, FlagDTO>()
@@ -350,7 +359,11 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     if (state.status.isLoading && loadingComponent && isFirstInit && fetchNow) {
       return <>{loadingComponent}</>
     }
-    return <>{children}</>
+    return <>
+    {children}
+    {enableQAMode && QaModule ? <QaModule/> : null }
+
+    </>
   }
   return (
     <FlagshipContext.Provider value={{ state, setState }}>

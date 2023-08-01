@@ -80,19 +80,15 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flagship.io/js-sdk@^3.2.3":
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.2.3.tgz#bec55fd40c30ed04026e361d189f791be0229b1e"
-  integrity sha512-+6vAuXiCf7LzNLs00EHcro8Qk/0iCol7WzPmE+jQqKJQogS5XYSdy2/pa3LViztIEVkPgXKryJMgOoNAFgrZrg==
+"@flagship.io/js-sdk@^3.2.5":
+  version "3.2.5"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.2.5.tgz#5ae3c4a7b4a440132532b71a7a097a272dbd7111"
+  integrity sha512-KAn9XFpTbfFobd2SYQVDarCrRgDkvpXhZ33+gfErrnhm3y0JKsP+0zT6lzyhyLCeE5tJ+KtPwYwGevhgb646ww==
   dependencies:
     events "^3.3.0"
     follow-redirects "^1.15.2"
     node-abort-controller "^3.1.1"
     node-fetch "^2.6.7"
-
-"@flagship.io/react-sdk@^3.2.1":
-  version "0.0.0"
-  uid ""
 
 "@flagship.io/react-sdk@link:../..":
   version "0.0.0"

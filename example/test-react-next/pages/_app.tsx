@@ -4,6 +4,7 @@ import { Flagship, FlagshipProvider } from "@flagship.io/react-sdk";
 import { ENV_ID, API_KEY } from "../config";
 import React from "react";
 import App from "next/app";
+import qaModule from '../qa/index'
 
 function MyApp({
   Component,
@@ -16,6 +17,8 @@ function MyApp({
       // decisionMode={ DecisionMode.BUCKETING }
       visitorData={initialVisitorData}
       initialFlagsData={initialFlagsData}
+      enableQAMode={true}
+      qaModule={qaModule}
       // fetchNow={false}
       envId={ENV_ID}
       apiKey={API_KEY}
