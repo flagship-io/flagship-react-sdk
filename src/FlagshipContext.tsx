@@ -7,7 +7,8 @@ import React, {
   createContext,
   Dispatch,
   SetStateAction,
-  useRef
+  useRef,
+  useMemo
 } from 'react'
 import {
   BucketingDTO,
@@ -66,9 +67,18 @@ export type VisitorData = {
   isAuthenticated?: boolean;
   hasConsented?: boolean;
 };
+
+export type ExposedVariations ={
+  campaignId: string,
+  variationGroupId: string,
+  variationId: string
+}
 interface FsContext {
   state: FsState;
   setState?: Dispatch<SetStateAction<FsState>>;
+  exposedVariations?:ExposedVariations[]
+  setExposedVariations?: Dispatch<SetStateAction<ExposedVariations[]>>;
+  exposedVariationsRef?:React.MutableRefObject<ExposedVariations[]>
 }
 
 export interface FlagshipProviderProps extends IFlagshipConfig {
@@ -129,7 +139,7 @@ export interface FlagshipProviderProps extends IFlagshipConfig {
    */
   enableQAMode?: boolean
 
-  qaModule?: ()=> JSX.Element|null
+  qaModule?: (props:{exposedVariations: ()=> ExposedVariations[], bucketing?: BucketingDTO})=> JSX.Element|null
 }
 
 const initStat: FsState = {
@@ -180,6 +190,8 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   const [state, setState] = useState<FsState>({ ...initStat, modifications })
   const [lastModified, setLastModified] = useState<Date>()
   const stateRef = useRef<FsState>()
+  // const [exposedVariations, setExposedVariations] = useState<ExposedVariations[]>([])
+  const exposedVariationsRef = useRef<ExposedVariations[]>([])
   stateRef.current = state
 
   useNonInitialEffect(() => {
@@ -354,19 +366,27 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       ...props
     })
   }
+  const memoChildren = useMemo(() => {
+    return children
+  }, [state])
+
   const handleDisplay = (): React.ReactNode => {
     const isFirstInit = !state.visitor
     if (state.status.isLoading && loadingComponent && isFirstInit && fetchNow) {
       return <>{loadingComponent}</>
     }
     return <>
-    {children}
-    {enableQAMode && QaModule ? <QaModule/> : null }
+    {memoChildren}
+    {enableQAMode && QaModule
+      ? <QaModule exposedVariations={() => {
+        return exposedVariationsRef.current
+      }} bucketing={Flagship.getBucketingContent()} />
+      : null }
 
     </>
   }
   return (
-    <FlagshipContext.Provider value={{ state, setState }}>
+    <FlagshipContext.Provider value={{ state, setState, exposedVariationsRef }}>
       {handleDisplay()}
     </FlagshipContext.Provider>
   )

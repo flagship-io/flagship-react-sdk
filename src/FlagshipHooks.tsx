@@ -169,14 +169,23 @@ export const useFsFlag = <T extends unknown>(
   key: string,
   defaultValue: T
 ): IFlag<T> => {
-  const { state } = useContext(FlagshipContext)
+  const { state, exposedVariationsRef } = useContext(FlagshipContext)
   const { visitor } = state
 
   if (!visitor) {
     return new Flag(defaultValue, key, state.modifications)
   }
 
-  return visitor.getFlag(key, defaultValue)
+  const flag = visitor.getFlag(key, defaultValue)
+  if (exposedVariationsRef && !exposedVariationsRef.current.some(x => x.campaignId === flag.metadata.campaignId)) {
+    exposedVariationsRef.current.push({
+      campaignId: flag.metadata.campaignId,
+      variationGroupId: flag.metadata.variationGroupId,
+      variationId: flag.metadata.variationId
+    })
+  }
+
+  return flag
 }
 
 /**
