@@ -42,3 +42,9 @@ export type ExposedVariations ={
     variationGroupId: string,
     variationId: string
   }
+
+  export type ForcedVariation = {
+    campaignId: string,
+    variationGroupId: string
+    variationId: string
+  }
