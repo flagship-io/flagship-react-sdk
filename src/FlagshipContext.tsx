@@ -8,7 +8,8 @@ import React, {
   Dispatch,
   SetStateAction,
   useRef,
-  useMemo
+  useMemo,
+  useCallback
 } from 'react'
 import {
   BucketingDTO,
@@ -17,6 +18,7 @@ import {
   FlagDTO,
   Flagship,
   FlagshipStatus,
+  ForcedVariation,
   IFlagshipConfig,
   primitive,
   Visitor
@@ -68,17 +70,15 @@ export type VisitorData = {
   hasConsented?: boolean;
 };
 
-export type ExposedVariations ={
-  campaignId: string,
-  variationGroupId: string,
-  variationId: string
-}
+export type ExposedVariations = {
+  campaignId: string;
+  variationGroupId: string;
+  variationId: string;
+};
 interface FsContext {
   state: FsState;
   setState?: Dispatch<SetStateAction<FsState>>;
-  exposedVariations?:ExposedVariations[]
-  setExposedVariations?: Dispatch<SetStateAction<ExposedVariations[]>>;
-  exposedVariationsRef?:React.MutableRefObject<ExposedVariations[]>
+  exposedVariationsRef?: React.MutableRefObject<ExposedVariations[]>;
 }
 
 export interface FlagshipProviderProps extends IFlagshipConfig {
@@ -137,9 +137,13 @@ export interface FlagshipProviderProps extends IFlagshipConfig {
   /**
    *
    */
-  enableQAMode?: boolean
+  enableQAMode?: boolean;
 
-  qaModule?: (props:{exposedVariations: ()=> ExposedVariations[], bucketing?: BucketingDTO})=> JSX.Element|null
+  qaModule?: (props: {
+    onVariationsForced:(forcedVariations: ForcedVariation[])=>void
+    exposedVariations: () => ExposedVariations[];
+    bucketing?: BucketingDTO;
+  }) => JSX.Element | null;
 }
 
 const initStat: FsState = {
@@ -188,17 +192,10 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   }
 
   const [state, setState] = useState<FsState>({ ...initStat, modifications })
-  const [lastModified, setLastModified] = useState<Date>()
   const stateRef = useRef<FsState>()
   // const [exposedVariations, setExposedVariations] = useState<ExposedVariations[]>([])
   const exposedVariationsRef = useRef<ExposedVariations[]>([])
   stateRef.current = state
-
-  useNonInitialEffect(() => {
-    if (fetchFlagsOnBucketingUpdated) {
-      state.visitor?.fetchFlags()
-    }
-  }, [lastModified])
 
   useNonInitialEffect(() => {
     updateVisitor()
@@ -267,7 +264,12 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       return
     }
 
-    if (!state.visitor || (state.visitor.visitorId !== visitorData.id && (!visitorData.isAuthenticated || (visitorData.isAuthenticated && state.visitor.anonymousId)))) {
+    if (
+      !state.visitor ||
+      (state.visitor.visitorId !== visitorData.id &&
+        (!visitorData.isAuthenticated ||
+          (visitorData.isAuthenticated && state.visitor.anonymousId)))
+    ) {
       createVisitor()
       return
     }
@@ -350,7 +352,16 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     if (onBucketingUpdated) {
       onBucketingUpdated(lastUpdate)
     }
-    setLastModified(lastUpdate)
+    if (fetchFlagsOnBucketingUpdated) {
+      stateRef?.current?.visitor?.fetchFlags()
+    }
+  }
+
+  const onVariationsForced = (forcedVariations: ForcedVariation[]) => {
+    forcedVariations.forEach(item => {
+      stateRef?.current?.visitor?.addForcedVariation(item)
+    })
+    stateRef?.current?.visitor?.fetchFlags()
   }
 
   const initSdk = () => {
@@ -362,6 +373,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       onBucketingUpdated: onBucketingLastModified,
       hitDeduplicationTime,
       language,
+      enableQAMode,
       sdkVersion,
       ...props
     })
@@ -370,20 +382,29 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     return children
   }, [state])
 
+  const exposedVariations = useCallback(() => {
+    return exposedVariationsRef.current
+  }, [exposedVariationsRef.current.length])
+
   const handleDisplay = (): React.ReactNode => {
     const isFirstInit = !state.visitor
     if (state.status.isLoading && loadingComponent && isFirstInit && fetchNow) {
       return <>{loadingComponent}</>
     }
-    return <>
-    {memoChildren}
-    {enableQAMode && QaModule
-      ? <QaModule exposedVariations={() => {
-        return exposedVariationsRef.current
-      }} bucketing={Flagship.getBucketingContent()} />
-      : null }
-
-    </>
+    return (
+      <>
+        {memoChildren}
+        {enableQAMode && QaModule
+          ? (
+          <QaModule
+            onVariationsForced={onVariationsForced}
+            exposedVariations={exposedVariations}
+            bucketing={Flagship.getBucketingContent()}
+          />
+            )
+          : null}
+      </>
+    )
   }
   return (
     <FlagshipContext.Provider value={{ state, setState, exposedVariationsRef }}>

@@ -1,25 +1,44 @@
-import { useState } from "react"
-import { VariationItem } from "./VariationItem"
-import { Variation, VariationGroup } from "./type"
+import { useState } from "react";
+import { VariationItem } from "./VariationItem";
+import { Variation, VariationGroup } from "./type";
 
-export function VariationGroupItem({data}:{data:VariationGroup}){
-    const [variations, setVariations] = useState(data.variations)
-    const onVariationSelected = (item:Variation)=>{
-        setVariations(state=>{
-            return state.map(value=>{
-                value.isSelected = false
-                if (item.id === value.id) {
-                    value.isSelected = true
-                }
-                return value
-            })
-        })
+export type VariationGroupItemProps = {
+    data: VariationGroup,
+    onVariationSelected?:(arg:{
+        variationGroupId:string,
+        variationId: string
+    })=>void
+}
+
+export function VariationGroupItem(props: VariationGroupItemProps) {
+    const {data } = props
+  const [variations, setVariations] = useState(data.variations);
+
+  const onVariationSelected = (variation: Variation) => {
+    setVariations((state) => {
+      return state.map((value) => {
+        value.isSelected = false;
+        if (variation.id === value.id) {
+          value.isSelected = true;
+        }
+        return value;
+      });
+    });
+    if (props.onVariationSelected) {
+        props.onVariationSelected({variationGroupId: data.id, variationId: variation.id })
     }
-    return (
-        <>
-            {variations.map((item, index)=>{
-                return <VariationItem data={item} key={index} onVariationSelected={onVariationSelected} />
-            })}
-        </>
-    )
+  };
+  return (
+    <>
+      {variations.map((item, index) => {
+        return (
+          <VariationItem
+            data={item}
+            key={item.id}
+            onVariationSelected={onVariationSelected}
+          />
+        );
+      })}
+    </>
+  );
 }

@@ -177,8 +177,13 @@ export const useFsFlag = <T extends unknown>(
   }
 
   const flag = visitor.getFlag(key, defaultValue)
-  if (exposedVariationsRef && !exposedVariationsRef.current.some(x => x.campaignId === flag.metadata.campaignId)) {
-    exposedVariationsRef.current.push({
+  const exposedVariations = exposedVariationsRef?.current
+  const metadata = flag.metadata
+  const exposedVariation = exposedVariations?.find(x => x.variationGroupId === metadata.variationGroupId)
+  if (exposedVariation) {
+    exposedVariation.variationId = metadata.variationId
+  } else {
+    exposedVariations?.push({
       campaignId: flag.metadata.campaignId,
       variationGroupId: flag.metadata.variationGroupId,
       variationId: flag.metadata.variationId
@@ -305,7 +310,7 @@ export type UseFlagshipOutput = {
   /**
    * When called, it will batch and send all hits that are in the pool before the application is closed
    */
-  close():Promise<void>
+  close(): Promise<void>
 };
 
 export const useFlagship = (): UseFlagshipOutput => {
@@ -442,7 +447,7 @@ export const useFlagship = (): UseFlagshipOutput => {
     visitor.setConsent(hasConsented)
   }
 
-  async function close ():Promise<void> {
+  async function close (): Promise<void> {
     await Flagship.close()
   }
 
