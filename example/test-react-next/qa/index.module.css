@@ -22,7 +22,7 @@
 }
 
 .main-hr{
-    background: #43c5c5;
+    border-top: 1px solid #43c5c5;
 }
 .main-card{
     width: auto !important;
@@ -100,4 +100,10 @@
     padding: 5px;
     border-radius: 5px;
     margin-bottom: 5px;
+}
+
+.variationItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
