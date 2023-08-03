@@ -1,23 +1,35 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Variation } from "./type";
+import style from "./index.module.css";
+import { fsModuleQAContext } from "./fsModuleQAContext";
 
-export type VariationItemProps ={
-    data:Variation,
-    onVariationSelected(item:Variation):void
+export type VariationItemProps = {
+  data: Variation;
+  onVariationSelected(item: Variation): void;
+};
+
+function VariationItemFunc(props: VariationItemProps) {
+  const { data } = props;
+
+  const onVariationSelected = () => {
+    props.onVariationSelected(props.data);
+  };
+  return (
+    <div className={style.variationItem}>
+      <div>
+        <div>variation name {data.id} </div>
+        <pre>{JSON.stringify(data.modifications.value, null, 4)}</pre>
+      </div>
+      <label className="container">
+        <input
+          type="radio"
+          checked={!!data.isSelected}
+          onChange={onVariationSelected}
+        />
+        <span className="checkmark"></span>
+      </label>
+    </div>
+  );
 }
 
-function VariationItemFunc(props:VariationItemProps){
-    const { data } = props
-    const onVariationSelected = ()=>{
-        props.onVariationSelected(props.data)
-    }
-
-    return (
-        <div>
-            <div>variation name {data.id} <input type="radio" checked={!!data.isSelected} onChange={onVariationSelected}  /></div>
-            <pre>{JSON.stringify(data.modifications.value,null, 4)}</pre>
-        </div>
-    )
-}
-
-export const VariationItem = React.memo(VariationItemFunc)
+export const VariationItem = React.memo(VariationItemFunc);
