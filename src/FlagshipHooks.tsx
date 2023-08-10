@@ -179,9 +179,10 @@ export const useFsFlag = <T extends unknown>(
   const flag = visitor.getFlag(key, defaultValue)
   const exposedVariations = exposedVariationsRef?.current
   const metadata = flag.metadata
-  const exposedVariation = exposedVariations?.find(x => x.variationGroupId === metadata.variationGroupId)
+  const exposedVariation = exposedVariations?.find(x => x.campaignId === metadata.campaignId)
   if (exposedVariation) {
     exposedVariation.variationId = metadata.variationId
+    exposedVariation.variationGroupId = metadata.variationGroupId
   } else {
     exposedVariations?.push({
       campaignId: flag.metadata.campaignId,

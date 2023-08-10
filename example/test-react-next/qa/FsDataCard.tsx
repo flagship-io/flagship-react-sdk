@@ -5,7 +5,7 @@ import React, {
     useState,
 } from "react";
 import style from "./index.module.css";
-import { BucketingDTO, Campaign, ExposedVariations, ForcedVariation } from "./type";
+import { BucketingDTO, Campaign, ExposedVariations, ForcedVariation, Variation, VariationGroup } from "./type";
 import { CampaignItem } from "./CampaignItem";
 import { fsModuleQAContext } from "./fsModuleQAContext";
 import { Header } from "./Header";
@@ -24,44 +24,52 @@ export function FsDataCardFunc(props: FsDataCardProps) {
     const exposedVariations = props.exposedVariations();
     const forceVariationsRef = useRef<ForcedVariation[]>([])
     const campaignsRef = useRef<Campaign[]>([])
+    const searchText = useRef<string>("")
   
     console.log("FsDataCard");
 
     useEffect(() => {
         const localCampaigns: Campaign[] = [];
-
+        const variations:Variation[] = []
+        const variationGroups:VariationGroup[] = []
+        const variationId: string[] = []
         exposedVariations.forEach((item) => {
-            const campaign = bucketing?.campaigns?.find(
+            const rootCampaigns =  bucketing?.campaigns
+            const campaign = rootCampaigns?.find(
                 (x) => x.id === item.campaignId
             );
             if (!campaign) {
                 return;
             }
-            localCampaigns.push(campaign);
-            const variationGroup = campaign.variationGroups.find(
-                (x) => x.id === item.variationGroupId
-            );
-            variationGroup?.variations.forEach((item) => {
-                item.isSelected = false;
-            });
-            const variation = variationGroup?.variations.find(
-                (x) => x.id === item.variationId
-            );
-            if (!variation) {
-                return;
-            }
-            variation.isSelected = true;
+            localCampaigns.push(campaign); 
+            variationGroups.push(...campaign.variationGroups)
+            variationId.push(item.variationId)
         });
 
+        variationGroups.forEach(variationGroup=>{
+            variations.push(...variationGroup.variations)
+        })
+
+        variations.forEach(variation=>{
+            if (variationId.includes(variation.id)) {
+                variation.isSelected = true
+                return
+            }
+            variation.isSelected = false
+        })
+
+        console.log("variationId",variationId);
+        
         setCampaigns(localCampaigns);
         campaignsRef.current = localCampaigns
     }, [JSON.stringify(exposedVariations), bucketing?.campaigns, computeCampaigns]);
 
     const onVariationSelected = useCallback((item: ExposedVariations) => {
         const forceVariations = forceVariationsRef.current
-        const forceVariation = forceVariations.find(x => x.variationGroupId === item.variationGroupId)
+        const forceVariation = forceVariations.find(x => x.campaignId === item.campaignId)
         if (forceVariation) {
             forceVariation.variationId = item.variationId
+            forceVariation.variationGroupId = item.variationGroupId
             return
         }
         forceVariationsRef.current.push(item)
@@ -72,6 +80,7 @@ export function FsDataCardFunc(props: FsDataCardProps) {
     }
 
     const onSearchInputChange = useCallback((value:string)=>{
+        searchText.current = value
         if (!value) {
             setComputeCampaigns(state=> !state)
             return 
@@ -82,28 +91,29 @@ export function FsDataCardFunc(props: FsDataCardProps) {
                 localCampaigns.push(campaign)
                 return 
             }
-            campaign.variationGroups.forEach(variationGroup=>{
+            for (const variationGroup of campaign.variationGroups) {
                 if (variationGroup.id.includes(value)) {
                     localCampaigns.push(campaign)
                     return 
                 }
-                variationGroup.variations.forEach(variation=>{
+                for (const variation of variationGroup.variations) {
                     if (variation.id.includes(value)) {
                         localCampaigns.push(campaign)
                         return
                     }
                     if (typeof variation.modifications.value === 'object') {
                         const flags = variation.modifications.value
-                        for (const key in flags) {
-                            if (key.includes(value) || `${flags[key]}`.includes(value)) {
-                                localCampaigns.push(campaign)
-                                return
-                            }
+                        const keys = Object.keys(flags)
+                        const values:string[] = Object.values(flags)
+                        if (keys.some(x=> x!==null && `${x}`.includes(value)) || values.some(x=> x!==null && `${x}`.includes(value))) {
+                            localCampaigns.push(campaign)
+                            return
                         }
                     }
-                })
-            })
+                }
+            }
         });
+        
         setCampaigns(localCampaigns)
     },[])
 

@@ -61,6 +61,7 @@ export interface FsState {
   status: FsStatus;
   initialCampaigns?: CampaignDTO[];
   initialModifications?: Map<string, FlagDTO> | FlagDTO[];
+  forceVariations?:boolean
 }
 
 export type VisitorData = {
@@ -361,7 +362,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     forcedVariations.forEach(item => {
       stateRef?.current?.visitor?.addForcedVariation(item)
     })
-    stateRef?.current?.visitor?.fetchFlags()
+    setState(state => ({ ...state, forceVariations: !state.forceVariations }))
   }
 
   const initSdk = () => {

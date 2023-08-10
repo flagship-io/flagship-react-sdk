@@ -9,8 +9,7 @@ export type VariationItemProps = {
 };
 
 function VariationItemFunc(props: VariationItemProps) {
-  const { data } = props;
-
+  const { data } = props;  
   const onVariationSelected = () => {
     props.onVariationSelected(props.data);
   };
