@@ -19,7 +19,7 @@ export function VariationGroupItem(props: VariationGroupItemProps) {
   };
   return (
     <>
-      {data.variations.map((item, index) => {
+      {data.variations.map((item) => {
         return (
           <VariationItem
             data={item}

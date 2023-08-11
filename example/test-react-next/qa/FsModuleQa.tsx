@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import style from "./index.module.css";
 import { ArrowDown } from "./ArrowDown";
 import { FsDataCard } from "./FsDataCard";
@@ -11,10 +11,19 @@ export type Props = {
 };
 function FsModuleQa({ exposedVariations, bucketing, onVariationsForced }: Props) {
   const [showCard, setShowCard] = useState(false);
+  const originalExposedVariations = useRef<string[]>([])
   const toggleShowCard =useCallback(() => {
     setShowCard((state) => !state);
   },[]);
+
+  const getOriginalExposedVariations = ()=>{
+    if (originalExposedVariations.current.length === 0) {
+      originalExposedVariations.current = exposedVariations().map(item=> item.variationId)
+  }
+  }
   
+ getOriginalExposedVariations()
+
   console.log("FsModuleQa");
 
   return (
@@ -25,6 +34,7 @@ function FsModuleQa({ exposedVariations, bucketing, onVariationsForced }: Props)
           onArrowClick={toggleShowCard}
           exposedVariations={exposedVariations}
           bucketing={bucketing}
+          originalExposedVariations={originalExposedVariations.current}
         />
       ) : (
         <ArrowDown onArrowClick={toggleShowCard} />

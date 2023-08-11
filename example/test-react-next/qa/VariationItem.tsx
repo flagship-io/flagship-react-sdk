@@ -14,9 +14,9 @@ function VariationItemFunc(props: VariationItemProps) {
     props.onVariationSelected(props.data);
   };
   return (
-    <div className={style.variationItem}>
+    <div className={`${style.variationItem} ${data.isOriginal?style['original-variationItem']:""}`}>
       <div>
-        <div>variation name {data.id} </div>
+        <div>variation name {data.id} {data.isOriginal? `[${data.allocation}]`:""}</div>
         <pre>{JSON.stringify(data.modifications.value, null, 4)}</pre>
       </div>
       <label className="container">

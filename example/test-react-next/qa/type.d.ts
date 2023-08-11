@@ -21,7 +21,8 @@ export type Variation = {
     };
     allocation?: number;
     reference?: boolean;
-    isSelected?: boolean
+    isSelected?: boolean;
+    isOriginal?: boolean
 }
 export type VariationGroup = {
     id: string;

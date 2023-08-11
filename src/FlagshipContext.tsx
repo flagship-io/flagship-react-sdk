@@ -385,7 +385,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
 
   const exposedVariations = useCallback(() => {
     return exposedVariationsRef.current
-  }, [exposedVariationsRef.current.length])
+  }, [JSON.stringify(exposedVariationsRef.current)])
 
   const handleDisplay = (): React.ReactNode => {
     const isFirstInit = !state.visitor

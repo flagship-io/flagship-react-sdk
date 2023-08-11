@@ -103,19 +103,28 @@
     padding: 5px;
     height: calc(100% - 31px);
     overflow: auto;
+    background: white;
 }
 
 .campaign{
     background: #eef0f3;
-    padding: 5px;
+    padding: 5px 5px 1px 5px;
     border-radius: 5px;
     margin-bottom: 5px;
+}
+
+.original-variationItem{
+    background: #cff1e9 !important;
 }
 
 .variationItem {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: white;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 5px;
 }
 
 .btn-container{

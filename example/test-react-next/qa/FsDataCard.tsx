@@ -15,10 +15,11 @@ export type FsDataCardProps = {
     onArrowClick: () => void;
     exposedVariations: () => ExposedVariations[];
     bucketing?: BucketingDTO;
+    originalExposedVariations?:string[]
 };
 
 export function FsDataCardFunc(props: FsDataCardProps) {
-    const { onVariationsForced, bucketing, onArrowClick } = props
+    const { onVariationsForced, bucketing, onArrowClick, originalExposedVariations } = props
     const [campaigns, setCampaigns] = useState<Campaign[]>([]);
     const [computeCampaigns, setComputeCampaigns] = useState(false)
     const exposedVariations = props.exposedVariations();
@@ -26,15 +27,14 @@ export function FsDataCardFunc(props: FsDataCardProps) {
     const campaignsRef = useRef<Campaign[]>([])
     const searchText = useRef<string>("")
   
-    console.log("FsDataCard");
-
     useEffect(() => {
         const localCampaigns: Campaign[] = [];
         const variations:Variation[] = []
         const variationGroups:VariationGroup[] = []
         const variationId: string[] = []
+
         exposedVariations.forEach((item) => {
-            const rootCampaigns =  bucketing?.campaigns
+            const rootCampaigns = searchText.current? campaigns: bucketing?.campaigns            
             const campaign = rootCampaigns?.find(
                 (x) => x.id === item.campaignId
             );
@@ -51,15 +51,19 @@ export function FsDataCardFunc(props: FsDataCardProps) {
         })
 
         variations.forEach(variation=>{
+            variation.isOriginal= false
+            if (originalExposedVariations?.includes(variation.id)) {
+                variation.isOriginal = true
+            }
+
             if (variationId.includes(variation.id)) {
                 variation.isSelected = true
                 return
             }
             variation.isSelected = false
+            
         })
 
-        console.log("variationId",variationId);
-        
         setCampaigns(localCampaigns);
         campaignsRef.current = localCampaigns
     }, [JSON.stringify(exposedVariations), bucketing?.campaigns, computeCampaigns]);
@@ -122,8 +126,8 @@ export function FsDataCardFunc(props: FsDataCardProps) {
             <Header onArrowClick={onArrowClick} onValidation={onValidation} onSearchInputChange={onSearchInputChange} />
             <div className={style["card-body"]}>
                 <fsModuleQAContext.Provider value={{ onVariationSelected }}>
-                    {campaigns.map((item, index) => {
-                        return <CampaignItem data={item} key={index} />;
+                    {campaigns.map((item) => {
+                        return <CampaignItem data={item} key={item.id} />;
                     })}
                 </fsModuleQAContext.Provider>
             </div>
