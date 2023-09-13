@@ -22,9 +22,12 @@ describe('test Flag', () => {
     flagsData.set(key, {
       key,
       campaignId: 'campaignId',
+      campaignName: 'campaignName',
       campaignType: 'ab',
       variationGroupId: 'ab',
+      variationGroupName: 'variationGroupName',
       variationId: 'varId',
+      variationName: 'variationName',
       slug: 'slug',
       value
     })
@@ -35,10 +38,13 @@ describe('test Flag', () => {
     expect(flag.visitorExposed()).resolves.toBeUndefined()
     expect(flag.metadata).toEqual({
       campaignId: 'campaignId',
+      campaignName: 'campaignName',
       campaignType: 'ab',
       isReference: false,
       variationGroupId: 'ab',
+      variationGroupName: 'variationGroupName',
       variationId: 'varId',
+      variationName: 'variationName',
       slug: 'slug'
     })
   })
@@ -51,9 +57,12 @@ describe('test Flag', () => {
     flagsData.set(key, {
       key,
       campaignId: 'campaignId',
+      campaignName: 'campaignName',
       campaignType: 'ab',
       variationGroupId: 'ab',
+      variationGroupName: 'variationGroupName',
       variationId: 'varId',
+      variationName: 'variationName',
       slug: 'slug',
       value
     })

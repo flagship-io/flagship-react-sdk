@@ -419,8 +419,11 @@ describe('Test initial data', () => {
         {
           key: 'key1',
           campaignId: 'campaignId1',
+          campaignName: 'campaignName1',
           variationGroupId: 'variationGroupId2',
+          variationGroupName: 'variationGroupName1',
           variationId: 'variationId3',
+          variationName: 'variationName1',
           isReference: false,
           campaignType: 'ab',
           value: 'flagValue1'
@@ -429,8 +432,11 @@ describe('Test initial data', () => {
         {
           key: 'key2',
           campaignId: 'campaignId2',
+          campaignName: 'campaignName2',
           variationGroupId: 'variationGroupId2',
+          variationGroupName: 'variationGroupName',
           variationId: 'variationId3',
+          variationName: 'variationName',
           isReference: false,
           campaignType: 'ab',
           value: 'flagValue2'
@@ -474,8 +480,11 @@ describe('Test initial data', () => {
         {
           key: 'key1',
           campaignId: 'campaignId1',
+          campaignName: 'campaignName1',
           variationGroupId: 'variationGroupId2',
+          variationGroupName: 'variationGroupName2',
           variationId: 'variationId3',
+          variationName: 'variationName1',
           isReference: false,
           campaignType: 'ab',
           value: 'flagValue1'
@@ -484,8 +493,11 @@ describe('Test initial data', () => {
         {
           key: 'key2',
           campaignId: 'campaignId2',
+          campaignName: 'campaignName2',
           variationGroupId: 'variationGroupId2',
+          variationGroupName: 'variationGroupName2',
           variationId: 'variationId3',
+          variationName: 'variationName',
           isReference: false,
           campaignType: 'ab',
           value: 'flagValue2'
