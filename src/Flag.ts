@@ -4,7 +4,6 @@ import { hasSameType, logInfo, logWarn, sprintf } from './utils'
 
 export class Flag<T> implements IFlag<T> {
     private defaultValue:T
-    private flagsData: Map<string, FlagDTO> | undefined
     private key: string
     private flag?: FlagDTO
     constructor (defaultValue:T, key: string, flagsData: Map<string, FlagDTO> | undefined) {
@@ -78,8 +77,11 @@ export class Flag<T> implements IFlag<T> {
 
       return new FlagMetadata({
         campaignId: this.flag.campaignId,
+        campaignName: this.flag.campaignName,
         variationGroupId: this.flag.variationGroupId,
+        variationGroupName: this.flag.variationGroupName,
         variationId: this.flag.variationId,
+        variationName: this.flag.variationName,
         isReference: !!this.flag.isReference,
         campaignType: this.flag.campaignType as string,
         slug: this.flag.slug
