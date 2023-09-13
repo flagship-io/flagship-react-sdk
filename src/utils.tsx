@@ -73,8 +73,11 @@ export const getModificationsFromCampaigns = (
       modifications.set(key, {
         key,
         campaignId: campaign.id,
+        campaignName: campaign.name || '',
         variationGroupId: campaign.variationGroupId,
+        variationGroupName: campaign.variationGroupName || '',
         variationId: campaign.variation.id,
+        variationName: campaign.variation.name || '',
         isReference: campaign.variation.reference,
         value
       })
