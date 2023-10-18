@@ -1216,10 +1216,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flagship.io/js-sdk@^3.2.6":
-  version "3.2.6"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.2.6.tgz#31f21f38046fe6991779ea5ad7ca389fa2cc2556"
-  integrity sha512-ASR56LvNQeNf3OLYaQ90R8ui0zYSFgEn5wE5OiV5i+mo2BSWBz1ShYn+uDwuPTwY0GanxlHjzNplkq5z8JcZJA==
+"@flagship.io/js-sdk@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.3.0.tgz#5a4c74e3a94b67235baa25a98fa427724587c470"
+  integrity sha512-usTpsGMFNHhx886wOO+w4Cf2ucC6aX5GQ67zmuWTpAa6ULXmUFRQSYIW4kXKigNljVQQrAiZhC7ROgDlG7mSfg==
   dependencies:
     events "^3.3.0"
     follow-redirects "^1.15.2"
