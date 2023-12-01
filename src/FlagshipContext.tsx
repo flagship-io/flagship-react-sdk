@@ -26,6 +26,7 @@ import {
   useNonInitialEffect
 } from './utils'
 import { version as SDK_VERSION } from './sdkVersion'
+import { INTERNAL_EVENTS } from './internalType'
 
 export interface FsStatus {
   /**
@@ -58,6 +59,7 @@ export interface FsState {
   status: FsStatus;
   initialCampaigns?: CampaignDTO[];
   initialModifications?: Map<string, FlagDTO> | FlagDTO[];
+  toggleForcedVariations?: boolean
 }
 
 export type VisitorData = {
@@ -186,6 +188,15 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   useEffect(() => {
     initSdk()
   }, [envId, apiKey, decisionMode])
+
+  useEffect(() => {
+    window.addEventListener(INTERNAL_EVENTS.FsTriggerRendering, onVariationsForced)
+    return () => window.removeEventListener(INTERNAL_EVENTS.FsTriggerRendering, onVariationsForced)
+  }, [state.config?.isQAModeEnabled])
+
+  const onVariationsForced = () => {
+    setState(state => ({ ...state, toggleForcedVariations: !state.toggleForcedVariations }))
+  }
 
   function initializeState (param: {
     fsVisitor: Visitor;
