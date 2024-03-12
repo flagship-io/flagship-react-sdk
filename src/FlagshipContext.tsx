@@ -54,29 +54,38 @@ export interface FsStatus {
 export interface FsState {
   visitor?: Visitor;
   config?: IFlagshipConfig;
-  modifications?: Map<string, FlagDTO>;
+  flags?: Map<string, FlagDTO>;
   status: FsStatus;
   initialCampaigns?: CampaignDTO[];
-  initialModifications?: Map<string, FlagDTO> | FlagDTO[];
+  initialFlags?: Map<string, FlagDTO> | FlagDTO[];
 }
 
 export type VisitorData = {
   id?: string;
   context?: Record<string, primitive>;
   isAuthenticated?: boolean;
-  hasConsented?: boolean;
+  hasConsented: boolean;
 };
 interface FsContext {
   state: FsState;
   setState?: Dispatch<SetStateAction<FsState>>;
 }
 
+/**
+ * Props for the FlagshipProvider component.
+ */
 export interface FlagshipProviderProps extends IFlagshipConfig {
   /**
-   * This is the data to identify the current visitor using your app
+   * This is the data to identify the current visitor using your app.
    */
   visitorData: VisitorData | null;
+  /**
+   * The environment ID for your Flagship project.
+   */
   envId: string;
+  /**
+   * The API key for your Flagship project.
+   */
   apiKey: string;
   /**
    * This component will be rendered when Flagship is loading at first initialization only.
@@ -84,6 +93,9 @@ export interface FlagshipProviderProps extends IFlagshipConfig {
    * display default modifications value for a very short moment.
    */
   loadingComponent?: ReactNode;
+  /**
+   * The child components to be rendered within the FlagshipProvider.
+   */
   children?: ReactNode;
 
   /**
@@ -96,6 +108,7 @@ export interface FlagshipProviderProps extends IFlagshipConfig {
   onInitDone?(): void;
   /**
    * Callback function called when the SDK is updated. For example, after a synchronize is triggered or visitor context has changed.
+   * @param params - An object containing the updated SDK data.
    */
   onUpdate?(params: {
     fsModifications: Map<string, FlagDTO>;
@@ -104,23 +117,21 @@ export interface FlagshipProviderProps extends IFlagshipConfig {
   }): void;
   /**
    * This is an object of the data received when fetching bucketing endpoint.
-   * Providing this prop will make bucketing ready to use and the first polling will immediatly check for an update.
+   * Providing this prop will make bucketing ready to use and the first polling will immediately check for an update.
    * If the shape of an element is not correct, an error log will give the reason why.
    */
   initialBucketing?: BucketingDTO;
-  initialCampaigns?: CampaignDTO[];
   /**
-   * This is a set of flag data provided to avoid the SDK to have an empty cache during the first initialization.
-   * @deprecated use initialFlagsData instead
+   * An array of initial campaigns to be used by the SDK.
    */
-  initialModifications?: Map<string, FlagDTO> | FlagDTO[];
+  initialCampaigns?: CampaignDTO[];
 
   /**
    * This is a set of flag data provided to avoid the SDK to have an empty cache during the first initialization.
    */
   initialFlagsData?: Map<string, FlagDTO> | FlagDTO[];
   /**
-   * If true, it'll automatically call synchronizeModifications when the bucketing file has updated
+   * If true, it'll automatically call fetchFlags when the bucketing file has updated.
    */
   fetchFlagsOnBucketingUpdated?: boolean;
 }
@@ -142,11 +153,10 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   onInitStart,
   onInitDone,
   loadingComponent,
-  statusChangedCallback,
+  onSdkStatusChanged,
   onBucketingUpdated,
   onUpdate,
   initialCampaigns,
-  initialModifications,
   initialFlagsData,
   fetchFlagsOnBucketingUpdated,
   hitDeduplicationTime = 2,
@@ -155,20 +165,16 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   sdkVersion = SDK_VERSION,
   ...props
 }: FlagshipProviderProps) => {
-  let modifications = new Map<string, FlagDTO>()
+  let flags = new Map<string, FlagDTO>()
   if (initialFlagsData && initialFlagsData.forEach) {
     initialFlagsData.forEach((flag) => {
-      modifications.set(flag.key, flag)
-    })
-  } else if (initialModifications && initialModifications.forEach) {
-    initialModifications.forEach((modification) => {
-      modifications.set(modification.key, modification)
+      flags.set(flag.key, flag)
     })
   } else if (initialCampaigns) {
-    modifications = getModificationsFromCampaigns(initialCampaigns)
+    flags = getModificationsFromCampaigns(initialCampaigns)
   }
 
-  const [state, setState] = useState<FsState>({ ...initStat, modifications })
+  const [state, setState] = useState<FsState>({ ...initStat, flags: flags })
   const [lastModified, setLastModified] = useState<Date>()
   const stateRef = useRef<FsState>()
   stateRef.current = state
@@ -207,7 +213,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       return {
         ...currentState,
         visitor: param.fsVisitor,
-        modifications: param.fsVisitor.modifications,
+        flags: param.fsVisitor.flagsData,
         config: Flagship.getConfig(),
         status: {
           ...currentState.status,
@@ -234,7 +240,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
 
     if (onUpdate) {
       onUpdate({
-        fsModifications: fsVisitor.modifications,
+        fsModifications: fsVisitor.flagsData,
         config: Flagship.getConfig(),
         status: newStatus
       })
@@ -276,7 +282,6 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       isAuthenticated: visitorData.isAuthenticated,
       hasConsented: visitorData.hasConsented,
       initialCampaigns,
-      initialModifications,
       initialFlagsData
     })
 
@@ -293,8 +298,8 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     }
   }
   const statusChanged = (status: FlagshipStatus) => {
-    if (statusChangedCallback) {
-      statusChangedCallback(status)
+    if (onSdkStatusChanged) {
+      onSdkStatusChanged(status)
     }
 
     switch (status) {
@@ -337,7 +342,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decisionMode: decisionMode as any,
       fetchNow,
-      statusChangedCallback: statusChanged,
+      onSdkStatusChanged: statusChanged,
       onBucketingUpdated: onBucketingLastModified,
       hitDeduplicationTime,
       language,
