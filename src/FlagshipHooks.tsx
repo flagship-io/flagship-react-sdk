@@ -2,162 +2,14 @@ import { useContext } from 'react'
 import Flagship, {
   FlagDTO,
   HitAbstract,
-  HitShape,
   IFlag,
-  IFlagshipConfig,
   IHit,
-  Modification,
-  modificationsRequested,
-  primitive,
-  Visitor
+  primitive
 } from '@flagship.io/js-sdk'
-import { FlagshipContext, FsState, FsStatus } from './FlagshipContext'
+import { FlagshipContext, FsStatus } from './FlagshipContext'
 import { logError, logWarn } from './utils'
 import { Flag } from './Flag'
-import { noVisitorDefault, noVisitorMessage } from './constants'
-
-const checkType = (value: unknown, defaultValue: unknown) =>
-  (typeof value === 'object' &&
-    typeof defaultValue === 'object' &&
-    Array.isArray(value) === Array.isArray(defaultValue)) ||
-  typeof value === typeof defaultValue
-
-const fsModificationsSync = <T extends unknown>(args: {
-  functionName: string;
-  params: modificationsRequested<T>[];
-  activateAll?: boolean;
-  state: FsState;
-  visitor?: Visitor;
-  config?: IFlagshipConfig;
-}): Record<string, T> => {
-  const { visitor, params, activateAll, state, functionName, config } = args
-  if (visitor) {
-    return visitor.getModificationsSync(params, activateAll)
-  }
-
-  const check =
-    !state.status.isSdkReady &&
-    !!state.modifications &&
-    state.modifications.size > 0
-  const flags: Record<string, T> = {}
-
-  if (check) {
-    params.forEach((item) => {
-      const modification = state.modifications?.get(item.key)
-
-      if (modification && checkType(modification?.value, item.defaultValue)) {
-        flags[item.key] = modification.value
-      } else {
-        flags[item.key] = item.defaultValue
-      }
-    })
-    return flags
-  }
-
-  logWarn(config, noVisitorDefault, functionName)
-  params.forEach((item) => {
-    flags[item.key] = item.defaultValue
-  })
-  return flags
-}
-
-/**
- * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
- * @deprecated use useFsFlag instead
- */
-export const useFsModifications = <T extends unknown>(
-  params: modificationsRequested<T>[],
-  activateAll?: boolean
-): Record<string, T> => {
-  const { state } = useContext(FlagshipContext)
-  const { visitor, config } = state
-  const functionName = 'useFsModifications'
-
-  return fsModificationsSync({
-    functionName,
-    state,
-    visitor,
-    config,
-    params,
-    activateAll
-  })
-}
-
-/**
- * Retrieve a modification value by its key. If no modification match the given key or if the stored value type and default value type do not match, default value will be returned.
- * @deprecated use useFsFlag instead
- */
-export const useFsModification: {
-  <T>(params: modificationsRequested<T>): T;
-} = (params) => {
-  const { state } = useContext(FlagshipContext)
-  const { visitor, config } = state
-  const functionName = 'useFsModifications'
-
-  if (visitor) {
-    return visitor.getModificationSync(params)
-  }
-
-  const modification = state.modifications?.get(params.key)
-
-  if (
-    !state.status.isSdkReady &&
-    modification &&
-    checkType(modification?.value, params.defaultValue)
-  ) {
-    return modification.value
-  }
-
-  logWarn(config, noVisitorDefault, functionName)
-  return params.defaultValue
-}
-
-const fsModificationInfoSync = (args: {
-  key: string;
-  state: FsState;
-  visitor?: Visitor;
-}) => {
-  const { key, visitor, state } = args
-  if (visitor) {
-    return visitor.getModificationInfoSync(key)
-  }
-  const modification = state.modifications?.get(key)
-  if (!state.status.isSdkReady && modification) {
-    return modification
-  }
-  return null
-}
-
-/**
- * Get the campaign modification information value matching the given key.
- * @param {string} key key which identify the modification.
- * @deprecated use useFsFlag instead
- */
-export const useFsModificationInfo: { (key: string): Modification | null } = (
-  key: string
-) => {
-  const { state } = useContext(FlagshipContext)
-  const { visitor } = state
-  return fsModificationInfoSync({ key, state, visitor })
-}
-
-const fsActivate = async (
-  params: { key: string }[] | string[],
-  functionName: string,
-  visitor?: Visitor,
-  config?: IFlagshipConfig
-) => {
-  try {
-    if (!visitor) {
-      logWarn(config, noVisitorMessage, functionName)
-      return
-    }
-    await visitor.activateModifications(params)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    logWarn(config, error.message || error, functionName)
-  }
-}
+import { noVisitorMessage } from './constants'
 
 /**
  * This hook returns a flag object by its key. If no flag match the given key an empty flag will be returned.
@@ -173,130 +25,97 @@ export const useFsFlag = <T extends unknown>(
   const { visitor } = state
 
   if (!visitor) {
-    return new Flag(defaultValue, key, state.modifications)
+    return new Flag(defaultValue, key, state.flags)
   }
 
   return visitor.getFlag(key, defaultValue)
 }
 
 /**
- * Report this user has seen this modification. Report this user has seen these modifications.
- * @param params
- * @deprecated use useFsFlag instead
- * @returns
+ * Represents the output of the `useFlagship` hook.
  */
-export const useFsActivate: {
-  (keys: { key: string }[]): Promise<void>;
-  (keys: string[]): Promise<void>;
-} = async (params) => {
-  const { state } = useContext(FlagshipContext)
-  const { visitor, config } = state
-  const functionName = 'useFsModifications'
-
-  await fsActivate(params, functionName, visitor, config)
-}
-
-export type UseFlagshipParams<T> = {
-  modifications: {
-    requested: modificationsRequested<T>[];
-    activateAll?: boolean;
-  };
-};
-
 export type UseFlagshipOutput = {
+  /**
+   * The visitor ID.
+   */
   visitorId?: string;
+  /**
+   * The anonymous ID.
+   */
   anonymousId?: string | null;
+  /**
+   * The visitor context.
+   */
   context?: Record<string, primitive>;
+  /**
+   * Indicates whether the visitor has consented for protected data usage.
+   */
   hasConsented?: boolean;
   /**
-   * Set if visitor has consented for protected data usage.
-   * @param hasConsented  True if the visitor has consented false otherwise.
+   * Sets whether the visitor has consented for protected data usage.
+   * @param hasConsented - True if the visitor has consented, false otherwise.
    */
   setConsent: (hasConsented: boolean) => void;
-  modifications: Modification[];
+  /**
+   * The flags data.
+   */
   flagsData: FlagDTO[];
+  /**
+   * The status of the Flagship SDK.
+   */
   status: FsStatus;
   /**
-   *
-   * @param params
-   * @param activateAll
-   * @deprecated use getFlag instead
-   */
-  getModifications<T>(
-    params: modificationsRequested<T>[],
-    activateAll?: boolean
-  ): Record<string, T>;
-
-  /**
-   *
-   * @param key
-   * @deprecated use getFlag instead
-   */
-  getModificationInfo(key: string): Modification | null;
-
-  /**
-   * @deprecated use fetchFlags instead
-   */
-  synchronizeModifications(): Promise<void>;
-  /**
-   * @deprecated use getFlag instead
-   */
-  activateModification: {
-    (keys: { key: string }[]): Promise<void>;
-    (keys: string[]): Promise<void>;
-  };
-  /**
-   * Update the visitor context values, matching the given keys, used for targeting.
+   * Updates the visitor context values, matching the given keys, used for targeting.
    * A new context value associated with this key will be created if there is no previous matching value.
-   * Context keys must be String, and values types must be one of the following : Number, Boolean, String.
-   * @param context collection of keys, values.
+   * Context keys must be strings, and value types must be one of the following: number, boolean, string.
+   * @param context - A collection of keys and values.
    */
   updateContext(context: Record<string, primitive>): void;
   /**
-   * clear the actual visitor context
+   * Clears the actual visitor context.
    */
   clearContext(): void;
   /**
-   * Authenticate anonymous visitor
-   * @param visitorId
+   * Authenticates an anonymous visitor.
+   * @param visitorId - The visitor ID.
    */
   authenticate(visitorId: string): void;
   /**
-   * This function change authenticated Visitor to anonymous visitor
-   * @param visitorId
+   * Changes an authenticated visitor to an anonymous visitor.
    */
   unauthenticate(): void;
+  /**
+   * Sends a hit to the Flagship server.
+   * @param hit - The hit to send.
+   */
   hit: {
     send: {
       (hit: HitAbstract): Promise<void>;
       (hit: IHit): Promise<void>;
-      (hit: HitShape): Promise<void>;
-      (hit: HitAbstract | IHit | HitShape): Promise<void>;
+      (hit: HitAbstract | IHit): Promise<void>;
     };
     sendMultiple: {
       (hit: HitAbstract[]): Promise<void>;
       (hit: IHit[]): Promise<void>;
-      (hit: HitShape[]): Promise<void>;
-      (hit: HitAbstract[] | IHit[] | HitShape[]): Promise<void>;
+      (hit: HitAbstract[] | IHit[]): Promise<void>;
     };
   };
   /**
-   * Retrieve a Flag object by its key. If no flag match the given key an empty flag will be returned.
-   * @param key flag key
-   * @param defaultValue
+   * Retrieves a flag object by its key. If no flag matches the given key, an empty flag will be returned.
+   * @param key - The flag key.
+   * @param defaultValue - The default value.
+   * @returns The flag object.
    */
   getFlag<T>(key: string, defaultValue: T): IFlag<T>;
   /**
-   * In DecisionApi Mode this function calls the Flagship Decision API to run campaign assignments according to the current user context and retrieve applicable flags.
-   *
-   * In bucketing Mode, it checks bucketing file, validates campaigns targeting the visitor, assigns a variation and retrieve applicable flags.
+   * Fetches the flags from the Flagship server.
    */
   fetchFlags: () => Promise<void>;
-
   /**
-   * When called, it will batch and send all hits that are in the pool before the application is closed
+   * Batches and sends all hits that are in the pool before the application is closed.
+   * @returns A promise that resolves when all hits are sent.
    */
-  close():Promise<void>
+  close(): Promise<void>;
 };
 
 export const useFlagship = (): UseFlagshipOutput => {
@@ -344,7 +163,7 @@ export const useFlagship = (): UseFlagshipOutput => {
    * Send a Hit to Flagship servers for reporting.
    */
   const fsSendHit: {
-    (hit: HitAbstract | IHit | HitShape): Promise<void>;
+    (hit: HitAbstract | IHit): Promise<void>;
   } = (hit) => {
     const functionName = 'sendHit'
     if (!visitor) {
@@ -358,7 +177,7 @@ export const useFlagship = (): UseFlagshipOutput => {
    * Send a Hit to Flagship servers for reporting.
    */
   const fsSendHits: {
-    (hit: HitAbstract[] | IHit[] | HitShape[]): Promise<void>;
+    (hit: HitAbstract[] | IHit[]): Promise<void>;
   } = (hit) => {
     const functionName = 'sendHits'
     if (!visitor) {
@@ -368,51 +187,9 @@ export const useFlagship = (): UseFlagshipOutput => {
     return visitor.sendHits(hit)
   }
 
-  let modifications = visitor?.getModificationsArray()
-  if (!state.status.isSdkReady && state.modifications) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    modifications = Array.from(state.modifications, ([_key, item]) => item)
-  }
-
-  const activateModification: {
-    (keys: { key: string }[]): Promise<void>;
-    (keys: string[]): Promise<void>;
-  } = async (params) => {
-    const functionName = 'activateModification'
-    await fsActivate(params, functionName, visitor, config)
-  }
-  const synchronizeModifications = async () => {
-    if (!visitor) {
-      logWarn(config, noVisitorMessage, 'synchronizeModifications')
-      return
-    }
-    await visitor.synchronizeModifications()
-  }
-
-  const getModifications = <T extends unknown>(
-    params: modificationsRequested<T>[],
-    activateAll?: boolean
-  ) => {
-    const functionName = 'getModifications'
-    return fsModificationsSync({
-      functionName,
-      state,
-      visitor,
-      config,
-      params,
-      activateAll
-    })
-  }
-
-  const getModificationInfo: { (key: string): Modification | null } = (
-    key: string
-  ) => {
-    return fsModificationInfoSync({ key, state, visitor })
-  }
-
   function getFlag<T> (key: string, defaultValue: T): IFlag<T> {
     if (!visitor) {
-      return new Flag(defaultValue, key, state.modifications)
+      return new Flag(defaultValue, key, state.flags)
     }
     return visitor.getFlag(key, defaultValue)
   }
@@ -448,12 +225,7 @@ export const useFlagship = (): UseFlagshipOutput => {
     authenticate: fsAuthenticate,
     unauthenticate: fsUnauthenticate,
     status: state.status,
-    activateModification,
-    synchronizeModifications,
-    getModifications,
-    modifications: modifications || [],
     flagsData: visitor?.getFlagsDataArray() || [],
-    getModificationInfo,
     hit: {
       send: fsSendHit,
       sendMultiple: fsSendHits
