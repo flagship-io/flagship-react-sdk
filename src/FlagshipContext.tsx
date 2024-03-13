@@ -21,7 +21,7 @@ import {
   Visitor
 } from '@flagship.io/js-sdk'
 import {
-  getModificationsFromCampaigns,
+  getFlagsFromCampaigns,
   logError,
   useNonInitialEffect
 } from './utils'
@@ -171,7 +171,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       flags.set(flag.key, flag)
     })
   } else if (initialCampaigns) {
-    flags = getModificationsFromCampaigns(initialCampaigns)
+    flags = getFlagsFromCampaigns(initialCampaigns)
   }
 
   const [state, setState] = useState<FsState>({ ...initStat, flags: flags })
