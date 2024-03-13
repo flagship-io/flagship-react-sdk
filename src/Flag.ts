@@ -44,20 +44,10 @@ export class Flag<T> implements IFlag<T> {
       return !!(this.flag.campaignId && this.flag.variationId && this.flag.variationGroupId)
     }
 
-    userExposed (): Promise<void> {
-      if (!this.flag) {
-        logWarn(Flagship.getConfig(), noVisitorMessage, 'userExposed')
-      }
-
-      return Promise.resolve()
-    }
-
-    visitorExposed () : Promise<void> {
+    async visitorExposed () : Promise<void> {
       if (!this.flag) {
         logWarn(Flagship.getConfig(), noVisitorMessage, 'visitorExposed')
       }
-
-      return Promise.resolve()
     }
 
     get metadata ():IFlagMetadata {
