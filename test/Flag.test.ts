@@ -2,19 +2,19 @@ import { FlagDTO, FlagMetadata } from '@flagship.io/js-sdk'
 import { expect, it, describe } from '@jest/globals'
 import { Flag } from '../src/Flag'
 
-describe('test Flag', () => {
+describe('Flag tests', () => {
   const defaultValue = 'value'
   const key = 'key'
   const flag = new Flag(defaultValue, key, undefined)
 
-  it('should ', () => {
+  it('should have default value and empty metadata', () => {
     expect(flag.getValue()).toBe(defaultValue)
     expect(flag.exists()).toBe(false)
-    expect(flag.userExposed()).resolves.toBeUndefined()
+    expect(flag.visitorExposed()).resolves.toBeUndefined()
     expect(flag.metadata).toEqual(FlagMetadata.Empty())
   })
 
-  it('should ', () => {
+  it('should have overridden value and populated metadata', () => {
     const defaultValue = 'DefaultValue'
     const key = 'key'
     const value = 'value'
@@ -34,7 +34,6 @@ describe('test Flag', () => {
     const flag = new Flag(defaultValue, key, flagsData)
     expect(flag.getValue()).toBe(value)
     expect(flag.exists()).toBe(true)
-    expect(flag.userExposed()).resolves.toBeUndefined()
     expect(flag.visitorExposed()).resolves.toBeUndefined()
     expect(flag.metadata).toEqual({
       campaignId: 'campaignId',
@@ -49,7 +48,7 @@ describe('test Flag', () => {
     })
   })
 
-  it('should ', () => {
+  it('should have default value and empty metadata for non-string value', () => {
     const defaultValue = 'DefaultValue'
     const key = 'key'
     const value = 1
@@ -69,7 +68,6 @@ describe('test Flag', () => {
     const flag = new Flag(defaultValue, key, flagsData)
     expect(flag.getValue()).toBe(defaultValue)
     expect(flag.exists()).toBe(true)
-    expect(flag.userExposed()).resolves.toBeUndefined()
     expect(flag.visitorExposed()).resolves.toBeUndefined()
     expect(flag.metadata).toEqual(FlagMetadata.Empty())
   })
