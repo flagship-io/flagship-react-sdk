@@ -5,7 +5,7 @@ import { render, waitFor } from '@testing-library/react'
 import { FlagshipProvider } from '../src/FlagshipContext'
 import { SpyInstance } from 'jest-mock'
 import { useFlagship } from '../src/FlagshipHooks'
-import Flagship, { DecisionMode, Modification } from '@flagship.io/js-sdk'
+import Flagship, { DecisionMode, FlagDTO } from '@flagship.io/js-sdk'
 
 function sleep (ms: number): Promise<unknown> {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -15,13 +15,14 @@ function sleep (ms: number): Promise<unknown> {
 const mockStart = Flagship.start as unknown as SpyInstance<typeof Flagship.start>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const newVisitor = Flagship.newVisitor as unknown as SpyInstance<typeof Flagship.newVisitor>
-const modifications = new Map<string, Modification>()
+const flagsData = new Map<string, FlagDTO>()
 const updateContext = jest.fn()
 const unauthenticate = jest.fn()
 const authenticate = jest.fn<(params: string)=>void>()
 const setConsent = jest.fn()
 const clearContext = jest.fn()
 const fetchFlags = jest.fn()
+const getFlagsDataArray = jest.fn()
 
 let onEventError = false
 
@@ -36,9 +37,9 @@ jest.mock('@flagship.io/js-sdk', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mockStart.mockImplementation(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (_apiKey, _envId, { onBucketingUpdated, statusChangedCallback }: any) => {
-      statusChangedCallback(1)
-      statusChangedCallback(4)
+    (_apiKey, _envId, { onBucketingUpdated, onSdkStatusChanged }: any) => {
+      onSdkStatusChanged(1)
+      onSdkStatusChanged(4)
       if (fistStart) {
         onBucketingUpdated(new Date())
         fistStart = false
@@ -63,8 +64,6 @@ jest.mock('@flagship.io/js-sdk', () => {
     fetchFlags.mockImplementation(async () => {
       await sleep(500)
       if (OnReadyCallback) {
-        console.log('onEventError', onEventError)
-
         OnReadyCallback(onEventError ? new Error() : null)
       }
     })
@@ -74,7 +73,8 @@ jest.mock('@flagship.io/js-sdk', () => {
       anonymousId: '',
       fetchFlags,
       on: EventOn,
-      modifications,
+      getFlagsDataArray,
+      flagsData,
       updateContext,
       unauthenticate,
       authenticate,
@@ -105,7 +105,7 @@ describe('FlagshipProvide test', () => {
   }
   const envId = 'EnvId'
   const apiKey = 'apiKey'
-  const statusChangedCallback = jest.fn()
+  const onSdkStatusChanged = jest.fn()
   const onInitStart = jest.fn()
   const onInitDone = jest.fn()
   const onUpdate = jest.fn()
@@ -115,7 +115,7 @@ describe('FlagshipProvide test', () => {
     apiKey,
     decisionMode: DecisionMode.DECISION_API,
     visitorData,
-    statusChangedCallback,
+    onSdkStatusChanged,
     onInitStart,
     onInitDone,
     onUpdate,
@@ -154,7 +154,7 @@ describe('FlagshipProvide test', () => {
 
       expect(fetchFlags).toBeCalledTimes(1)
       expect(onBucketingUpdated).toBeCalledTimes(1)
-      expect(statusChangedCallback).toBeCalledTimes(2)
+      expect(onSdkStatusChanged).toBeCalledTimes(2)
       expect(onInitStart).toBeCalledTimes(1)
       expect(onInitDone).toBeCalledTimes(1)
       expect(onUpdate).toBeCalledTimes(1)
@@ -175,7 +175,7 @@ describe('FlagshipProvide test', () => {
       expect(authenticate).toBeCalledTimes(1)
       expect(fetchFlags).toBeCalledTimes(2)
       expect(onBucketingUpdated).toBeCalledTimes(1)
-      expect(statusChangedCallback).toBeCalledTimes(2)
+      expect(onSdkStatusChanged).toBeCalledTimes(2)
       expect(onInitStart).toBeCalledTimes(1)
       expect(onInitDone).toBeCalledTimes(1)
       // expect(onUpdate).toBeCalledTimes(2);
@@ -195,7 +195,7 @@ describe('FlagshipProvide test', () => {
       expect(authenticate).toBeCalledTimes(1)
       expect(fetchFlags).toBeCalledTimes(3)
       expect(onBucketingUpdated).toBeCalledTimes(1)
-      expect(statusChangedCallback).toBeCalledTimes(2)
+      expect(onSdkStatusChanged).toBeCalledTimes(2)
       expect(onInitStart).toBeCalledTimes(1)
       expect(onInitDone).toBeCalledTimes(1)
       expect(newVisitor).toBeCalledTimes(2)
@@ -313,7 +313,7 @@ describe('Test visitorData null', () => {
   }
   const envId = 'EnvId'
   const apiKey = 'apiKey'
-  const statusChangedCallback = jest.fn()
+  const onSdkStatusChanged = jest.fn()
   const onInitStart = jest.fn()
   const onInitDone = jest.fn()
   const onUpdate = jest.fn()
@@ -325,7 +325,7 @@ describe('Test visitorData null', () => {
       apiKey,
       decisionMode: DecisionMode.DECISION_API,
       visitorData: null,
-      statusChangedCallback,
+      onSdkStatusChanged,
       onInitStart,
       onInitDone,
       onUpdate,
@@ -354,7 +354,7 @@ describe('Test visitorData null', () => {
 
       expect(fetchFlags).toBeCalledTimes(0)
       expect(onBucketingUpdated).toBeCalledTimes(0)
-      expect(statusChangedCallback).toBeCalledTimes(2)
+      expect(onSdkStatusChanged).toBeCalledTimes(2)
       expect(onInitStart).toBeCalledTimes(1)
       expect(onInitDone).toBeCalledTimes(1)
       expect(onUpdate).toBeCalledTimes(0)
@@ -387,7 +387,7 @@ describe('Test visitorData null', () => {
 
       expect(fetchFlags).toBeCalledTimes(1)
       expect(onBucketingUpdated).toBeCalledTimes(0)
-      expect(statusChangedCallback).toBeCalledTimes(2)
+      expect(onSdkStatusChanged).toBeCalledTimes(2)
       expect(onInitStart).toBeCalledTimes(1)
       expect(onInitDone).toBeCalledTimes(1)
     })
@@ -406,7 +406,7 @@ describe('Test initial data', () => {
 
   const ChildComponent = () => {
     const fs = useFlagship()
-    return <div>{fs.modifications.map(item => (<div data-testid={item.key} key={item.key}>{item.value}</div>))}</div>
+    return <div>{fs.flagsData.map(item => (<div data-testid={item.key} key={item.key}>{item.value}</div>))}</div>
   }
 
   it('test initialFlagsData ', async () => {
@@ -476,7 +476,7 @@ describe('Test initial data', () => {
       apiKey,
       decisionMode: DecisionMode.DECISION_API,
       visitorData,
-      initialModifications: [
+      initialFlagsData: [
         {
           key: 'key1',
           campaignId: 'campaignId1',
@@ -523,7 +523,7 @@ describe('Test initial data', () => {
       )
       expect(newVisitor).toBeCalledTimes(1)
       expect(newVisitor).toBeCalledWith(expect.objectContaining({
-        initialModifications: props.initialModifications
+        initialFlagsData: props.initialFlagsData
       }))
       expect(getByTestId('key1').textContent).toBe('flagValue1')
       expect(getByTestId('key2').textContent).toBe('flagValue2')
@@ -584,8 +584,8 @@ describe('Test initial data', () => {
 
     mockStart.mockImplementationOnce(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (_apiKey, _envId, { statusChangedCallback }: any) => {
-        statusChangedCallback(0)
+      (_apiKey, _envId, { onSdkStatusChanged }: any) => {
+        onSdkStatusChanged(0)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return {} as any
       }
