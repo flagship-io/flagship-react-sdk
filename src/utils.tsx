@@ -1,9 +1,9 @@
 'use client'
 import {
   CampaignDTO,
+  FlagDTO,
   IFlagshipConfig,
-  LogLevel,
-  Modification
+  LogLevel
 } from '@flagship.io/js-sdk'
 import { EffectCallback, DependencyList, useEffect, useRef } from 'react'
 
@@ -59,18 +59,18 @@ export function logWarn (
   config.logManager.warning(message, tag)
 }
 
-export const getModificationsFromCampaigns = (
+export const getFlagsFromCampaigns = (
   campaigns: Array<CampaignDTO>
-): Map<string, Modification> => {
-  const modifications = new Map<string, Modification>()
+): Map<string, FlagDTO> => {
+  const flags = new Map<string, FlagDTO>()
   if (!campaigns || !Array.isArray(campaigns)) {
-    return modifications
+    return flags
   }
   campaigns.forEach((campaign) => {
     const object = campaign.variation.modifications.value
     for (const key in object) {
       const value = object[key]
-      modifications.set(key, {
+      flags.set(key, {
         key,
         campaignId: campaign.id,
         campaignName: campaign.name || '',
@@ -83,7 +83,7 @@ export const getModificationsFromCampaigns = (
       })
     }
   })
-  return modifications
+  return flags
 }
 
 export function uuidV4 (): string {
