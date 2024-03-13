@@ -214,6 +214,12 @@ export const useFlagship = (): UseFlagshipOutput => {
     await Flagship.close()
   }
 
+  let flagsData = visitor?.getFlagsDataArray()
+  if (!state.status.isSdkReady && state.flags) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    flagsData = Array.from(state.flags, ([_key, item]) => item)
+  }
+
   return {
     visitorId: visitor?.visitorId,
     anonymousId: visitor?.anonymousId,
@@ -225,7 +231,7 @@ export const useFlagship = (): UseFlagshipOutput => {
     authenticate: fsAuthenticate,
     unauthenticate: fsUnauthenticate,
     status: state.status,
-    flagsData: visitor?.getFlagsDataArray() || [],
+    flagsData: flagsData || [],
     hit: {
       send: fsSendHit,
       sendMultiple: fsSendHits
