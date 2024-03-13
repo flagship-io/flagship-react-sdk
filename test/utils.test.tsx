@@ -1,6 +1,6 @@
 import { jest, expect, it, describe } from '@jest/globals'
 import {
-  getModificationsFromCampaigns,
+  getFlagsFromCampaigns,
   hasSameType,
   logError,
   logInfo,
@@ -160,12 +160,12 @@ describe('test getModificationsFromCampaigns', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getNull = (): any => null
   it('should ', () => {
-    const modifications = getModificationsFromCampaigns(getNull())
+    const modifications = getFlagsFromCampaigns(getNull())
     expect(modifications).toBeInstanceOf(Map)
     expect(modifications.size).toBe(0)
   })
   it('should ', () => {
-    const modifications = getModificationsFromCampaigns(campaigns)
+    const modifications = getFlagsFromCampaigns(campaigns)
     expect(modifications).toBeInstanceOf(Map)
     expect(modifications.size).toBe(6)
     expect(modifications.get('btnColor')?.value).toEqual('blue')
