@@ -1,12 +1,16 @@
 import { useContext } from 'react'
-import Flagship, {
+import {
+  Flagship,
+  FSSdkStatus,
+  FetchFlagsStatus,
   FlagDTO,
   HitAbstract,
   IFlag,
   IHit,
   primitive
 } from '@flagship.io/js-sdk'
-import { FlagshipContext, FsStatus } from './FlagshipContext'
+
+import { FlagshipContext, FsSdkState } from './FlagshipContext'
 import { logError, logWarn } from './utils'
 import { Flag } from './Flag'
 import { noVisitorMessage } from './constants'
@@ -63,7 +67,11 @@ export type UseFlagshipOutput = {
   /**
    * The status of the Flagship SDK.
    */
-  status: FsStatus;
+  readonly sdkState: FsSdkState;
+
+  readonly sdkStatus: FSSdkStatus;
+
+  readonly fetchStatus?: FetchFlagsStatus
   /**
    * Updates the visitor context values, matching the given keys, used for targeting.
    * A new context value associated with this key will be created if there is no previous matching value.
@@ -215,7 +223,7 @@ export const useFlagship = (): UseFlagshipOutput => {
   }
 
   let flagsData = visitor?.getFlagsDataArray()
-  if (!state.status.isSdkReady && state.flags) {
+  if (!state.sdkState.isSdkReady && state.flags) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     flagsData = Array.from(state.flags, ([_key, item]) => item)
   }
@@ -225,12 +233,14 @@ export const useFlagship = (): UseFlagshipOutput => {
     anonymousId: visitor?.anonymousId,
     context: { ...visitor?.context },
     hasConsented: visitor?.hasConsented,
+    sdkStatus: Flagship.getStatus(),
+    fetchStatus: visitor?.fetchStatus,
     setConsent,
     updateContext: fsUpdateContext,
     clearContext: fsClearContext,
     authenticate: fsAuthenticate,
     unauthenticate: fsUnauthenticate,
-    status: state.status,
+    sdkState: state.sdkState,
     flagsData: flagsData || [],
     hit: {
       send: fsSendHit,
