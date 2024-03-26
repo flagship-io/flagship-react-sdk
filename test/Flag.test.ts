@@ -1,4 +1,4 @@
-import { FlagDTO, FlagMetadata } from '@flagship.io/js-sdk'
+import { FSFlagStatus, FlagDTO, FlagMetadata } from '@flagship.io/js-sdk'
 import { expect, it, describe } from '@jest/globals'
 import { Flag } from '../src/Flag'
 
@@ -12,6 +12,17 @@ describe('Flag tests', () => {
     expect(flag.exists()).toBe(false)
     expect(flag.visitorExposed()).resolves.toBeUndefined()
     expect(flag.metadata).toEqual(FlagMetadata.Empty())
+    expect(flag.status).toEqual(FSFlagStatus.NOT_FOUND)
+  })
+
+  it('should have default value and empty metadata', () => {
+    const flagsData = new Map<string, FlagDTO>()
+    const flag = new Flag(defaultValue, key, flagsData)
+    expect(flag.getValue()).toBe(defaultValue)
+    expect(flag.exists()).toBe(false)
+    expect(flag.visitorExposed()).resolves.toBeUndefined()
+    expect(flag.metadata).toEqual(FlagMetadata.Empty())
+    expect(flag.status).toEqual(FSFlagStatus.NOT_FOUND)
   })
 
   it('should have overridden value and populated metadata', () => {
@@ -46,6 +57,7 @@ describe('Flag tests', () => {
       variationName: 'variationName',
       slug: 'slug'
     })
+    expect(flag.status).toEqual(FSFlagStatus.FETCHED)
   })
 
   it('should have default value and empty metadata for non-string value', () => {
