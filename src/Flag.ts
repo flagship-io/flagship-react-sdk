@@ -1,13 +1,14 @@
-import Flagship, { FlagDTO, FlagMetadata, IFlag, IFlagMetadata } from '@flagship.io/js-sdk'
+import { Flagship, FlagDTO, FlagMetadata, IFlag, IFlagMetadata } from '@flagship.io/js-sdk'
 import { GET_FLAG_CAST_ERROR, GET_METADATA_CAST_ERROR, noVisitorMessage } from './constants'
 import { hasSameType, logInfo, logWarn, sprintf } from './utils'
+import { FSFlagStatus } from '@flagship.io/js-sdk/dist/enum/FSFlagStatus'
 
 export class Flag<T> implements IFlag<T> {
     private defaultValue:T
     private key: string
     private flag?: FlagDTO
     constructor (defaultValue:T, key: string, flagsData: Map<string, FlagDTO> | undefined) {
-      if (!flagsData) {
+      if (flagsData?.size === 0) {
         logWarn(Flagship.getConfig(), noVisitorMessage, 'GetFlag')
       }
       this.defaultValue = defaultValue
@@ -21,7 +22,6 @@ export class Flag<T> implements IFlag<T> {
 
     getValue (): T {
       if (!this.flag) {
-        logWarn(Flagship.getConfig(), noVisitorMessage, 'getValue')
         return this.defaultValue
       }
 
@@ -38,22 +38,18 @@ export class Flag<T> implements IFlag<T> {
 
     exists ():boolean {
       if (!this.flag) {
-        logWarn(Flagship.getConfig(), noVisitorMessage, 'exists')
         return false
       }
       return !!(this.flag.campaignId && this.flag.variationId && this.flag.variationGroupId)
     }
 
     async visitorExposed () : Promise<void> {
-      if (!this.flag) {
-        logWarn(Flagship.getConfig(), noVisitorMessage, 'visitorExposed')
-      }
+      // do nothing
     }
 
     get metadata ():IFlagMetadata {
       const functionName = 'metadata'
       if (!this.flag) {
-        logWarn(Flagship.getConfig(), noVisitorMessage, functionName)
         return FlagMetadata.Empty()
       }
       if (this.NotSameType()) {
@@ -76,5 +72,12 @@ export class Flag<T> implements IFlag<T> {
         campaignType: this.flag.campaignType as string,
         slug: this.flag.slug
       })
+    }
+
+    get status ():FSFlagStatus {
+      if (!this.exists()) {
+        return FSFlagStatus.NOT_FOUND
+      }
+      return FSFlagStatus.FETCHED
     }
 }
