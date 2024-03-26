@@ -2,10 +2,10 @@ import { jest, expect, it, describe } from '@jest/globals'
 // eslint-disable-next-line no-use-before-define
 import React from 'react'
 import { render, waitFor } from '@testing-library/react'
-import { FlagshipProvider } from '../src/FlagshipContext'
 import { SpyInstance } from 'jest-mock'
 import { useFlagship } from '../src/FlagshipHooks'
-import Flagship, { DecisionMode, FlagDTO } from '@flagship.io/js-sdk'
+import Flagship, { DecisionMode, FSSdkStatus, FlagDTO } from '@flagship.io/js-sdk'
+import { FlagshipProvider } from '../src/FlagshipProvider'
 
 function sleep (ms: number): Promise<unknown> {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -38,8 +38,7 @@ jest.mock('@flagship.io/js-sdk', () => {
   mockStart.mockImplementation(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (_apiKey, _envId, { onBucketingUpdated, onSdkStatusChanged }: any) => {
-      onSdkStatusChanged(1)
-      onSdkStatusChanged(4)
+      onSdkStatusChanged(FSSdkStatus.SDK_INITIALIZED)
       if (fistStart) {
         onBucketingUpdated(new Date())
         fistStart = false
@@ -154,9 +153,7 @@ describe('FlagshipProvide test', () => {
 
       expect(fetchFlags).toBeCalledTimes(1)
       expect(onBucketingUpdated).toBeCalledTimes(1)
-      expect(onSdkStatusChanged).toBeCalledTimes(2)
-      expect(onInitStart).toBeCalledTimes(1)
-      expect(onInitDone).toBeCalledTimes(1)
+      expect(onSdkStatusChanged).toBeCalledTimes(1)
       expect(onUpdate).toBeCalledTimes(1)
     })
 
@@ -175,9 +172,7 @@ describe('FlagshipProvide test', () => {
       expect(authenticate).toBeCalledTimes(1)
       expect(fetchFlags).toBeCalledTimes(2)
       expect(onBucketingUpdated).toBeCalledTimes(1)
-      expect(onSdkStatusChanged).toBeCalledTimes(2)
-      expect(onInitStart).toBeCalledTimes(1)
-      expect(onInitDone).toBeCalledTimes(1)
+      expect(onSdkStatusChanged).toBeCalledTimes(1)
       // expect(onUpdate).toBeCalledTimes(2);
     })
 
@@ -195,9 +190,7 @@ describe('FlagshipProvide test', () => {
       expect(authenticate).toBeCalledTimes(1)
       expect(fetchFlags).toBeCalledTimes(3)
       expect(onBucketingUpdated).toBeCalledTimes(1)
-      expect(onSdkStatusChanged).toBeCalledTimes(2)
-      expect(onInitStart).toBeCalledTimes(1)
-      expect(onInitDone).toBeCalledTimes(1)
+      expect(onSdkStatusChanged).toBeCalledTimes(1)
       expect(newVisitor).toBeCalledTimes(2)
     })
 
@@ -354,9 +347,7 @@ describe('Test visitorData null', () => {
 
       expect(fetchFlags).toBeCalledTimes(0)
       expect(onBucketingUpdated).toBeCalledTimes(0)
-      expect(onSdkStatusChanged).toBeCalledTimes(2)
-      expect(onInitStart).toBeCalledTimes(1)
-      expect(onInitDone).toBeCalledTimes(1)
+      expect(onSdkStatusChanged).toBeCalledTimes(1)
       expect(onUpdate).toBeCalledTimes(0)
     })
 
@@ -387,9 +378,7 @@ describe('Test visitorData null', () => {
 
       expect(fetchFlags).toBeCalledTimes(1)
       expect(onBucketingUpdated).toBeCalledTimes(0)
-      expect(onSdkStatusChanged).toBeCalledTimes(2)
-      expect(onInitStart).toBeCalledTimes(1)
-      expect(onInitDone).toBeCalledTimes(1)
+      expect(onSdkStatusChanged).toBeCalledTimes(1)
     })
   })
 })
@@ -577,8 +566,8 @@ describe('Test initial data', () => {
     const ChildComponent = () => {
       const fs = useFlagship()
       return <div>
-        <div data-testid="status">{String(fs.status.isSdkReady)}</div>
-        <div data-testid="isLoading">{String(fs.status.isLoading)}</div>
+        <div data-testid="status">{String(fs.sdkState.isSdkReady)}</div>
+        <div data-testid="isLoading">{String(fs.sdkState.isLoading)}</div>
       </div>
     }
 
