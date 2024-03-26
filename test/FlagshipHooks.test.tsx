@@ -93,7 +93,7 @@ describe('test FlagshipHooks', () => {
     useContextMock.mockReturnValue({
       state: {
         config,
-        status: {
+        sdkState: {
           isSdkReady: true
         }
       }
@@ -117,7 +117,7 @@ describe('test FlagshipHooks', () => {
       state: {
         config,
         visitor,
-        status: {
+        sdkState: {
           isSdkReady: true
         }
       }
@@ -185,7 +185,7 @@ describe('test FlagshipHooks', () => {
     useContextMock.mockReturnValue({
       state: {
         config,
-        status: {
+        sdkState: {
           isSdkReady: false
         },
         flags: new Map([
