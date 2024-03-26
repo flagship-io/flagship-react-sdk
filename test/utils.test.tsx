@@ -17,7 +17,11 @@ describe('test logError function', () => {
 
   const logManager = {} as IFlagshipLogManager
 
+  const onLog = jest.fn<(level: LogLevel, tag: string, message: string) => void>()
+
   const errorMethod = jest.fn<()=>void>()
+
+  config.onLog = onLog
 
   logManager.error = errorMethod
 
@@ -30,6 +34,8 @@ describe('test logError function', () => {
     logError(config, messageAll, tag)
     expect(errorMethod).toBeCalledTimes(1)
     expect(errorMethod).toBeCalledWith(messageAll, tag)
+    expect(onLog).toBeCalledTimes(1)
+    expect(onLog).toBeCalledWith(LogLevel.ERROR, tag, messageAll)
   })
 
   it('test level EMERGENCY', () => {
@@ -37,6 +43,7 @@ describe('test logError function', () => {
     const messageEmergency = 'emergency'
     logError(config, messageEmergency, tag)
     expect(errorMethod).toBeCalledTimes(0)
+    expect(onLog).toBeCalledTimes(0)
   })
 
   it('test level NONE', () => {
@@ -44,6 +51,7 @@ describe('test logError function', () => {
     const messageNone = 'none'
     logError(config, messageNone, tag)
     expect(errorMethod).toBeCalledTimes(0)
+    expect(onLog).toBeCalledTimes(0)
   })
 
   it('test level INFO', () => {
@@ -52,6 +60,8 @@ describe('test logError function', () => {
     logError(config, messageInfo, tag)
     expect(errorMethod).toBeCalledTimes(1)
     expect(errorMethod).toBeCalledWith(messageInfo, tag)
+    expect(onLog).toBeCalledTimes(1)
+    expect(onLog).toBeCalledWith(LogLevel.ERROR, tag, messageInfo)
   })
 
   it('test invalid config', () => {
@@ -69,6 +79,10 @@ describe('test logInfo function', () => {
 
   logManager.info = infoMethod
 
+  const onLog = jest.fn<(level: LogLevel, tag: string, message: string) => void>()
+
+  config.onLog = onLog
+
   config.logManager = logManager
 
   const messageAll = 'this is a log message'
@@ -78,6 +92,8 @@ describe('test logInfo function', () => {
     logInfo(config, messageAll, tag)
     expect(infoMethod).toBeCalledTimes(1)
     expect(infoMethod).toBeCalledWith(messageAll, tag)
+    expect(onLog).toBeCalledTimes(1)
+    expect(onLog).toBeCalledWith(LogLevel.INFO, tag, messageAll)
   })
 
   it('test level EMERGENCY', () => {
@@ -85,6 +101,7 @@ describe('test logInfo function', () => {
     const messageEmergency = 'emergency'
     logInfo(config, messageEmergency, tag)
     expect(infoMethod).toBeCalledTimes(0)
+    expect(onLog).toBeCalledTimes(0)
   })
 
   it('test level NONE', () => {
@@ -92,6 +109,7 @@ describe('test logInfo function', () => {
     const messageNone = 'none'
     logInfo(config, messageNone, tag)
     expect(infoMethod).toBeCalledTimes(0)
+    expect(onLog).toBeCalledTimes(0)
   })
 
   it('test level INFO', () => {
@@ -100,6 +118,8 @@ describe('test logInfo function', () => {
     logInfo(config, messageInfo, tag)
     expect(infoMethod).toBeCalledTimes(1)
     expect(infoMethod).toBeCalledWith(messageInfo, tag)
+    expect(onLog).toBeCalledTimes(1)
+    expect(onLog).toBeCalledWith(LogLevel.INFO, tag, messageInfo)
   })
 
   it('test invalid config', () => {
@@ -119,6 +139,10 @@ describe('test logWarn function', () => {
 
   config.logManager = logManager
 
+  const onLog = jest.fn<(level: LogLevel, tag: string, message: string) => void>()
+
+  config.onLog = onLog
+
   const messageAll = 'this is a log message'
   const tag = 'tag'
 
@@ -126,6 +150,8 @@ describe('test logWarn function', () => {
     logWarn(config, messageAll, tag)
     expect(warnMethod).toBeCalledTimes(1)
     expect(warnMethod).toBeCalledWith(messageAll, tag)
+    expect(onLog).toBeCalledTimes(1)
+    expect(onLog).toBeCalledWith(LogLevel.WARNING, tag, messageAll)
   })
 
   it('test level EMERGENCY', () => {
@@ -133,6 +159,7 @@ describe('test logWarn function', () => {
     const messageEmergency = 'emergency'
     logWarn(config, messageEmergency, tag)
     expect(warnMethod).toBeCalledTimes(0)
+    expect(onLog).toBeCalledTimes(0)
   })
 
   it('test level NONE', () => {
@@ -140,6 +167,7 @@ describe('test logWarn function', () => {
     const messageNone = 'none'
     logWarn(config, messageNone, tag)
     expect(warnMethod).toBeCalledTimes(0)
+    expect(onLog).toBeCalledTimes(0)
   })
 
   it('test level WARNING', () => {
@@ -148,6 +176,8 @@ describe('test logWarn function', () => {
     logWarn(config, messageInfo, tag)
     expect(warnMethod).toBeCalledTimes(1)
     expect(warnMethod).toBeCalledWith(messageInfo, tag)
+    expect(onLog).toBeCalledTimes(1)
+    expect(onLog).toBeCalledWith(LogLevel.WARNING, tag, messageInfo)
   })
 
   it('test invalid config', () => {
