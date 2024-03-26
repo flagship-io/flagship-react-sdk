@@ -10,10 +10,11 @@ import {
   primitive
 } from '@flagship.io/js-sdk'
 
-import { FlagshipContext, FsSdkState } from './FlagshipContext'
+import { FlagshipContext } from './FlagshipContext'
 import { logError, logWarn } from './utils'
 import { Flag } from './Flag'
 import { noVisitorMessage } from './constants'
+import { FsSdkState } from './type'
 
 /**
  * This hook returns a flag object by its key. If no flag match the given key an empty flag will be returned.
