@@ -15,10 +15,11 @@ import {
   DecisionMode,
   FlagDTO,
   Flagship,
-  FlagshipStatus,
   IFlagshipConfig,
   primitive,
-  Visitor
+  FSSdkStatus,
+  Visitor,
+  FetchFlagsStatus
 } from '@flagship.io/js-sdk'
 import {
   getFlagsFromCampaigns,
@@ -27,7 +28,7 @@ import {
 } from './utils'
 import { version as SDK_VERSION } from './sdkVersion'
 
-export interface FsStatus {
+export interface FsSdkState {
   /**
    * Boolean. When true, the SDK is still not ready to render your App otherwise it'll use default modifications.
    */
@@ -51,11 +52,11 @@ export interface FsStatus {
    */
   firstInitSuccess?: string;
 }
-export interface FsState {
+export interface FsContextState {
   visitor?: Visitor;
   config?: IFlagshipConfig;
   flags?: Map<string, FlagDTO>;
-  status: FsStatus;
+  sdkState: FsSdkState;
   initialCampaigns?: CampaignDTO[];
   initialFlags?: Map<string, FlagDTO> | FlagDTO[];
 }
@@ -67,8 +68,8 @@ export type VisitorData = {
   hasConsented: boolean;
 };
 interface FsContext {
-  state: FsState;
-  setState?: Dispatch<SetStateAction<FsState>>;
+  state: FsContextState;
+  setState?: Dispatch<SetStateAction<FsContextState>>;
 }
 
 /**
@@ -97,15 +98,6 @@ export interface FlagshipProviderProps extends IFlagshipConfig {
    * The child components to be rendered within the FlagshipProvider.
    */
   children?: ReactNode;
-
-  /**
-   * Callback function called when the SDK starts initialization.
-   */
-  onInitStart?(): void;
-  /**
-   * Callback function called when the SDK ends initialization.
-   */
-  onInitDone?(): void;
   /**
    * Callback function called when the SDK is updated. For example, after a synchronize is triggered or visitor context has changed.
    * @param params - An object containing the updated SDK data.
@@ -113,7 +105,7 @@ export interface FlagshipProviderProps extends IFlagshipConfig {
   onUpdate?(params: {
     fsModifications: Map<string, FlagDTO>;
     config: IFlagshipConfig;
-    status: FsStatus;
+    status: FsSdkState;
   }): void;
   /**
    * This is an object of the data received when fetching bucketing endpoint.
@@ -134,10 +126,24 @@ export interface FlagshipProviderProps extends IFlagshipConfig {
    * If true, it'll automatically call fetchFlags when the bucketing file has updated.
    */
   fetchFlagsOnBucketingUpdated?: boolean;
+
+  /**
+  * Callback function that will be called when the fetch flags status changes.
+  *
+  * @param newStatus - The new status of the flags fetch.
+  * @param reason - The reason for the status change.
+  */
+  onFetchFlagsStatusChanged?: ({ status, reason }: FetchFlagsStatus) => void;
+  /**
+  * If true, the newly created visitor instance won't be saved and will simply be returned. Otherwise, the newly created visitor instance will be returned and saved into the Flagship.
+  *
+  * Note: By default, it is false on server-side and true on client-side.
+  */
+  shouldSaveInstance?: boolean;
 }
 
-const initStat: FsState = {
-  status: { isLoading: true, isSdkReady: false }
+const initStat: FsContextState = {
+  sdkState: { isLoading: true, isSdkReady: false }
 }
 
 export const FlagshipContext = createContext<FsContext>({
@@ -150,8 +156,6 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   apiKey,
   decisionMode = DecisionMode.DECISION_API,
   visitorData,
-  onInitStart,
-  onInitDone,
   loadingComponent,
   onSdkStatusChanged,
   onBucketingUpdated,
@@ -163,6 +167,8 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   fetchNow = true,
   language = 1,
   sdkVersion = SDK_VERSION,
+  onFetchFlagsStatusChanged,
+  shouldSaveInstance,
   ...props
 }: FlagshipProviderProps) => {
   let flags = new Map<string, FlagDTO>()
@@ -174,9 +180,9 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     flags = getFlagsFromCampaigns(initialCampaigns)
   }
 
-  const [state, setState] = useState<FsState>({ ...initStat, flags: flags })
+  const [state, setState] = useState<FsContextState>({ ...initStat, flags: flags })
   const [lastModified, setLastModified] = useState<Date>()
-  const stateRef = useRef<FsState>()
+  const stateRef = useRef<FsContextState>()
   stateRef.current = state
 
   useNonInitialEffect(() => {
@@ -198,7 +204,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     isLoading: boolean;
     isSdkReady: boolean;
   }) {
-    const newStatus: FsStatus = {
+    const newStatus: FsSdkState = {
       isSdkReady: param.isSdkReady,
       isLoading: param.isLoading,
       isVisitorDefined: !!param.fsVisitor,
@@ -206,7 +212,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     }
 
     setState((currentState) => {
-      if (!currentState.status.firstInitSuccess) {
+      if (!currentState.sdkState.firstInitSuccess) {
         newStatus.firstInitSuccess = new Date().toISOString()
       }
 
@@ -215,8 +221,8 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
         visitor: param.fsVisitor,
         flags: param.fsVisitor.flagsData,
         config: Flagship.getConfig(),
-        status: {
-          ...currentState.status,
+        sdkState: {
+          ...currentState.sdkState,
           ...newStatus
         }
       }
@@ -282,7 +288,9 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       isAuthenticated: visitorData.isAuthenticated,
       hasConsented: visitorData.hasConsented,
       initialCampaigns,
-      initialFlagsData
+      initialFlagsData,
+      onFetchFlagsStatusChanged,
+      shouldSaveInstance
     })
 
     fsVisitor?.on('ready', (error) => {
@@ -297,31 +305,21 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
       })
     }
   }
-  const statusChanged = (status: FlagshipStatus) => {
+  const statusChanged = (status: FSSdkStatus) => {
     if (onSdkStatusChanged) {
       onSdkStatusChanged(status)
     }
 
     switch (status) {
-      case FlagshipStatus.STARTING:
-        if (status === FlagshipStatus.STARTING && onInitStart) {
-          onInitStart()
-        }
-        break
-      case FlagshipStatus.READY_PANIC_ON:
-      case FlagshipStatus.READY:
-        if (onInitDone) {
-          onInitDone()
-        }
-
+      case FSSdkStatus.SDK_PANIC:
+      case FSSdkStatus.SDK_INITIALIZED:
         createVisitor()
-
         break
-      case FlagshipStatus.NOT_INITIALIZED:
+      case FSSdkStatus.SDK_NOT_INITIALIZED:
         setState((prev) => ({
           ...prev,
-          status: {
-            ...prev.status,
+          sdkState: {
+            ...prev.sdkState,
             isLoading: false
           },
           config: Flagship.getConfig()
@@ -352,7 +350,7 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
   }
   const handleDisplay = (): React.ReactNode => {
     const isFirstInit = !state.visitor
-    if (state.status.isLoading && loadingComponent && isFirstInit && fetchNow) {
+    if (state.sdkState.isLoading && loadingComponent && isFirstInit && fetchNow) {
       return <>{loadingComponent}</>
     }
     return <>{children}</>
