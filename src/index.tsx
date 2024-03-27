@@ -1,7 +1,9 @@
-import { FlagshipProvider } from './FlagshipContext'
+import { FlagshipProvider } from './FlagshipProvider'
 
-export * from './FlagshipContext'
 export * from '@flagship.io/js-sdk'
 export * from './FlagshipHooks'
+export * from './type'
+
+export { FlagshipProvider } from './FlagshipProvider'
 
 export default FlagshipProvider
