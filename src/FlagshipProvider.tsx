@@ -1,91 +1,19 @@
 import React, { useState, useRef, useEffect, ReactNode } from 'react'
+
 import Flagship, {
   DecisionMode,
   FlagDTO,
   Visitor,
-  FSSdkStatus,
-  IFlagshipConfig,
-  BucketingDTO,
-  CampaignDTO,
-  FetchFlagsStatus
+  FSSdkStatus
 } from '@flagship.io/js-sdk'
+
 import {
   FlagshipContext,
   initStat
 } from './FlagshipContext'
-import { getFlagsFromCampaigns, useNonInitialEffect, logError } from './utils'
 import { version as SDK_VERSION } from './sdkVersion'
-import { VisitorData, FsSdkState, FsContextState } from './type'
-
-/**
- * Props for the FlagshipProvider component.
- */
-export interface FlagshipProviderProps extends IFlagshipConfig {
-  /**
-   * This is the data to identify the current visitor using your app.
-   */
-  visitorData: VisitorData | null;
-  /**
-   * The environment ID for your Flagship project.
-   */
-  envId: string;
-  /**
-   * The API key for your Flagship project.
-   */
-  apiKey: string;
-  /**
-   * This component will be rendered when Flagship is loading at first initialization only.
-   * By default, the value is undefined. It means it will display your app and it might
-   * display default modifications value for a very short moment.
-   */
-  loadingComponent?: ReactNode;
-  /**
-   * The child components to be rendered within the FlagshipProvider.
-   */
-  children?: ReactNode;
-  /**
-   * Callback function called when the SDK is updated. For example, after a synchronize is triggered or visitor context has changed.
-   * @param params - An object containing the updated SDK data.
-   */
-  onUpdate?(params: {
-    fsModifications: Map<string, FlagDTO>;
-    config: IFlagshipConfig;
-    status: FsSdkState;
-  }): void;
-  /**
-   * This is an object of the data received when fetching bucketing endpoint.
-   * Providing this prop will make bucketing ready to use and the first polling will immediately check for an update.
-   * If the shape of an element is not correct, an error log will give the reason why.
-   */
-  initialBucketing?: BucketingDTO;
-  /**
-   * An array of initial campaigns to be used by the SDK.
-   */
-  initialCampaigns?: CampaignDTO[];
-
-  /**
-   * This is a set of flag data provided to avoid the SDK to have an empty cache during the first initialization.
-   */
-  initialFlagsData?: Map<string, FlagDTO> | FlagDTO[];
-  /**
-   * If true, it'll automatically call fetchFlags when the bucketing file has updated.
-   */
-  fetchFlagsOnBucketingUpdated?: boolean;
-
-  /**
-   * Callback function that will be called when the fetch flags status changes.
-   *
-   * @param newStatus - The new status of the flags fetch.
-   * @param reason - The reason for the status change.
-   */
-  onFetchFlagsStatusChanged?: ({ status, reason }: FetchFlagsStatus) => void;
-  /**
-   * If true, the newly created visitor instance won't be saved and will simply be returned. Otherwise, the newly created visitor instance will be returned and saved into the Flagship.
-   *
-   * Note: By default, it is false on server-side and true on client-side.
-   */
-  shouldSaveInstance?: boolean;
-}
+import { FsSdkState, FsContextState, FlagshipProviderProps } from './type'
+import { getFlagsFromCampaigns, useNonInitialEffect, logError } from './utils'
 
 export function FlagshipProvider ({
   children,
@@ -107,7 +35,7 @@ export function FlagshipProvider ({
   onFetchFlagsStatusChanged,
   shouldSaveInstance,
   ...props
-}: FlagshipProviderProps): JSX.Element {
+}: FlagshipProviderProps): React.JSX.Element {
   let flags = new Map<string, FlagDTO>()
   if (initialFlagsData && initialFlagsData.forEach) {
     initialFlagsData.forEach((flag) => {
@@ -119,7 +47,7 @@ export function FlagshipProvider ({
 
   const [state, setState] = useState<FsContextState>({
     ...initStat,
-    flags: flags
+    flags
   })
   const [lastModified, setLastModified] = useState<Date>()
   const stateRef = useRef<FsContextState>()
