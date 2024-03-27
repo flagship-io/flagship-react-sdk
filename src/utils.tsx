@@ -1,11 +1,12 @@
 'use client'
+import { EffectCallback, DependencyList, useEffect, useRef } from 'react'
+
 import {
   CampaignDTO,
   FlagDTO,
   IFlagshipConfig,
   LogLevel
 } from '@flagship.io/js-sdk'
-import { EffectCallback, DependencyList, useEffect, useRef } from 'react'
 
 export function logError (
   config: IFlagshipConfig | undefined,
