@@ -1,5 +1,4 @@
 import { jest, expect, it, describe } from '@jest/globals'
-// eslint-disable-next-line no-use-before-define
 import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import { SpyInstance } from 'jest-mock'
