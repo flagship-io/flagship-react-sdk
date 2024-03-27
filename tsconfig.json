@@ -4,12 +4,12 @@
     "noImplicitAny": true,
     "esModuleInterop": true,
     "strict": true,
-    "module": "ES6",
+    "module": "ESNext",
     "declaration": true,
-    "lib": ["ES6", "dom"],
+    "lib": ["ESNext", "DOM"],
     "moduleResolution": "Node",
-    "target": "ES6",
-    "jsx": "react"
+    "target": "ESNext",
+    "jsx": "react-jsx"
   },
   "include": ["src/**/*", "setupTests.ts"]
 }
