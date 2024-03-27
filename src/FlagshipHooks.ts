@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+
 import {
   Flagship,
   FSSdkStatus,
@@ -10,11 +11,11 @@ import {
   primitive
 } from '@flagship.io/js-sdk'
 
-import { FlagshipContext } from './FlagshipContext'
-import { logError, logWarn } from './utils'
-import { Flag } from './Flag'
 import { noVisitorMessage } from './constants'
+import { Flag } from './Flag'
+import { FlagshipContext } from './FlagshipContext'
 import { FsSdkState } from './type'
+import { logError, logWarn } from './utils'
 
 /**
  * This hook returns a flag object by its key. If no flag match the given key an empty flag will be returned.
@@ -22,7 +23,7 @@ import { FsSdkState } from './type'
  * @param defaultValue
  * @returns
  */
-export const useFsFlag = <T extends unknown>(
+export const useFsFlag = <T>(
   key: string,
   defaultValue: T
 ): IFlag<T> => {
