@@ -3,10 +3,6 @@ import { useContext } from 'react'
 
 import {
   Flagship,
-  FSSdkStatus,
-  FetchFlagsStatus,
-  FlagDTO,
-  HitAbstract,
   IFlag,
   IHit,
   primitive
@@ -15,7 +11,7 @@ import {
 import { noVisitorMessage } from './constants'
 import { Flag } from './Flag'
 import { FlagshipContext } from './FlagshipContext'
-import { FsSdkState } from './type'
+import { UseFlagshipOutput } from './type'
 import { logError, logWarn } from './utils'
 
 /**
@@ -37,97 +33,6 @@ export const useFsFlag = <T>(
 
   return visitor.getFlag(key, defaultValue)
 }
-
-/**
- * Represents the output of the `useFlagship` hook.
- */
-export type UseFlagshipOutput = {
-  /**
-   * The visitor ID.
-   */
-  visitorId?: string;
-  /**
-   * The anonymous ID.
-   */
-  anonymousId?: string | null;
-  /**
-   * The visitor context.
-   */
-  context?: Record<string, primitive>;
-  /**
-   * Indicates whether the visitor has consented for protected data usage.
-   */
-  hasConsented?: boolean;
-  /**
-   * Sets whether the visitor has consented for protected data usage.
-   * @param hasConsented - True if the visitor has consented, false otherwise.
-   */
-  setConsent: (hasConsented: boolean) => void;
-  /**
-   * The flags data.
-   */
-  flagsData: FlagDTO[];
-  /**
-   * The status of the Flagship SDK.
-   */
-  readonly sdkState: FsSdkState;
-
-  readonly sdkStatus: FSSdkStatus;
-
-  readonly fetchStatus?: FetchFlagsStatus
-  /**
-   * Updates the visitor context values, matching the given keys, used for targeting.
-   * A new context value associated with this key will be created if there is no previous matching value.
-   * Context keys must be strings, and value types must be one of the following: number, boolean, string.
-   * @param context - A collection of keys and values.
-   */
-  updateContext(context: Record<string, primitive>): void;
-  /**
-   * Clears the actual visitor context.
-   */
-  clearContext(): void;
-  /**
-   * Authenticates an anonymous visitor.
-   * @param visitorId - The visitor ID.
-   */
-  authenticate(visitorId: string): void;
-  /**
-   * Changes an authenticated visitor to an anonymous visitor.
-   */
-  unauthenticate(): void;
-  /**
-   * Sends a hit to the Flagship server.
-   * @param hit - The hit to send.
-   */
-  hit: {
-    send: {
-      (hit: HitAbstract): Promise<void>;
-      (hit: IHit): Promise<void>;
-      (hit: HitAbstract | IHit): Promise<void>;
-    };
-    sendMultiple: {
-      (hit: HitAbstract[]): Promise<void>;
-      (hit: IHit[]): Promise<void>;
-      (hit: HitAbstract[] | IHit[]): Promise<void>;
-    };
-  };
-  /**
-   * Retrieves a flag object by its key. If no flag matches the given key, an empty flag will be returned.
-   * @param key - The flag key.
-   * @param defaultValue - The default value.
-   * @returns The flag object.
-   */
-  getFlag<T>(key: string, defaultValue: T): IFlag<T>;
-  /**
-   * Fetches the flags from the Flagship server.
-   */
-  fetchFlags: () => Promise<void>;
-  /**
-   * Batches and sends all hits that are in the pool before the application is closed.
-   * @returns A promise that resolves when all hits are sent.
-   */
-  close(): Promise<void>;
-};
 
 export const useFlagship = (): UseFlagshipOutput => {
   const { state } = useContext(FlagshipContext)
@@ -174,28 +79,17 @@ export const useFlagship = (): UseFlagshipOutput => {
    * Send a Hit to Flagship servers for reporting.
    */
   const fsSendHit: {
-    (hit: HitAbstract | IHit): Promise<void>;
+    (hit: IHit[] | IHit): Promise<void>;
   } = (hit) => {
     const functionName = 'sendHit'
     if (!visitor) {
       logError(config, noVisitorMessage, functionName)
       return Promise.resolve()
     }
-    return visitor.sendHit(hit)
-  }
-
-  /**
-   * Send a Hit to Flagship servers for reporting.
-   */
-  const fsSendHits: {
-    (hit: HitAbstract[] | IHit[]): Promise<void>;
-  } = (hit) => {
-    const functionName = 'sendHits'
-    if (!visitor) {
-      logError(config, noVisitorMessage, functionName)
-      return Promise.resolve()
+    if (Array.isArray(hit)) {
+      return visitor.sendHits(hit)
     }
-    return visitor.sendHits(hit)
+    return visitor.sendHit(hit)
   }
 
   function getFlag<T> (key: string, defaultValue: T): IFlag<T> {
@@ -245,10 +139,7 @@ export const useFlagship = (): UseFlagshipOutput => {
     unauthenticate: fsUnauthenticate,
     sdkState: state.sdkState,
     flagsData: flagsData || [],
-    hit: {
-      send: fsSendHit,
-      sendMultiple: fsSendHits
-    },
+    sendHits: fsSendHit,
     getFlag,
     fetchFlags,
     close
