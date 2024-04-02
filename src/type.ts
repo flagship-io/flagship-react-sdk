@@ -175,15 +175,12 @@ export type UseFlagshipOutput = {
   unauthenticate(): void;
 
   /**
-   * Sends a hit to the Flagship server.
-   * @param hit - The hit to send.
+   * Sends a hit or multiple hits to the Flagship server.
+   * @param hit - The hit or array of hits to send.
    */
-  sendHits (hit: IHit): Promise<void>;
-  /**
-   * Sends a batch of hits to the Flagship server.
-   * @param hits
-   */
+  sendHits(hit: IHit): Promise<void>;
   sendHits(hits: IHit[]): Promise<void>;
+  sendHits(hits: IHit | IHit[]): Promise<void>;
 
   /**
    * Return a [Flag](#flag-class)  object by its key.
