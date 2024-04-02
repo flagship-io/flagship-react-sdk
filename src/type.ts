@@ -1,5 +1,6 @@
-import { Visitor, IFlagshipConfig, FlagDTO, CampaignDTO, primitive, BucketingDTO, FetchFlagsStatus } from '@flagship.io/js-sdk'
 import { Dispatch, ReactNode, SetStateAction } from 'react'
+
+import { Visitor, IFlagshipConfig, FlagDTO, CampaignDTO, primitive, BucketingDTO, FetchFlagsStatus, FSSdkStatus, IHit, IFlag } from '@flagship.io/js-sdk'
 
 export interface FsSdkState {
     /**
@@ -114,3 +115,92 @@ export interface FlagshipProviderProps extends IFlagshipConfig {
      */
     shouldSaveInstance?: boolean;
   }
+
+/**
+ * Represents the output of the `useFlagship` hook.
+ */
+export type UseFlagshipOutput = {
+  /**
+   * The visitor ID.
+   */
+  visitorId?: string;
+  /**
+   * The anonymous ID.
+   */
+  anonymousId?: string | null;
+  /**
+   * The visitor context.
+   */
+  context?: Record<string, primitive>;
+  /**
+   * Indicates whether the visitor has consented for protected data usage.
+   */
+  hasConsented?: boolean;
+  /**
+   * Sets whether the visitor has consented for protected data usage.
+   * @param hasConsented - True if the visitor has consented, false otherwise.
+   */
+  setConsent: (hasConsented: boolean) => void;
+  /**
+   * The flags data.
+   */
+  flagsData: FlagDTO[];
+  /**
+   * The status of the Flagship SDK.
+   */
+  readonly sdkState: FsSdkState;
+
+  readonly sdkStatus: FSSdkStatus;
+
+  readonly fetchStatus?: FetchFlagsStatus
+  /**
+   * Updates the visitor context values, matching the given keys, used for targeting.
+   * A new context value associated with this key will be created if there is no previous matching value.
+   * Context keys must be strings, and value types must be one of the following: number, boolean, string.
+   * @param context - A collection of keys and values.
+   */
+  updateContext(context: Record<string, primitive>): void;
+  /**
+   * Clears the actual visitor context.
+   */
+  clearContext(): void;
+  /**
+   * Authenticates an anonymous visitor.
+   * @param visitorId - The visitor ID.
+   */
+  authenticate(visitorId: string): void;
+  /**
+   * Changes an authenticated visitor to an anonymous visitor.
+   */
+  unauthenticate(): void;
+
+  /**
+   * Sends a hit to the Flagship server.
+   * @param hit - The hit to send.
+   */
+  sendHits (hit: IHit): Promise<void>;
+  /**
+   * Sends a batch of hits to the Flagship server.
+   * @param hits
+   */
+  sendHits(hits: IHit[]): Promise<void>;
+
+  /**
+   * Return a [Flag](#flag-class)  object by its key.
+   *  If no flag matches the given key, an empty flag will be returned.
+   * Call exists() to check if the flag has been found.
+   * @param key - The flag key.
+   * @param defaultValue - The default value.
+   * @returns The flag object.
+   */
+  getFlag<T>(key: string, defaultValue: T): IFlag<T>;
+  /**
+   * Invokes the `decision API` or refers to the `bucketing file` to refresh all campaign flags based on the visitor's context.
+   */
+  fetchFlags: () => Promise<void>;
+  /**
+   * Batches and sends all hits that are in the pool before the application is closed.
+   * @returns A promise that resolves when all hits are sent.
+   */
+  close(): Promise<void>;
+};
