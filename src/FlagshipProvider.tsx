@@ -14,7 +14,7 @@ import {
   initStat
 } from './FlagshipContext'
 import { version as SDK_VERSION } from './sdkVersion'
-import { FsSdkState, FsContextState, FlagshipProviderProps } from './type'
+import { FsContextState, FlagshipProviderProps } from './type'
 import { getFlagsFromCampaigns, useNonInitialEffect, logError } from './utils'
 
 export function FlagshipProvider ({
@@ -26,7 +26,6 @@ export function FlagshipProvider ({
   loadingComponent,
   onSdkStatusChanged,
   onBucketingUpdated,
-  onUpdate,
   initialCampaigns,
   initialFlagsData,
   fetchFlagsOnBucketingUpdated,
@@ -71,56 +70,24 @@ export function FlagshipProvider ({
 
   function initializeState (param: {
     fsVisitor: Visitor;
-    isLoading: boolean;
-    isSdkReady: boolean;
   }) {
-    const newStatus: FsSdkState = {
-      isSdkReady: param.isSdkReady,
-      isLoading: param.isLoading,
-      isVisitorDefined: !!param.fsVisitor,
-      lastRefresh: new Date().toISOString()
-    }
-
     setState((currentState) => {
-      if (!currentState.sdkState.firstInitSuccess) {
-        newStatus.firstInitSuccess = new Date().toISOString()
-      }
-
       return {
         ...currentState,
         visitor: param.fsVisitor,
         flags: param.fsVisitor.flagsData,
         config: Flagship.getConfig(),
-        sdkState: {
-          ...currentState.sdkState,
-          ...newStatus
-        }
+        isInitializing: false
       }
     })
-
-    return newStatus
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onVisitorReady = (fsVisitor: Visitor, error: any) => {
     if (error) {
       logError(Flagship.getConfig(), error.message || error, 'onReady')
-      return
     }
-
-    const newStatus = initializeState({
-      fsVisitor,
-      isSdkReady: true,
-      isLoading: false
-    })
-
-    if (onUpdate) {
-      onUpdate({
-        fsModifications: fsVisitor.flagsData,
-        config: Flagship.getConfig(),
-        status: newStatus
-      })
-    }
+    initializeState({ fsVisitor })
   }
 
   function updateVisitor () {
@@ -129,10 +96,7 @@ export function FlagshipProvider ({
     }
 
     if (
-      !state.visitor ||
-      (state.visitor.visitorId !== visitorData.id &&
-        (!visitorData.isAuthenticated ||
-          (visitorData.isAuthenticated && state.visitor.anonymousId)))
+      !state.visitor || (state.visitor.visitorId !== visitorData.id && (!visitorData.isAuthenticated || (visitorData.isAuthenticated && state.visitor.anonymousId)))
     ) {
       createVisitor()
       return
@@ -173,11 +137,7 @@ export function FlagshipProvider ({
     })
 
     if (!fetchNow) {
-      initializeState({
-        fsVisitor,
-        isSdkReady: true,
-        isLoading: false
-      })
+      initializeState({ fsVisitor })
     }
   }
   const statusChanged = (status: FSSdkStatus) => {
@@ -193,11 +153,8 @@ export function FlagshipProvider ({
       case FSSdkStatus.SDK_NOT_INITIALIZED:
         setState((prev) => ({
           ...prev,
-          sdkState: {
-            ...prev.sdkState,
-            isLoading: false
-          },
-          config: Flagship.getConfig()
+          config: Flagship.getConfig(),
+          isInitializing: false
         }))
         break
     }
@@ -226,7 +183,7 @@ export function FlagshipProvider ({
   const handleDisplay = (): ReactNode => {
     const isFirstInit = !state.visitor
     if (
-      state.sdkState.isLoading &&
+      state.isInitializing &&
       loadingComponent &&
       isFirstInit &&
       fetchNow
