@@ -2,37 +2,13 @@ import { Dispatch, ReactNode, SetStateAction } from 'react'
 
 import { Visitor, IFlagshipConfig, FlagDTO, CampaignDTO, primitive, BucketingDTO, FetchFlagsStatus, FSSdkStatus, IHit, IFlag } from '@flagship.io/js-sdk'
 
-export interface FsSdkState {
-    /**
-     * Boolean. When true, the SDK is still not ready to render your App otherwise it'll use default modifications.
-     */
-    isLoading: boolean;
-    /**
-     * Boolean. true after it has fully finished initialization tasks, false otherwise.
-     */
-    isSdkReady: boolean;
-
-    lastModified?: Date;
-    /**
-     * Boolean. When true the flagship visitor instance is truthy, false otherwise.
-     */
-    isVisitorDefined?: boolean;
-    /**
-     * String or null. The last update date occurred on the flagship visitor instance.
-     */
-    lastRefresh?: string;
-    /**
-     * String or null. When null no initialization succeed yet. When string contains stringified date of last successful initialization.
-     */
-    firstInitSuccess?: string;
-  }
 export interface FsContextState {
     visitor?: Visitor;
     config?: IFlagshipConfig;
     flags?: Map<string, FlagDTO>;
-    sdkState: FsSdkState;
     initialCampaigns?: CampaignDTO[];
     initialFlags?: Map<string, FlagDTO> | FlagDTO[];
+    isInitializing: boolean;
   }
 
 export type VisitorData = {
@@ -72,15 +48,6 @@ export interface FlagshipProviderProps extends IFlagshipConfig {
      * The child components to be rendered within the FlagshipProvider.
      */
     children?: ReactNode;
-    /**
-     * Callback function called when the SDK is updated. For example, after a synchronize is triggered or visitor context has changed.
-     * @param params - An object containing the updated SDK data.
-     */
-    onUpdate?(params: {
-      fsModifications: Map<string, FlagDTO>;
-      config: IFlagshipConfig;
-      status: FsSdkState;
-    }): void;
     /**
      * This is an object of the data received when fetching bucketing endpoint.
      * Providing this prop will make bucketing ready to use and the first polling will immediately check for an update.
@@ -145,10 +112,6 @@ export type UseFlagshipOutput = {
    * The flags data.
    */
   flagsData: FlagDTO[];
-  /**
-   * The status of the Flagship SDK.
-   */
-  readonly sdkState: FsSdkState;
 
   readonly sdkStatus: FSSdkStatus;
 
