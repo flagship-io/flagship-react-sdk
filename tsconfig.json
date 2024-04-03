@@ -9,7 +9,8 @@
     "lib": ["ESNext", "DOM"],
     "moduleResolution": "Node",
     "target": "ESNext",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+     "types": ["node", "jest", "@testing-library/jest-dom"]
   },
-  "include": ["src/**/*", "setupTests.ts"]
+  "include": ["src/**/*", "setupTests.ts"],
 }
