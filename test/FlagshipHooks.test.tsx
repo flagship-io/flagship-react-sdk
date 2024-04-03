@@ -1,9 +1,12 @@
 import React from 'react'
+
 import { jest, expect, it, describe, beforeEach, afterEach } from '@jest/globals'
-import * as FsHooks from '../src/FlagshipHooks'
 import { Mock } from 'jest-mock'
+
 import Flagship, { HitType, LogLevel } from '@flagship.io/js-sdk'
+
 import { Flag } from '../src/Flag'
+import * as FsHooks from '../src/FlagshipHooks'
 
 describe('test FlagshipHooks', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,8 +110,8 @@ describe('test FlagshipHooks', () => {
 
     fs.updateContext(context)
     fs.clearContext()
-    fs.hit.send({ type: HitType.PAGE, documentLocation: 'home' })
-    fs.hit.sendMultiple([{ type: HitType.PAGE, documentLocation: 'home' }])
+    fs.sendHits({ type: HitType.PAGE, documentLocation: 'home' })
+    fs.sendHits([{ type: HitType.PAGE, documentLocation: 'home' }])
     fs.authenticate('visitor_id')
     fs.unauthenticate()
     expect(config.logManager.error).toBeCalledTimes(6)
@@ -140,9 +143,10 @@ describe('test FlagshipHooks', () => {
 
     expect(visitor.updateContext).toBeCalledTimes(1)
     expect(visitor.updateContext).toBeCalledWith(context)
+    expect(visitor.fetchFlags).toBeCalledTimes(2)
 
     fs.clearContext()
-    expect(visitor.clearContext).toBeCalledTimes(2)
+    expect(visitor.clearContext).toBeCalledTimes(1)
 
     fs.setConsent(true)
 
@@ -150,11 +154,11 @@ describe('test FlagshipHooks', () => {
     expect(visitor.setConsent).toBeCalledWith(true)
 
     const hit = { type: HitType.PAGE, documentLocation: 'home' }
-    await fs.hit.send(hit)
+    await fs.sendHits(hit)
     expect(visitor.sendHit).toBeCalledTimes(1)
     expect(visitor.sendHit).toBeCalledWith(hit)
 
-    await fs.hit.sendMultiple([hit])
+    await fs.sendHits([hit])
     expect(visitor.sendHits).toBeCalledTimes(1)
     expect(visitor.sendHits).toBeCalledWith([hit])
 
@@ -163,10 +167,12 @@ describe('test FlagshipHooks', () => {
 
     expect(visitor.authenticate).toBeCalledTimes(1)
     expect(visitor.authenticate).toBeCalledWith(visitorId)
+    expect(visitor.fetchFlags).toBeCalledTimes(3)
 
     fs.unauthenticate()
 
     expect(visitor.unauthenticate).toBeCalledTimes(1)
+    expect(visitor.fetchFlags).toBeCalledTimes(4)
 
     await fs.close()
     expect(Flagship.close).toBeCalledTimes(1)
