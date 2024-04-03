@@ -4,7 +4,7 @@ import { createContext } from 'react'
 import { FsContext, FsContextState } from './type'
 
 export const initStat: FsContextState = {
-  sdkState: { isLoading: true, isSdkReady: false }
+  isInitializing: true
 }
 
 export const FlagshipContext = createContext<FsContext>({
