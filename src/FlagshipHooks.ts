@@ -44,8 +44,8 @@ export const useFlagship = (): UseFlagshipOutput => {
       logError(config, noVisitorMessage, functionName)
       return
     }
-    visitor.clearContext()
     visitor.updateContext(context)
+    visitor.fetchFlags()
   }
 
   const fsClearContext = (): void => {
@@ -64,6 +64,7 @@ export const useFlagship = (): UseFlagshipOutput => {
       return
     }
     visitor.authenticate(visitorId)
+    visitor.fetchFlags()
   }
 
   const fsUnauthenticate = (): void => {
@@ -73,6 +74,7 @@ export const useFlagship = (): UseFlagshipOutput => {
       return
     }
     visitor.unauthenticate()
+    visitor.fetchFlags()
   }
 
   /**
