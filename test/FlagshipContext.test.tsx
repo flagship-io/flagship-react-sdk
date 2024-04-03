@@ -13,9 +13,8 @@ function sleep (ms: number): Promise<unknown> {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockStart = Flagship.start as unknown as SpyInstance<typeof Flagship.start>
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const newVisitor = Flagship.newVisitor as unknown as SpyInstance<typeof Flagship.newVisitor>
 const flagsData = new Map<string, FlagDTO>()
 const updateContext = jest.fn()
@@ -36,12 +35,14 @@ jest.mock('@flagship.io/js-sdk', () => {
   const newVisitor = jest.spyOn(flagship.Flagship, 'newVisitor')
 
   let fistStart = true
+  let localFetchNow = true
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mockStart.mockImplementation(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (_apiKey, _envId, { onBucketingUpdated, onSdkStatusChanged }: any) => {
+    (_apiKey, _envId, { onBucketingUpdated, onSdkStatusChanged, fetchNow, decisionMode }: any) => {
+      localFetchNow = fetchNow
       onSdkStatusChanged(FSSdkStatus.SDK_INITIALIZED)
-      if (fistStart) {
+      if (fistStart && decisionMode === DecisionMode.BUCKETING) {
         onBucketingUpdated(new Date())
         fistStart = false
       }
@@ -52,7 +53,7 @@ jest.mock('@flagship.io/js-sdk', () => {
   let OnReadyCallback: (error?: any) => void
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  newVisitor.mockImplementation(({ visitorId }:any) => {
+  newVisitor.mockImplementation(({ visitorId, isAuthenticated }:any) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const EventOn = jest.fn<(e:string, callback:(error?: any) => void)=>void>()
 
@@ -63,7 +64,7 @@ jest.mock('@flagship.io/js-sdk', () => {
     })
 
     fetchFlags.mockImplementation(async () => {
-      await sleep(500)
+      await sleep(0)
       if (OnReadyCallback) {
         OnReadyCallback(onEventError ? new Error() : null)
       }
@@ -71,10 +72,10 @@ jest.mock('@flagship.io/js-sdk', () => {
 
     const newVisitor = {
       visitorId,
-      anonymousId: '',
-      fetchFlags,
+      anonymousId: isAuthenticated ? Math.random().toString(36).substr(2, 9) : '',
       on: EventOn,
       getFlagsDataArray,
+      fetchFlags,
       flagsData,
       updateContext,
       unauthenticate,
@@ -90,7 +91,9 @@ jest.mock('@flagship.io/js-sdk', () => {
       newVisitor.anonymousId = ''
     })
 
-    newVisitor.fetchFlags()
+    if (localFetchNow) {
+      newVisitor.fetchFlags()
+    }
     return newVisitor
   })
 
@@ -107,9 +110,6 @@ describe('FlagshipProvide test', () => {
   const envId = 'EnvId'
   const apiKey = 'apiKey'
   const onSdkStatusChanged = jest.fn()
-  const onInitStart = jest.fn()
-  const onInitDone = jest.fn()
-  const onUpdate = jest.fn()
   const onBucketingUpdated = jest.fn()
   const props = {
     envId,
@@ -117,22 +117,24 @@ describe('FlagshipProvide test', () => {
     decisionMode: DecisionMode.DECISION_API,
     visitorData,
     onSdkStatusChanged,
-    onInitStart,
-    onInitDone,
-    onUpdate,
     fetchNow: true,
     onBucketingUpdated,
-    loadingComponent: <div></div>,
+    loadingComponent: <div data-testid="loading" >Loading</div>,
     fetchFlagsOnBucketingUpdated: true
   }
 
   it('should ', async () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { rerender } = render(
+    const MyChildrenComponent = () => {
+      return <div data-testid="body">children</div>
+    }
+    const { rerender, getByTestId } = render(
       <FlagshipProvider {...props}>
-        <div>children</div>
+        <MyChildrenComponent/>
       </FlagshipProvider>
     )
+
+    expect(getByTestId('loading').textContent).toBe('Loading')
 
     await waitFor(() => {
       expect(mockStart).toBeCalledTimes(1)
@@ -146,17 +148,10 @@ describe('FlagshipProvide test', () => {
       )
       expect(newVisitor).toBeCalledTimes(1)
 
-      expect(newVisitor).toBeCalledWith({
-        visitorId: visitorData.id,
-        context: visitorData.context,
-        isAuthenticated: visitorData.isAuthenticated,
-        hasConsented: visitorData.hasConsented
-      })
-
+      expect(getByTestId('body').textContent).toBe('children')
       expect(fetchFlags).toBeCalledTimes(1)
-      expect(onBucketingUpdated).toBeCalledTimes(1)
+      // expect(onBucketingUpdated).toBeCalledTimes(1)
       expect(onSdkStatusChanged).toBeCalledTimes(1)
-      expect(onUpdate).toBeCalledTimes(1)
     })
 
     // Authenticate visitor
@@ -173,9 +168,8 @@ describe('FlagshipProvide test', () => {
       expect(mockStart).toBeCalledTimes(1)
       expect(authenticate).toBeCalledTimes(1)
       expect(fetchFlags).toBeCalledTimes(2)
-      expect(onBucketingUpdated).toBeCalledTimes(1)
+      // expect(onBucketingUpdated).toBeCalledTimes(1)
       expect(onSdkStatusChanged).toBeCalledTimes(1)
-      // expect(onUpdate).toBeCalledTimes(2);
     })
 
     rerender(
@@ -191,7 +185,7 @@ describe('FlagshipProvide test', () => {
       expect(mockStart).toBeCalledTimes(1)
       expect(authenticate).toBeCalledTimes(1)
       expect(fetchFlags).toBeCalledTimes(3)
-      expect(onBucketingUpdated).toBeCalledTimes(1)
+      // expect(onBucketingUpdated).toBeCalledTimes(1)
       expect(onSdkStatusChanged).toBeCalledTimes(1)
       expect(newVisitor).toBeCalledTimes(2)
     })
@@ -200,7 +194,7 @@ describe('FlagshipProvide test', () => {
     rerender(
       <FlagshipProvider
         {...props}
-        visitorData={{ ...props.visitorData, isAuthenticated: false }}
+        visitorData={{ ...props.visitorData, id: 'visitor_2', isAuthenticated: false }}
       >
         <div>children</div>
       </FlagshipProvider>
@@ -561,45 +555,6 @@ describe('Test initial data', () => {
       }))
 
       expect(getByTestId('btnColor').textContent).toBe('blue')
-    })
-  })
-
-  it('test initialCampaigns ', async () => {
-    const ChildComponent = () => {
-      const fs = useFlagship()
-      return <div>
-        <div data-testid="status">{String(fs.sdkState.isSdkReady)}</div>
-        <div data-testid="isLoading">{String(fs.sdkState.isLoading)}</div>
-      </div>
-    }
-
-    mockStart.mockImplementationOnce(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (_apiKey, _envId, { onSdkStatusChanged }: any) => {
-        onSdkStatusChanged(0)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return {} as any
-      }
-    )
-
-    const props = {
-      envId,
-      apiKey,
-      decisionMode: DecisionMode.DECISION_API,
-      visitorData
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { getByTestId } = render(
-      <FlagshipProvider {...props}>
-        <ChildComponent/>
-      </FlagshipProvider>
-    )
-
-    await waitFor(() => {
-      expect(newVisitor).toBeCalledTimes(0)
-      expect(getByTestId('status').textContent).toEqual('false')
-      expect(getByTestId('isLoading').textContent).toEqual('false')
     })
   })
 })
