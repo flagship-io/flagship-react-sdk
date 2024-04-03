@@ -1,9 +1,12 @@
-import { jest, expect, it, describe } from '@jest/globals'
 import React from 'react'
+
+import { jest, expect, it, describe } from '@jest/globals'
 import { render, waitFor } from '@testing-library/react'
 import { SpyInstance } from 'jest-mock'
-import { useFlagship } from '../src/FlagshipHooks'
+
 import Flagship, { DecisionMode, FSSdkStatus, FlagDTO } from '@flagship.io/js-sdk'
+
+import { useFlagship } from '../src/FlagshipHooks'
 import { FlagshipProvider } from '../src/FlagshipProvider'
 
 function sleep (ms: number): Promise<unknown> {
