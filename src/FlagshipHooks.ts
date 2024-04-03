@@ -122,7 +122,7 @@ export const useFlagship = (): UseFlagshipOutput => {
   }
 
   let flagsData = visitor?.getFlagsDataArray()
-  if (!state.sdkState.isSdkReady && state.flags) {
+  if (state.flags) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     flagsData = Array.from(state.flags, ([_key, item]) => item)
   }
@@ -139,7 +139,6 @@ export const useFlagship = (): UseFlagshipOutput => {
     clearContext: fsClearContext,
     authenticate: fsAuthenticate,
     unauthenticate: fsUnauthenticate,
-    sdkState: state.sdkState,
     flagsData: flagsData || [],
     sendHits: fsSendHit,
     getFlag,
