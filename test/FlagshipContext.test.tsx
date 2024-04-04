@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { jest, expect, it, describe } from '@jest/globals'
+import { jest, expect, it, describe, beforeEach, afterEach } from '@jest/globals'
 import { render, waitFor } from '@testing-library/react'
 import { SpyInstance } from 'jest-mock'
 
@@ -27,6 +27,8 @@ const getFlagsDataArray = jest.fn()
 
 let onEventError = false
 
+let fsSdkStatus = FSSdkStatus.SDK_INITIALIZED
+
 jest.mock('@flagship.io/js-sdk', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const flagship = jest.requireActual('@flagship.io/js-sdk') as any
@@ -41,7 +43,7 @@ jest.mock('@flagship.io/js-sdk', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (_apiKey, _envId, { onBucketingUpdated, onSdkStatusChanged, fetchNow, decisionMode }: any) => {
       localFetchNow = fetchNow
-      onSdkStatusChanged(FSSdkStatus.SDK_INITIALIZED)
+      onSdkStatusChanged(fsSdkStatus)
       if (fistStart && decisionMode === DecisionMode.BUCKETING) {
         onBucketingUpdated(new Date())
         fistStart = false
@@ -289,6 +291,158 @@ describe('FlagshipProvide test', () => {
         })
       )
       expect(newVisitor).toBeCalledTimes(1)
+    })
+  })
+})
+describe('FlagshipProvide test bucketing', () => {
+  const visitorData = {
+    id: 'visitor_id',
+    context: {},
+    isAuthenticated: false,
+    hasConsented: true
+  }
+  const envId = 'EnvId'
+  const apiKey = 'apiKey'
+  const onSdkStatusChanged = jest.fn()
+  const onBucketingUpdated = jest.fn()
+  const props = {
+    envId,
+    apiKey,
+    decisionMode: DecisionMode.BUCKETING,
+    visitorData,
+    onSdkStatusChanged,
+    fetchNow: true,
+    onBucketingUpdated,
+    loadingComponent: <div data-testid="loading" >Loading</div>,
+    fetchFlagsOnBucketingUpdated: true
+  }
+
+  it('should ', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const MyChildrenComponent = () => {
+      return <div data-testid="body">children</div>
+    }
+    const { rerender, getByTestId } = render(
+      <FlagshipProvider {...props}>
+        <MyChildrenComponent/>
+      </FlagshipProvider>
+    )
+
+    expect(getByTestId('loading').textContent).toBe('Loading')
+
+    await waitFor(() => {
+      expect(mockStart).toBeCalledTimes(1)
+      expect(mockStart).toBeCalledWith(
+        envId,
+        apiKey,
+        expect.objectContaining({
+          decisionMode: DecisionMode.BUCKETING,
+          onBucketingUpdated: expect.anything()
+        })
+      )
+      expect(newVisitor).toBeCalledTimes(1)
+
+      expect(getByTestId('body').textContent).toBe('children')
+      expect(fetchFlags).toBeCalledTimes(1)
+      expect(onBucketingUpdated).toBeCalledTimes(1)
+      expect(onSdkStatusChanged).toBeCalledTimes(1)
+    })
+
+    // Authenticate visitor
+    rerender(
+      <FlagshipProvider
+        {...props}
+        visitorData={{ ...props.visitorData, isAuthenticated: true }}
+      >
+        <div>children</div>
+      </FlagshipProvider>
+    )
+
+    await waitFor(() => {
+      expect(mockStart).toBeCalledTimes(1)
+      expect(authenticate).toBeCalledTimes(1)
+      expect(fetchFlags).toBeCalledTimes(2)
+      expect(onBucketingUpdated).toBeCalledTimes(1)
+      expect(onSdkStatusChanged).toBeCalledTimes(1)
+    })
+  })
+})
+
+describe('FlagshipProvide test SDK_NOT_INITIALIZED', () => {
+  beforeEach(() => {
+    fsSdkStatus = FSSdkStatus.SDK_NOT_INITIALIZED
+  })
+  afterEach(() => {
+    fsSdkStatus = FSSdkStatus.SDK_INITIALIZED
+  })
+
+  const visitorData = {
+    id: 'visitor_id',
+    context: {},
+    isAuthenticated: false,
+    hasConsented: true
+  }
+  const envId = 'EnvId'
+  const apiKey = 'apiKey'
+  const onSdkStatusChanged = jest.fn()
+  const onBucketingUpdated = jest.fn()
+  const props = {
+    envId,
+    apiKey,
+    decisionMode: DecisionMode.BUCKETING,
+    visitorData,
+    onSdkStatusChanged,
+    fetchNow: true,
+    onBucketingUpdated,
+    loadingComponent: <div data-testid="loading" >Loading</div>,
+    fetchFlagsOnBucketingUpdated: true
+  }
+
+  it('should ', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const MyChildrenComponent = () => {
+      return <div data-testid="body">children</div>
+    }
+    const { rerender, getByTestId } = render(
+      <FlagshipProvider {...props}>
+        <MyChildrenComponent/>
+      </FlagshipProvider>
+    )
+
+    await waitFor(() => {
+      expect(mockStart).toBeCalledTimes(1)
+      expect(mockStart).toBeCalledWith(
+        envId,
+        apiKey,
+        expect.objectContaining({
+          decisionMode: DecisionMode.BUCKETING,
+          onBucketingUpdated: expect.anything()
+        })
+      )
+      expect(newVisitor).toBeCalledTimes(0)
+
+      expect(getByTestId('body').textContent).toBe('children')
+      expect(fetchFlags).toBeCalledTimes(0)
+      expect(onBucketingUpdated).toBeCalledTimes(0)
+      expect(onSdkStatusChanged).toBeCalledTimes(1)
+    })
+
+    // Authenticate visitor
+    rerender(
+      <FlagshipProvider
+        {...props}
+        visitorData={{ ...props.visitorData, isAuthenticated: true }}
+      >
+        <div>children</div>
+      </FlagshipProvider>
+    )
+
+    await waitFor(() => {
+      expect(mockStart).toBeCalledTimes(1)
+      expect(authenticate).toBeCalledTimes(0)
+      expect(fetchFlags).toBeCalledTimes(1)
+      expect(onBucketingUpdated).toBeCalledTimes(0)
+      expect(onSdkStatusChanged).toBeCalledTimes(1)
     })
   })
 })
