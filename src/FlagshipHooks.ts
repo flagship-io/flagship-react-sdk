@@ -55,6 +55,7 @@ export const useFlagship = (): UseFlagshipOutput => {
       return
     }
     visitor.clearContext()
+    visitor.fetchFlags()
   }
 
   const fsAuthenticate = (visitorId: string): void => {
