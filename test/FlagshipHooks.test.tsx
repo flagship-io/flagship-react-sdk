@@ -147,7 +147,7 @@ describe('test FlagshipHooks', () => {
 
     fs.clearContext()
     expect(visitor.clearContext).toBeCalledTimes(1)
-
+    expect(visitor.fetchFlags).toBeCalledTimes(3)
     fs.setConsent(true)
 
     expect(visitor.setConsent).toBeCalledTimes(1)
@@ -167,12 +167,12 @@ describe('test FlagshipHooks', () => {
 
     expect(visitor.authenticate).toBeCalledTimes(1)
     expect(visitor.authenticate).toBeCalledWith(visitorId)
-    expect(visitor.fetchFlags).toBeCalledTimes(3)
+    expect(visitor.fetchFlags).toBeCalledTimes(4)
 
     fs.unauthenticate()
 
     expect(visitor.unauthenticate).toBeCalledTimes(1)
-    expect(visitor.fetchFlags).toBeCalledTimes(4)
+    expect(visitor.fetchFlags).toBeCalledTimes(5)
 
     await fs.close()
     expect(Flagship.close).toBeCalledTimes(1)
