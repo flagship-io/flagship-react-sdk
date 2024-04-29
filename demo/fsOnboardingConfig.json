@@ -11,7 +11,16 @@
         {
             "fileName": "src/App.tsx",
             "order": 1,
-            "description": "This code initializes the SDK",
+            "description": "1 - Initialize the SDK",
+            "codeRegexPatterns": [
+                "\/\/start demo([\\s\\S]*?)\/\/end demo"
+            ],
+            "language": "jsx"
+        },
+        {
+            "fileName": "src/Item.tsx",
+            "order": 1,
+            "description": "2 - Get your flag",
             "codeRegexPatterns": [
                 "\/\/start demo([\\s\\S]*?)\/\/end demo"
             ],
