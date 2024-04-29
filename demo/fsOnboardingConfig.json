@@ -1,0 +1,21 @@
+{
+    "sdkInstallSteps": [
+        {
+            "order": 1,
+            "description": "Install the SDK",
+            "rawCode": "yarn add @flagship.io/react-sdk",
+            "language": "shell"
+        }
+    ],
+    "sdkUseSteps": [
+        {
+            "fileName": "src/App.tsx",
+            "order": 1,
+            "description": "This code initializes the SDK",
+            "codeRegexPatterns": [
+                "\/\/start demo([\\s\\S]*?)\/\/end demo"
+            ],
+            "language": "jsx"
+        }
+    ]
+}
