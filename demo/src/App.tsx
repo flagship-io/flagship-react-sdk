@@ -1,26 +1,17 @@
 //start demo
+// Path: demo/src/App.tsx
 import "./App.css";
-import FlagshipProvider from "@flagship.io/react-sdk";
+import { FlagshipProvider } from "@flagship.io/react-sdk";
 import { Item } from "./Item";
-import { Container, FormControlLabel, Grid, Switch } from "@mui/material";
+import { Container } from "@mui/material";
 import { useState } from "react";
+import { VipSwitch } from "./VipSwitch";
 
 function App() {
   const [isVip, setIsVip] = useState(false);
   return (
     <Container maxWidth="xs">
-      <Grid item xs={12}>
-        <FormControlLabel
-          control={
-            <Switch
-              defaultChecked
-              checked={isVip}
-              onChange={() => setIsVip(!isVip)}
-            />
-          }
-          label="Is vip client"
-        />
-      </Grid>
+      <VipSwitch isVip={isVip} setIsVip={setIsVip} />
       {/* Step 1: Initialize the SDK with FlagshipProvider */}
       <FlagshipProvider
         envId="<ENV_ID>"
