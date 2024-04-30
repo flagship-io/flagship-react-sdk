@@ -1,30 +1,49 @@
-# React + TypeScript + Vite
+# Flagship Demo React Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to the Flagship Demo React Application. This application is a demonstration of how to use Flagship for feature flagging and A/B testing in a ReactJs application.
 
-Currently, two official plugins are available:
+This implementation is based on two use cases:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. **Fs demo toggle use case**: This feature toggle campaign enables a discount for VIP users.
+2. **Fs demo A/B Test use case**: This A/B test campaign allows you to test the color of the 'Add to Cart' button.
 
-## Expanding the ESLint configuration
+## Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Before you begin, ensure you have met the following requirements:
 
-- Configure the top-level `parserOptions` property like this:
+- You have installed the latest version of [Node.js](https://nodejs.org/en/download/)
+- You have installed [Yarn](https://yarnpkg.com/getting-started/install)
+- You have [Docker](https://www.docker.com/products/docker-desktop) installed (optional)
+- [Flagship account](https://www.abtasty.com)
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+## Getting Started
+
+### Running the Application Locally
+
+Follow these steps to get up and running quickly on your local machine:
+
+1. Install the dependencies:
+
+    ```bash
+    yarn install
+    ```
+
+2. Start the application:
+
+    ```bash
+    yarn start
+    ```
+
+The application will be accessible at `http://localhost:3000`.
+
+### Running the Application in Docker
+
+If you prefer to use Docker, you can build and run the application using the provided shell script:
+
+```bash
+chmod +x run-docker.sh && ./run-docker.sh
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Running the Application in a Sandbox
+
+You can also run this application in a sandbox environment. Click [here](https://githubbox.com/flagship-io/flagship-react-sdk/tree/demo-example/demo) to open the sandbox.
