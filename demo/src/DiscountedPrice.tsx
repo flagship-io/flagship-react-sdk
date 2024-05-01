@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 
 type DiscountedPriceProps = {
   price: string;
@@ -7,7 +7,7 @@ type DiscountedPriceProps = {
 
 export function DiscountedPrice({ price, discountPrice }: DiscountedPriceProps) {
   return (
-    <>
+    <Grid container width={"auto"}>
       <Typography
         variant="h5"
         component="span"
@@ -22,6 +22,6 @@ export function DiscountedPrice({ price, discountPrice }: DiscountedPriceProps) 
       >
         {discountPrice}
       </Typography>
-    </>
+    </Grid>
   );
 }
