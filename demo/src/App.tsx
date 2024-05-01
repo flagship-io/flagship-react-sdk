@@ -1,5 +1,5 @@
 //start demo
-// Path: demo/src/App.tsx
+//Path: demo/src/App.tsx
 import { FlagshipProvider } from "@flagship.io/react-sdk";
 import { Item } from "./Item";
 import { Container } from "@mui/material";
