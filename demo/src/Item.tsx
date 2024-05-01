@@ -1,5 +1,5 @@
 //start demo
-// Path: demo/src/Item.tsx
+//Path: demo/src/Item.tsx
 import { Grid } from "@mui/material";
 import { itemData } from "./itemData";
 import { EventCategory, HitType, useFlagship, useFsFlag } from "@flagship.io/react-sdk";
