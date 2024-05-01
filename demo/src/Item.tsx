@@ -8,6 +8,7 @@ import { ItemDetail } from "./ItemDetail";
 import { DiscountedPrice } from "./DiscountedPrice";
 import { ItemPrice } from "./ItemPrice";
 import { AddCartButton } from "./AddCartButton";
+import { PriceLabel } from "./PriceLabel";
 
 export const Item = () => {
   const { title, subtitle, refNumber, price, imageUrl, imageAlt, imageTitle, discountPrice } = itemData;
@@ -33,7 +34,8 @@ export const Item = () => {
     <Grid sx={{ backgroundColor: "#f2f2f7", p: 2 }}>
       <ItemDetail title={title} subtitle={subtitle} refNumber={refNumber} />
       <ItemImage imageUrl={imageUrl} imageAlt={imageAlt} imageTitle={imageTitle} />
-      <Grid item sx={{ mb: 2 }}>
+      <Grid container sx={{ mb: 2, justifyContent:"space-between", flexWrap:"nowrap"}} >
+        <PriceLabel>Price:</PriceLabel>
         {enableDiscountFlag ? (
           <DiscountedPrice price={price} discountPrice={discountPrice} />
         ) : (
