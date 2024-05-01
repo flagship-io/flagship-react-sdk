@@ -11,7 +11,6 @@ export function VipSwitch({ isVip, setIsVip }: VipSwitchProps) {
       <FormControlLabel
         control={
           <Switch
-            defaultChecked
             checked={isVip}
             onChange={() => setIsVip(!isVip)}
           />
