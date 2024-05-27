@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState, useRef, useEffect, ReactNode } from 'react'
+// eslint-disable-next-line no-use-before-define
+import React, { useState, useRef, ReactNode, useEffect } from 'react'
 
 import Flagship, {
   DecisionMode,
-  FlagDTO,
   Visitor,
   FSSdkStatus
 } from '@flagship.io/js-sdk'
@@ -15,7 +15,7 @@ import {
 } from './FlagshipContext'
 import { version as SDK_VERSION } from './sdkVersion'
 import { FsContextState, FlagshipProviderProps } from './type'
-import { getFlagsFromCampaigns, useNonInitialEffect, logError } from './utils'
+import { useNonInitialEffect, logError, extractFlagsMap } from './utils'
 
 export function FlagshipProvider ({
   children,
@@ -37,49 +37,71 @@ export function FlagshipProvider ({
   shouldSaveInstance,
   ...props
 }: FlagshipProviderProps): React.JSX.Element {
-  let flags = new Map<string, FlagDTO>()
-  if (initialFlagsData && initialFlagsData.forEach) {
-    initialFlagsData.forEach((flag) => {
-      flags.set(flag.key, flag)
-    })
-  } else if (initialCampaigns) {
-    flags = getFlagsFromCampaigns(initialCampaigns)
-  }
+  const flags = extractFlagsMap(initialFlagsData, initialCampaigns)
 
   const [state, setState] = useState<FsContextState>({
     ...initStat,
-    flags
+    flags,
+    hasVisitorData: !!visitorData
   })
   const [lastModified, setLastModified] = useState<Date>()
   const stateRef = useRef<FsContextState>()
   stateRef.current = state
 
-  useNonInitialEffect(() => {
-    if (fetchFlagsOnBucketingUpdated) {
-      state.visitor?.fetchFlags()
+  // #region functions
+
+  const onBucketingLastModified = (lastUpdate: Date) => {
+    if (onBucketingUpdated) {
+      onBucketingUpdated(lastUpdate)
     }
-  }, [lastModified])
+    setLastModified(lastUpdate)
+  }
 
-  useNonInitialEffect(() => {
-    updateVisitor()
-  }, [JSON.stringify(visitorData)])
+  const statusChanged = (status: FSSdkStatus) => {
+    if (onSdkStatusChanged) {
+      onSdkStatusChanged(status)
+    }
 
-  useEffect(() => {
-    initSdk()
-  }, [envId, apiKey, decisionMode])
+    switch (status) {
+      case FSSdkStatus.SDK_PANIC:
+      case FSSdkStatus.SDK_INITIALIZED:
+        createVisitor()
+        break
+      case FSSdkStatus.SDK_NOT_INITIALIZED:
+        setState((prev) => ({
+          ...prev,
+          config: Flagship.getConfig(),
+          isInitializing: false
+        }))
+        break
+    }
+  }
+
+  const initSdk = () => {
+    Flagship.start(envId, apiKey, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decisionMode: decisionMode as any,
+      fetchNow,
+      onSdkStatusChanged: statusChanged,
+      onBucketingUpdated: onBucketingLastModified,
+      hitDeduplicationTime,
+      language,
+      sdkVersion,
+      ...props
+    })
+  }
 
   function initializeState (param: {
     fsVisitor: Visitor;
   }) {
-    setState((currentState) => {
-      return {
-        ...currentState,
-        visitor: param.fsVisitor,
-        flags: param.fsVisitor.flagsData,
-        config: Flagship.getConfig(),
-        isInitializing: false
-      }
+    setState((currentState) => ({
+      ...currentState,
+      visitor: param.fsVisitor,
+      config: Flagship.getConfig(),
+      isInitializing: false,
+      hasVisitorData: !!visitorData
     })
+    )
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,33 +110,6 @@ export function FlagshipProvider ({
       logError(Flagship.getConfig(), error.message || error, 'onReady')
     }
     initializeState({ fsVisitor })
-  }
-
-  function updateVisitor () {
-    if (!visitorData) {
-      return
-    }
-
-    if (
-      !state.visitor || (state.visitor.visitorId !== visitorData.id && (!visitorData.isAuthenticated || (visitorData.isAuthenticated && state.visitor.anonymousId)))
-    ) {
-      createVisitor()
-      return
-    }
-
-    if (visitorData.hasConsented !== state.visitor.hasConsented) {
-      state.visitor.setConsent(visitorData.hasConsented ?? true)
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    state.visitor.updateContext(visitorData.context as any)
-
-    if (!state.visitor.anonymousId && visitorData.isAuthenticated) {
-      state.visitor.authenticate(visitorData.id as string)
-    }
-    if (state.visitor.anonymousId && !visitorData.isAuthenticated) {
-      state.visitor.unauthenticate()
-    }
-    state.visitor.fetchFlags()
   }
 
   const createVisitor = () => {
@@ -140,46 +135,50 @@ export function FlagshipProvider ({
       initializeState({ fsVisitor })
     }
   }
-  const statusChanged = (status: FSSdkStatus) => {
-    if (onSdkStatusChanged) {
-      onSdkStatusChanged(status)
+
+  function updateVisitor () {
+    if (!visitorData) {
+      return
+    }
+    if (!state.visitor ||
+      (state.visitor.visitorId !== visitorData.id &&
+      (!visitorData.isAuthenticated || (visitorData.isAuthenticated && state.visitor.anonymousId)))
+    ) {
+      createVisitor()
+      return
     }
 
-    switch (status) {
-      case FSSdkStatus.SDK_PANIC:
-      case FSSdkStatus.SDK_INITIALIZED:
-        createVisitor()
-        break
-      case FSSdkStatus.SDK_NOT_INITIALIZED:
-        setState((prev) => ({
-          ...prev,
-          config: Flagship.getConfig(),
-          isInitializing: false
-        }))
-        break
+    if (visitorData.hasConsented !== state.visitor.hasConsented) {
+      state.visitor.setConsent(visitorData.hasConsented ?? true)
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    state.visitor.updateContext(visitorData.context as any)
+
+    if (!state.visitor.anonymousId && visitorData.isAuthenticated) {
+      state.visitor.authenticate(visitorData.id as string)
+    }
+    if (state.visitor.anonymousId && !visitorData.isAuthenticated) {
+      state.visitor.unauthenticate()
+    }
+    state.visitor.fetchFlags()
   }
 
-  const onBucketingLastModified = (lastUpdate: Date) => {
-    if (onBucketingUpdated) {
-      onBucketingUpdated(lastUpdate)
-    }
-    setLastModified(lastUpdate)
-  }
+  // #endregion
 
-  const initSdk = () => {
-    Flagship.start(envId, apiKey, {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      decisionMode: decisionMode as any,
-      fetchNow,
-      onSdkStatusChanged: statusChanged,
-      onBucketingUpdated: onBucketingLastModified,
-      hitDeduplicationTime,
-      language,
-      sdkVersion,
-      ...props
-    })
-  }
+  useNonInitialEffect(() => {
+    if (fetchFlagsOnBucketingUpdated) {
+      state.visitor?.fetchFlags()
+    }
+  }, [lastModified])
+
+  useNonInitialEffect(() => {
+    updateVisitor()
+  }, [JSON.stringify(visitorData)])
+
+  useEffect(() => {
+    initSdk()
+  }, [envId, apiKey, decisionMode])
+
   const handleDisplay = (): ReactNode => {
     const isFirstInit = !state.visitor
     if (
