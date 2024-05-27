@@ -3,14 +3,15 @@ import { useContext } from 'react'
 
 import {
   Flagship,
-  IFlag,
+  IFSFlag,
   IHit,
-  primitive
+  primitive,
+  FSFlagCollection
 } from '@flagship.io/js-sdk'
 
 import { noVisitorMessage } from './constants'
-import { Flag } from './Flag'
 import { FlagshipContext } from './FlagshipContext'
+import { FSFlag } from './FSFlag'
 import { UseFlagshipOutput } from './type'
 import { logError, logWarn } from './utils'
 
@@ -20,18 +21,17 @@ import { logError, logWarn } from './utils'
  * @param defaultValue
  * @returns
  */
-export const useFsFlag = <T>(
-  key: string,
-  defaultValue: T
-): IFlag<T> => {
+export const useFsFlag = (
+  key: string
+): IFSFlag => {
   const { state } = useContext(FlagshipContext)
   const { visitor } = state
 
   if (!visitor) {
-    return new Flag(defaultValue, key, state.flags)
+    return new FSFlag(key, state)
   }
 
-  return visitor.getFlag(key, defaultValue)
+  return visitor.getFlag(key)
 }
 
 export const useFlagship = (): UseFlagshipOutput => {
@@ -95,11 +95,11 @@ export const useFlagship = (): UseFlagshipOutput => {
     return visitor.sendHit(hit)
   }
 
-  function getFlag<T> (key: string, defaultValue: T): IFlag<T> {
+  function getFlag (key: string): IFSFlag {
     if (!visitor) {
-      return new Flag(defaultValue, key, state.flags)
+      return new FSFlag(key, state)
     }
-    return visitor.getFlag(key, defaultValue)
+    return visitor.getFlag(key)
   }
 
   function fetchFlags (): Promise<void> {
@@ -122,10 +122,15 @@ export const useFlagship = (): UseFlagshipOutput => {
     await Flagship.close()
   }
 
-  let flagsData = visitor?.getFlagsDataArray()
-  if (state.flags) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    flagsData = Array.from(state.flags, ([_key, item]) => item)
+  function getFlags () {
+    if (!visitor) {
+      const flags = new Map<string, IFSFlag>()
+      state.flags?.forEach((flag, key) => {
+        flags.set(key, new FSFlag(key, state))
+      })
+      return new FSFlagCollection({ flags })
+    }
+    return visitor.getFlags()
   }
 
   return {
@@ -140,10 +145,10 @@ export const useFlagship = (): UseFlagshipOutput => {
     clearContext: fsClearContext,
     authenticate: fsAuthenticate,
     unauthenticate: fsUnauthenticate,
-    flagsData: flagsData || [],
     sendHits: fsSendHit,
     getFlag,
     fetchFlags,
-    close
+    close,
+    getFlags
   }
 }
