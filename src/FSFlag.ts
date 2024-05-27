@@ -1,36 +1,37 @@
-import { Flagship, FlagDTO, FlagMetadata, IFlag, IFlagMetadata, FSFlagStatus } from '@flagship.io/js-sdk'
-import { GET_FLAG_CAST_ERROR, GET_METADATA_CAST_ERROR, noVisitorMessage } from './constants'
+import { Flagship, FlagDTO, FSFlagMetadata, IFSFlag, IFSFlagMetadata, FSFlagStatus } from '@flagship.io/js-sdk'
+
+import { GET_FLAG_CAST_ERROR, noVisitorMessage } from './constants'
+import { FsContextState } from './type'
 import { hasSameType, logInfo, logWarn, sprintf } from './utils'
 
-export class Flag<T> implements IFlag<T> {
-    private defaultValue:T
+export class FSFlag implements IFSFlag {
     private key: string
     private flag?: FlagDTO
-    constructor (defaultValue:T, key: string, flagsData: Map<string, FlagDTO> | undefined) {
-      if (!flagsData || flagsData.size === 0) {
+    constructor (key: string, state:FsContextState) {
+      const flagsData = state.flags
+      if (!state.hasVisitorData) {
         logWarn(Flagship.getConfig(), noVisitorMessage, 'GetFlag')
       }
-      this.defaultValue = defaultValue
       this.key = key
       this.flag = flagsData?.get(key)
     }
 
-    private NotSameType () {
-      return this.defaultValue !== null && this.defaultValue !== undefined && !hasSameType(this.flag?.value, this.defaultValue)
-    }
-
-    getValue (): T {
+    getValue<T> (defaultValue: T): (T extends null ? unknown : T) {
       if (!this.flag) {
-        return this.defaultValue
+        return defaultValue as (T extends null ? unknown : T)
       }
 
-      if (this.NotSameType()) {
+      if (this.flag.value === null || this.flag.value === undefined) {
+        return this.flag.value as (T extends null ? unknown : T)
+      }
+
+      if (defaultValue !== null && defaultValue !== undefined && !hasSameType(this.flag.value, defaultValue)) {
         logInfo(
           Flagship.getConfig(),
           sprintf(GET_FLAG_CAST_ERROR, this.key),
           'getValue'
         )
-        return this.defaultValue
+        return defaultValue as (T extends null ? unknown : T)
       }
       return this.flag.value
     }
@@ -46,21 +47,11 @@ export class Flag<T> implements IFlag<T> {
       // do nothing
     }
 
-    get metadata ():IFlagMetadata {
-      const functionName = 'metadata'
+    get metadata ():IFSFlagMetadata {
       if (!this.flag) {
-        return FlagMetadata.Empty()
+        return FSFlagMetadata.Empty()
       }
-      if (this.NotSameType()) {
-        logInfo(
-          Flagship.getConfig(),
-          sprintf(GET_METADATA_CAST_ERROR, this.key),
-          functionName
-        )
-        return FlagMetadata.Empty()
-      }
-
-      return new FlagMetadata({
+      return new FSFlagMetadata({
         campaignId: this.flag.campaignId,
         campaignName: this.flag.campaignName,
         variationGroupId: this.flag.variationGroupId,
