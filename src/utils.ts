@@ -83,6 +83,7 @@ export const getFlagsFromCampaigns = (
         variationId: campaign.variation.id,
         variationName: campaign.variation.name || '',
         isReference: campaign.variation.reference,
+        slug: campaign.slug || '',
         value
       })
     }
