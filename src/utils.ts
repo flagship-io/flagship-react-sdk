@@ -1,11 +1,12 @@
 'use client'
 import { EffectCallback, DependencyList, useEffect, useRef } from 'react'
 
-import {
+import Flagship, {
   CampaignDTO,
   FlagDTO,
   IFlagshipConfig,
-  LogLevel
+  LogLevel,
+  SerializedFlagMetadata
 } from '@flagship.io/js-sdk'
 
 export function logError (
@@ -138,4 +139,60 @@ export function sprintf (format: string, ...value: any[]): string {
     formatted = formatted.replace(new RegExp(`\\{${i}\\}`, 'g'), element)
   }
   return formatted
+}
+
+export function hexToValue (hex: string, config: IFlagshipConfig): {v: unknown} | null {
+  if (typeof hex !== 'string') {
+    logError(config, `Invalid hex string: ${hex}`, 'hexToValue')
+    return null
+  }
+
+  let jsonString = ''
+
+  for (let i = 0; i < hex.length; i += 2) {
+    const hexChar = hex.slice(i, i + 2)
+    const charCode = parseInt(hexChar, 16)
+
+    if (isNaN(charCode)) {
+      logError(config, `Invalid hex character: ${hexChar}`, 'hexToValue')
+      return null
+    }
+
+    jsonString += String.fromCharCode(charCode)
+  }
+
+  try {
+    const value: {v: unknown} = JSON.parse(jsonString)
+    return value
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error:any) {
+    logError(config, `Error while parsing JSON: ${error?.message}`, 'hexToValue')
+    return null
+  }
+}
+
+export function extractFlagsMap (initialFlagsData?: SerializedFlagMetadata[], initialCampaigns?:CampaignDTO[]): Map<string, FlagDTO> {
+  let flags = new Map<string, FlagDTO>()
+
+  if (Array.isArray(initialFlagsData)) {
+    initialFlagsData.forEach((flag) => {
+      flags.set(flag.key, {
+        key: flag.key,
+        campaignId: flag.campaignId,
+        campaignName: flag.campaignName,
+        variationGroupId: flag.variationGroupId,
+        variationGroupName: flag.variationGroupName,
+        variationId: flag.variationId,
+        variationName: flag.variationName,
+        isReference: flag.isReference,
+        campaignType: flag.campaignType,
+        slug: flag.slug,
+        value: hexToValue(flag.hex, Flagship.getConfig())?.v
+      })
+    })
+  } else if (initialCampaigns) {
+    flags = getFlagsFromCampaigns(initialCampaigns)
+  }
+
+  return flags
 }
