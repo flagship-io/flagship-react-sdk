@@ -1,15 +1,18 @@
 import { jest, expect, it, describe } from '@jest/globals'
+
+import { DecisionApiConfig, LogLevel, IFlagshipLogManager, SerializedFlagMetadata, FlagDTO, CampaignDTO } from '@flagship.io/js-sdk'
+
 import {
+  extractFlagsMap,
   getFlagsFromCampaigns,
   hasSameType,
+  hexToValue,
   logError,
   logInfo,
   logWarn,
   sprintf,
   uuidV4
 } from '../src/utils'
-import { IFlagshipLogManager } from '@flagship.io/js-sdk/dist/utils/FlagshipLogManager'
-import { DecisionApiConfig, LogLevel } from '@flagship.io/js-sdk'
 import { campaigns } from './campaigns'
 
 describe('test logError function', () => {
@@ -235,5 +238,171 @@ describe('test hasSameType function', () => {
 
     output = hasSameType([1, 2], {})
     expect(output).toBeFalsy()
+  })
+})
+
+describe('Test hexToValue function', () => {
+  const config = new DecisionApiConfig()
+
+  const logManager = {
+    error: jest.fn<() => void>()
+  } as unknown as IFlagshipLogManager
+
+  const errorMethod = jest.spyOn(logManager, 'error')
+
+  config.logManager = logManager
+
+  it('should return null for invalid hex string', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = hexToValue(true as any, config)
+    expect(result).toBeNull()
+    expect(errorMethod).toBeCalledTimes(1)
+  })
+
+  it('should return null for hex string with invalid characters', () => {
+    const result = hexToValue('zz', config)
+    expect(result).toBeNull()
+    expect(errorMethod).toBeCalledTimes(1)
+  })
+
+  it('should return parsed value for valid hex string', () => {
+    const hex = Buffer.from(JSON.stringify({ v: 'test' })).toString('hex')
+    const result = hexToValue(hex, config)
+    expect(result).toEqual({ v: 'test' })
+  })
+
+  it('should return null for hex string that does not represent valid JSON', () => {
+    const hex = Buffer.from('invalid').toString('hex')
+    const result = hexToValue(hex, config)
+    expect(result).toBeNull()
+    expect(errorMethod).toBeCalledTimes(1)
+  })
+})
+
+describe('extractFlagsMap', () => {
+  it('should correctly extract flags from initialFlagsData', () => {
+    const initialFlagsData: SerializedFlagMetadata[] = [
+      {
+        key: 'key1',
+        campaignId: 'campaignId',
+        campaignName: 'campaignName',
+        campaignType: 'ab',
+        variationGroupId: 'ab',
+        variationGroupName: 'variationGroupName',
+        variationId: 'varId',
+        variationName: 'variationName',
+        slug: 'slug',
+        hex: '7b2276223a2274657374227d'
+      },
+      {
+        key: 'key2',
+        campaignId: 'campaignId',
+        campaignName: 'campaignName',
+        campaignType: 'ab',
+        variationGroupId: 'ab',
+        variationGroupName: 'variationGroupName',
+        variationId: 'varId',
+        variationName: 'variationName',
+        slug: 'slug',
+        hex: '7b2276223a2274657374227d'
+      }
+    ]
+
+    const result = extractFlagsMap(initialFlagsData)
+    // Add your expected result here
+    const expectedResult = new Map<string, FlagDTO>()
+    expectedResult.set('key1', {
+      key: 'key1',
+      campaignId: 'campaignId',
+      campaignName: 'campaignName',
+      campaignType: 'ab',
+      variationGroupId: 'ab',
+      variationGroupName: 'variationGroupName',
+      variationId: 'varId',
+      variationName: 'variationName',
+      slug: 'slug',
+      value: 'test'
+    })
+    expectedResult.set('key2', {
+      key: 'key2',
+      campaignId: 'campaignId',
+      campaignName: 'campaignName',
+      campaignType: 'ab',
+      variationGroupId: 'ab',
+      variationGroupName: 'variationGroupName',
+      variationId: 'varId',
+      variationName: 'variationName',
+      slug: 'slug',
+      value: 'test'
+    })
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should correctly extract flags from initialCampaigns when initialFlagsData is not an array', () => {
+    const initialCampaigns: CampaignDTO[] = [
+      {
+        id: 'campaignId',
+        name: 'campaignName',
+        variationGroupId: 'ab',
+        variationGroupName: 'variationGroupName',
+        slug: 'slug',
+        variation: {
+          id: 'varId',
+          name: 'variationName',
+          reference: false,
+          modifications: {
+            type: 'JSON',
+            value: { key1: 'test' }
+          }
+        }
+      },
+      {
+        id: 'campaignId',
+        name: 'campaignName',
+        variationGroupId: 'ab',
+        variationGroupName: 'variationGroupName',
+        slug: 'slug',
+        variation: {
+          id: 'varId',
+          name: 'variationName',
+          reference: false,
+          modifications: {
+            type: 'JSON',
+            value: { key2: 'test' }
+          }
+        }
+      }
+    ]
+
+    const result = extractFlagsMap(undefined, initialCampaigns)
+    // Add your expected result here
+    const expectedResult = new Map<string, FlagDTO>()
+    expectedResult.set('key1', {
+      key: 'key1',
+      campaignId: 'campaignId',
+      campaignName: 'campaignName',
+      variationGroupId: 'ab',
+      variationGroupName: 'variationGroupName',
+      variationId: 'varId',
+      variationName: 'variationName',
+      slug: 'slug',
+      value: 'test',
+      isReference: false
+    })
+    expectedResult.set('key2', {
+      key: 'key2',
+      campaignId: 'campaignId',
+      campaignName: 'campaignName',
+      variationGroupId: 'ab',
+      variationGroupName: 'variationGroupName',
+      variationId: 'varId',
+      variationName: 'variationName',
+      slug: 'slug',
+      value: 'test',
+      isReference: false
+    })
+
+    expect(result).toEqual(expectedResult)
   })
 })
