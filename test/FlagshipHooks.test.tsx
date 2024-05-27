@@ -3,10 +3,10 @@ import React from 'react'
 import { jest, expect, it, describe, beforeEach, afterEach } from '@jest/globals'
 import { Mock } from 'jest-mock'
 
-import Flagship, { HitType, LogLevel } from '@flagship.io/js-sdk'
+import Flagship, { FSFlagCollection, HitType, LogLevel } from '@flagship.io/js-sdk'
 
-import { Flag } from '../src/Flag'
 import * as FsHooks from '../src/FlagshipHooks'
+import { FSFlag } from '../src/FSFlag'
 
 describe('test FlagshipHooks', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -36,20 +36,18 @@ describe('test FlagshipHooks', () => {
     useContextMock.mockReturnValue({ state: { visitor } })
 
     const key = 'key'
-    const defaultValue = 'default'
-    const result = FsHooks.useFsFlag(key, defaultValue)
+    const result = FsHooks.useFsFlag(key)
     expect(result).toEqual(expected)
     expect(visitor.getFlag).toBeCalledTimes(1)
-    expect(visitor.getFlag).toBeCalledWith(key, defaultValue)
+    expect(visitor.getFlag).toBeCalledWith(key)
   })
 
   it('useFsGetFlag test sdk not ready', async () => {
     useContextMock.mockReturnValue({ state: { } })
 
     const key = 'key'
-    const defaultValue = 'default'
-    const result = FsHooks.useFsFlag(key, defaultValue)
-    expect(result).toBeInstanceOf(Flag)
+    const result = FsHooks.useFsFlag(key)
+    expect(result).toBeInstanceOf(FSFlag)
   })
 
   it('useFsModifications with useFsFlag ', async () => {
@@ -68,9 +66,9 @@ describe('test FlagshipHooks', () => {
       state
     })
 
-    const result = FsHooks.useFsFlag('key', 'default')
+    const result = FsHooks.useFsFlag('key')
 
-    expect(result.getValue()).toEqual('value1')
+    expect(result.getValue('default')).toEqual('value1')
   })
 
   it('should test FlagshipHooks', async () => {
@@ -89,6 +87,7 @@ describe('test FlagshipHooks', () => {
       sendHit: jest.fn(),
       sendHits: jest.fn(),
       getFlag: jest.fn(),
+      getFlags: jest.fn(),
       fetchFlags: jest.fn(),
       getFlagsDataArray: jest.fn(),
       setConsent: jest.fn()
@@ -130,11 +129,10 @@ describe('test FlagshipHooks', () => {
     fs = FsHooks.useFlagship()
 
     const flagKey = 'key'
-    const flagDefaultValue = 'value'
-    fs.getFlag(flagKey, flagDefaultValue)
+    fs.getFlag(flagKey)
 
     expect(visitor.getFlag).toBeCalledTimes(1)
-    expect(visitor.getFlag).toBeCalledWith(flagKey, flagDefaultValue)
+    expect(visitor.getFlag).toBeCalledWith(flagKey)
 
     fs.fetchFlags()
     expect(visitor.fetchFlags).toBeCalledTimes(1)
@@ -176,6 +174,9 @@ describe('test FlagshipHooks', () => {
 
     await fs.close()
     expect(Flagship.close).toBeCalledTimes(1)
+
+    fs.getFlags()
+    expect(visitor.getFlags).toBeCalledTimes(1)
   })
 
   it('test without visitor', () => {
@@ -200,21 +201,22 @@ describe('test FlagshipHooks', () => {
       }
     })
     const fs = FsHooks.useFlagship()
-    expect(fs.flagsData).toEqual([expected])
 
     const flagKey = 'key'
     const flagDefaultValue = 'value'
     //
-    const flag = fs.getFlag(flagKey, flagDefaultValue)
+    const flag = fs.getFlag(flagKey)
 
     expect(flag).toBeDefined()
-    expect(flag.getValue()).toEqual(flagDefaultValue)
+    expect(flag.getValue(flagDefaultValue)).toEqual(flagDefaultValue)
 
     fs.fetchFlags()
     expect(config.logManager.warning).toBeCalledTimes(1)
 
     fs.setConsent(true)
-
     expect(config.logManager.warning).toBeCalledTimes(2)
+
+    const flags = fs.getFlags()
+    expect(flags).toBeInstanceOf(FSFlagCollection)
   })
 })
