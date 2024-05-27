@@ -1,13 +1,15 @@
+// eslint-disable-next-line no-use-before-define
 import React from 'react'
 
 import { jest, expect, it, describe, beforeEach, afterEach } from '@jest/globals'
 import { render, waitFor } from '@testing-library/react'
 import { SpyInstance } from 'jest-mock'
 
-import Flagship, { DecisionMode, FSSdkStatus, FlagDTO } from '@flagship.io/js-sdk'
+import Flagship, { DecisionMode, FSSdkStatus, FlagDTO, SerializedFlagMetadata } from '@flagship.io/js-sdk'
 
 import { useFlagship } from '../src/FlagshipHooks'
 import { FlagshipProvider } from '../src/FlagshipProvider'
+import { hexToValue } from '../src/utils'
 
 function sleep (ms: number): Promise<unknown> {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -24,6 +26,15 @@ const setConsent = jest.fn()
 const clearContext = jest.fn()
 const fetchFlags = jest.fn()
 const getFlagsDataArray = jest.fn()
+const getFlag = jest.fn() as any
+
+getFlag.mockImplementation((key: string) => {
+  return {
+    getValue: (defaultValue: string) => {
+      return flagsData.get(key)?.value ?? defaultValue
+    }
+  }
+})
 
 let onEventError = false
 
@@ -55,9 +66,27 @@ jest.mock('@flagship.io/js-sdk', () => {
   let OnReadyCallback: (error?: any) => void
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  newVisitor.mockImplementation(({ visitorId, isAuthenticated }:any) => {
+  newVisitor.mockImplementation(({ visitorId, isAuthenticated, initialFlagsData }:any) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const EventOn = jest.fn<(e:string, callback:(error?: any) => void)=>void>()
+
+    if (initialFlagsData) {
+      initialFlagsData.forEach((item: SerializedFlagMetadata) => {
+        flagsData.set(item.key, {
+          key: item.key,
+          campaignId: item.campaignId,
+          campaignName: item.campaignName,
+          variationGroupId: item.variationGroupId,
+          variationGroupName: item.variationGroupName,
+          variationId: item.variationId,
+          variationName: item.variationName,
+          isReference: item.isReference,
+          value: hexToValue(item.hex, {})?.v,
+          slug: item.slug,
+          campaignType: item.campaignType
+        })
+      })
+    }
 
     EventOn.mockImplementation((_e, callback) => {
       if (callback) {
@@ -83,7 +112,8 @@ jest.mock('@flagship.io/js-sdk', () => {
       unauthenticate,
       authenticate,
       setConsent,
-      clearContext
+      clearContext,
+      getFlag
     }
 
     authenticate.mockImplementation((visitorId) => {
@@ -545,7 +575,12 @@ describe('Test initial data', () => {
 
   const ChildComponent = () => {
     const fs = useFlagship()
-    return <div>{fs.flagsData.map(item => (<div data-testid={item.key} key={item.key}>{item.value}</div>))}</div>
+    const flag1 = fs.getFlag('key1')
+    const flag2 = fs.getFlag('key2')
+    return <div>
+      <div data-testid="key1">{flag1.getValue('default')}</div>
+      <div data-testid="key2">{flag2.getValue('default')}</div>
+    </div>
   }
 
   it('test initialFlagsData ', async () => {
@@ -565,7 +600,7 @@ describe('Test initial data', () => {
           variationName: 'variationName1',
           isReference: false,
           campaignType: 'ab',
-          value: 'flagValue1'
+          hex: '7b2276223a2274657374227d'
 
         },
         {
@@ -578,7 +613,7 @@ describe('Test initial data', () => {
           variationName: 'variationName',
           isReference: false,
           campaignType: 'ab',
-          value: 'flagValue2'
+          hex: '7b2276223a2274657374227d'
 
         }
       ]
@@ -604,111 +639,8 @@ describe('Test initial data', () => {
         initialFlagsData: props.initialFlagsData
       }))
 
-      expect(getByTestId('key1').textContent).toBe('flagValue1')
-      expect(getByTestId('key2').textContent).toBe('flagValue2')
-    })
-  })
-
-  it('test initialModifications ', async () => {
-    const props = {
-      envId,
-      apiKey,
-      decisionMode: DecisionMode.DECISION_API,
-      visitorData,
-      initialFlagsData: [
-        {
-          key: 'key1',
-          campaignId: 'campaignId1',
-          campaignName: 'campaignName1',
-          variationGroupId: 'variationGroupId2',
-          variationGroupName: 'variationGroupName2',
-          variationId: 'variationId3',
-          variationName: 'variationName1',
-          isReference: false,
-          campaignType: 'ab',
-          value: 'flagValue1'
-
-        },
-        {
-          key: 'key2',
-          campaignId: 'campaignId2',
-          campaignName: 'campaignName2',
-          variationGroupId: 'variationGroupId2',
-          variationGroupName: 'variationGroupName2',
-          variationId: 'variationId3',
-          variationName: 'variationName',
-          isReference: false,
-          campaignType: 'ab',
-          value: 'flagValue2'
-
-        }
-      ]
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { getByTestId } = render(
-      <FlagshipProvider {...props}>
-        <ChildComponent/>
-      </FlagshipProvider>
-    )
-
-    await waitFor(() => {
-      expect(mockStart).toBeCalledTimes(1)
-      expect(mockStart).toBeCalledWith(
-        envId,
-        apiKey,
-        expect.objectContaining({
-          decisionMode: DecisionMode.DECISION_API
-        })
-      )
-      expect(newVisitor).toBeCalledTimes(1)
-      expect(newVisitor).toBeCalledWith(expect.objectContaining({
-        initialFlagsData: props.initialFlagsData
-      }))
-      expect(getByTestId('key1').textContent).toBe('flagValue1')
-      expect(getByTestId('key2').textContent).toBe('flagValue2')
-    })
-  })
-
-  it('test initialCampaigns ', async () => {
-    const props = {
-      envId,
-      apiKey,
-      decisionMode: DecisionMode.DECISION_API,
-      visitorData,
-      initialCampaigns: [
-        {
-          id: 'c1ndsu87m030114t8uu0',
-          variationGroupId: 'c1ndta129mp0114nbtn0',
-          variation: {
-            id: 'c1ndta129mp0114nbtng',
-            modifications: {
-              type: 'FLAG',
-              value: {
-                background: 'rouge bordeau',
-                btnColor: 'blue',
-                keyBoolean: false,
-                keyNumber: 558
-              }
-            },
-            reference: false
-          }
-        }
-      ]
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { getByTestId } = render(
-      <FlagshipProvider {...props}>
-        <ChildComponent/>
-      </FlagshipProvider>
-    )
-
-    await waitFor(() => {
-      expect(newVisitor).toBeCalledTimes(1)
-      expect(newVisitor).toBeCalledWith(expect.objectContaining({
-        initialCampaigns: props.initialCampaigns
-      }))
-
-      expect(getByTestId('btnColor').textContent).toBe('blue')
+      expect(getByTestId('key1').textContent).toBe('test')
+      expect(getByTestId('key2').textContent).toBe('test')
     })
   })
 })
