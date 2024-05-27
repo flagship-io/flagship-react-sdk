@@ -23,31 +23,31 @@ module.exports = {
     '@typescript-eslint'
   ],
   rules: {
-    "no-use-before-define": ["error", { "variables": false }],
-    "import/order": [
+    'no-use-before-define': ['error', { variables: false }],
+    'import/order': [
       2,
       {
-        "groups": ["builtin", "external", "internal", ["index", "sibling", "parent"]],
-        "pathGroups": [
+        groups: ['builtin', 'external', 'internal', ['index', 'sibling', 'parent']],
+        pathGroups: [
           {
             // Configure react libs to be on top of external modules
-            "pattern": "{react*,react*/**}",
-            "group": "external",
-            "position": "before"
+            pattern: '{react*,react*/**}',
+            group: 'external',
+            position: 'before'
           },
           {
             // Configure @flagship.io to be last external modules
-            "pattern": "@flagship.io/**",
-            "group": "internal",
-            "position": "after"
-          },
+            pattern: '@flagship.io/**',
+            group: 'internal',
+            position: 'after'
+          }
         ],
-        "alphabetize": {
-          "order": "asc",
-          "caseInsensitive": true
+        alphabetize: {
+          order: 'asc',
+          caseInsensitive: true
         },
-        "newlines-between": "always",
-        "pathGroupsExcludedImportTypes": ["builtin"]
+        'newlines-between': 'always',
+        pathGroupsExcludedImportTypes: ['builtin']
       }
     ]
   },
