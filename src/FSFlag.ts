@@ -22,7 +22,7 @@ export class FSFlag implements IFSFlag {
       }
 
       if (this.flag.value === null || this.flag.value === undefined) {
-        return this.flag.value as (T extends null ? unknown : T)
+        return defaultValue as (T extends null ? unknown : T)
       }
 
       if (defaultValue !== null && defaultValue !== undefined && !hasSameType(this.flag.value, defaultValue)) {
