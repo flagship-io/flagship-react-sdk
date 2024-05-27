@@ -1,6 +1,6 @@
 import { Dispatch, ReactNode, SetStateAction } from 'react'
 
-import { Visitor, IFlagshipConfig, FlagDTO, CampaignDTO, primitive, BucketingDTO, FetchFlagsStatus, FSSdkStatus, IHit, IFlag } from '@flagship.io/js-sdk'
+import { Visitor, IFlagshipConfig, FlagDTO, CampaignDTO, primitive, BucketingDTO, FetchFlagsStatus, FSSdkStatus, IHit, IFSFlag, IFSFlagCollection, SerializedFlagMetadata } from '@flagship.io/js-sdk'
 
 export interface FsContextState {
     visitor?: Visitor;
@@ -9,6 +9,7 @@ export interface FsContextState {
     initialCampaigns?: CampaignDTO[];
     initialFlags?: Map<string, FlagDTO> | FlagDTO[];
     isInitializing: boolean;
+    hasVisitorData?: boolean;
   }
 
 export type VisitorData = {
@@ -62,7 +63,7 @@ export interface FlagshipProviderProps extends IFlagshipConfig {
     /**
      * This is a set of flag data provided to avoid the SDK to have an empty cache during the first initialization.
      */
-    initialFlagsData?: Map<string, FlagDTO> | FlagDTO[];
+    initialFlagsData?: SerializedFlagMetadata[];
     /**
      * If true, it'll automatically call fetchFlags when the bucketing file has updated.
      */
@@ -108,10 +109,6 @@ export type UseFlagshipOutput = {
    * @param hasConsented - True if the visitor has consented, false otherwise.
    */
   setConsent: (hasConsented: boolean) => void;
-  /**
-   * The flags data.
-   */
-  flagsData: FlagDTO[];
 
   readonly sdkStatus: FSSdkStatus;
 
@@ -153,7 +150,7 @@ export type UseFlagshipOutput = {
    * @param defaultValue - The default value.
    * @returns The flag object.
    */
-  getFlag<T>(key: string, defaultValue: T): IFlag<T>;
+  getFlag(key: string): IFSFlag;
   /**
    * Invokes the `decision API` or refers to the `bucketing file` to refresh all campaign flags based on the visitor's context.
    */
@@ -163,4 +160,10 @@ export type UseFlagshipOutput = {
    * @returns A promise that resolves when all hits are sent.
    */
   close(): Promise<void>;
+
+  /**
+  * Returns a collection of all flags fetched for the visitor.
+  * @returns An IFSFlagCollection object.
+  */
+  getFlags(): IFSFlagCollection;
 };
