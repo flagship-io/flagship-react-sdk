@@ -194,8 +194,13 @@ export const FlagshipProvider: React.FC<FlagshipProviderProps> = ({
     return () => window.removeEventListener(INTERNAL_EVENTS.FsTriggerRendering, onVariationsForced)
   }, [state.config?.isQAModeEnabled])
 
-  const onVariationsForced = () => {
-    setState(state => ({ ...state, toggleForcedVariations: !state.toggleForcedVariations }))
+  const onVariationsForced = (e:Event) => {
+    const { detail } = e as CustomEvent<{ forcedReFetchFlags: boolean }>
+    if (detail.forcedReFetchFlags) {
+      stateRef.current?.visitor?.fetchFlags()
+    } else {
+      setState(state => ({ ...state, toggleForcedVariations: !state.toggleForcedVariations }))
+    }
   }
 
   function initializeState (param: {
