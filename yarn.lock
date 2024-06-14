@@ -1100,15 +1100,10 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@eslint/js@8.57.0":
-  version "8.57.0"
-  resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.0.tgz#a5417ae8427873f1dd08b70b3574b453e67b5f7f"
-  integrity sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==
-
-"@flagship.io/js-sdk@^3.3.2":
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-3.3.2.tgz#4e16b3b2cf3db88c3ae5cdead5a243eb9fb7add4"
-  integrity sha512-AakGIo/RFXAfi3o6ukD+CgdgBaDUSncMBd24SEAcmNXrzrVNQzgcKlk8wAOSlGCh5LBCY0hEb0Y9vuj8n/867A==
+"@flagship.io/js-sdk@^4.0.0-alpha.1":
+  version "4.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-4.0.0-alpha.1.tgz#9d59ffe0b29142ee9af84c3c80a89af96831b40b"
+  integrity sha512-ifn4GqzeIRRyYXYtPY3i1uzcZNJ5lOA6h2Ux3fDK8ag0S6+Almry+AOVwlZDXYCug5zyyM4OTsqAYB8su4A9SA==
   dependencies:
     events "^3.3.0"
     follow-redirects "^1.15.2"
