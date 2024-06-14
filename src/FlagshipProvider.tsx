@@ -13,6 +13,7 @@ import {
   FlagshipContext,
   initStat
 } from './FlagshipContext'
+import { INTERNAL_EVENTS } from './internalType'
 import { version as SDK_VERSION } from './sdkVersion'
 import { FsContextState, FlagshipProviderProps } from './type'
 import { useNonInitialEffect, logError, extractFlagsMap } from './utils'
@@ -190,6 +191,20 @@ export function FlagshipProvider ({
       return <>{loadingComponent}</>
     }
     return <>{children}</>
+  }
+
+  useEffect(() => {
+    window.addEventListener(INTERNAL_EVENTS.FsTriggerRendering, onVariationsForced)
+    return () => window.removeEventListener(INTERNAL_EVENTS.FsTriggerRendering, onVariationsForced)
+  }, [state.config?.isQAModeEnabled])
+
+  const onVariationsForced = (e:Event) => {
+    const { detail } = e as CustomEvent<{ forcedReFetchFlags: boolean }>
+    if (detail.forcedReFetchFlags) {
+      stateRef.current?.visitor?.fetchFlags()
+    } else {
+      setState(state => ({ ...state, toggleForcedVariations: !state.toggleForcedVariations }))
+    }
   }
 
   return (
