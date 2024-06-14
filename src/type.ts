@@ -10,6 +10,7 @@ export interface FsContextState {
     initialFlags?: Map<string, FlagDTO> | FlagDTO[];
     isInitializing: boolean;
     hasVisitorData?: boolean;
+    toggleForcedVariations?: boolean
   }
 
 export type VisitorData = {
