@@ -9,6 +9,7 @@ import Flagship, { DecisionMode, FSSdkStatus, FlagDTO, SerializedFlagMetadata } 
 
 import { useFlagship } from '../src/FlagshipHooks'
 import { FlagshipProvider } from '../src/FlagshipProvider'
+import { INTERNAL_EVENTS } from '../src/internalType'
 import { hexToValue } from '../src/utils'
 
 function sleep (ms: number): Promise<unknown> {
@@ -26,6 +27,7 @@ const setConsent = jest.fn()
 const clearContext = jest.fn()
 const fetchFlags = jest.fn()
 const getFlagsDataArray = jest.fn()
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getFlag = jest.fn() as any
 
 getFlag.mockImplementation((key: string) => {
@@ -641,6 +643,77 @@ describe('Test initial data', () => {
 
       expect(getByTestId('key1').textContent).toBe('test')
       expect(getByTestId('key2').textContent).toBe('test')
+    })
+  })
+})
+
+describe('Force variations', () => {
+  const visitorData = {
+    id: 'visitor_id',
+    context: {},
+    isAuthenticated: false,
+    hasConsented: true
+  }
+  const envId = 'EnvId'
+  const apiKey = 'apiKey'
+
+  const ChildComponent = () => {
+    const fs = useFlagship()
+    const flag1 = fs.getFlag('key1')
+    const flag2 = fs.getFlag('key2')
+    return <div>
+      <div data-testid="key1">{flag1.getValue('default')}</div>
+      <div data-testid="key2">{flag2.getValue('default')}</div>
+    </div>
+  }
+
+  it('test initialFlagsData ', async () => {
+    const props = {
+      envId,
+      apiKey,
+      decisionMode: DecisionMode.DECISION_API,
+      visitorData
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    render(
+      <FlagshipProvider {...props}>
+        <ChildComponent/>
+      </FlagshipProvider>
+    )
+
+    await waitFor(() => {
+      expect(mockStart).toBeCalledTimes(1)
+      expect(mockStart).toBeCalledWith(
+        envId,
+        apiKey,
+        expect.objectContaining({
+          decisionMode: DecisionMode.DECISION_API
+        })
+      )
+      expect(newVisitor).toBeCalledTimes(1)
+      expect(fetchFlags).toBeCalledTimes(1)
+    })
+
+    await waitFor(() => {
+      const triggerRenderEvent = new CustomEvent<{ forcedReFetchFlags: boolean }>(INTERNAL_EVENTS.FsTriggerRendering, {
+        detail: {
+          forcedReFetchFlags: true
+        }
+      })
+      window.dispatchEvent(triggerRenderEvent)
+
+      expect(fetchFlags).toBeCalledTimes(2)
+    })
+
+    await waitFor(() => {
+      const triggerRenderEvent = new CustomEvent<{ forcedReFetchFlags: boolean }>(INTERNAL_EVENTS.FsTriggerRendering, {
+        detail: {
+          forcedReFetchFlags: false
+        }
+      })
+      window.dispatchEvent(triggerRenderEvent)
+
+      expect(fetchFlags).toBeCalledTimes(2)
     })
   })
 })
