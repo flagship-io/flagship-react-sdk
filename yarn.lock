@@ -1128,10 +1128,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.0.tgz#a5417ae8427873f1dd08b70b3574b453e67b5f7f"
   integrity sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==
 
-"@flagship.io/js-sdk@^4.0.0-alpha.2":
-  version "4.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-4.0.0-alpha.2.tgz#bd3ee8fe624cc20f2457aa8d0bf4598993e230fe"
-  integrity sha512-WOLfpG4FJSBao8CbKn86Anlemkak6FbZCajcoH8suaWrYY/p2Sjh3OX2L0jxmWdO6VX28Tyr3iQfiLo5p/4FMA==
+"@flagship.io/js-sdk@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@flagship.io/js-sdk/-/js-sdk-4.0.1.tgz#ca65d4cbdd5fe2390dcae2be50055f463794ad35"
+  integrity sha512-RXI4hk0NtXHtdWifSmiUkJ+5zCeL8m5loPcxYrXD5wZUMWr61c/l2f1AhQ4MmI/AkhME5LCOv2d/AIvat62zKw==
   dependencies:
     events "^3.3.0"
     follow-redirects "^1.15.2"
