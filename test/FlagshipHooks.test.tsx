@@ -3,7 +3,7 @@ import React from 'react'
 import { jest, expect, it, describe, beforeEach, afterEach } from '@jest/globals'
 import { Mock } from 'jest-mock'
 
-import Flagship, { FSFlagCollection, HitType, LogLevel } from '@flagship.io/js-sdk'
+import Flagship, { FSFlagCollection, HitType, LogLevel, primitive } from '@flagship.io/js-sdk'
 
 import * as FsHooks from '../src/FlagshipHooks'
 import { FSFlag } from '../src/FSFlag'
@@ -79,19 +79,47 @@ describe('test FlagshipHooks', () => {
       },
       logLevel: LogLevel.ALL
     }
+
+    function updateContext (context: Record<string, primitive>) {
+      visitor.context = { ...visitor.context, ...context }
+    }
+
+    function clearContext () {
+      visitor.context = {}
+    }
+
+    function authenticate (visitorId: string) {
+      visitor.anonymousId = visitor.visitorId
+      visitor.visitorId = visitorId
+    }
+
+    function unauthenticate () {
+      visitor.visitorId = visitor.anonymousId
+      visitor.anonymousId = ''
+    }
+
     const visitor = {
-      updateContext: jest.fn(),
-      clearContext: jest.fn(),
-      authenticate: jest.fn(),
-      unauthenticate: jest.fn(),
+      anonymousId: '',
+      visitorId: 'AnonymousVisitorId',
+      updateContext: jest.fn<typeof updateContext>(),
+      clearContext: jest.fn<typeof clearContext>(),
+      authenticate: jest.fn<typeof authenticate>(),
+      unauthenticate: jest.fn<typeof unauthenticate>(),
       sendHit: jest.fn(),
       sendHits: jest.fn(),
       getFlag: jest.fn(),
       getFlags: jest.fn(),
       fetchFlags: jest.fn(),
       getFlagsDataArray: jest.fn(),
-      setConsent: jest.fn()
+      setConsent: jest.fn(),
+      context: {}
     }
+
+    visitor.updateContext.mockImplementation(updateContext)
+    visitor.clearContext.mockImplementation(clearContext)
+    visitor.authenticate.mockImplementation(authenticate)
+    visitor.unauthenticate.mockImplementation(unauthenticate)
+
     useContextMock.mockReturnValue({
       state: {
         config,
@@ -138,13 +166,15 @@ describe('test FlagshipHooks', () => {
     expect(visitor.fetchFlags).toBeCalledTimes(1)
 
     fs.updateContext(context)
+    fs.updateContext(context)
 
-    expect(visitor.updateContext).toBeCalledTimes(1)
+    expect(visitor.updateContext).toBeCalledTimes(2)
     expect(visitor.updateContext).toBeCalledWith(context)
     expect(visitor.fetchFlags).toBeCalledTimes(2)
 
     fs.clearContext()
-    expect(visitor.clearContext).toBeCalledTimes(1)
+    fs.clearContext()
+    expect(visitor.clearContext).toBeCalledTimes(2)
     expect(visitor.fetchFlags).toBeCalledTimes(3)
     fs.setConsent(true)
 
@@ -162,14 +192,16 @@ describe('test FlagshipHooks', () => {
 
     const visitorId = 'visitor_id'
     fs.authenticate(visitorId)
+    fs.authenticate(visitorId)
 
-    expect(visitor.authenticate).toBeCalledTimes(1)
+    expect(visitor.authenticate).toBeCalledTimes(2)
     expect(visitor.authenticate).toBeCalledWith(visitorId)
     expect(visitor.fetchFlags).toBeCalledTimes(4)
 
     fs.unauthenticate()
+    fs.unauthenticate()
 
-    expect(visitor.unauthenticate).toBeCalledTimes(1)
+    expect(visitor.unauthenticate).toBeCalledTimes(2)
     expect(visitor.fetchFlags).toBeCalledTimes(5)
 
     await fs.close()
