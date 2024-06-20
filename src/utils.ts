@@ -197,3 +197,11 @@ export function extractFlagsMap (initialFlagsData?: SerializedFlagMetadata[], in
 
   return flags
 }
+
+export function deepClone<T> (obj: T): T {
+  return JSON.parse(JSON.stringify(obj))
+}
+
+export function hasContextChanged <T> (original: T, updated: T): boolean {
+  return JSON.stringify(original) !== JSON.stringify(updated)
+}

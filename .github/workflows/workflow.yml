@@ -6,9 +6,9 @@ name: Code coverage
 # events but only for the master branch
 on:
     push:
-        branches: [master, v2]
+        branches: [master]
     pull_request:
-        branches: [master, v2]
+        branches: [master]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -25,10 +25,10 @@ jobs:
             - name: Run tests
               run: yarn run test
             - name: Upload codecov report
-              uses: codecov/codecov-action@v2
+              uses: codecov/codecov-action@v4
               with:
-                  token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-                  file: ./coverage/clover.xml # optional
-                  flags: unittests # optional
-                  name: codecov-flagship-react-coverage # optional
-                  fail_ci_if_error: true # optional (default = false)
+                  token: ${{ secrets.CODECOV_TOKEN }}
+                  file: ./coverage/clover.xml
+                  flags: unittests
+                  name: codecov-flagship-react-coverage
+                  fail_ci_if_error: true

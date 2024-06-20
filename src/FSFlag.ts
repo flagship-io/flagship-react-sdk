@@ -5,69 +5,69 @@ import { FsContextState } from './type'
 import { hasSameType, logInfo, logWarn, sprintf } from './utils'
 
 export class FSFlag implements IFSFlag {
-    private key: string
-    private flag?: FlagDTO
-    constructor (key: string, state:FsContextState) {
-      const flagsData = state.flags
-      if (!state.hasVisitorData) {
-        logWarn(Flagship.getConfig(), noVisitorMessage, 'GetFlag')
-      }
-      this.key = key
-      this.flag = flagsData?.get(key)
+  private key: string
+  private flag?: FlagDTO
+  constructor (key: string, state:FsContextState) {
+    const flagsData = state.flags
+    if (!state.hasVisitorData) {
+      logWarn(Flagship.getConfig(), noVisitorMessage, 'GetFlag')
+    }
+    this.key = key
+    this.flag = flagsData?.get(key)
+  }
+
+  getValue<T> (defaultValue: T): (T extends null ? unknown : T) {
+    if (!this.flag) {
+      return defaultValue as (T extends null ? unknown : T)
     }
 
-    getValue<T> (defaultValue: T): (T extends null ? unknown : T) {
-      if (!this.flag) {
-        return defaultValue as (T extends null ? unknown : T)
-      }
-
-      if (this.flag.value === null || this.flag.value === undefined) {
-        return defaultValue as (T extends null ? unknown : T)
-      }
-
-      if (defaultValue !== null && defaultValue !== undefined && !hasSameType(this.flag.value, defaultValue)) {
-        logInfo(
-          Flagship.getConfig(),
-          sprintf(GET_FLAG_CAST_ERROR, this.key),
-          'getValue'
-        )
-        return defaultValue as (T extends null ? unknown : T)
-      }
-      return this.flag.value
+    if (this.flag.value === null || this.flag.value === undefined) {
+      return defaultValue as (T extends null ? unknown : T)
     }
 
-    exists ():boolean {
-      if (!this.flag) {
-        return false
-      }
-      return !!(this.flag.campaignId && this.flag.variationId && this.flag.variationGroupId)
+    if (defaultValue !== null && defaultValue !== undefined && !hasSameType(this.flag.value, defaultValue)) {
+      logInfo(
+        Flagship.getConfig(),
+        sprintf(GET_FLAG_CAST_ERROR, this.key),
+        'getValue'
+      )
+      return defaultValue as (T extends null ? unknown : T)
     }
+    return this.flag.value
+  }
 
-    async visitorExposed () : Promise<void> {
-      // do nothing
+  exists ():boolean {
+    if (!this.flag) {
+      return false
     }
+    return !!(this.flag.campaignId && this.flag.variationId && this.flag.variationGroupId)
+  }
 
-    get metadata ():IFSFlagMetadata {
-      if (!this.flag) {
-        return FSFlagMetadata.Empty()
-      }
-      return new FSFlagMetadata({
-        campaignId: this.flag.campaignId,
-        campaignName: this.flag.campaignName,
-        variationGroupId: this.flag.variationGroupId,
-        variationGroupName: this.flag.variationGroupName,
-        variationId: this.flag.variationId,
-        variationName: this.flag.variationName,
-        isReference: !!this.flag.isReference,
-        campaignType: this.flag.campaignType as string,
-        slug: this.flag.slug
-      })
-    }
+  async visitorExposed () : Promise<void> {
+    // do nothing
+  }
 
-    get status ():FSFlagStatus {
-      if (!this.exists()) {
-        return FSFlagStatus.NOT_FOUND
-      }
-      return FSFlagStatus.FETCHED
+  get metadata ():IFSFlagMetadata {
+    if (!this.flag) {
+      return FSFlagMetadata.Empty()
     }
+    return new FSFlagMetadata({
+      campaignId: this.flag.campaignId,
+      campaignName: this.flag.campaignName,
+      variationGroupId: this.flag.variationGroupId,
+      variationGroupName: this.flag.variationGroupName,
+      variationId: this.flag.variationId,
+      variationName: this.flag.variationName,
+      isReference: !!this.flag.isReference,
+      campaignType: this.flag.campaignType as string,
+      slug: this.flag.slug
+    })
+  }
+
+  get status ():FSFlagStatus {
+    if (!this.exists()) {
+      return FSFlagStatus.NOT_FOUND
+    }
+    return FSFlagStatus.FETCHED
+  }
 }

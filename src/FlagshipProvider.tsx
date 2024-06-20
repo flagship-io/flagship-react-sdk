@@ -194,8 +194,8 @@ export function FlagshipProvider ({
   }
 
   useEffect(() => {
-    window.addEventListener(INTERNAL_EVENTS.FsTriggerRendering, onVariationsForced)
-    return () => window.removeEventListener(INTERNAL_EVENTS.FsTriggerRendering, onVariationsForced)
+    window?.addEventListener?.(INTERNAL_EVENTS.FsTriggerRendering, onVariationsForced)
+    return () => window?.removeEventListener?.(INTERNAL_EVENTS.FsTriggerRendering, onVariationsForced)
   }, [state.config?.isQAModeEnabled])
 
   const onVariationsForced = (e:Event) => {
