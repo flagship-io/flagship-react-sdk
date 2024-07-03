@@ -5,6 +5,7 @@ import { Item } from "./Item";
 import { Container } from "@mui/material";
 import { useState } from "react";
 import { VipSwitch } from "./VipSwitch";
+import { Loading } from "./Loading";
 
 function App() {
   const [isVip, setIsVip] = useState(false);
@@ -22,6 +23,7 @@ function App() {
             fs_is_vip: isVip,
           },
         }}
+        loadingComponent={<Loading />}
       >
         <Item />
       </FlagshipProvider>
