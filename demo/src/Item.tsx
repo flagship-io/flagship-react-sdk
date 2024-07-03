@@ -16,12 +16,12 @@ export const Item = () => {
   const fs = useFlagship();
 
   /*Step 2: Get the values of the flags for the visitor*/
-  const enableDiscountFlag = useFsFlag("fs_enable_discount", false).getValue();
-  const addToCartBtnColorFlag = useFsFlag("fs_add_to_cart_btn_color", "#556cd6").getValue();
+  const enableDiscountFlag = useFsFlag("fs_enable_discount").getValue(false);
+  const addToCartBtnColorFlag = useFsFlag("fs_add_to_cart_btn_color").getValue("#556cd6");
 
   const handleAddToCart = () => {
     // Step 3: Send a hit to track an action
-    fs.hit.send({
+    fs.sendHits({
       type: HitType.EVENT,
       category: EventCategory.ACTION_TRACKING,
       action: "add-to-cart-clicked",
