@@ -1,4 +1,4 @@
-[![Code coverage](https://github.com/flagship-io/flagship-react-sdk/actions/workflows/workflow.yml/badge.svg?branch=master)](https://github.com/flagship-io/flagship-react-sdk/actions/workflows/workflow.yml) [![codecov](https://codecov.io/gh/flagship-io/flagship-react-sdk/branch/master/graph/badge.svg?token=jRh0h1XcT3)](https://codecov.io/gh/flagship-io/flagship-react-sdk) [![npm version](https://badge.fury.io/js/@flagship.io%2Freact-sdk.svg)](https://badge.fury.io/js/@flagship.io%2Freact-sdk)
+[![Test & Code coverage](https://github.com/flagship-io/flagship-react-sdk/actions/workflows/ci-push.yml/badge.svg?branch=master&event=push)](https://github.com/flagship-io/flagship-react-sdk/actions/workflows/ci-push.yml) [![codecov](https://codecov.io/gh/flagship-io/flagship-react-sdk/branch/master/graph/badge.svg?token=jRh0h1XcT3)](https://codecov.io/gh/flagship-io/flagship-react-sdk) [![npm version](https://badge.fury.io/js/@flagship.io%2Freact-sdk.svg)](https://badge.fury.io/js/@flagship.io%2Freact-sdk)
 
 ## About Flagship
 
