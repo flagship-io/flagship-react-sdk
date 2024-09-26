@@ -48,6 +48,7 @@ export function FlagshipProvider ({
   const [lastModified, setLastModified] = useState<Date>()
   const stateRef = useRef<FsContextState>()
   stateRef.current = state
+  const onVisitorReadyRef = useRef<(error:unknown)=>void>()
 
   // #region functions
 
@@ -128,9 +129,9 @@ export function FlagshipProvider ({
       shouldSaveInstance
     })
 
-    fsVisitor?.on('ready', (error) => {
-      onVisitorReady(fsVisitor, error)
-    })
+    onVisitorReadyRef.current = (error) => onVisitorReady(fsVisitor, error)
+
+    fsVisitor?.on('ready', onVisitorReadyRef.current)
 
     if (!fetchNow) {
       initializeState({ fsVisitor })
@@ -141,27 +142,21 @@ export function FlagshipProvider ({
     if (!visitorData) {
       return
     }
-    if (!state.visitor ||
-      (state.visitor.visitorId !== visitorData.id &&
-      (!visitorData.isAuthenticated || (visitorData.isAuthenticated && state.visitor.anonymousId)))
-    ) {
+    const visitor = stateRef.current?.visitor
+
+    if (!visitor) {
       createVisitor()
       return
     }
 
-    if (visitorData.hasConsented !== state.visitor.hasConsented) {
-      state.visitor.setConsent(visitorData.hasConsented ?? true)
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    state.visitor.updateContext(visitorData.context as any)
+    visitor.cleanup()
+    visitor.off('ready', onVisitorReadyRef.current as (error:unknown)=>void)
 
-    if (!state.visitor.anonymousId && visitorData.isAuthenticated) {
-      state.visitor.authenticate(visitorData.id as string)
+    createVisitor()
+
+    if (!fetchNow) {
+      visitor.fetchFlags()
     }
-    if (state.visitor.anonymousId && !visitorData.isAuthenticated) {
-      state.visitor.unauthenticate()
-    }
-    state.visitor.fetchFlags()
   }
 
   // #endregion
