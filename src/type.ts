@@ -167,4 +167,9 @@ export type UseFlagshipOutput = {
   * @returns An IFSFlagCollection object.
   */
   getFlags(): IFSFlagCollection;
+
+  /**
+   * Collects Emotion AI data for the visitor.
+   */
+  collectEAIData(): void;
 };
