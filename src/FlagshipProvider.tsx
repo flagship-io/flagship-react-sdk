@@ -145,6 +145,7 @@ export function FlagshipProvider ({
       (state.visitor.visitorId !== visitorData.id &&
       (!visitorData.isAuthenticated || (visitorData.isAuthenticated && state.visitor.anonymousId)))
     ) {
+      state.visitor?.cleanup()
       createVisitor()
       return
     }
