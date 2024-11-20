@@ -157,11 +157,11 @@ export const useFlagship = (): UseFlagshipOutput => {
     return visitor.getFlags()
   }
 
-  function collectEAIData (): void {
+  function collectEAIData (...args: unknown[]): void {
     if (!visitor) {
       return
     }
-    return visitor.collectEAIData()
+    return visitor.collectEAIData(...args)
   }
 
   return {
