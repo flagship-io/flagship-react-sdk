@@ -49,6 +49,8 @@ export function FlagshipProvider ({
   const stateRef = useRef<FsContextState>()
   stateRef.current = state
 
+  const visitorDataRef = useRef(visitorData)
+
   // #region functions
 
   const onBucketingLastModified = (lastUpdate: Date) => {
@@ -114,14 +116,14 @@ export function FlagshipProvider ({
   }
 
   const createVisitor = () => {
-    if (!visitorData) {
+    if (!visitorDataRef.current) {
       return
     }
     const fsVisitor = Flagship.newVisitor({
-      visitorId: visitorData.id,
-      context: visitorData.context,
-      isAuthenticated: visitorData.isAuthenticated,
-      hasConsented: visitorData.hasConsented,
+      visitorId: visitorDataRef.current.id,
+      context: visitorDataRef.current.context,
+      isAuthenticated: visitorDataRef.current.isAuthenticated,
+      hasConsented: visitorDataRef.current.hasConsented,
       initialCampaigns,
       initialFlagsData,
       onFetchFlagsStatusChanged,
@@ -138,28 +140,28 @@ export function FlagshipProvider ({
   }
 
   function updateVisitor () {
-    if (!visitorData) {
+    if (!visitorDataRef.current || Flagship.getStatus() !== FSSdkStatus.SDK_INITIALIZED) {
       return
     }
     if (!state.visitor ||
-      (state.visitor.visitorId !== visitorData.id &&
-      (!visitorData.isAuthenticated || (visitorData.isAuthenticated && state.visitor.anonymousId)))
+      (state.visitor.visitorId !== visitorDataRef.current.id &&
+      (!visitorDataRef.current.isAuthenticated || (visitorDataRef.current.isAuthenticated && state.visitor.anonymousId)))
     ) {
       state.visitor?.cleanup()
       createVisitor()
       return
     }
 
-    if (visitorData.hasConsented !== state.visitor.hasConsented) {
-      state.visitor.setConsent(visitorData.hasConsented ?? true)
+    if (visitorDataRef.current.hasConsented !== state.visitor.hasConsented) {
+      state.visitor.setConsent(visitorDataRef.current.hasConsented ?? true)
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    state.visitor.updateContext(visitorData.context as any)
+    state.visitor.updateContext(visitorDataRef.current.context as any)
 
-    if (!state.visitor.anonymousId && visitorData.isAuthenticated) {
-      state.visitor.authenticate(visitorData.id as string)
+    if (!state.visitor.anonymousId && visitorDataRef.current.isAuthenticated) {
+      state.visitor.authenticate(visitorDataRef.current.id as string)
     }
-    if (state.visitor.anonymousId && !visitorData.isAuthenticated) {
+    if (state.visitor.anonymousId && !visitorDataRef.current.isAuthenticated) {
       state.visitor.unauthenticate()
     }
     state.visitor.fetchFlags()
@@ -174,6 +176,7 @@ export function FlagshipProvider ({
   }, [lastModified])
 
   useNonInitialEffect(() => {
+    visitorDataRef.current = visitorData
     updateVisitor()
   }, [JSON.stringify(visitorData)])
 
