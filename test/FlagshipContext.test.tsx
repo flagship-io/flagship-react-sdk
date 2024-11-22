@@ -48,6 +48,7 @@ jest.mock('@flagship.io/js-sdk', () => {
 
   const mockStart = jest.spyOn(flagship.Flagship, 'start')
   const newVisitor = jest.spyOn(flagship.Flagship, 'newVisitor')
+  const getStatus = jest.spyOn(flagship.Flagship, 'getStatus')
 
   let fistStart = true
   let localFetchNow = true
@@ -57,6 +58,7 @@ jest.mock('@flagship.io/js-sdk', () => {
     (_apiKey, _envId, { onBucketingUpdated, onSdkStatusChanged, fetchNow, decisionMode }: any) => {
       localFetchNow = fetchNow
       onSdkStatusChanged(fsSdkStatus)
+      getStatus.mockImplementation(() => fsSdkStatus)
       if (fistStart && decisionMode === DecisionMode.BUCKETING) {
         onBucketingUpdated(new Date())
         fistStart = false
@@ -472,7 +474,7 @@ describe('FlagshipProvide test SDK_NOT_INITIALIZED', () => {
     await waitFor(() => {
       expect(mockStart).toBeCalledTimes(1)
       expect(authenticate).toBeCalledTimes(0)
-      expect(fetchFlags).toBeCalledTimes(1)
+      expect(fetchFlags).toBeCalledTimes(0)
       expect(onBucketingUpdated).toBeCalledTimes(0)
       expect(onSdkStatusChanged).toBeCalledTimes(1)
     })
