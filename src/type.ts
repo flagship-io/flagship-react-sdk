@@ -171,5 +171,5 @@ export type UseFlagshipOutput = {
   /**
    * Collects Emotion AI data for the visitor.
    */
-  collectEAIData(): void;
+  collectEAIDataAsync(): Promise<void>;
 };
