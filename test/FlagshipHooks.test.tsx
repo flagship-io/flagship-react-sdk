@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { jest, expect, it, describe, beforeEach, afterEach } from '@jest/globals'
+import { renderHook } from '@testing-library/react-hooks'
 import { Mock } from 'jest-mock'
 
 import Flagship, { FSFlagCollection, HitType, LogLevel, primitive } from '@flagship.io/js-sdk'
@@ -36,8 +37,8 @@ describe('test FlagshipHooks', () => {
     useContextMock.mockReturnValue({ state: { visitor } })
 
     const key = 'key'
-    const result = FsHooks.useFsFlag(key)
-    expect(result).toEqual(expected)
+    const { result } = renderHook(() => FsHooks.useFsFlag(key))
+    expect(result.current).toEqual(expected)
     expect(visitor.getFlag).toBeCalledTimes(1)
     expect(visitor.getFlag).toBeCalledWith(key)
   })
@@ -46,8 +47,8 @@ describe('test FlagshipHooks', () => {
     useContextMock.mockReturnValue({ state: { } })
 
     const key = 'key'
-    const result = FsHooks.useFsFlag(key)
-    expect(result).toBeInstanceOf(FSFlag)
+    const { result } = renderHook(() => FsHooks.useFsFlag(key))
+    expect(result.current).toBeInstanceOf(FSFlag)
   })
 
   it('useFsModifications with useFsFlag ', async () => {
@@ -66,9 +67,9 @@ describe('test FlagshipHooks', () => {
       state
     })
 
-    const result = FsHooks.useFsFlag('key')
+    const { result } = renderHook(() => FsHooks.useFsFlag('key'))
 
-    expect(result.getValue('default')).toEqual('value1')
+    expect(result.current.getValue('default')).toEqual('value1')
   })
 
   it('should test FlagshipHooks', async () => {
@@ -112,6 +113,7 @@ describe('test FlagshipHooks', () => {
       fetchFlags: jest.fn(),
       getFlagsDataArray: jest.fn(),
       setConsent: jest.fn(),
+      collectEAIDataAsync: jest.fn<()=> Promise<void>>(),
       context: {}
     }
 
@@ -131,7 +133,9 @@ describe('test FlagshipHooks', () => {
 
     Flagship.close = jest.fn<()=>Promise<void>>()
 
-    let fs = FsHooks.useFlagship()
+    const { result } = renderHook(() => FsHooks.useFlagship())
+
+    let fs = result.current
 
     const context = { key: 'context' }
 
@@ -154,7 +158,9 @@ describe('test FlagshipHooks', () => {
 
     })
 
-    fs = FsHooks.useFlagship()
+    const { result: result2 } = renderHook(() => FsHooks.useFlagship())
+
+    fs = result2.current
 
     const flagKey = 'key'
     fs.getFlag(flagKey)
@@ -209,6 +215,9 @@ describe('test FlagshipHooks', () => {
 
     fs.getFlags()
     expect(visitor.getFlags).toBeCalledTimes(1)
+
+    fs.collectEAIDataAsync()
+    expect(visitor.collectEAIDataAsync).toBeCalledTimes(1)
   })
 
   it('test without visitor', () => {
@@ -232,7 +241,10 @@ describe('test FlagshipHooks', () => {
         ])
       }
     })
-    const fs = FsHooks.useFlagship()
+
+    const { result } = renderHook(() => FsHooks.useFlagship())
+
+    const fs = result.current
 
     const flagKey = 'key'
     const flagDefaultValue = 'value'
@@ -250,5 +262,7 @@ describe('test FlagshipHooks', () => {
 
     const flags = fs.getFlags()
     expect(flags).toBeInstanceOf(FSFlagCollection)
+
+    fs.collectEAIDataAsync()
   })
 })
