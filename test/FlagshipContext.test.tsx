@@ -26,6 +26,7 @@ const authenticate = jest.fn<(params: string)=>void>()
 const setConsent = jest.fn()
 const clearContext = jest.fn()
 const fetchFlags = jest.fn()
+const cleanup = jest.fn()
 const getFlagsDataArray = jest.fn()
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getFlag = jest.fn() as any
@@ -117,6 +118,7 @@ jest.mock('@flagship.io/js-sdk', () => {
       authenticate,
       setConsent,
       clearContext,
+      cleanup,
       getFlag
     }
 
