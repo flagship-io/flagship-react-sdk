@@ -1,5 +1,5 @@
 'use client'
-import { useCallback, useContext } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 
 import {
   Flagship,
@@ -159,7 +159,7 @@ export const useFlagship = (): UseFlagshipOutput => {
     return visitor.collectEAIDataAsync(...args)
   }, [visitor])
 
-  return {
+  return useMemo(() => ({
     visitorId: visitor?.visitorId,
     anonymousId: visitor?.anonymousId,
     context: { ...visitor?.context },
@@ -177,5 +177,11 @@ export const useFlagship = (): UseFlagshipOutput => {
     close,
     getFlags,
     collectEAIDataAsync
-  }
+
+  }), [visitor, setConsent,
+    fsUpdateContext,
+    fsClearContext, fsAuthenticate, fsUnauthenticate,
+    fsSendHit, getFlag, fetchFlags, close,
+    getFlags,
+    collectEAIDataAsync])
 }
