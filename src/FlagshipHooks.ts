@@ -152,11 +152,11 @@ export const useFlagship = (): UseFlagshipOutput => {
     return visitor.getFlags()
   }, [visitor])
 
-  const collectEAIDataAsync = useCallback(async (...args: unknown[]): Promise<void> => {
+  const collectEAIEventsAsync = useCallback(async (...args: unknown[]): Promise<void> => {
     if (!visitor) {
       return
     }
-    return visitor.collectEAIDataAsync(...args)
+    return visitor.collectEAIEventsAsync(...args)
   }, [visitor])
 
   return useMemo(() => ({
@@ -176,12 +176,12 @@ export const useFlagship = (): UseFlagshipOutput => {
     fetchFlags,
     close,
     getFlags,
-    collectEAIDataAsync
+    collectEAIEventsAsync
 
   }), [visitor, setConsent,
     fsUpdateContext,
     fsClearContext, fsAuthenticate, fsUnauthenticate,
     fsSendHit, getFlag, fetchFlags, close,
     getFlags,
-    collectEAIDataAsync])
+    collectEAIEventsAsync])
 }

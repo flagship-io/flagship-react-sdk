@@ -113,7 +113,7 @@ describe('test FlagshipHooks', () => {
       fetchFlags: jest.fn(),
       getFlagsDataArray: jest.fn(),
       setConsent: jest.fn(),
-      collectEAIDataAsync: jest.fn<()=> Promise<void>>(),
+      collectEAIEventsAsync: jest.fn<()=> Promise<void>>(),
       context: {}
     }
 
@@ -216,8 +216,8 @@ describe('test FlagshipHooks', () => {
     fs.getFlags()
     expect(visitor.getFlags).toBeCalledTimes(1)
 
-    fs.collectEAIDataAsync()
-    expect(visitor.collectEAIDataAsync).toBeCalledTimes(1)
+    fs.collectEAIEventsAsync()
+    expect(visitor.collectEAIEventsAsync).toBeCalledTimes(1)
   })
 
   it('test without visitor', () => {
@@ -263,6 +263,6 @@ describe('test FlagshipHooks', () => {
     const flags = fs.getFlags()
     expect(flags).toBeInstanceOf(FSFlagCollection)
 
-    fs.collectEAIDataAsync()
+    fs.collectEAIEventsAsync()
   })
 })
