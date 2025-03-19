@@ -34,7 +34,7 @@ export function FlagshipProvider ({
   fetchNow = true,
   language = 1,
   sdkVersion = SDK_VERSION,
-  onFetchFlagsStatusChanged,
+  onFlagsStatusChanged,
   shouldSaveInstance,
   ...props
 }: FlagshipProviderProps): React.JSX.Element {
@@ -126,7 +126,7 @@ export function FlagshipProvider ({
       hasConsented: visitorDataRef.current.hasConsented,
       initialCampaigns,
       initialFlagsData,
-      onFetchFlagsStatusChanged,
+      onFlagsStatusChanged,
       shouldSaveInstance
     })
 
