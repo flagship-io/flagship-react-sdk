@@ -113,7 +113,7 @@ export type UseFlagshipOutput = {
 
   readonly sdkStatus: FSSdkStatus;
 
-  readonly fetchStatus?: FlagsStatus
+  readonly flagsStatus?: FlagsStatus
   /**
    * Updates the visitor context values, matching the given keys, used for targeting.
    * A new context value associated with this key will be created if there is no previous matching value.

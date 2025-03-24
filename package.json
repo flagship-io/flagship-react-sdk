@@ -20,7 +20,7 @@
     "react-native": "./dist/src/index.js"
   },
   "dependencies": {
-    "@flagship.io/js-sdk": "^5.0.0-alpha.1",
+    "@flagship.io/js-sdk": "^5.0.0",
     "encoding": "^0.1.13"
   },
   "peerDependencies": {

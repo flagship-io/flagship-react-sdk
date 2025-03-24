@@ -165,7 +165,7 @@ export const useFlagship = (): UseFlagshipOutput => {
     context: { ...visitor?.context },
     hasConsented: visitor?.hasConsented,
     sdkStatus: Flagship.getStatus(),
-    fetchStatus: visitor?.fetchStatus,
+    flagsStatus: visitor?.flagsStatus,
     setConsent,
     updateContext: fsUpdateContext,
     clearContext: fsClearContext,
