@@ -1,6 +1,6 @@
 import { Dispatch, ReactNode, SetStateAction } from 'react'
 
-import { Visitor, IFlagshipConfig, FlagDTO, CampaignDTO, primitive, BucketingDTO, FetchFlagsStatus, FSSdkStatus, IHit, IFSFlag, IFSFlagCollection, SerializedFlagMetadata } from '@flagship.io/js-sdk'
+import { Visitor, IFlagshipConfig, FlagDTO, CampaignDTO, primitive, BucketingDTO, FSSdkStatus, IHit, IFSFlag, IFSFlagCollection, SerializedFlagMetadata, FlagsStatus } from '@flagship.io/js-sdk'
 
 export interface FsContextState {
     visitor?: Visitor;
@@ -76,7 +76,7 @@ export interface FlagshipProviderProps extends IFlagshipConfig {
      * @param newStatus - The new status of the flags fetch.
      * @param reason - The reason for the status change.
      */
-    onFetchFlagsStatusChanged?: ({ status, reason }: FetchFlagsStatus) => void;
+    onFlagsStatusChanged?: ({ status, reason }: FlagsStatus) => void;
     /**
      * If true, the newly created visitor instance won't be saved and will simply be returned. Otherwise, the newly created visitor instance will be returned and saved into the Flagship.
      *
@@ -113,7 +113,7 @@ export type UseFlagshipOutput = {
 
   readonly sdkStatus: FSSdkStatus;
 
-  readonly fetchStatus?: FetchFlagsStatus
+  readonly flagsStatus?: FlagsStatus
   /**
    * Updates the visitor context values, matching the given keys, used for targeting.
    * A new context value associated with this key will be created if there is no previous matching value.
@@ -167,4 +167,9 @@ export type UseFlagshipOutput = {
   * @returns An IFSFlagCollection object.
   */
   getFlags(): IFSFlagCollection;
+
+  /**
+   * Collects Emotion AI data for the visitor.
+   */
+  collectEAIEventsAsync(): Promise<void>;
 };

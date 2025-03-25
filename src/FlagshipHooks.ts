@@ -1,5 +1,5 @@
 'use client'
-import { useContext } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 
 import {
   Flagship,
@@ -58,25 +58,25 @@ export const useFlagship = (): UseFlagshipOutput => {
   const { state } = useContext(FlagshipContext)
   const { visitor, config } = state
 
-  const fsUpdateContext = (context: Record<string, primitive>): void => {
+  const fsUpdateContext = useCallback((context: Record<string, primitive>): void => {
     handleContextChange({
       config,
       visitor,
       updateFunction: () => visitor?.updateContext(context),
       functionName: 'updateContext'
     })
-  }
+  }, [visitor])
 
-  const fsClearContext = (): void => {
+  const fsClearContext = useCallback((): void => {
     handleContextChange({
       config,
       visitor,
       updateFunction: () => visitor?.clearContext(),
       functionName: 'cleanContext'
     })
-  }
+  }, [visitor])
 
-  const fsAuthenticate = (visitorId: string): void => {
+  const fsAuthenticate = useCallback((visitorId: string): void => {
     const functionName = 'authenticate'
     if (!visitor) {
       logError(config, noVisitorMessage, functionName)
@@ -87,9 +87,9 @@ export const useFlagship = (): UseFlagshipOutput => {
     if (originalVisitorId !== visitorId) {
       visitor.fetchFlags()
     }
-  }
+  }, [visitor])
 
-  const fsUnauthenticate = (): void => {
+  const fsUnauthenticate = useCallback((): void => {
     const functionName = 'unauthenticate'
     if (!visitor) {
       logError(config, noVisitorMessage, functionName)
@@ -100,14 +100,9 @@ export const useFlagship = (): UseFlagshipOutput => {
     if (originalVisitorId !== visitor.visitorId) {
       visitor.fetchFlags()
     }
-  }
+  }, [visitor])
 
-  /**
-   * Send a Hit to Flagship servers for reporting.
-   */
-  const fsSendHit: {
-    (hit: IHit[] | IHit): Promise<void>;
-  } = (hit) => {
+  const fsSendHit = useCallback((hit: IHit[] | IHit): Promise<void> => {
     const functionName = 'sendHit'
     if (!visitor) {
       logError(config, noVisitorMessage, functionName)
@@ -117,36 +112,36 @@ export const useFlagship = (): UseFlagshipOutput => {
       return visitor.sendHits(hit)
     }
     return visitor.sendHit(hit)
-  }
+  }, [visitor])
 
-  function getFlag (key: string): IFSFlag {
+  const getFlag = useCallback((key: string): IFSFlag => {
     if (!visitor) {
       return new FSFlag(key, state)
     }
     return visitor.getFlag(key)
-  }
+  }, [visitor])
 
-  function fetchFlags (): Promise<void> {
+  const fetchFlags = useCallback(async (): Promise<void> => {
     if (!visitor) {
       logWarn(config, noVisitorMessage, 'fetchFlags')
       return Promise.resolve()
     }
     return visitor.fetchFlags()
-  }
+  }, [visitor])
 
-  function setConsent (hasConsented: boolean): void {
+  const setConsent = useCallback((hasConsented: boolean): void => {
     if (!visitor) {
       logWarn(config, noVisitorMessage, 'setConsent')
       return
     }
     visitor.setConsent(hasConsented)
-  }
+  }, [visitor])
 
-  async function close ():Promise<void> {
-    await Flagship.close()
-  }
+  const close = useCallback((): Promise<void> => {
+    return Flagship.close()
+  }, [])
 
-  function getFlags () {
+  const getFlags = useCallback(() => {
     if (!visitor) {
       const flags = new Map<string, IFSFlag>()
       state.flags?.forEach((flag, key) => {
@@ -155,15 +150,22 @@ export const useFlagship = (): UseFlagshipOutput => {
       return new FSFlagCollection({ flags })
     }
     return visitor.getFlags()
-  }
+  }, [visitor])
 
-  return {
+  const collectEAIEventsAsync = useCallback(async (...args: unknown[]): Promise<void> => {
+    if (!visitor) {
+      return
+    }
+    return visitor.collectEAIEventsAsync(...args)
+  }, [visitor])
+
+  return useMemo(() => ({
     visitorId: visitor?.visitorId,
     anonymousId: visitor?.anonymousId,
     context: { ...visitor?.context },
     hasConsented: visitor?.hasConsented,
     sdkStatus: Flagship.getStatus(),
-    fetchStatus: visitor?.fetchStatus,
+    flagsStatus: visitor?.flagsStatus,
     setConsent,
     updateContext: fsUpdateContext,
     clearContext: fsClearContext,
@@ -173,6 +175,13 @@ export const useFlagship = (): UseFlagshipOutput => {
     getFlag,
     fetchFlags,
     close,
-    getFlags
-  }
+    getFlags,
+    collectEAIEventsAsync
+
+  }), [visitor, setConsent,
+    fsUpdateContext,
+    fsClearContext, fsAuthenticate, fsUnauthenticate,
+    fsSendHit, getFlag, fetchFlags, close,
+    getFlags,
+    collectEAIEventsAsync])
 }
