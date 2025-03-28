@@ -105,4 +105,21 @@ export default defineConfig([
       "@typescript-eslint/ban-ts-comment": "warn"
     }
   },
+  {
+    files: ["**/test/**/*.ts", "**/*.test.ts"],
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+        project: ["./tsconfig.test.json"]
+      }
+    },
+    rules: {
+      "max-lines": "off",
+      "complexity": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/no-explicit-any": "off"
+    }
+  }
 ]);

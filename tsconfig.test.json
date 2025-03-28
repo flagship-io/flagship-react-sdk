@@ -1,0 +1,8 @@
+{
+    "extends": "./tsconfig.json",
+    "include": ["test/**/*.ts", "src/**/*.ts"],
+    "compilerOptions": {
+      // You can override any compiler options specific for tests here
+      "types": ["jest", "node"]
+    }
+  }
