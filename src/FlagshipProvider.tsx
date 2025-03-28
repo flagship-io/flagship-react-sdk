@@ -1,6 +1,5 @@
 'use client'
 
-// eslint-disable-next-line no-use-before-define
 import React, { useState, useRef, ReactNode, useEffect } from 'react'
 
 import Flagship, {
@@ -53,14 +52,14 @@ export function FlagshipProvider ({
 
   // #region functions
 
-  const onBucketingLastModified = (lastUpdate: Date) => {
+  const onBucketingLastModified = (lastUpdate: Date):void => {
     if (onBucketingUpdated) {
       onBucketingUpdated(lastUpdate)
     }
     setLastModified(lastUpdate)
   }
 
-  const statusChanged = (status: FSSdkStatus) => {
+  const statusChanged = (status: FSSdkStatus):void => {
     if (onSdkStatusChanged) {
       onSdkStatusChanged(status)
     }
@@ -80,7 +79,7 @@ export function FlagshipProvider ({
     }
   }
 
-  const initSdk = () => {
+  const initSdk = ():void => {
     Flagship.start(envId, apiKey, {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decisionMode: decisionMode as any,
@@ -96,7 +95,7 @@ export function FlagshipProvider ({
 
   function initializeState (param: {
     fsVisitor: Visitor;
-  }) {
+  }):void {
     setState((currentState) => ({
       ...currentState,
       visitor: param.fsVisitor,
@@ -108,14 +107,14 @@ export function FlagshipProvider ({
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onVisitorReady = (fsVisitor: Visitor, error: any) => {
+  const onVisitorReady = (fsVisitor: Visitor, error: any):void => {
     if (error) {
       logError(Flagship.getConfig(), error.message || error, 'onReady')
     }
     initializeState({ fsVisitor })
   }
 
-  const createVisitor = () => {
+  const createVisitor = ():void => {
     if (!visitorDataRef.current) {
       return
     }
@@ -139,7 +138,7 @@ export function FlagshipProvider ({
     }
   }
 
-  function updateVisitor () {
+  function updateVisitor ():void {
     if (!visitorDataRef.current || Flagship.getStatus() !== FSSdkStatus.SDK_INITIALIZED) {
       return
     }
@@ -202,7 +201,7 @@ export function FlagshipProvider ({
     return () => window?.removeEventListener?.(INTERNAL_EVENTS.FsTriggerRendering, onVariationsForced)
   }, [state.config?.isQAModeEnabled])
 
-  const onVariationsForced = (e:Event) => {
+  const onVariationsForced = (e:Event):void => {
     const { detail } = e as CustomEvent<{ forcedReFetchFlags: boolean }>
     if (detail.forcedReFetchFlags) {
       stateRef.current?.visitor?.fetchFlags()
