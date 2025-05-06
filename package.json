@@ -1,7 +1,7 @@
 {
   "name": "@flagship.io/react-sdk",
   "sideEffects": false,
-  "version": "5.0.0",
+  "version": "5.0.1",
   "license": "Apache-2.0",
   "description": "Flagship REACT SDK",
   "main": "dist/index.node.js",
@@ -20,7 +20,7 @@
     "react-native": "./dist/src/index.js"
   },
   "dependencies": {
-    "@flagship.io/js-sdk": "^5.0.1",
+    "@flagship.io/js-sdk": "^5.0.2",
     "encoding": "^0.1.13"
   },
   "peerDependencies": {
@@ -88,7 +88,7 @@
     "build:types": "tsc",
     "build:prod": "NODE_ENV=production npm run build",
     "prebuild": "npm run clean && npm run generate:version && tsc",
-    "build": "webpack"
+    "build": "yarn run prebuild && yarn run webpack"
   },
   "eslintConfig": {
     "extends": [

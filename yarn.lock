@@ -1659,15 +1659,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@flagship.io/js-sdk@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@flagship.io/js-sdk@npm:5.0.1"
+"@flagship.io/js-sdk@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "@flagship.io/js-sdk@npm:5.0.2"
   dependencies:
     events: "npm:^3.3.0"
-    follow-redirects: "npm:^1.15.2"
+    follow-redirects: "npm:^1.15.9"
     node-abort-controller: "npm:^3.1.1"
     node-fetch: "npm:^2.6.7"
-  checksum: 10c0/cf000a78099c406c586c0ce97261facde07a96e21066f2483291ee230ac9bedc169859497953d7c7353b2c6c74a90c6378a7b7bfdedd571cd60bc0aad879c05e
+  checksum: 10c0/b96ddc72b1f02fa488736d3063ecfae784e31fe035a4c627083a33517490fad5d0404bc57a0c05fee5289a78d87ea841a6c630a51e048ac9540b2480ccae81b7
   languageName: node
   linkType: hard
 
@@ -1682,7 +1682,7 @@ __metadata:
     "@babel/preset-react": "npm:^7.24.1"
     "@babel/preset-typescript": "npm:^7.24.1"
     "@eslint/js": "npm:^9.23.0"
-    "@flagship.io/js-sdk": "npm:^5.0.1"
+    "@flagship.io/js-sdk": "npm:^5.0.2"
     "@testing-library/dom": "npm:^10.1.0"
     "@testing-library/jest-dom": "npm:^6.4.2"
     "@testing-library/react": "npm:^16.0.0"
@@ -4421,13 +4421,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.15.2":
-  version: 1.15.6
-  resolution: "follow-redirects@npm:1.15.6"
+"follow-redirects@npm:^1.15.9":
+  version: 1.15.9
+  resolution: "follow-redirects@npm:1.15.9"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: 10c0/9ff767f0d7be6aa6870c82ac79cf0368cd73e01bbc00e9eb1c2a16fbb198ec105e3c9b6628bb98e9f3ac66fe29a957b9645bcb9a490bb7aa0d35f908b6b85071
+  checksum: 10c0/5829165bd112c3c0e82be6c15b1a58fa9dcfaede3b3c54697a82fe4a62dd5ae5e8222956b448d2f98e331525f05d00404aba7d696de9e761ef6e42fdc780244f
   languageName: node
   linkType: hard
 
