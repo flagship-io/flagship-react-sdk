@@ -1,6 +1,6 @@
-import { Dispatch, ReactNode, SetStateAction } from 'react'
+import type { Dispatch, ReactNode, SetStateAction } from 'react';
 
-import { Visitor, IFlagshipConfig, FlagDTO, CampaignDTO, primitive, BucketingDTO, FSSdkStatus, IHit, IFSFlag, IFSFlagCollection, SerializedFlagMetadata, FlagsStatus } from '@flagship.io/js-sdk'
+import { Visitor, type IFlagshipConfig, type FlagDTO, type CampaignDTO, type primitive, type BucketingDTO, FSSdkStatus, type IHit, type IFSFlag, type IFSFlagCollection, type SerializedFlagMetadata, type FlagsStatus } from './deps'
 
 export interface FsContextState {
     visitor?: Visitor;
@@ -173,3 +173,4 @@ export type UseFlagshipOutput = {
    */
   collectEAIEventsAsync(): Promise<void>;
 };
+

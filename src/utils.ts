@@ -1,13 +1,14 @@
 'use client'
-import { EffectCallback, DependencyList, useEffect, useRef } from 'react'
+import { type EffectCallback, type DependencyList, useEffect, useRef } from 'react'
 
-import Flagship, {
-  CampaignDTO,
-  FlagDTO,
-  IFlagshipConfig,
+import  {
+  Flagship,
+  type CampaignDTO,
+  type FlagDTO,
+  type IFlagshipConfig,
   LogLevel,
-  SerializedFlagMetadata
-} from '@flagship.io/js-sdk'
+  type SerializedFlagMetadata
+} from './deps'
 
 export function logError (
   config: IFlagshipConfig | undefined,

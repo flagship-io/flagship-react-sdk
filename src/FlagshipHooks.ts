@@ -3,18 +3,18 @@ import { useCallback, useContext, useMemo } from 'react'
 
 import {
   Flagship,
-  IFSFlag,
-  IHit,
-  primitive,
+  type IFSFlag,
+  type IHit,
+  type primitive,
   FSFlagCollection,
   Visitor,
-  IFlagshipConfig
-} from '@flagship.io/js-sdk'
+  type IFlagshipConfig
+} from './deps'
 
 import { noVisitorMessage } from './constants'
 import { FlagshipContext } from './FlagshipContext'
 import { FSFlag } from './FSFlag'
-import { UseFlagshipOutput } from './type'
+import type { UseFlagshipOutput } from './type'
 import { deepClone, hasContextChanged, logError, logWarn } from './utils'
 
 /**

@@ -10,7 +10,7 @@
     "moduleResolution": "Node",
     "target": "ESNext",
     "jsx": "react-jsx",
-     "types": ["node", "jest", "@testing-library/jest-dom"]
+    "types": ["node", "jest", "@testing-library/jest-dom"]
   },
-  "include": ["src/**/*", "setupTests.ts"],
+  "include": ["src/**/*", "setupTests.ts"]
 }

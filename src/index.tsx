@@ -1,9 +1,11 @@
-import { FlagshipProvider } from './FlagshipProvider'
+import { FlagshipProvider } from "./FlagshipProvider";
 
-export * from '@flagship.io/js-sdk'
-export * from './FlagshipHooks'
-export * from './type'
+export * from "./deps";
+export * from "./FlagshipHooks";
+export * from "./type";
 
-export { FlagshipProvider } from './FlagshipProvider'
+export { FlagshipProvider } from "./FlagshipProvider";
 
-export default FlagshipProvider
+export { FlagshipProviderSSR } from "./FlagshipProviderSSR";
+
+export default FlagshipProvider;
