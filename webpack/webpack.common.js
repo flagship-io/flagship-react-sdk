@@ -14,9 +14,6 @@ const config = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
   },
-  optimization: {
-    minimize: isProduction
-  }
 }
 
 module.exports = () => {

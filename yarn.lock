@@ -1659,15 +1659,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@flagship.io/js-sdk@npm:^5.1.2":
-  version: 5.1.2
-  resolution: "@flagship.io/js-sdk@npm:5.1.2"
+"@flagship.io/js-sdk@npm:^5.1.6":
+  version: 5.1.6
+  resolution: "@flagship.io/js-sdk@npm:5.1.6"
   dependencies:
     events: "npm:^3.3.0"
     follow-redirects: "npm:^1.15.9"
     node-abort-controller: "npm:^3.1.1"
     node-fetch: "npm:^2.6.7"
-  checksum: 10c0/27e81d6b0b1088a5752ee2f0324022aba6415337a653d97f2dee1b18d4670dedb60757d2f078aa686d773e500a33f85f2163138078d36402d8c6518d99eae871
+  checksum: 10c0/c309bf3a2def7695e8fd733b0e9544644be27c1487c829356706e778961c535c8b33e14f127afe8ab40051cad41f4c2081a571425a1a60bed03c2e8e8d9e7d3e
   languageName: node
   linkType: hard
 
@@ -1682,7 +1682,7 @@ __metadata:
     "@babel/preset-react": "npm:^7.24.1"
     "@babel/preset-typescript": "npm:^7.24.1"
     "@eslint/js": "npm:^9.23.0"
-    "@flagship.io/js-sdk": "npm:^5.1.2"
+    "@flagship.io/js-sdk": "npm:^5.1.6"
     "@testing-library/dom": "npm:^10.1.0"
     "@testing-library/jest-dom": "npm:^6.4.2"
     "@testing-library/react": "npm:^16.0.0"
@@ -1710,6 +1710,7 @@ __metadata:
     terser-webpack-plugin: "npm:^5.3.10"
     ts-jest: "npm:^29.1.2"
     ts-loader: "npm:^9.5.1"
+    tsc-esm-fix: "npm:^3.1.2"
     typescript: "npm:^5.4.3"
     typescript-eslint: "npm:^8.28.0"
     webpack: "npm:^5.91.0"
@@ -2276,6 +2277,15 @@ __metadata:
   version: 2.0.0
   resolution: "@tootallnate/once@npm:2.0.0"
   checksum: 10c0/073bfa548026b1ebaf1659eb8961e526be22fa77139b10d60e712f46d2f0f05f4e6c8bec62a087d41088ee9e29faa7f54838568e475ab2f776171003c3920858
+  languageName: node
+  linkType: hard
+
+"@topoconfig/extends@npm:^0.16.2":
+  version: 0.16.2
+  resolution: "@topoconfig/extends@npm:0.16.2"
+  bin:
+    xtends: target/esm/cli.mjs
+  checksum: 10c0/9719b3cd84d2525dd4f4f19f47007b08909e9b19c74b498ebac8c596795d9613e383eac3e5f2e63fb5083af2d7eab5606a422f94d3554cb982736dc97c58cd81
   languageName: node
   linkType: hard
 
@@ -3833,6 +3843,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"depseek@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "depseek@npm:0.4.1"
+  checksum: 10c0/1313fba818793a5be4514c95f8770cbbe45cf6e746b629166115d0a380b3ccd2a4577355a928063daecec303e488cc414d1279938dd4d4521a57304746f0e892
+  languageName: node
+  linkType: hard
+
 "dequal@npm:^2.0.3":
   version: 2.0.3
   resolution: "dequal@npm:2.0.3"
@@ -4452,6 +4469,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fs-extra@npm:^11.2.0":
+  version: 11.3.0
+  resolution: "fs-extra@npm:11.3.0"
+  dependencies:
+    graceful-fs: "npm:^4.2.0"
+    jsonfile: "npm:^6.0.1"
+    universalify: "npm:^2.0.0"
+  checksum: 10c0/5f95e996186ff45463059feb115a22fb048bdaf7e487ecee8a8646c78ed8fdca63630e3077d4c16ce677051f5e60d3355a06f3cd61f3ca43f48cc58822a44d0a
+  languageName: node
+  linkType: hard
+
 "fs-minipass@npm:^3.0.0":
   version: 3.0.3
   resolution: "fs-minipass@npm:3.0.3"
@@ -4632,7 +4660,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.2.11, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6, graceful-fs@npm:^4.2.9":
+"graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.11, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6, graceful-fs@npm:^4.2.9":
   version: 4.2.11
   resolution: "graceful-fs@npm:4.2.11"
   checksum: 10c0/386d011a553e02bc594ac2ca0bd6d9e4c22d7fa8cfbfc448a6d148c59ea881b092db9dbe3547ae4b88e55f1b01f7c4a2ecc53b310c042793e63aa44cf6c257f2
@@ -5637,6 +5665,19 @@ __metadata:
   bin:
     json5: lib/cli.js
   checksum: 10c0/5a04eed94810fa55c5ea138b2f7a5c12b97c3750bc63d11e511dcecbfef758003861522a070c2272764ee0f4e3e323862f386945aeb5b85b87ee43f084ba586c
+  languageName: node
+  linkType: hard
+
+"jsonfile@npm:^6.0.1":
+  version: 6.1.0
+  resolution: "jsonfile@npm:6.1.0"
+  dependencies:
+    graceful-fs: "npm:^4.1.6"
+    universalify: "npm:^2.0.0"
+  dependenciesMeta:
+    graceful-fs:
+      optional: true
+  checksum: 10c0/4f95b5e8a5622b1e9e8f33c96b7ef3158122f595998114d1e7f03985649ea99cb3cd99ce1ed1831ae94c8c8543ab45ebd044207612f31a56fd08462140e46865
   languageName: node
   linkType: hard
 
@@ -7348,6 +7389,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tsc-esm-fix@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "tsc-esm-fix@npm:3.1.2"
+  dependencies:
+    "@topoconfig/extends": "npm:^0.16.2"
+    depseek: "npm:^0.4.1"
+    fast-glob: "npm:^3.3.2"
+    fs-extra: "npm:^11.2.0"
+    json5: "npm:^2.2.3"
+    type-flag: "npm:^3.0.0"
+  bin:
+    tsc-esm-fix: target/esm/cli.mjs
+  checksum: 10c0/5072d08273cb942cf2868ecfeb1a213e3fa35f11c0e13807901610d80b90dd849c65d5f9714d7ac99b7c6faa9256d56afdd146fc4c1832226441dc7e3eb2e0d9
+  languageName: node
+  linkType: hard
+
 "type-check@npm:^0.4.0, type-check@npm:~0.4.0":
   version: 0.4.0
   resolution: "type-check@npm:0.4.0"
@@ -7368,6 +7425,13 @@ __metadata:
   version: 0.21.3
   resolution: "type-fest@npm:0.21.3"
   checksum: 10c0/902bd57bfa30d51d4779b641c2bc403cdf1371fb9c91d3c058b0133694fcfdb817aef07a47f40faf79039eecbaa39ee9d3c532deff244f3a19ce68cea71a61e8
+  languageName: node
+  linkType: hard
+
+"type-flag@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "type-flag@npm:3.0.0"
+  checksum: 10c0/b1015d4eb18cd85432fa3bcd0228149dd6893a9c1360a2ad619f79b72e19acfb648a932e2a9ccf2e2db0f0c4b86385bd886a3364e221afb116424e0ae6d1b1ba
   languageName: node
   linkType: hard
 
@@ -7465,6 +7529,13 @@ __metadata:
   version: 0.2.0
   resolution: "universalify@npm:0.2.0"
   checksum: 10c0/cedbe4d4ca3967edf24c0800cfc161c5a15e240dac28e3ce575c689abc11f2c81ccc6532c8752af3b40f9120fb5e454abecd359e164f4f6aa44c29cd37e194fe
+  languageName: node
+  linkType: hard
+
+"universalify@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "universalify@npm:2.0.1"
+  checksum: 10c0/73e8ee3809041ca8b818efb141801a1004e3fc0002727f1531f4de613ea281b494a40909596dae4a042a4fb6cd385af5d4db2e137b1362e0e91384b828effd3a
   languageName: node
   linkType: hard
 

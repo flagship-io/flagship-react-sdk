@@ -1,7 +1,7 @@
 'use client'
 import { createContext } from 'react'
 
-import { FsContext, FsContextState } from './type'
+import type { FsContext, FsContextState } from './type'
 
 export const initStat: FsContextState = {
   isInitializing: true

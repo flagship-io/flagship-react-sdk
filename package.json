@@ -1,10 +1,10 @@
 {
   "name": "@flagship.io/react-sdk",
   "sideEffects": false,
-  "version": "5.1.1",
+  "version": "5.2.0",
   "license": "Apache-2.0",
   "description": "Flagship REACT SDK",
-  "main": "dist/index.node.js",
+  "main": "dist/src/index.js",
   "module": "dist/src/index.js",
   "react-native": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -14,13 +14,25 @@
     "README.md"
   ],
   "exports": {
-    "types": "./dist/src/index.d.ts",
-    "import": "./dist/src/index.js",
-    "require": "./dist/index.node.js",
-    "react-native": "./dist/src/index.js"
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js",
+      "require": "./dist/index.node.cjs",
+      "react-native": "./dist/src/index.js"
+    },
+    "./dist/edge.js": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/edge/src/index.js",
+      "require": "./dist/edge/src/index.js"
+    },
+    "./edge": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/edge/src/index.js",
+      "require": "./dist/edge/src/index.js"
+    }
   },
   "dependencies": {
-    "@flagship.io/js-sdk": "^5.1.2",
+    "@flagship.io/js-sdk": "^5.1.6",
     "encoding": "^0.1.13"
   },
   "peerDependencies": {
@@ -71,6 +83,7 @@
     "terser-webpack-plugin": "^5.3.10",
     "ts-jest": "^29.1.2",
     "ts-loader": "^9.5.1",
+    "tsc-esm-fix": "^3.1.2",
     "typescript": "^5.4.3",
     "typescript-eslint": "^8.28.0",
     "webpack": "^5.91.0",
@@ -79,16 +92,17 @@
     "webpack-node-externals": "^3.0.0"
   },
   "scripts": {
-    "dev": "tsc --watch",
+    "dev": "tsc --watch ",
     "test": "jest",
     "lint": "eslint src --ext .tsx",
     "clean": "rm -rf dist && mkdir dist",
     "generate:version": "genversion --es6 src/sdkVersion.ts",
-    "build:esm": "BABEL_ENV=esm babel src --extensions '.ts,.tsx' --out-dir dist/esm --copy-files",
-    "build:types": "tsc",
     "build:prod": "NODE_ENV=production npm run build",
+    "build:edge": "tsc --project tsconfig.edge.json && tsc-esm-fix dist/edge",
+    "build:default": "tsc --project tsconfig.json && tsc-esm-fix dist",
+    "patch:deps-edge": "node update-deps.js",
     "prebuild": "npm run clean && npm run generate:version && tsc",
-    "build": "yarn run prebuild && yarn run webpack"
+    "build": "yarn run prebuild && yarn run webpack && yarn run build:default && yarn run build:edge && yarn run patch:deps-edge"
   },
   "eslintConfig": {
     "extends": [

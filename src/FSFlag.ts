@@ -1,7 +1,7 @@
-import { Flagship, FlagDTO, FSFlagMetadata, IFSFlag, IFSFlagMetadata, FSFlagStatus } from '@flagship.io/js-sdk'
+import { Flagship, type FlagDTO, FSFlagMetadata, type IFSFlag, type IFSFlagMetadata, FSFlagStatus } from './deps'
 
 import { GET_FLAG_CAST_ERROR, noVisitorMessage } from './constants'
-import { FsContextState } from './type'
+import type { FsContextState } from './type'
 import { hasSameType, logInfo, logWarn, sprintf } from './utils'
 
 export class FSFlag implements IFSFlag {
