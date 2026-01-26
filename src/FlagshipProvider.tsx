@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useRef, type ReactNode, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  type ReactNode,
+  useEffect,
+  useCallback,
+} from "react";
 
 import { Flagship, DecisionMode, Visitor, FSSdkStatus } from "./deps";
 
@@ -187,29 +193,37 @@ export function FlagshipProvider({
     return <>{children}</>;
   };
 
+  const onVariationsForced = useCallback((e: Event): void => {
+    const { detail } = e as CustomEvent<{ forcedReFetchFlags: boolean }>;
+    if (detail.forcedReFetchFlags) {
+      stateRef.current?.visitor?.fetchFlags();
+    } else {
+      setState((prevState) => ({
+        ...prevState,
+        toggleForcedVariations: !prevState.toggleForcedVariations,
+      }));
+    }
+  }, []);
+
   useEffect(() => {
     window?.addEventListener?.(
       INTERNAL_EVENTS.FsTriggerRendering,
       onVariationsForced
     );
+    globalThis.__abTastyOnTriggerRender__ = (arg: {
+      forcedReFetchFlags: boolean;
+    }) => {
+      const event = {
+        detail: arg,
+      } as CustomEvent<{ forcedReFetchFlags: boolean }>;
+      onVariationsForced(event);
+    };
     return () =>
       window?.removeEventListener?.(
         INTERNAL_EVENTS.FsTriggerRendering,
         onVariationsForced
       );
   }, [state.config?.isQAModeEnabled]);
-
-  const onVariationsForced = (e: Event): void => {
-    const { detail } = e as CustomEvent<{ forcedReFetchFlags: boolean }>;
-    if (detail.forcedReFetchFlags) {
-      stateRef.current?.visitor?.fetchFlags();
-    } else {
-      setState((state) => ({
-        ...state,
-        toggleForcedVariations: !state.toggleForcedVariations,
-      }));
-    }
-  };
 
   return (
     <FlagshipContext.Provider value={{ state, setState }}>
