@@ -1,14 +1,33 @@
 "use client";
 
-import React, { useState, useRef, type ReactNode, useEffect } from "react";
+import React, {
+  useState,
+  type ReactNode,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from "react";
 
-import { Flagship, DecisionMode, Visitor, FSSdkStatus } from "./deps";
+import {
+  Flagship,
+  DecisionMode,
+  Visitor,
+  FSSdkStatus,
+  FlagsStatus,
+  primitive,
+} from "./deps";
 
 import { FlagshipContext, initStat } from "./FlagshipContext";
 import { INTERNAL_EVENTS } from "./internalType";
 import { version as SDK_VERSION } from "./sdkVersion";
 import type { FsContextState, FlagshipProviderProps } from "./type";
 import { useNonInitialEffect, logError, extractFlagsMap } from "./utils";
+import {
+  useLatestRef,
+  shouldRecreateVisitor,
+  updateVisitorData,
+} from "./hooks";
 
 export function FlagshipProvider({
   children,
@@ -30,190 +49,275 @@ export function FlagshipProvider({
   shouldSaveInstance,
   ...props
 }: FlagshipProviderProps): React.JSX.Element {
-  const flags = extractFlagsMap(initialFlagsData, initialCampaigns);
+  const flags = useMemo(
+    () => extractFlagsMap(initialFlagsData, initialCampaigns),
+    [initialFlagsData, initialCampaigns],
+  );
 
-  const [state, setState] = useState<FsContextState>({
+  const [flagshipState, setFlagshipState] = useState<FsContextState>({
     ...initStat,
     flags,
     hasVisitorData: !!visitorData,
   });
-  const [lastModified, setLastModified] = useState<Date>();
-  const stateRef = useRef<FsContextState>();
-  stateRef.current = state;
 
-  const visitorDataRef = useRef(visitorData);
+  const [lastModified, setLastModified] = useState<Date>();
+
+  const flagshipVisitorRef = useRef<Visitor | undefined>();
+
+  useEffect(() => {
+    flagshipVisitorRef.current = flagshipState.visitor;
+  }, [flagshipState.visitor]);
+
+  const propsRef = useLatestRef(props);
+
+  const configRef = useLatestRef({
+    fetchNow,
+    hitDeduplicationTime,
+    language,
+    sdkVersion,
+  });
+
+  const callbacksRef = useLatestRef({
+    onSdkStatusChanged,
+    onBucketingUpdated,
+    onFlagsStatusChanged,
+  });
+
+  const visitorDataMemo = useMemo(
+    () => visitorData,
+    [
+      visitorData?.id,
+      visitorData?.isAuthenticated,
+      visitorData?.hasConsented,
+      JSON.stringify(visitorData?.context),
+    ],
+  );
 
   // #region functions
 
-  const onBucketingLastModified = (lastUpdate: Date): void => {
-    if (onBucketingUpdated) {
-      onBucketingUpdated(lastUpdate);
+  const handleBucketingUpdate = useCallback((lastUpdate: Date): void => {
+    if (callbacksRef.current.onBucketingUpdated) {
+      callbacksRef.current.onBucketingUpdated(lastUpdate);
     }
     setLastModified(lastUpdate);
-  };
+  }, []);
 
-  const statusChanged = (status: FSSdkStatus): void => {
-    if (onSdkStatusChanged) {
-      onSdkStatusChanged(status);
-    }
+  const handleFlagsStatusChange = useCallback(
+    ({ status, reason }: FlagsStatus) => {
+      callbacksRef.current.onFlagsStatusChanged?.({ status, reason });
+      setFlagshipState((currentState) => ({
+        ...currentState,
+        flagsStatus: { status, reason },
+      }));
+    },
+    [],
+  );
 
-    switch (status) {
-      case FSSdkStatus.SDK_PANIC:
-      case FSSdkStatus.SDK_INITIALIZED:
-        createVisitor();
-        break;
-      case FSSdkStatus.SDK_NOT_INITIALIZED:
-        setState((prev) => ({
-          ...prev,
-          config: Flagship.getConfig(),
-          isInitializing: false,
-        }));
-        break;
-    }
-  };
+  const initializeVisitorState = useCallback(
+    (param: { fsVisitor: Visitor; sdkStatus: FSSdkStatus }): void => {
+      setFlagshipState((currentState) => ({
+        ...currentState,
+        visitor: param.fsVisitor,
+        config: Flagship.getConfig(),
+        isInitializing: false,
+        hasVisitorData: !!visitorDataMemo,
+        sdkStatus: param.sdkStatus,
+      }));
+    },
+    [!!visitorDataMemo],
+  );
 
-  const initSdk = (): void => {
+  const handleVisitorReady = useCallback(
+    (fsVisitor: Visitor, error: any | null, sdkStatus: FSSdkStatus): void => {
+      if (error) {
+        logError(Flagship.getConfig(), error.message || error, "onReady");
+      }
+      initializeVisitorState({ fsVisitor, sdkStatus });
+    },
+    [initializeVisitorState],
+  );
+
+  const createFlagshipVisitor = useCallback(
+    (sdkStatus: FSSdkStatus): void => {
+      if (!visitorDataMemo) {
+        return;
+      }
+      const fsVisitor = Flagship.newVisitor({
+        visitorId: visitorDataMemo.id,
+        context: visitorDataMemo.context,
+        isAuthenticated: visitorDataMemo.isAuthenticated,
+        hasConsented: visitorDataMemo.hasConsented,
+        initialCampaigns,
+        initialFlagsData,
+        onFlagsStatusChanged: handleFlagsStatusChange,
+        shouldSaveInstance,
+      });
+
+      fsVisitor?.on("ready", (error) => {
+        handleVisitorReady(fsVisitor, error, sdkStatus);
+      });
+
+      if (!fetchNow) {
+        initializeVisitorState({ fsVisitor, sdkStatus });
+      }
+    },
+    [
+      initialCampaigns,
+      initialFlagsData,
+      handleFlagsStatusChange,
+      shouldSaveInstance,
+      fetchNow,
+      handleVisitorReady,
+      initializeVisitorState,
+      visitorDataMemo,
+    ],
+  );
+
+  const handleSdkStatusChange = useCallback(
+    (sdkStatus: FSSdkStatus): void => {
+      if (callbacksRef.current.onSdkStatusChanged) {
+        callbacksRef.current.onSdkStatusChanged(sdkStatus);
+      }
+
+      switch (sdkStatus) {
+        case FSSdkStatus.SDK_PANIC:
+        case FSSdkStatus.SDK_INITIALIZED:
+          createFlagshipVisitor(sdkStatus);
+          break;
+        case FSSdkStatus.SDK_NOT_INITIALIZED:
+          setFlagshipState((prev) => ({
+            ...prev,
+            config: Flagship.getConfig(),
+            isInitializing: false,
+            sdkStatus,
+          }));
+          break;
+      }
+    },
+    [createFlagshipVisitor],
+  );
+
+  const handleSdkStatusChangeRef = useLatestRef(handleSdkStatusChange);
+  const handleBucketingUpdateRef = useLatestRef(handleBucketingUpdate);
+
+  const initializeFlagshipSdk = useCallback((): void => {
     Flagship.start(envId, apiKey, {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decisionMode: decisionMode as any,
-      fetchNow,
-      onSdkStatusChanged: statusChanged,
-      onBucketingUpdated: onBucketingLastModified,
-      hitDeduplicationTime,
-      language,
-      sdkVersion,
-      ...props,
+      fetchNow: configRef.current.fetchNow,
+      onSdkStatusChanged: (...args) => handleSdkStatusChangeRef.current(...args),
+      onBucketingUpdated: (...args) =>
+        handleBucketingUpdateRef.current(...args),
+      hitDeduplicationTime: configRef.current.hitDeduplicationTime,
+      language: configRef.current.language,
+      sdkVersion: configRef.current.sdkVersion,
+      ...propsRef.current,
     });
-  };
+  }, [envId, apiKey, decisionMode]);
 
-  function initializeState(param: { fsVisitor: Visitor }): void {
-    setState((currentState) => ({
-      ...currentState,
-      visitor: param.fsVisitor,
-      config: Flagship.getConfig(),
-      isInitializing: false,
-      hasVisitorData: !!visitorData,
-    }));
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onVisitorReady = (fsVisitor: Visitor, error: any): void => {
-    if (error) {
-      logError(Flagship.getConfig(), error.message || error, "onReady");
-    }
-    initializeState({ fsVisitor });
-  };
-
-  const createVisitor = (): void => {
-    if (!visitorDataRef.current) {
-      return;
-    }
-    const fsVisitor = Flagship.newVisitor({
-      visitorId: visitorDataRef.current.id,
-      context: visitorDataRef.current.context,
-      isAuthenticated: visitorDataRef.current.isAuthenticated,
-      hasConsented: visitorDataRef.current.hasConsented,
-      initialCampaigns,
-      initialFlagsData,
-      onFlagsStatusChanged,
-      shouldSaveInstance,
-    });
-
-    fsVisitor?.on("ready", (error) => {
-      onVisitorReady(fsVisitor, error);
-    });
-
-    if (!fetchNow) {
-      initializeState({ fsVisitor });
-    }
-  };
-
-  function updateVisitor(): void {
+  const updateFlagshipVisitor = useCallback((): void => {
     if (
-      !visitorDataRef.current ||
+      !visitorDataMemo ||
       Flagship.getStatus() !== FSSdkStatus.SDK_INITIALIZED
     ) {
       return;
     }
+
+    const currentVisitor = flagshipVisitorRef.current;
+
     if (
-      !state.visitor ||
-      (state.visitor.visitorId !== visitorDataRef.current.id &&
-        (!visitorDataRef.current.isAuthenticated ||
-          (visitorDataRef.current.isAuthenticated &&
-            state.visitor.anonymousId)))
+      shouldRecreateVisitor(
+        currentVisitor,
+        visitorDataMemo.id as string,
+        visitorDataMemo.isAuthenticated,
+      )
     ) {
-      state.visitor?.cleanup();
-      createVisitor();
+      currentVisitor?.cleanup();
+      createFlagshipVisitor(Flagship.getStatus());
       return;
     }
 
-    if (visitorDataRef.current.hasConsented !== state.visitor.hasConsented) {
-      state.visitor.setConsent(visitorDataRef.current.hasConsented ?? true);
+    // Update existing visitor
+    if (currentVisitor) {
+      updateVisitorData(
+        currentVisitor,
+        visitorDataMemo.id as string,
+        visitorDataMemo.context as Record<string, primitive>,
+        visitorDataMemo.hasConsented,
+        visitorDataMemo.isAuthenticated,
+      );
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    state.visitor.updateContext(visitorDataRef.current.context as any);
-
-    if (!state.visitor.anonymousId && visitorDataRef.current.isAuthenticated) {
-      state.visitor.authenticate(visitorDataRef.current.id as string);
-    }
-    if (state.visitor.anonymousId && !visitorDataRef.current.isAuthenticated) {
-      state.visitor.unauthenticate();
-    }
-    state.visitor.fetchFlags();
-  }
+  }, [createFlagshipVisitor, visitorDataMemo]);
 
   // #endregion
 
   useNonInitialEffect(() => {
     if (fetchFlagsOnBucketingUpdated) {
-      state.visitor?.fetchFlags();
+      flagshipVisitorRef.current?.fetchFlags();
     }
-  }, [lastModified]);
+  }, [lastModified, fetchFlagsOnBucketingUpdated]);
 
   useNonInitialEffect(() => {
-    visitorDataRef.current = visitorData;
-    updateVisitor();
-  }, [JSON.stringify(visitorData)]);
+    updateFlagshipVisitor();
+  }, [updateFlagshipVisitor]);
 
   useEffect(() => {
-    initSdk();
-  }, [envId, apiKey, decisionMode]);
+    initializeFlagshipSdk();
+  }, [initializeFlagshipSdk]);
 
-  const handleDisplay = (): ReactNode => {
-    const isFirstInit = !state.visitor;
-    if (state.isInitializing && loadingComponent && isFirstInit && fetchNow) {
+  useEffect(() => {
+    return () => {
+      flagshipVisitorRef.current?.cleanup();
+      Flagship.close();
+    };
+  }, []);
+
+  const handleDisplay = useMemo((): ReactNode => {
+    const isFirstInit = !flagshipState.visitor;
+    if (flagshipState.isInitializing && loadingComponent && isFirstInit && fetchNow) {
       return <>{loadingComponent}</>;
     }
     return <>{children}</>;
-  };
+  }, [
+    flagshipState.isInitializing,
+    flagshipState.visitor,
+    loadingComponent,
+    fetchNow,
+    children,
+  ]);
 
-  useEffect(() => {
-    window?.addEventListener?.(
-      INTERNAL_EVENTS.FsTriggerRendering,
-      onVariationsForced
-    );
-    return () =>
-      window?.removeEventListener?.(
-        INTERNAL_EVENTS.FsTriggerRendering,
-        onVariationsForced
-      );
-  }, [state.config?.isQAModeEnabled]);
-
-  const onVariationsForced = (e: Event): void => {
+  const handleForcedVariations = useCallback((e: Event): void => {
     const { detail } = e as CustomEvent<{ forcedReFetchFlags: boolean }>;
     if (detail.forcedReFetchFlags) {
-      stateRef.current?.visitor?.fetchFlags();
+      flagshipVisitorRef.current?.fetchFlags();
     } else {
-      setState((state) => ({
+      setFlagshipState((state) => ({
         ...state,
         toggleForcedVariations: !state.toggleForcedVariations,
       }));
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    window?.addEventListener?.(
+      INTERNAL_EVENTS.FsTriggerRendering,
+      handleForcedVariations,
+    );
+    return () =>
+      window?.removeEventListener?.(
+        INTERNAL_EVENTS.FsTriggerRendering,
+        handleForcedVariations,
+      );
+  }, [handleForcedVariations]);
+
+  const contextValue = useMemo(
+    () => ({ state: flagshipState, setState: setFlagshipState }),
+    [flagshipState],
+  );
 
   return (
-    <FlagshipContext.Provider value={{ state, setState }}>
-      {handleDisplay()}
+    <FlagshipContext.Provider value={contextValue}>
+      {handleDisplay}
     </FlagshipContext.Provider>
   );
 }
