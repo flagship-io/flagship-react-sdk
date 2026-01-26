@@ -205,7 +205,8 @@ export function FlagshipProvider({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decisionMode: decisionMode as any,
       fetchNow: configRef.current.fetchNow,
-      onSdkStatusChanged: (...args) => handleSdkStatusChangeRef.current(...args),
+      onSdkStatusChanged: (...args) =>
+        handleSdkStatusChangeRef.current(...args),
       onBucketingUpdated: (...args) =>
         handleBucketingUpdateRef.current(...args),
       hitDeduplicationTime: configRef.current.hitDeduplicationTime,
@@ -274,7 +275,12 @@ export function FlagshipProvider({
 
   const handleDisplay = useMemo((): ReactNode => {
     const isFirstInit = !flagshipState.visitor;
-    if (flagshipState.isInitializing && loadingComponent && isFirstInit && fetchNow) {
+    if (
+      flagshipState.isInitializing &&
+      loadingComponent &&
+      isFirstInit &&
+      fetchNow
+    ) {
       return <>{loadingComponent}</>;
     }
     return <>{children}</>;
@@ -303,6 +309,14 @@ export function FlagshipProvider({
       INTERNAL_EVENTS.FsTriggerRendering,
       handleForcedVariations,
     );
+    globalThis.__abTastyOnTriggerRender__ = (arg: {
+      forcedReFetchFlags: boolean;
+    }) => {
+      const event = {
+        detail: arg,
+      } as CustomEvent<{ forcedReFetchFlags: boolean }>;
+      handleForcedVariations(event);
+    };
     return () =>
       window?.removeEventListener?.(
         INTERNAL_EVENTS.FsTriggerRendering,
