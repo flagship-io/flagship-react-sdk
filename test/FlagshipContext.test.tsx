@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-use-before-define
-import React from 'react'
+
 
 import { jest, expect, it, describe, beforeEach, afterEach } from '@jest/globals'
 import { render, waitFor } from '@testing-library/react'
@@ -161,7 +161,7 @@ describe('FlagshipProvide test', () => {
     fetchFlagsOnBucketingUpdated: true
   }
 
-  it('should ', async () => {
+  it('should initialize provider, handle visitor authentication/unauthentication, and update environment configuration', async () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const MyChildrenComponent = () => {
       return <div data-testid="body">children</div>
@@ -308,10 +308,10 @@ describe('FlagshipProvide test', () => {
     )
   })
 
-  it('Test fetchNow false', async () => {
+  it('should create visitor without fetching flags when fetchNow is false', async () => {
     // Update envId props
     render(
-      <FlagshipProvider {...props} fetchNow={false} envId={'new_env_id'}>
+      <FlagshipProvider {...props} fetchNow={false} envId={'new_env_id'} >
         <div>children</div>
       </FlagshipProvider>
     )
@@ -353,7 +353,7 @@ describe('FlagshipProvide test bucketing', () => {
     fetchFlagsOnBucketingUpdated: true
   }
 
-  it('should ', async () => {
+  it('should initialize provider in bucketing mode and trigger onBucketingUpdated callback', async () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const MyChildrenComponent = () => {
       return <div data-testid="body">children</div>
@@ -434,7 +434,7 @@ describe('FlagshipProvide test SDK_NOT_INITIALIZED', () => {
     fetchFlagsOnBucketingUpdated: true
   }
 
-  it('should ', async () => {
+  it('should not create visitor when SDK status is SDK_NOT_INITIALIZED', async () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const MyChildrenComponent = () => {
       return <div data-testid="body">children</div>
@@ -498,7 +498,7 @@ describe('Test visitorData null', () => {
   const onUpdate = jest.fn()
   const onBucketingUpdated = jest.fn()
 
-  it('should ', async () => {
+  it('should handle null visitorData and create visitor when visitorData is provided', async () => {
     const props = {
       envId,
       apiKey,
@@ -512,7 +512,7 @@ describe('Test visitorData null', () => {
       loadingComponent: <div></div>,
       synchronizeOnBucketingUpdated: true
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    
     const { rerender } = render(
       <FlagshipProvider {...props}>
         <div>children</div>
@@ -559,7 +559,8 @@ describe('Test visitorData null', () => {
         visitorId: visitorData.id,
         context: visitorData.context,
         isAuthenticated: visitorData.isAuthenticated,
-        hasConsented: visitorData.hasConsented
+        hasConsented: visitorData.hasConsented,
+        onFlagsStatusChanged: expect.any(Function)
       })
 
       expect(fetchFlags).toBeCalledTimes(1)
@@ -589,7 +590,7 @@ describe('Test initial data', () => {
     </div>
   }
 
-  it('test initialFlagsData ', async () => {
+  it('should initialize provider with initialFlagsData and render flag values correctly', async () => {
     const props = {
       envId,
       apiKey,
@@ -671,7 +672,7 @@ describe('Force variations', () => {
     </div>
   }
 
-  it('test initialFlagsData ', async () => {
+  it('should refetch flags when FsTriggerRendering event is dispatched with forcedReFetchFlags true', async () => {
     const props = {
       envId,
       apiKey,

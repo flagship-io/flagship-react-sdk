@@ -11,6 +11,8 @@ export interface FsContextState {
     isInitializing: boolean;
     hasVisitorData?: boolean;
     toggleForcedVariations?: boolean
+    flagsStatus?:FlagsStatus
+    sdkStatus: FSSdkStatus;
   }
 
 export type VisitorData = {
