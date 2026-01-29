@@ -17,10 +17,10 @@ jobs:
         run: corepack enable
       - name: Set Yarn Version
         run: corepack prepare yarn@4.7.0 --activate
-      - name: Use Node.js 23.x
+      - name: Use Node.js 24.x
         uses: actions/setup-node@v4
         with:
-          node-version: '23.x'
+          node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           cache: "yarn"
           cache-dependency-path: yarn.lock
@@ -29,4 +29,4 @@ jobs:
       - run: yarn test
       - run: yarn build
       - name: Publish to npm with OIDC
-        run: npm publish --provenance --access public
+        run: NODE_AUTH_TOKEN="" npm publish --provenance --access public
