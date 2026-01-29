@@ -28,8 +28,5 @@ jobs:
         run: yarn install
       - run: yarn test
       - run: yarn build
-      - name: Configure npm for OIDC
-        run: |
-          npm config set registry https://registry.npmjs.org/
-          npm config list
-      - run: npm publish --provenance --access public
+      - name: Publish to npm with OIDC
+        run: npm publish --provenance --access public
