@@ -22,7 +22,7 @@ jobs:
       - name: Install modules
         run: yarn install
       - run: yarn test --coverage
-      - run: yarn build
+      - run: yarn build --provenance --access public
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
