@@ -16,7 +16,7 @@ jobs:
         run: corepack enable
       - name: Set Yarn Version
         run: corepack prepare yarn@4.7.0 --activate
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 23.x
         uses: actions/setup-node@v4
         with:
           node-version: '23.x'
@@ -25,6 +25,6 @@ jobs:
           cache-dependency-path: yarn.lock
       - name: Install modules
         run: yarn install
-      - run: yarn test --coverage
-      - run: yarn build --provenance --access public
-      - run: npm publish
+      - run: yarn test
+      - run: yarn build 
+      - run: npm publish --provenance --access public
