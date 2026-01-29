@@ -309,6 +309,7 @@ export function FlagshipProvider({
       INTERNAL_EVENTS.FsTriggerRendering,
       handleForcedVariations,
     );
+
     globalThis.__abTastyOnTriggerRender__ = (arg: {
       forcedReFetchFlags: boolean;
     }) => {
@@ -317,6 +318,7 @@ export function FlagshipProvider({
       } as CustomEvent<{ forcedReFetchFlags: boolean }>;
       handleForcedVariations(event);
     };
+
     return () =>
       window?.removeEventListener?.(
         INTERNAL_EVENTS.FsTriggerRendering,
