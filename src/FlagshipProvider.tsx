@@ -214,7 +214,7 @@ export function FlagshipProvider({
       sdkVersion: configRef.current.sdkVersion,
       ...propsRef.current,
     });
-  }, [envId, apiKey, decisionMode]);
+  }, [envId, apiKey, decisionMode, props.isQAModeEnabled]);
 
   const updateFlagshipVisitor = useCallback((): void => {
     if (
