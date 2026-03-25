@@ -607,6 +607,111 @@ describe('FlagshipProvider Integration Tests', () => {
     })
   })
 
+  describe('globalThis.__abTastyOnTriggerRender__', () => {
+    it('should set globalThis.__abTastyOnTriggerRender__ on mount', async () => {
+      mockNewVisitor.mockReturnValue(createMockVisitor() as any)
+
+      render(
+        <FlagshipProvider
+          envId={envId}
+          apiKey={apiKey}
+          visitorData={createVisitorData()}
+          fetchNow={false}
+        >
+          <div>Test</div>
+        </FlagshipProvider>
+      )
+
+      await waitFor(() => {
+        expect(globalThis.__abTastyOnTriggerRender__).toBeDefined()
+        expect(typeof globalThis.__abTastyOnTriggerRender__).toBe('function')
+      })
+    })
+
+    it('should call fetchFlags when forcedReFetchFlags is true', async () => {
+      const fetchFlagsFn = jest.fn()
+      const mockVisitor = createMockVisitor({ fetchFlags: fetchFlagsFn })
+      mockNewVisitor.mockReturnValue(mockVisitor as any)
+
+      render(
+        <FlagshipProvider
+          envId={envId}
+          apiKey={apiKey}
+          visitorData={createVisitorData()}
+          fetchNow={false}
+        >
+          <div>Test</div>
+        </FlagshipProvider>
+      )
+
+      await waitFor(() => {
+        expect(mockNewVisitor).toHaveBeenCalled()
+      })
+
+      act(() => {
+        globalThis.__abTastyOnTriggerRender__!({ forcedReFetchFlags: true })
+      })
+
+      expect(fetchFlagsFn).toHaveBeenCalled()
+    })
+
+    it('should toggle forced variations when forcedReFetchFlags is false', async () => {
+      const fetchFlagsFn = jest.fn()
+      const mockVisitor = createMockVisitor({ fetchFlags: fetchFlagsFn })
+      mockNewVisitor.mockReturnValue(mockVisitor as any)
+
+      render(
+        <FlagshipProvider
+          envId={envId}
+          apiKey={apiKey}
+          visitorData={createVisitorData()}
+          fetchNow={false}
+        >
+          <div>Test</div>
+        </FlagshipProvider>
+      )
+
+      await waitFor(() => {
+        expect(mockNewVisitor).toHaveBeenCalled()
+      })
+
+      act(() => {
+        globalThis.__abTastyOnTriggerRender__?.({ forcedReFetchFlags: false })
+      })
+
+      expect(fetchFlagsFn).not.toHaveBeenCalled()
+    })
+
+    it('should clean up globalThis.__abTastyOnTriggerRender__ handler on unmount by removing event listener', async () => {
+      const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener')
+      mockNewVisitor.mockReturnValue(createMockVisitor() as any)
+
+      const { unmount } = render(
+        <FlagshipProvider
+          envId={envId}
+          apiKey={apiKey}
+          visitorData={createVisitorData()}
+          fetchNow={false}
+        >
+          <div>Test</div>
+        </FlagshipProvider>
+      )
+
+      await waitFor(() => {
+        expect(mockNewVisitor).toHaveBeenCalled()
+      })
+
+      unmount()
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith(
+        'FS_TRIGGER_RENDERING',
+        expect.any(Function)
+      )
+
+      removeEventListenerSpy.mockRestore()
+    })
+  })
+
   describe('Context Deep Equality', () => {
     it('should not recreate visitor when context reference changes but content is same', async () => {
       const mockVisitor = createMockVisitor({ visitorId: 'visitor1' })
