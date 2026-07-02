@@ -3,6 +3,10 @@ on:
   push:
     tags: 
       - "[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+"
+
+permissions:
+  id-token: write
+  contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,15 +16,16 @@ jobs:
         run: corepack enable
       - name: Set Yarn Version
         run: corepack prepare yarn@4.7.0 --activate
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 24.x
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '24.x'
+          registry-url: 'https://registry.npmjs.org'
           cache: "yarn"
           cache-dependency-path: yarn.lock
       - name: Install modules
         run: yarn install
+      - run: yarn test
       - run: yarn build
-      - run: npm publish --tag beta
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish to npm with OIDC
+        run: NODE_AUTH_TOKEN="" npm publish --tag beta --provenance --access public
